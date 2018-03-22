@@ -1,0 +1,179 @@
+<template>
+    <div>
+        <h4>任务类型工时统计</h4>
+        <div id="echartTypeTask"></div>
+    </div>
+</template>
+<style>
+    #echartTypeTask{height:400px;margin-top:20px;}
+</style>
+<script>
+  export default{
+    mounted(){
+      this.myCharts()
+    },
+    methods:{
+      myCharts(){
+        var echarts = require('echarts');
+        var myChart = echarts.init(document.getElementById('echartTypeTask'));
+
+        myChart.setOption({
+          color: ['#006555'],
+          title: {
+
+            x: 'center',
+            y: 20,
+            textStyle:{
+              color:'#3259B8',
+              fontSize:16,
+              fontWeight:'normal',
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          grid: {
+            left: '15%',
+            right: '10%',
+          },
+          xAxis: {
+            type: 'category',
+            data: ['原画', 'UI', '动作', '特效','地编','原画成员'],
+
+            nameTextStyle: {
+              color: '#3259B8',
+              fontSize: 14,
+
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#3259B8',
+              }
+            },
+            splitLine: {
+              show: false
+            }
+          },
+
+          yAxis: {
+            type: 'value',
+
+            nameTextStyle: {
+              color: '#3259B8',
+              fontSize: 14,
+            },
+            axisLabel: {
+              formatter: '{value}'
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#3259B8',
+              }},
+            splitLine: {
+              lineStyle: {
+                color: '#A7BAFA',
+              },
+            }
+
+          },
+          series: [{
+            name: 'boxplot',
+            type: 'boxplot',
+            data: [
+              [12,
+                32,
+                44,
+                55,
+                66,],
+              [12,
+                32,
+                44,
+                55,
+                66,],
+              [12,
+                32,
+                44,
+                55,
+                66,],
+              [12,
+                32,
+                44,
+                55,
+                66,],
+              [12,
+                32,
+                44,
+                55,
+                66,],
+              [12,
+                32,
+                44,
+                55,
+                66,],
+            ],
+            itemStyle: {
+              normal:{
+                borderColor: {
+                  type: 'linear',
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [{
+                    offset: 0,
+                    color: '#F02FC2' // 0% 处的颜色
+                  }, {
+                    offset: 1,
+                    color: '#3EACE5' // 100% 处的颜色
+                  }],
+                  globalCoord: false // 缺省为 false
+                },
+                borderWidth:2,
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [{
+                    offset: 0,
+                    color: 'rgba(240,47,194,0.7)'  // 0% 处的颜色
+                  }, {
+                    offset: 1,
+                    color: 'rgba(62,172,299,0.7)' // 100% 处的颜色
+                  }],
+                  globalCoord: false // 缺省为 false
+                },
+              }
+            },
+            tooltip: {
+              formatter: function(param) {
+                return [
+                  ' ' + param.name + ': ',
+                  '最高工时: ' + param.data[0],
+                  '最低工时: ' + param.data[1],
+                  '平均工时: ' + param.data[2]
+                ].join('<br/>')
+              }
+            }
+          },
+
+          ]
+
+        })
+
+      }
+    }
+  }
+
+</script>
+
