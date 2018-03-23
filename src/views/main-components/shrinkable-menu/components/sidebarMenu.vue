@@ -15,11 +15,23 @@
                     <Icon :type="item.icon" :size="iconSize"></Icon>
                     <span class="layout-text">{{ itemTitle(item) }}</span>
                 </template>
-                  <template v-for="child in item.children">
+                <template v-for="child in item.children">
                     <MenuItem :name="child.name" :key="child.name">
                         <Icon :type="child.icon" :size="iconSize" :key="child.name"></Icon>
                         <span class="layout-text" :key="child.name">{{ child.title }}</span>
                     </MenuItem>
+                    <!-- <Submenu v-if="child.children" :name="child.name" :key="child.path">
+                        <template slot="title">
+                            <Icon :type="child.icon" :size="iconSize"></Icon>
+                            <span class="layout-text">{{ itemTitle(child) }}</span>
+                        </template>
+                        <template v-for="childs in child.children">
+                            <MenuItem :name="childs.name" :key="childs.name">
+                                <Icon :type="childs.icon" :size="iconSize" :key="childs.name"></Icon>
+                                <span class="layout-text" :key="childs.name">{{ childs.title }}</span>
+                            </MenuItem>
+                        </template>  
+                    </Submenu> -->
                 </template>  
             </Submenu>
         </template>

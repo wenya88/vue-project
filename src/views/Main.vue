@@ -52,11 +52,11 @@
                     </div>
                     <div class="layout-nav stem-l">
                         <Menu mode="horizontal" :active-name="activePath">
-                             <MenuItem :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title" v-if="!item.children">
+                             <MenuItem :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title">
                                 <Icon :type="item.icon"></Icon>
                                 <router-link :to="item.path">{{item.title}}</router-link>
                             </MenuItem>  
-                             <Submenu :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title" v-if="item.children">
+                            <!-- <Submenu :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title" v-if="item.children">
                                 <template slot="title">
                                     <Icon type="stats-bars"></Icon>
                                     {{item.title}}
@@ -66,7 +66,7 @@
                                         <router-link :to="third.path">{{third.title}}</router-link>
                                     </MenuItem>
                                 </MenuGroup>
-                            </Submenu>  
+                            </Submenu>   -->
                         </Menu>
                     </div>
                 </Menu>
@@ -93,11 +93,12 @@
                     </Submenu>
                 </Menu>
             </div>
-            <div class="single-page-con" :style="{left: showMenu?'200px':'0'}">
+            <!-- <content></content> -->
+             <div class="single-page-con" :style="{left: showMenu?'200px':'0'}">
                 <div class="single-page">
                     <router-view></router-view>
                 </div>
-            </div>
+            </div> 
         </div>
     </div>
 </template>
@@ -105,11 +106,13 @@
 import Cookies from 'js-cookie';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
 import themeSwitch from './main-components/theme-switch/theme-switch.vue';
+// import content from './main-components/common/content.vue';
 
 export default {
     components: {
         shrinkableMenu,
         themeSwitch,
+        // content
         // topbarMenu
     },
     data() {

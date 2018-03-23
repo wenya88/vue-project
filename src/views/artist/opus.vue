@@ -1,5 +1,5 @@
 <template>
-  <div>自定义工作台</div>
+  <div>作品集</div>
 </template>
 
 <script>

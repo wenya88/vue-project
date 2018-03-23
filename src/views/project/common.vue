@@ -1,5 +1,5 @@
 <template>
-  <div>合同管理</div>
+  <div>普通项目</div>
 </template>
 
 <script>

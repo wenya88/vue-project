@@ -1,5 +1,5 @@
 <template>
-  <div>合同管理</div>
+  <div>外包商公司主页</div>
 </template>
 
 <script>

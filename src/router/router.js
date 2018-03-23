@@ -51,6 +51,52 @@ export const otherRouter = {
 // 作为Main组件的子页面展示并且在右侧顶部菜单显示的路由写在appRouter里
 export const appRouter = [
     {
+        path: '/project',
+        icon: 'ios-folder',
+        name: 'project',
+        title: '项目管理',
+        component: Main,
+        children: [
+            {
+                path: '/project/custom',
+                icon: 'ios-paper-outline',
+                name: 'custom',
+                title: '自定义工作台页',
+                component: resolve => { require(['@/views/project/custom.vue'], resolve); }
+            }, {
+                path: '/project/task',
+                icon: 'ios-paper-outline',
+                name: 'task',
+                title: '任务管理',
+                component: resolve => { require(['@/views/project/task.vue'], resolve); }
+            }, {
+                path: '/project/file',
+                icon: 'ios-paper-outline',
+                name: 'file',
+                title: '文件管理',
+                component: resolve => { require(['@/views/project/file.vue'], resolve); }
+            }, {
+                path: '/project/quality',
+                icon: 'ios-paper-outline',
+                name: 'quality',
+                title: '质量管理',
+                component: resolve => { require(['@/views/project/quality.vue'], resolve); }
+            }, {
+                path: '/project/schedule',
+                icon: 'ios-paper-outline',
+                name: 'schedule',
+                title: '进度管理',
+                component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
+            }, {
+                path: '/project/statistics',
+                icon: 'ios-paper-outline',
+                name: 'statistics',
+                title: '项目统计',
+                component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
+            }
+        ]
+    },
+    {
         path: '/epibol',
         icon: 'ios-folder',
         name: 'epibol',
@@ -75,51 +121,57 @@ export const appRouter = [
                 name: 'contractManage',
                 title: '合同管理',
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
+            // }, {
+            //     path: '/epibol/projectManage',
+            //     icon: 'ios-paper-outline',
+            //     name: 'projectManage',
+            //     title: '项目管理',
+            //     component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             }, {
-                path: '/project',
+                path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
-                name: 'project',
+                name: 'projectManage',
                 title: '项目管理',
-                component: resolve => { require(['@/views/project/custom.vue'], resolve); },
-                children: [
-                    {
-                        path: '/project/custom',
-                        icon: 'ios-paper-outline',
-                        name: 'custom',
-                        title: '自定义工作台页',
-                        component: resolve => { require(['@/views/project/custom.vue'], resolve); }
-                    }, {
-                        path: '/project/task',
-                        icon: 'ios-paper-outline',
-                        name: 'task',
-                        title: '任务管理',
-                        component: resolve => { require(['@/views/project/task.vue'], resolve); }
-                    }, {
-                        path: '/project/file',
-                        icon: 'ios-paper-outline',
-                        name: 'file',
-                        title: '文件管理',
-                        component: resolve => { require(['@/views/project/file.vue'], resolve); }
-                    }, {
-                        path: '/project/quality',
-                        icon: 'ios-paper-outline',
-                        name: 'quality',
-                        title: '质量管理',
-                        component: resolve => { require(['@/views/project/quality.vue'], resolve); }
-                    }, {
-                        path: '/project/schedule',
-                        icon: 'ios-paper-outline',
-                        name: 'schedule',
-                        title: '进度管理',
-                        component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
-                    }, {
-                        path: '/project/statistics',
-                        icon: 'ios-paper-outline',
-                        name: 'statistics',
-                        title: '项目统计',
-                        component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
-                    }
-                ]
+                component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
+                // children: [
+                //     {
+                //         path: '/project/custom',
+                //         icon: 'ios-paper-outline',
+                //         name: 'custom',
+                //         title: '自定义工作台页',
+                //         component: resolve => { require(['@/views/project/custom.vue'], resolve); }
+                //     }, {
+                //         path: '/project/task',
+                //         icon: 'ios-paper-outline',
+                //         name: 'task',
+                //         title: '任务管理',
+                //         component: resolve => { require(['@/views/project/task.vue'], resolve); }
+                //     }, {
+                //         path: '/project/file',
+                //         icon: 'ios-paper-outline',
+                //         name: 'file',
+                //         title: '文件管理',
+                //         component: resolve => { require(['@/views/project/file.vue'], resolve); }
+                //     }, {
+                //         path: '/project/quality',
+                //         icon: 'ios-paper-outline',
+                //         name: 'quality',
+                //         title: '质量管理',
+                //         component: resolve => { require(['@/views/project/quality.vue'], resolve); }
+                //     }, {
+                //         path: '/project/schedule',
+                //         icon: 'ios-paper-outline',
+                //         name: 'schedule',
+                //         title: '进度管理',
+                //         component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
+                //     }, {
+                //         path: '/project/statistics',
+                //         icon: 'ios-paper-outline',
+                //         name: 'statistics',
+                //         title: '项目统计',
+                //         component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
+                //     }
+                // ]
             }, {
                 path: '/epibol/setting',
                 icon: 'ios-paper-outline',
@@ -148,6 +200,12 @@ export const appRouter = [
                 title: '外包公司库',
                 component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); }
             }, {
+                path: '/epibol/contractManage',
+                icon: 'ios-paper-outline',
+                name: 'contractManage',
+                title: '合同管理',
+                component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
+            }, {
                 path: '/customer/bidManage',
                 icon: 'ios-paper-outline',
                 name: 'cusBidManage',
@@ -158,49 +216,129 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'project',
                 title: '项目管理',
-                component: resolve => { require(['@/views/project/custom.vue'], resolve); },
-                children: [
-                    {
-                        path: '/project/custom',
-                        icon: 'ios-paper-outline',
-                        name: 'custom',
-                        title: '自定义工作台页',
-                        component: resolve => { require(['@/views/project/custom.vue'], resolve); }
-                    }, {
-                        path: '/project/task',
-                        icon: 'ios-paper-outline',
-                        name: 'task',
-                        title: '任务管理',
-                        component: resolve => { require(['@/views/project/task.vue'], resolve); }
-                    }, {
-                        path: '/project/file',
-                        icon: 'ios-paper-outline',
-                        name: 'file',
-                        title: '文件管理',
-                        component: resolve => { require(['@/views/project/file.vue'], resolve); }
-                    }, {
-                        path: '/project/quality',
-                        icon: 'ios-paper-outline',
-                        name: 'quality',
-                        title: '质量管理',
-                        component: resolve => { require(['@/views/project/quality.vue'], resolve); }
-                    }, {
-                        path: '/project/schedule',
-                        icon: 'ios-paper-outline',
-                        name: 'schedule',
-                        title: '进度管理',
-                        component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
-                    }, {
-                        path: '/project/statistics',
-                        icon: 'ios-paper-outline',
-                        name: 'statistics',
-                        title: '项目统计',
-                        component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
-                    }
-                ]
+                // component: resolve => { require(['@/views/project/custom.vue'], resolve); },
+                // children: [
+                //     {
+                //         path: '/project/custom',
+                //         icon: 'ios-paper-outline',
+                //         name: 'custom',
+                //         title: '自定义工作台页',
+                //         component: resolve => { require(['@/views/project/custom.vue'], resolve); }
+                //     }, {
+                //         path: '/project/task',
+                //         icon: 'ios-paper-outline',
+                //         name: 'task',
+                //         title: '任务管理',
+                //         component: resolve => { require(['@/views/project/task.vue'], resolve); }
+                //     }, {
+                //         path: '/project/file',
+                //         icon: 'ios-paper-outline',
+                //         name: 'file',
+                //         title: '文件管理',
+                //         component: resolve => { require(['@/views/project/file.vue'], resolve); }
+                //     }, {
+                //         path: '/project/quality',
+                //         icon: 'ios-paper-outline',
+                //         name: 'quality',
+                //         title: '质量管理',
+                //         component: resolve => { require(['@/views/project/quality.vue'], resolve); }
+                //     }, {
+                //         path: '/project/schedule',
+                //         icon: 'ios-paper-outline',
+                //         name: 'schedule',
+                //         title: '进度管理',
+                //         component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
+                //     }, {
+                //         path: '/project/statistics',
+                //         icon: 'ios-paper-outline',
+                //         name: 'statistics',
+                //         title: '项目统计',
+                //         component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
+                //     }
+                // ]
             }
         ]
-    },  {
+    }, {
+        path: '/depot',
+        icon: 'ios-folder',
+        name: 'depot',
+        title: '项目库',
+        component: Main,
+        // redirect: '/depot/project',
+        children: [
+            {
+                path: '/depot/project',
+                icon: 'ios-paper-outline',
+                name: 'dProject',
+                title: '项目库',
+                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+            }
+        ]
+    }, {
+        path: '/outsourced',
+        icon: 'ios-folder',
+        name: 'outsourced',
+        title: '外包商',
+        component: Main,
+        // redirect: '/depot/project',
+        children: [
+            {
+                path: '/outsourced/home',
+                icon: 'ios-paper-outline',
+                name: 'oHome',
+                title: '公司网页',
+                component: resolve => { require(['@/views/outsourced/home.vue'], resolve); }
+            }
+        ]
+    }, {
+        path: '/artist',
+        icon: 'ios-folder',
+        name: 'artist',
+        title: '艺术家',
+        component: Main,
+        // redirect: '/depot/project',
+        children: [
+            {
+                path: '/artist/opus',
+                icon: 'ios-paper-outline',
+                name: 'opus',
+                title: '作品集',
+                component: resolve => { require(['@/views/artist/opus.vue'], resolve); }
+            }
+        ]
+    }, {
+        path: '/depot',
+        icon: 'ios-folder',
+        name: 'depot',
+        title: '艺术广场',
+        component: Main,
+        // redirect: '/depot/project',
+        children: [
+            {
+                path: '/depot/project',
+                icon: 'ios-paper-outline',
+                name: 'dProject',
+                title: '艺术广场',
+                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+            }
+        ]
+    }, {
+        path: '/depot',
+        icon: 'ios-folder',
+        name: 'depot',
+        title: '艺术WIKI',
+        component: Main,
+        // redirect: '/depot/project',
+        children: [
+            {
+                path: '/depot/project',
+                icon: 'ios-paper-outline',
+                name: 'dProject',
+                title: '艺术WIKI',
+                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+            }
+        ]
+    }, {
         path: '/group',
         icon: 'ios-folder',
         name: 'group',
@@ -275,145 +413,33 @@ export const appRouter = [
         ]
     }
 ];
-//根据左侧的菜单关联到顶部的菜单，且其子页面要在Main组件中展示的路由写在leftTopRouter中
-export const leftTopRouter = [
+//根据项目管理中的不同子标签请求不同的路由，在此称为三级路由，存放在thirdRouter
+export const thirdRouter = [
     {
-        path: '/epibol',
-        icon: 'ios-folder',
-        name: 'epibol',
-        title: '外包公司管理',
-        component: Main,
-        children: [
-            {
-                path: 'home',
+        // path: '/project',
+        // icon: 'ios-folder',
+        // name: 'epibol',
+        // title: '外包公司管理',
+        // component: Main,
+        // children: [
+        //     {
+                path: '/project/home',
                 icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }, {
-                path: 'bidManage',
-                icon: 'ios-paper-outline',
-                name: 'bidManage',
-                title: '招投标管理',
-                component: resolve => { require(['@/views/epibol/bidManage.vue'], resolve); }
-            }, {
-                path: 'contractManage',
-                icon: 'ios-paper-outline',
-                name: 'contractManage',
-                title: '合同管理',
-                component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
-            }, {
-                path: 'projectManage',
-                icon: 'ios-paper-outline',
-                name: 'projectManage',
-                title: '项目管理',
-                component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
-            }, {
-                path: 'setting',
-                icon: 'ios-paper-outline',
-                name: 'setting',
-                title: '设置',
-                component: resolve => { require(['@/views/epibol/setting.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/customer',
-        icon: 'ios-folder',
-        name: 'customer',
-        title: '客户公司管理',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/project',
-        icon: 'ios-folder',
-        name: 'project',
-        title: '项目库',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/outsourcer',
-        icon: 'ios-folder',
-        name: 'outsourcer',
-        title: '外包商',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/artist',
-        icon: 'ios-folder',
-        name: 'artist',
-        title: '艺术家',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/atrsquare',
-        icon: 'ios-folder',
-        name: 'atrsquare',
-        title: '艺术广场',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
-    }, {
-        path: '/page/wiki',
-        icon: 'ios-folder',
-        name: 'wiki',
-        title: '艺术WIKI',
-        component: Main,
-        children: [
-            {
-                path: 'home',
-                icon: 'ios-paper-outline',
-                name: 'home',
-                title: '概况页',
-                component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
-            }
-        ]
+                name: 'pHome',
+                title: '概况',
+                component: resolve => { require(['@/views/project/home.vue'], resolve); },
+        //     }
+        // ]
     }
-];
+]
+
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
     otherRouter,
     ...appRouter,
+    // ...thirdRouter,
     page500,
     page403,
     page404

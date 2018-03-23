@@ -9,7 +9,7 @@ const app = {
         routers: [
             otherRouter,
             ...appRouter,
-            thirdRouter
+            ...thirdRouter
         ],
         menuTheme: 'dark', // 主题
         themeColor: '',
