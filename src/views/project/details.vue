@@ -1,5 +1,5 @@
 <template>
-  <div>普通项目</div>
+  <div>任务详情页</div>
 </template>
 
 <script>

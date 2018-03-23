@@ -13,9 +13,6 @@ export default {
       
     }
   },
-  computed: {
-    
-  },
   methods: {
     linkTo(url, params) {
       if (params) {

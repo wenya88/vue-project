@@ -41,6 +41,9 @@
 .ivu-menu-item-group-title{
     display: none;
 }
+.sidebar-menu-con ul li:first-child{
+    display: none;
+}
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -56,17 +59,6 @@
                                 <Icon :type="item.icon"></Icon>
                                 <router-link :to="item.path">{{item.title}}</router-link>
                             </MenuItem>  
-                            <!-- <Submenu :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title" v-if="item.children">
-                                <template slot="title">
-                                    <Icon type="stats-bars"></Icon>
-                                    {{item.title}}
-                                </template>
-                                <MenuGroup>
-                                    <MenuItem :name="third.path" v-for="third in item.children" :key="third.path">
-                                        <router-link :to="third.path">{{third.title}}</router-link>
-                                    </MenuItem>
-                                </MenuGroup>
-                            </Submenu>   -->
                         </Menu>
                     </div>
                 </Menu>
@@ -74,16 +66,6 @@
         </div>
         <div class="main-content">
             <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
-                <!-- <shrinkable-menu
-                        :shrink="shrink"
-                        :menu-list="menuList"
-                        theme="light"> 
-                    </shrinkable-menu>    -->
-                <!-- <ul>
-                    <li v-for="item in menuList" :key="item.path">
-                        <router-link :to="item.path"><span class="name">{{item.title}}</span></router-link>
-                    </li>
-                </ul> -->
                 <Menu>
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
                         <template slot="title">
@@ -93,7 +75,6 @@
                     </Submenu>
                 </Menu>
             </div>
-            <!-- <content></content> -->
              <div class="single-page-con" :style="{left: showMenu?'200px':'0'}">
                 <div class="single-page">
                     <router-view></router-view>
@@ -106,14 +87,11 @@
 import Cookies from 'js-cookie';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
 import themeSwitch from './main-components/theme-switch/theme-switch.vue';
-// import content from './main-components/common/content.vue';
 
 export default {
     components: {
         shrinkableMenu,
-        themeSwitch,
-        // content
-        // topbarMenu
+        themeSwitch
     },
     data() {
         return {
@@ -132,6 +110,10 @@ export default {
         // }
         '$route': 'updateMenu'
     },
+    created() {
+        // let a = /^(?<=\/).*?(?=\/)$/
+        console.log((location.hash).match(/\#\/(.*)(?=\/)/)[1])
+    },
     mounted() {
         this.init();
         this.updateMenu();
@@ -139,10 +121,7 @@ export default {
     computed: {
         menuList() {
             return this.$store.state.app.menuList;
-        }, 
-        // thirdList() {
-        //     return this.$store.state.app.thirdList;
-        // }
+        }
     },
     methods: {
         init() {
@@ -172,17 +151,14 @@ export default {
             }
         },
         updateMenu() {
-            console.log(this.$route.name, this.menuList)
             this.menuList.forEach((item) => {
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
-                    console.log(this.subMenu)
+                    let menuArr = item.children
+                    this.$router.push(menuArr[0].path)
                 }
             })
             this.activePath = this.$route.path
-        },
-        handleClick(tab) {
-            this.$router.push(tab.name)
         },
         handleChange(name) {
             let willpush = true;

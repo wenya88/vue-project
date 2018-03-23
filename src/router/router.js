@@ -39,15 +39,22 @@ export const page500 = {
 
 
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
-export const otherRouter = {
+export const otherRouter = 
+    {
     path: '/',
     name: 'otherRouter',
     component: Main,
-    redirect: '/epibol'
-    // children: [
-    //     { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } }
-    // ]
-};
+    redirect: '/home/home',
+    children: [
+        { path: '/home/home', title: {i18n: 'home'}, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+        { path: '/home/login', title: {i18n: 'login'}, name: 'login', component: resolve => { require(['@/views/home/login.vue'], resolve); } }
+    ]
+    // }, {
+    //     path: '/home/login',
+    //     name: 'login',
+    //     component: resolve => { require(['@/views/home/login.vue'], resolve); }
+    }
+;
 // 作为Main组件的子页面展示并且在右侧顶部菜单显示的路由写在appRouter里
 export const appRouter = [
     {
@@ -121,57 +128,12 @@ export const appRouter = [
                 name: 'contractManage',
                 title: '合同管理',
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
-            // }, {
-            //     path: '/epibol/projectManage',
-            //     icon: 'ios-paper-outline',
-            //     name: 'projectManage',
-            //     title: '项目管理',
-            //     component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             }, {
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
                 name: 'projectManage',
                 title: '项目管理',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
-                // children: [
-                //     {
-                //         path: '/project/custom',
-                //         icon: 'ios-paper-outline',
-                //         name: 'custom',
-                //         title: '自定义工作台页',
-                //         component: resolve => { require(['@/views/project/custom.vue'], resolve); }
-                //     }, {
-                //         path: '/project/task',
-                //         icon: 'ios-paper-outline',
-                //         name: 'task',
-                //         title: '任务管理',
-                //         component: resolve => { require(['@/views/project/task.vue'], resolve); }
-                //     }, {
-                //         path: '/project/file',
-                //         icon: 'ios-paper-outline',
-                //         name: 'file',
-                //         title: '文件管理',
-                //         component: resolve => { require(['@/views/project/file.vue'], resolve); }
-                //     }, {
-                //         path: '/project/quality',
-                //         icon: 'ios-paper-outline',
-                //         name: 'quality',
-                //         title: '质量管理',
-                //         component: resolve => { require(['@/views/project/quality.vue'], resolve); }
-                //     }, {
-                //         path: '/project/schedule',
-                //         icon: 'ios-paper-outline',
-                //         name: 'schedule',
-                //         title: '进度管理',
-                //         component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
-                //     }, {
-                //         path: '/project/statistics',
-                //         icon: 'ios-paper-outline',
-                //         name: 'statistics',
-                //         title: '项目统计',
-                //         component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
-                //     }
-                // ]
             }, {
                 path: '/epibol/setting',
                 icon: 'ios-paper-outline',
@@ -212,50 +174,11 @@ export const appRouter = [
                 title: '招投标管理',
                 component: resolve => { require(['@/views/customer/bidManage.vue'], resolve); }
             }, {
-                path: '/project',
+                path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
-                name: 'project',
+                name: 'projectManage',
                 title: '项目管理',
-                // component: resolve => { require(['@/views/project/custom.vue'], resolve); },
-                // children: [
-                //     {
-                //         path: '/project/custom',
-                //         icon: 'ios-paper-outline',
-                //         name: 'custom',
-                //         title: '自定义工作台页',
-                //         component: resolve => { require(['@/views/project/custom.vue'], resolve); }
-                //     }, {
-                //         path: '/project/task',
-                //         icon: 'ios-paper-outline',
-                //         name: 'task',
-                //         title: '任务管理',
-                //         component: resolve => { require(['@/views/project/task.vue'], resolve); }
-                //     }, {
-                //         path: '/project/file',
-                //         icon: 'ios-paper-outline',
-                //         name: 'file',
-                //         title: '文件管理',
-                //         component: resolve => { require(['@/views/project/file.vue'], resolve); }
-                //     }, {
-                //         path: '/project/quality',
-                //         icon: 'ios-paper-outline',
-                //         name: 'quality',
-                //         title: '质量管理',
-                //         component: resolve => { require(['@/views/project/quality.vue'], resolve); }
-                //     }, {
-                //         path: '/project/schedule',
-                //         icon: 'ios-paper-outline',
-                //         name: 'schedule',
-                //         title: '进度管理',
-                //         component: resolve => { require(['@/views/project/schedule.vue'], resolve); }
-                //     }, {
-                //         path: '/project/statistics',
-                //         icon: 'ios-paper-outline',
-                //         name: 'statistics',
-                //         title: '项目统计',
-                //         component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
-                //     }
-                // ]
+                component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             }
         ]
     }, {
@@ -413,33 +336,52 @@ export const appRouter = [
         ]
     }
 ];
-//根据项目管理中的不同子标签请求不同的路由，在此称为三级路由，存放在thirdRouter
-export const thirdRouter = [
-    {
-        // path: '/project',
-        // icon: 'ios-folder',
-        // name: 'epibol',
-        // title: '外包公司管理',
-        // component: Main,
-        // children: [
-        //     {
-                path: '/project/home',
-                icon: 'ios-paper-outline',
-                name: 'pHome',
-                title: '概况',
-                component: resolve => { require(['@/views/project/home.vue'], resolve); },
-        //     }
-        // ]
-    }
-]
 
+// 不显示在左侧和顶部的路由放在下面的pageRouter里
+// export const pageRouter = [
+//     {
+//         path: '/project/gantt',
+//         name: 'gantt',
+//         title: '甘特图',
+//         component: require('@/views/project/gantt.vue')
+//     }, {
+//         path: '/project/list',
+//         name: 'list',
+//         title: '任务列表',
+//         component: require('@/pages/project/list.vue')
+//     }, {
+//         path: '/project/details',
+//         name: 'details',
+//         title: '任务详情',
+//         component: require('@/pages/project/details.vue')
+//     }, {
+//         path: '/project/details',
+//         name: 'details',
+//         title: '内部审核',
+//         component: require('@/pages/project/details.vue')
+//     }, {
+//         path: '/project/details',
+//         name: 'details',
+//         title: '内部已审',
+//         component: require('@/pages/project/details.vue')
+//     }, {
+//         path: '/project/details',
+//         name: 'details',
+//         title: '客户待审',
+//         component: require('@/pages/project/details.vue')
+//     }, {
+//         path: '/project/details',
+//         name: 'details',
+//         title: '客户已审',
+//         component: require('@/pages/project/details.vue')
+//     }
+// ]
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
     otherRouter,
     ...appRouter,
-    // ...thirdRouter,
     page500,
     page403,
     page404

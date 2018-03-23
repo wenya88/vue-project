@@ -1,15 +1,13 @@
-import {otherRouter, appRouter, thirdRouter} from '@/router/router';
+import {otherRouter, appRouter} from '@/router/router';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
 
 const app = {
     state: {
         menuList: [],
-        thirdList: [],
         routers: [
             otherRouter,
-            ...appRouter,
-            ...thirdRouter
+            ...appRouter
         ],
         menuTheme: 'dark', // 主题
         themeColor: '',
@@ -17,9 +15,6 @@ const app = {
     mutations: {
         updateMenulist (state) {
             state.menuList = appRouter;
-        },
-        updateLeftMenuList(state) {
-            state.thirdList = thirdRouter;
         },
         changeMenuTheme (state, theme) {
             state.menuTheme = theme;
