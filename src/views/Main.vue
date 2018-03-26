@@ -152,6 +152,8 @@ export default {
         },
         updateMenu() {
             this.menuList.forEach((item) => {
+                // let routeName = this.$route.name
+                // console.log(routeName)
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
                     let menuArr = item.children

@@ -67,7 +67,7 @@ Ganttalendar.prototype.zoomGantt = function (isPlus) {
   		newPos = 3
   		break;
   }
-  
+
   if (newPos != pos) {
     curLevel = this.zoomLevels[newPos];
     this.zoom = curLevel;
@@ -332,7 +332,7 @@ Ganttalendar.prototype.create = function (zoom, originalStartmillis, originalEnd
           [1, '#e4e4e4']
         ], 0, 0, 0, "100%");
 
-		
+
         //create backgound
         var extDep = svg.pattern(defs, "extDep", 0, 0, 40, 40, 0, 0, 40, 40, {patternUnits:'userSpaceOnUse'});
         svg.image(extDep, 0, 0, 40, 40, "res/hasExternalDeps.png");
@@ -427,13 +427,13 @@ Ganttalendar.prototype.drawTask = function (task) {
 
       	//鼠标双击事件
         //self.master.showTaskEditor($(this).attr("taskid"));
-      
+
         	var cwidth,cheight
 	        cwidth=$(window).width()/1.5;
 	        cheight=$(window).height()/1.3;
 	        $(".openDetails").css({"width":cwidth,"height":cheight,"top":"10%","left":"15%","display":"block"});
 	        e.stopPropagation()
-        
+
         	$(".openDetails").click(function(e){
 				  $(this).show;
 				  e.stopPropagation()
@@ -442,10 +442,11 @@ Ganttalendar.prototype.drawTask = function (task) {
         $(document).click(function(){
           $(".openDetails").hide();
         })
-	
-        
-        
+
+
+
       }).mouseenter(function () {
+        
         //bring to top
         var el = $(this);
         if (!self.linkOnProgress) {
@@ -457,10 +458,12 @@ Ganttalendar.prototype.drawTask = function (task) {
       }).mouseleave(function () {
         var el = $(this);
         el.removeClass("linkOver").find(".linkHandleSVG").hide();
-
+        $(".openShow").hide();
       }).mouseup(function (e) {
         $(":focus").blur(); // in order to save grid field when moving task
+      $(".openShow").hide();
       }).mousedown(function () {
+        $(".openShow").hide();
         var task = self.master.getTask($(this).attr("taskId"));
         task.rowElement.click();
       }).dragExtedSVG($(self.svg.root()), {
@@ -528,6 +531,7 @@ Ganttalendar.prototype.drawTask = function (task) {
       self.linkFromEnd = $(this).is(".taskLinkEndSVG");
       svg.addClass("linkOnProgress");
 
+
       // create the line
       var startX = parseFloat(taskBox.attr("x")) + (self.linkFromEnd ? parseFloat(taskBox.attr("width")) : 0);
       var startY = parseFloat(taskBox.attr("y")) + parseFloat(taskBox.attr("height")) / 2;
@@ -586,20 +590,20 @@ Ganttalendar.prototype.drawTask = function (task) {
 
   function _createTaskSVG(task, dimensions) {
     var svg = self.svg;
-    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, 25, {class:"taskBox taskBoxSVG", taskid:task.id});
+    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, 20, {class:"taskBox taskBoxSVG", taskid:task.id});
 
     //svg.title(taskSvg, task.name);
     //external box
     var lw=100+"%";
-    var layout = svg.rect(taskSvg, 0, 3, lw, "100%", {class:"taskLayout", rx:"0", ry:"0"});
+    var layout = svg.rect(taskSvg, 0, 5, lw, "100%", {class:"taskLayout", rx:"0", ry:"0"});
 
     if (task.hasExternalDep) {
       layout.style.fill = "url(#extDep)";
     } else {
       layout.style.fill = "url(#taskGrad)";
     }
-	
-	
+
+
     //progress
     if (task.progress > 0) {
       var progress = svg.rect(taskSvg, 0, 0, (task.progress > 100 ? 100 : task.progress) + "%", "100%", {fill:(task.progress > 100 ? "red" : "rgb(153,255,51)"), rx:"6", ry:"6", opacity:.4});
@@ -613,59 +617,102 @@ Ganttalendar.prototype.drawTask = function (task) {
 
     //status
     if (dimensions.width > 15){
-     //进度条
-     var n=20+"%";
-     var an=n.replace("%","");
-      svg.rect(taskSvg, 0, 3, n, 25, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
-      //判断图标的颜色，如果为黄，则进度条为灰色
-      if(task.status=="STATUS_SUSPENDED"){
-      	layout.style.fill = "url(#taskAsh)";//灰色背景
-      	svg.text(taskSvg,an/2.5+"%", 21, 7+"/"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
-      	//svg.rect(taskSvg, -30, 3, 25, 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_RED", class:"taskStatusSVG SVG_RED"});
-      	svg.image(taskSvg, -30, 3, 25, 25, "res/link-icon.png",{class:"SVG_RED"})//添加图片
-      }
-      
-      if(task.status=="STATUS_ACTIVE"){
-      	var an=n.replace("%","");
-      	svg.text(taskSvg, "50%", 21, 7+"/"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-      }
-      
-      if(task.status=="STATUS_FAILED"){
-      	svg.rect(taskSvg, 0, 3, "100%", 25, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//灰色状态
-      	svg.text(taskSvg, "45%", 21, 0+"/"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-      }
-      
-      if(task.status=="STATUS_DONE"){
-      	svg.rect(taskSvg, 0, 3, "100%", 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_SUSPENDED", class:"taskStatusSVG"});
-      	svg.text(taskSvg, "50%", 21, 7+"/"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-      	svg.rect(taskSvg, "101%", 3, 25, 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
-      	svg.text(taskSvg,"101.5%", 21, "+"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
-      }
-      
+
+      (function showPoint(num){
+        var gdata="";
+        // 进度条上面的显示
+        var jd=0;
+        var zs=0;
+
+        $.ajax({
+          type:"get",
+          url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
+          async:false,
+          dataType:"json",
+          success:function(msg){
+
+            if(msg.err_code==0){
+                gdata=msg.data;
+            }
+
+          },
+          error:function(){
+            console.log("请求失败！")
+          }
+
+        });
+
+        //进度条
+        var n=20+"%";
+        var an=n.replace("%","");
+        svg.rect(taskSvg, 0, 5, n, 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
+
+        //判断图标的颜色，如果为黄，则进度条为灰色
+        if(task.status=="STATUS_SUSPENDED"){
+          layout.style.fill = "url(#taskAsh)";//灰色背景
+          for(var ss=0;ss<gdata.length;ss++){
+            svg.text(taskSvg,an/2.5+"%", 21, gdata[ss].progress+"/"+gdata[ss].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"});
+          }
+
+          //svg.rect(taskSvg, -30, 3, 25, 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_RED", class:"taskStatusSVG SVG_RED"});
+          //svg.image(taskSvg, -30, 5, 25, 25, "res/link-icon.png",{class:"SVG_RED"})//添加图片
+        }
+
+        if(task.status=="STATUS_ACTIVE"){
+          for(var sa=0;sa<gdata.length;sa++){
+              svg.text(taskSvg, "47%", 21, gdata[sa].progress+"/"+gdata[sa].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+
+          }
+        }
+
+        if(task.status=="STATUS_FAILED"){
+          svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//灰色状态
+          for(var sf=0;sf<gdata.length;sf++){
+            svg.text(taskSvg, "45%", 21, gdata[sf].progress+"/"+gdata[sf].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+          }
+        }
+
+        if(task.status=="STATUS_DONE"){
+          svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_SUSPENDED", class:"taskStatusSVG"});
+          for(var sd=0;sd<gdata.length;sd++){
+            svg.text(taskSvg, "47%", 21, gdata[sd].progress+"/"+gdata[sd].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+          }
+          svg.rect(taskSvg, "101%", 5, 25, 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
+          svg.text(taskSvg,"101.5%", 21, "+"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
+        }
+
+      })(2);
+
 	}
 
     //图标事件
     $(function(){
     	//点击
-    	$(".SVG_RED").hover(function(e){
-//			$(this).css("cursor","pointer");
-			$(".openShow").show().css({"left":e.pageX,"top":e.pageY});
-			e.stopPropagation();
+    	$(".taskBoxSVG").hover(function(){
+    	  var oTop=$(this).offset().top;
+    	  var oLeft=$(this).offset().left;
+			  $(".openShow").show().css({"left":oLeft,"top":oTop+23});
+        var wLeft=$(window).width()-510;
+        if(oLeft>wLeft){
+          $(".openShow").show().css({"left":wLeft,"top":oTop+23});
+        }
+        // $(this).addClass('appRect')
     	},function(){
-        $(".openShow").hide()
+    	  $(".openShow").hide();
+    	  // $(this).removeClass('appRect');
       })
-    	$(".openShow").click(function(e){
-    		$(this).hide(0,function(){
-    		});
-    		e.stopPropagation();
-    	})
-    	$(document).click(function(){
-    		$(".openShow").hide()
-    	})
 
+    	// $(".openShow").click(function(e){
+    	// 	$(this).hide(0,function(){
+    	// 	});
+    	// 	e.stopPropagation();
+    	// })
+    	// $(document).click(function(){
+    	// 	$(".openShow").hide()
+    	// })
     })
-     
-     
+
+
     if (task.hasChild)
       //svg.rect(taskSvg, 0, 0, "100%", 3, {fill:"#000"});
 
@@ -678,14 +725,13 @@ Ganttalendar.prototype.drawTask = function (task) {
     }
 
     //task label
-    
+
     //于2018.2.27修改,不在日历中显示项目名称
     //svg.text(taskSvg, "100%", 18, task.name, {class:"taskLabelSVG", transform:"translate(8,-8)"});
 
     //link tool
-    svg.circle(taskSvg, "0", 12, 4, {class:"taskLinkStartSVG linkHandleSVG", transform:"translate(0)"});
-    svg.circle(taskSvg, "100%", 12, 4, {class:"taskLinkEndSVG linkHandleSVG", transform:"translate(0)"});
-
+    svg.circle(taskSvg, "0", 14, 4, {class:"taskLinkStartSVG linkHandleSVG", transform:"translate(0)"});
+    svg.circle(taskSvg, "100%", 14, 4, {class:"taskLinkEndSVG linkHandleSVG", transform:"translate(0)"});
     return taskSvg
   }
 
@@ -914,7 +960,7 @@ Ganttalendar.prototype.refreshGantt = function () {
   par.append(domEl);
   this.redrawTasks();
 
-  //set old scroll  
+  //set old scroll
   //console.debug("old scroll:",scrollX,scrollY)
   par.scrollTop(scrollY);
   par.scrollLeft(scrollX);

@@ -218,7 +218,7 @@ td.ivu-table-expanded-cell{
              */
             get: function () {
                 /*发送请求*/
-                var url = "http://192.168.2.19/product/code/yhc_api/web/interface/api?method=gettasklist";
+                var url = gettasklistData;
                 var params = {
                     name: ""
                 }
