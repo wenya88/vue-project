@@ -1,6 +1,7 @@
 @white: white;
 @orange: #ff9900;
 @gray: #e8e8e8;
+@blue: #39f;
 .quality{
   .ivu-col-span-8{
     padding: 10px 20px;
@@ -25,6 +26,7 @@
           background: rgba(0, 0, 0, .5);
           color: @white;
           padding: 0 10px;
+          display: none;
           .tag{
             background: @orange;
             padding: 2px 5px;
@@ -35,15 +37,19 @@
           }
         }
       }
+      &-box:hover .tips{
+        display: block;
+      }
       &-table{
-        width: 100%;
+        width: 95%;
+        margin: 0 auto;
         .fb{
           font-weight: bold;
         }
         .w25{
           width: 25%;
           text-align: center;
-          >span{
+          .orange-span{
             color: @orange;
             display: inline-table;
           }
@@ -61,5 +67,42 @@
   }
   .hide{
     display: none;
+  }
+  .b-border{
+    border-bottom: 1px solid #c9c9c9;
+  }
+  .l-padding{
+    padding-left: 5px;
+  }
+  .gray-sapn{
+    background: #c9c9c9;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: #888;
+  }
+  .sort{
+    width: 12%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -100px;
+    height: 37px;
+    line-height: 37px;
+    li{
+      width: calc( 100% / 3);
+      float: left;
+      cursor: pointer;
+    }
+    .actived{
+      color: @blue;
+    }
+  }
+  .screen{
+    width: 42%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 37px;
+    line-height: 37px;
   }
 }

@@ -219,7 +219,6 @@ Ganttalendar.prototype.create = function (zoom, originalStartmillis, originalEnd
         trBody.append(createBodyCell(1, quarter % 2 == 0));
         date.setMonth(date.getMonth() + 3);
       });
-
       //quarter
     } else if (zoom == "q") {
       computedTableWidth = Math.floor(((endPeriod - startPeriod) / (3600000 * 24 * 30)) * 300); //1 month= 300px
@@ -446,7 +445,7 @@ Ganttalendar.prototype.drawTask = function (task) {
 
 
       }).mouseenter(function () {
-        
+
         //bring to top
         var el = $(this);
         if (!self.linkOnProgress) {
@@ -621,20 +620,15 @@ Ganttalendar.prototype.drawTask = function (task) {
       (function showPoint(num){
         var gdata="";
         // 进度条上面的显示
-        var jd=0;
-        var zs=0;
-
         $.ajax({
           type:"get",
           url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
           async:false,
           dataType:"json",
           success:function(msg){
-
             if(msg.err_code==0){
                 gdata=msg.data;
             }
-
           },
           error:function(){
             console.log("请求失败！")
@@ -645,37 +639,45 @@ Ganttalendar.prototype.drawTask = function (task) {
         //进度条
         var n=20+"%";
         var an=n.replace("%","");
-        svg.rect(taskSvg, 0, 5, n, 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
+
+
 
         //判断图标的颜色，如果为黄，则进度条为灰色
         if(task.status=="STATUS_SUSPENDED"){
           layout.style.fill = "url(#taskAsh)";//灰色背景
+          svg.rect(taskSvg, 0, 5, n, 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
           for(var ss=0;ss<gdata.length;ss++){
-            svg.text(taskSvg,an/2.5+"%", 21, gdata[ss].progress+"/"+gdata[ss].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"});
+            if($("#tasksGroup svg").index()==ss){
+              svg.text(taskSvg,an/2.5+"%", 21, gdata[ss].progress+"/"+gdata[ss].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"});
+            }
           }
-
           //svg.rect(taskSvg, -30, 3, 25, 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_RED", class:"taskStatusSVG SVG_RED"});
           //svg.image(taskSvg, -30, 5, 25, 25, "res/link-icon.png",{class:"SVG_RED"})//添加图片
         }
 
         if(task.status=="STATUS_ACTIVE"){
           for(var sa=0;sa<gdata.length;sa++){
+            if($("#tasksGroup svg").index()==sa){
               svg.text(taskSvg, "47%", 21, gdata[sa].progress+"/"+gdata[sa].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-
+            }
           }
         }
 
         if(task.status=="STATUS_FAILED"){
           svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//灰色状态
           for(var sf=0;sf<gdata.length;sf++){
-            svg.text(taskSvg, "45%", 21, gdata[sf].progress+"/"+gdata[sf].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+            if($("#tasksGroup svg").index()==sf){
+              svg.text(taskSvg, "42%", 21, gdata[sf].progress+"/"+gdata[sf].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+            }
           }
         }
 
         if(task.status=="STATUS_DONE"){
           svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_SUSPENDED", class:"taskStatusSVG"});
           for(var sd=0;sd<gdata.length;sd++){
-            svg.text(taskSvg, "47%", 21, gdata[sd].progress+"/"+gdata[sd].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+            if($("#tasksGroup svg").index()==sd){
+             svg.text(taskSvg, "47%", 21, gdata[sd].progress+"/"+gdata[sd].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+            }
           }
           svg.rect(taskSvg, "101%", 5, 25, 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
           svg.text(taskSvg,"101.5%", 21, "+"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
@@ -700,7 +702,65 @@ Ganttalendar.prototype.drawTask = function (task) {
     	},function(){
     	  $(".openShow").hide();
     	  // $(this).removeClass('appRect');
-      })
+      });
+
+      $(".gdfper input").unbind('click').click(function(e){
+
+        $(this).addClass("thispeo");
+
+        // AddPeopleDiv
+        var pTop=$(this).offset().top-1;
+        var pLeft=$(this).offset().left-1;
+        var pWidth=$(this).width()*1.7;
+        var pHeight=$(".addpeople").height();
+        $(".addpeople").fadeIn().css({"top":pTop,"left":pLeft,"width":pWidth});
+        $(".peopleInt").val($(this).val()).css({"width":pWidth}).focus();
+        $(".addpeople dd").css({"height":pHeight});
+
+        // EditPeople
+        $(".addpeople dt a").click(function(){
+           $(this).parent().find("a").removeClass("show");
+           $(this).addClass("show");
+           var aindex=$(this).index();
+           $(".addpeople dd").hide();
+           $(".addpeople dd:eq("+aindex+")").css("display","block");
+        })
+
+        $(".peopleInt").change(function(){
+          peopleIntTxt=$.trim($(this).val());
+          $(".thispeo").val(peopleIntTxt)
+        })
+
+        // EditInput
+        $(".addpeople dd input").unbind('click').click(function(){
+          if($(this).is(':checked')){
+            var addinptVal=$(this).val();
+            $(".peopleInt").val(addinptVal);
+            $(".thispeo").val(addinptVal);
+            $(this).parents("div").hide();
+          }else{
+            var addinptVal=$(this).val();
+            $(".peopleInt").val($(".peopleInt").val().replace(addinptVal,''));
+            $(".thispeo").val($(".thispeo").val().replace(addinptVal,''))
+          }
+
+        })
+
+        e.stopPropagation();
+      });
+
+      $(".addpeople").click(function(e){
+        $(this).show();
+        e.stopPropagation();
+      });
+
+
+      $(document).click(function(){
+        $(".addpeople").hide();
+        $(".gdfper input").removeClass("thispeo");
+      });
+
+
 
     	// $(".openShow").click(function(e){
     	// 	$(this).hide(0,function(){

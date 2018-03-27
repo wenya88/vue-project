@@ -267,7 +267,7 @@
 
 .taskEditRow input{
   border: 0 none;
-  font-size: 14px;
+  font-size: 12px;
   height: 20px;
   margin: 0;
   padding: 0;
@@ -431,6 +431,7 @@ input[readonly]{
 }
 
 
+
 .linkHandleSVG{
   display:none;
   stroke:#888;
@@ -510,5 +511,13 @@ input[readonly]{
 .openShow dd .li-c{margin-left:30%;margin-top:10px;}
 .openShow dd .li-c span{font-weight:bold;color:#ff6600;font-size:14px;}
 .openShow dd .li-r{float:right;text-align:right;}
-
-.openShow .clear{clear:both;}
+.clear{clear:both;}
+.addpeople{position:absolute;z-index:9999;top:0px;left:0px;display:none;width:140px;height:150px;}
+.addpeople input[type=text]{font-size:12px;border-radius:0px;}
+.addpeople dl{border:1px solid #91b4b7;margin:0px;padding:0px;margin-top:-1px;background:#fff;}
+.addpeople dt{width:60px;float:left;display:inline-block;text-align:right;line-height:24px;}
+.addpeople dt a{font-weight:normal;font-size:12px;color:#657180;border-bottom:1px solid #91b4b7;display:block;padding-right:5px;}
+.addpeople dd{border-left:1px solid #91b4b7;margin-left:60px;margin:0px;font-size:12px;color:#657180;padding:5px;overflow-y:auto;display:none;}
+.addpeople .show{background:#3399ff;color:#fff;}
+.addpeople dd label{display:block;line-height:24px;height:24px;}
+.addpeople dd label input[type=checkbox]{float:left;margin-top:6px;}

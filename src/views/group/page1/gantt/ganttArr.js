@@ -5,7 +5,7 @@ window.onload=function(){
     $.ajax({
       type:"get",
       url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
-      async:true,
+      async:false,
       dataType:"json",
       success:function(msg){
         var data=msg.data;

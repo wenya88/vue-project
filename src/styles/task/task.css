@@ -9,18 +9,27 @@
 button.btton-right {
     margin-bottom: 20px;
 }
-
-.ivu-table .demo-table-info-cell-state span {
-    background-color: #19be6b;
+.ivu-table .demo-table-info-cell-start span,
+.ivu-table .demo-table-info-cell-complete span,
+.ivu-table .demo-table-info-cell-pause span,
+.ivu-table .demo-table-info-cell-execution span{
     color: #fff;
-    padding: 4px;
+    padding: 5px;
+    border-radius: 7px;
 }
 
-.ivu-table .demo-table-info-cell-stateT span {
-    background-color: #ff9900;
-    color: #fff;
-    padding: 4px;
+.ivu-table .demo-table-info-cell-start span {
+    background-color: #80848f;
+}
 
+.ivu-table .demo-table-info-cell-complete span {
+    background-color: #19be6b;
+}
+.ivu-table .demo-table-info-cell-pause span {
+    background-color: #ed3f14;
+}
+.ivu-table .demo-table-info-cell-execution span {
+    background-color: #ff9900;
 }
 
 .ivu-tabs-bar {

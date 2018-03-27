@@ -85,7 +85,7 @@
       <input type="text" name="name" value="(#=obj.name#)">
     </td>
     <td class="gdfCell"><input type="text" name="code" value="(#=obj.code?obj.code:''#)"></td>
-    <td class="gdfCell"><input type="text"></td>
+    <td class="gdfCell gdfper"><input type="text" ></td>
     <td class="gdfCell"><input type="text"></td>
     <td class="gdfCell"><input type="text" name="depends" value="(#=obj.depends#)" (#=obj.hasExternalDep?"readonly":""#)></td>
 
@@ -426,6 +426,35 @@ $.JST.loadDecorator("ASSIGNMENT_ROW", function(assigTr, taskAssig) {
 	<span>X</span>
 </div>
 
+<div class="addpeople">
+    <input type="text" placeholder="参与人的姓名" class="peopleInt">
+    <dl>
+        <dt>
+            <a href="#" class="show">全部成员</a>
+            <a href="#">3D模型</a>
+            <a href="#">地编组</a>
+            <a href="#">次世代</a>
+        </dt>
+        <dd style="display:block">
+            <label><input type="radio" value="张三" name="addpeop"/>张三</label>
+            <label><input type="radio" value="张四" name="addpeop"/>张四</label>
+            <label><input type="radio" value="张五" name="addpeop"/>张五</label>
+            <label><input type="radio" value="张六" name="addpeop"/>张六</label>
+            <label><input type="radio" value="张七" name="addpeop"/>张七</label>
+        </dd>
+        <dd>
+            <label><input type="radio" value="张四" name="addpeop"/>张四</label>
+            <label><input type="radio" value="张五" name="addpeop"/>张五</label>
+        </dd>
+        <dd>
+            <label><input type="radio" value="张六" name="addpeop"/>张六</label>
+        </dd>
+        <dd>
+            <label><input type="radio" value="张七" name="addpeop"/>张七</label>
+        </dd>
+        <div class="clear"></div>
+    </dl>
+</div>
 
 </body>
 </html>

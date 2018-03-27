@@ -110,13 +110,19 @@ export default {
         // }
         '$route': 'updateMenu'
     },
-    created() {
-        // let a = /^(?<=\/).*?(?=\/)$/
-        console.log((location.hash).match(/\#\/(.*)(?=\/)/)[1])
-    },
     mounted() {
         this.init();
         this.updateMenu();
+        let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
+        this.menuList.forEach((item) => {
+            if(routeName === item.name) {
+                this.subMenu = item.children
+                let menuArr = item.children
+                console.log(routeName,this.subMenu)
+                this.$router.push(menuArr[0].path)
+            }
+        })
+        this.activePath = this.$route.path
     },
     computed: {
         menuList() {
@@ -157,6 +163,7 @@ export default {
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
                     let menuArr = item.children
+                    console.log(this.$route.name,this.subMenu)
                     this.$router.push(menuArr[0].path)
                 }
             })

@@ -161,7 +161,6 @@
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
     export default {
-        name: 'sub-task',
         components: {
             UploadList,
         },

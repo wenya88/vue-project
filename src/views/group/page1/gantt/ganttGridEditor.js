@@ -148,7 +148,7 @@ GridEditor.prototype.refreshTaskRow = function (task) {
   var row = task.rowElement;
 
   row.find(".taskRowIndex").html(task.getRow() + 1);
-  row.find(".indentCell").css("padding-left", task.level * 16 + 12);
+  row.find(".indentCell").css("padding-left", task.level * 15);
   row.find("[name=name]").val(task.name);
   row.find("[name=code]").val(task.code);
   row.find("[status]").attr("status", task.status);

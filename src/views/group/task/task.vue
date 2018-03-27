@@ -7,7 +7,7 @@
             <Layout>
                 <Layout>
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-                        <Modal :styles="{top: '30px'}" v-model="handleRender" width="1300">
+                        <Modal :styles="{top: '30px'}" v-model="handleRender" width="1300" @on-cancel="cancel">
                             <div class="icon-header">
                                 <Row :gutter="40">
                                     <Col span="4">
@@ -20,15 +20,15 @@
                             </div>
                             <div slot="header">
                             </div>
-                            <Tabs type="card">
+                            <Tabs type="card" @on-click="clickFun">
                                 <TabPane label="基本管理">
-                                    <bea-n></bea-n>
+                                    <bea-n v-if="contShow === 0" :datl="formLeft"></bea-n>
                                 </TabPane>
                                 <TabPane label="子任务">
-                                    <sub-task></sub-task>
+                                    <sub-task v-if="contShow === 1"></sub-task>
                                 </TabPane>
                                 <TabPane label="日志">
-                                    <jou-rnal></jou-rnal>
+                                    <jou-rnal v-if="contShow === 2"></jou-rnal>
                                 </TabPane>
                             </Tabs>
                             <div slot="footer">
@@ -64,9 +64,13 @@
                             </div>
                             <div slot="footer"></div>
                         </Modal>
-                        <Button type="primary" size="small" class="btton-right" @click="excelModal = true">Excle导入
-                        </Button>
-                        <Table :columns="columns8" :data="dataList" size="small" ref="table"></Table>
+                        <div style="width: 70%">
+                            <Row type="flex" justify="start" class="code-row-bg">
+                                <Col span="2"> <Button type="primary" class="btton-right" @click="excelModal = true">Excle导入</Button></Col>
+                                <Col span="2"> <Button type="success" @click="addtasklistData()">新增任务</Button></Col>
+                            </Row>
+                        </div>
+                        <Table :columns="columnsTask" :data="dataList" size="small" ref="table"></Table>
                     </Content>
                 </Layout>
             </Layout>
@@ -77,6 +81,8 @@
     import sub from './sub.vue';
     import Icon from "iview/src/components/icon/icon";
     import {gettasklistData} from "../../../config/env.js";
+    import {deletetaskData} from "../../../config/env.js";
+    import {addtasklistData} from "../../../config/env.js";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import beaN from './modalContainers/beaN';
     import subTask from './modalContainers/subTask';
@@ -95,6 +101,7 @@
         },
         data() {
             return {
+                contShow: '',
                 value13: '',
                 formLeft: {
                     name: '',
@@ -102,7 +109,7 @@
                 //弹出层
                 handleRender: false,
                 excelModal: false,
-                columns8: [
+                columnsTask: [
                     {
                         type: 'expand',
                         width: 50,
@@ -110,12 +117,13 @@
                             return h(sub, {
                                 props: {
                                     row: params.row,
+
                                 },
                             })
                         }
                     },
                     {
-                        title: "任务名称",
+                        title: "任务",
                         key: "name",
                         align: 'center',
                     },
@@ -128,14 +136,19 @@
                     },
                     {
                         title: "类型",
-                        key: "type",
+                        key: "status_text",
+                        align: 'center',
+
+                    },
+                    {
+                        title: "子项目",
+                        key: "project",
                         align: 'center',
                     },
                     {
-                        title: "参与/负责人",
+                        title: "参与人",
                         align: 'center',
                         render: function (h, params) {
-                            console.log(params.row.name)
                             return h('div', [
                                 h('Avatar', {
                                     props: {
@@ -149,7 +162,7 @@
                                         src: 'https://i.loli.net/2017/08/21/599a521472424.jpg',
                                     },
                                 }),
-                                h('span', {}, params.row.head),
+                                h('span', {}, params.row.name),
                             ])
                         },
                     },
@@ -158,65 +171,69 @@
                         align: 'center',
                     },
                     {
-                        title: "进度阶段",
+                        title: "实施阶段",
                         align: 'center',
                         width: '300px',
                         render: function (h) {
-                            return h('Steps', [
+                            return h('Steps', {
+                                props: {
+                                    current: 0,
+                                    status:'wait',
+                                    size: 'small',
+                                    direction:'horizontal'
+                                }
+                            },
+                            [
                                 h('Step', {
                                     props: {
-                                        direction: 'vertical',
-                                        size: 'small'
+                                        title: '1',
+
                                     },
                                 }),
                                 h('Step', {
                                     props: {
-                                        size: 'small',
-                                        direction: 'vertical',
+                                        title: '2',
+
                                     },
                                 }),
                                 h('Step', {
                                     props: {
-                                        size: 'small',
-                                        direction: 'vertical',
+                                        title: '3',
+
                                     },
                                 }),
                                 h('Step', {
                                     props: {
-                                        size: 'small',
-                                        direction: 'vertical',
+                                        title: '4',
                                     },
                                 }),
                                 h('Step', {
                                     props: {
-                                        size: 'small',
-                                        direction: 'vertical',
+                                        title: '5',
                                     },
                                 })
                             ]);
-                        }
+                    },
                     },
                     {
-                        title: "进度比例",
+                        title: "更新时间",
                         align: 'center',
-                    },
-                    {
-                        title: "已进行",
-                        align: 'center',
-                    },
-                    {
-                        title: "最近更新",
-                        align: 'center',
-                    },
-                    {
-                        title: "到期日",
-                        key: "create_time",
-                        align: 'center',
+                        key:'end_date',
                         width: '100px',
                     },
                     {
+                        title: "已用时",
+                        align: 'center',
+                    },
+                    {
+                        title: "剩余",
+                        align: 'center',
+                    },
+
+                    {
                         title: "操作",
                         align: 'center',
+                        width:'200px',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -231,19 +248,23 @@
                                         click: () => {
                                             let cIs = this;
                                             cIs.handleRender = true;
-                                            cIs.show(params.index)
+                                            cIs.show(params.index);
+                                            cIs.contShow = 0;
                                         }
                                     }
                                 }, '编辑'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        size: 'small'
+                                        size: 'small',
+                                            confirm: true,
+                                            title: '您确定要删除这条数据吗?',
+                                            transfer: true
                                     },
                                     on: {
                                         click: () => {
                                             let cIs = this;
-                                            cIs.remove(params.index);
+                                            cIs.removetasklistData(params.index);
                                         }
                                     }
                                 }, '删除')
@@ -251,35 +272,19 @@
                         },
                     },
                 ],
-                dataList: [
-                    {
-                        status: "实施中",
-                        name: "架构处理",
-                        timeremaining: "19%",
-                        principal: "大大",
-                        type: "原画",
-                        cellClassName: {
-                            status: 'demo-table-info-cell-stateT'
-                        },
-                    },
-                ]
+                dataList: []
             }
         },
         mounted() {
-            //获取数据接口
-            let cIs = this;
-            this.get(gettasklistData,
-                {
-                    project_id: 2
-                },
-                (res) => {
-                    console.log(res)
-                    cIs.dataList = res.data.params;
-                    console.log(dataList)
-                }
-            );
+            this.forEachData();
         },
         methods: {
+            cancel(){
+                this.$Message.info('点击了取消');
+            },
+            clickFun(r){
+                this.contShow = r;
+                },
             exportData(type) {
                 if (type === 1) {
                     this.$refs.table.exportCsv({
@@ -306,33 +311,73 @@
                 this.$http.get(url,{params: params}).then(function (res) {
                     call(res);
                 }, function (error) {
-                    console.log("error");
                 });
             },
             //model 数据
             show(index) {
-                this.formLeft = this.dataList[index];
+                this.formLeft = this.dataList[index] ;
             },
-            //失去焦点，发送数据
-            // blurTj() {
-            //     console.log(this.formLeft);
-            //     this.get(gettasklist,
-            //         this.formLeft,
-            //         (callSave) => {
-            //             console.log(callSave)
-            //         }
-            //     );
-            // },
+            addtasklistData(){
+                let cIs = this;
+                this.get(addtasklistData,
+                    {
+                        name:'无标题',
+                        project:'1',
+                        project_child:'2',
+                        tasktype_id:'3',
+                        expect_start_time:'YYYY-MM-DD HH:ii:ss',
+                        expect_end_time:'YYYY-MM-DD HH:ii:ss ',
+                    },
+                    () => {
+                        cIs.forEachData();
+                    }
+                );
+            },
             //删除数据
-            // remove(index) {
-            //     this.get(deletetasklist,
-            //         this.formLeft,
-            //         (callSave) => {
-            //             console.log(callSave)
-            //         }
-            //     );
-            //     this.dataList.splice(index, 1);
-            // }
+            removetasklistData(index) {
+                let cIs = this;
+                let removeData = this.dataList[index].id;
+                this.get(deletetaskData,
+                    {
+                        id:removeData
+                    },
+                    () => {
+                        cIs.forEachData();
+                    }
+                );
+            },
+            //遍历列表数据
+            forEachData() {
+                let cIs = this;
+                this.get(gettasklistData,
+                    {
+                        project_id: 1
+                    },
+                    (res) => {
+                        //任务类型状态
+                        let dataColortd = res.data.data;
+                        for(var i=0;i<dataColortd.length;i++){
+                            let colorText = res.data.data[i].status_text;
+                            if (colorText === '等待开始'){
+                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-start" }
+                            }else if(colorText === '执行中'){
+                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
+                            }else if(colorText === '暂停'){
+                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
+                            }else if(colorText === '完成'){
+                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
+                            };
+                            //判断主列表下是否含有子列表
+                            if (dataColortd[i].child != undefined ){
+                                res.data.data[i]._expanded = false;
+                            }else {
+                                res.data.data[i]._disableExpand = true;
+                            }
+                        }
+                        cIs.dataList = res.data.data;
+                    }
+                );
+            }
         }
     }
 
