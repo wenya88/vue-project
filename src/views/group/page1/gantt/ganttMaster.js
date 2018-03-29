@@ -332,7 +332,7 @@ GanttMaster.prototype.addTask = function (task, row) {
   if (task.getParent())
     task.status = task.getParent().status;
   else
-    task.status = "STATUS_ACTIVE";
+    task.status = "STATUS_FAILED"; //改变初始状态
 
   var ret = task;
   if (linkLoops || !task.setPeriod(task.start, task.end)) {

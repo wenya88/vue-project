@@ -5,7 +5,7 @@ window.onload=function(){
     $.ajax({
       type:"get",
       url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
-      async:false,
+      async:true,
       dataType:"json",
       success:function(msg){
         var data=msg.data;
@@ -60,7 +60,4 @@ window.onload=function(){
       }
     })
   })(2);
-
-
-
 }

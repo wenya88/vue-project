@@ -1,7 +1,7 @@
 <template>
   <div class="quality">
-    <Tabs value="name1" :animated="false" v-model="status">
-      <TabPane :label="fristName" name="name1">
+    <Tabs value="1" :animated="false" v-model="status" @on-click="fetchData()">
+      <TabPane :label="fristName" name="1">
         <ul class="sort">
           <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
             <Icon :type='item.icon'></Icon>{{item.label}}</li>
@@ -24,19 +24,24 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="searchInput" icon="search" placeholder="项目 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+              <Input 
+              v-model="searchInput" 
+              icon="search" 
+              placeholder="项目 / 负责人" 
+              style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"
+              @keyup.enter.native="fetchData()"></Input>
             </Col>
           </Row>
         </div>
         <div class="tab-main">
           <Row type="flex" justify="start" class="code-row-bg">
-            <Col span="8" v-for="(item,index) in fristData" :key="item.title">
+            <Col span="8" v-for="(item,index) in fristData" :key="index">
             <div class="card" @click="handleRender = true">
               <div class="card-box">
-                <img class="card-box-pic" src="../../images/logo.png"/>
+                <img class="card-box-pic" :src="item.thumb"/>
                 <div class="tips">
-                  <span class="tag">{{item.type}}</span>{{item.title}}
-                  <span class="date">上传：{{item.date}}</span>
+                  <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
+                  <span class="date">上传：{{item.create_date}}</span>
                 </div>
               </div>
               <table class="card-table">
@@ -45,16 +50,16 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25" rowspan="2">
-                    <img class="icon" src="../../images/logo.png" /> 张娇颖
+                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
                   <td class="w25">
-                    <span class="orange-span">{{item.examineTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/5</td>
+                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.surplusTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>/天</td>
                 </tr>
               </table>
             </div>
@@ -62,7 +67,7 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="secondName" name="name2">
+      <TabPane :label="secondName" name="2">
         <ul class="sort">
           <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
             <Icon :type='item.icon'></Icon>{{item.label}}</li>
@@ -91,13 +96,13 @@
         </div>
         <div class="tab-main">
           <Row type="flex" justify="start" class="code-row-bg">
-            <Col span="8" v-for="item in secondData" :key="item.title">
+            <Col span="8" v-for="(item,index) in secondData" :key="index">
             <div class="card" @click="modal1 = true">
               <div class="card-box">
-                <img class="card-box-pic" src="../../images/logo.png" />
+                <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
-                  <span class="tag">{{item.type}}</span>{{item.title}}
-                  <span class="date">上传：{{item.date}}</span>
+                  <span class="tag">{{item.type}}</span>{{item.task_name}}
+                  <span class="date">上传：{{item.create_date}}</span>
                 </div>
               </div>
               <table class="card-table">
@@ -106,14 +111,14 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25">
-                    <img class="icon" src="../../images/logo.png" /> 张娇颖
+                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
                   <td class="w25">
-                    <span class="orange-span">{{item.examineTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/5</td>
+                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
                   <td class="w25">
                     <span class="orange-span">{{item.surplusTime}}</span>/天</td>
                 </tr>
@@ -123,10 +128,10 @@
                 <tr>
                   <td colspan="3">
                     <Icon type="compose"></Icon>
-                    <span class="l-padding">{{item.message}}</span>
+                    <span class="l-padding">{{item.feedback}}</span>
                   </td>
                   <td class="w25">
-                    <span class="gray-sapn">{{item.num}}处修改</span>
+                    <span class="gray-sapn">{{item.tag_count}}处修改</span>
                   </td>
                 </tr>
               </table>
@@ -135,7 +140,7 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="thirdName" name="name3">
+      <TabPane :label="thirdName" name="3">
         <ul class="sort">
           <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
             <Icon :type='item.icon'></Icon>{{item.label}}</li>
@@ -165,12 +170,12 @@
         <div class="tab-main">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="item in thirdData" :key="item.title">
-            <div class="card" @click="modal1 = true">
+            <div class="card" @click="handleRender = true">
               <div class="card-box">
-                <img class="card-box-pic" src="../../images/logo.png" />
+                <img class="card-box-pic" :src="item.thumb"/>
                 <div class="tips">
-                  <span class="tag">{{item.type}}</span>{{item.title}}
-                  <span class="date">上传：{{item.date}}</span>
+                  <span class="tag">{{item.type}}</span>{{item.task_name}}
+                  <span class="date">上传：{{item.create_date}}</span>
                 </div>
               </div>
               <table class="card-table">
@@ -179,14 +184,14 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25" rowspan="2">
-                    <img class="icon" src="../../images/logo.png" /> 张娇颖
+                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
                   <td class="w25">
-                    <span class="orange-span">{{item.examineTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/5</td>
+                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
                   <td class="w25">
                     <span class="orange-span">{{item.surplusTime}}</span>/天</td>
                 </tr>
@@ -196,7 +201,7 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="fourthName" name="name4">
+      <TabPane :label="fourthName" name="4">
         <ul class="sort">
           <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
             <Icon :type='item.icon'></Icon>{{item.label}}</li>
@@ -283,7 +288,7 @@
       </div>
       <div slot="header">
       </div>
-      <bea-n :datl="formLeft"></bea-n>
+      <!-- <bea-n :datl="formLeft"></bea-n> -->
       <div slot="footer">
           <!--<Button type="error" size="large">ssd</Button>-->
       </div>
@@ -293,11 +298,13 @@
 
 <script>
 import beaN from './modal/beaN';
+// import axios from 'axios'
 import {fetchstagetaskData} from "../../config/env.js";
 export default {
   data() {
     return {
       num: 0,
+      date: (Date.parse(new Date()))/1000,
       showNum: null,
       param: {
         num1: 0,
@@ -309,66 +316,12 @@ export default {
       secondName: '',
       thirdName: '',
       fourthName: '',
-      status: '',
+      status: '1',
       searchInput: '',
-      fristData: [
-        {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12
-        }, {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12
-        }, {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12
-        }
-      ],
-      secondData: [
-        {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12,
-          message: '整体风格一点都不Q，麻烦请按需求来',
-          num: 15
-        }
-      ],
-      thirdData: [
-        {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12
-        }
-      ],
-      fourthData: [
-        {
-          type: '场景',
-          title: '宇宙之战杀人之机器人',
-          date: '2017-1-6 14:16',
-          examineTime: 5,
-          stage: 3,
-          surplusTime: 12,
-          message: '整体风格一点都不Q，麻烦请按需求来',
-          num: 15
-        }
-      ],
+      fristData: [],
+      secondData: [],
+      thirdData: [],
+      fourthData: [],
       sortList: [
         {
           label: '等待修改',
@@ -415,11 +368,15 @@ export default {
       }
     }
   },
+  created() {
+    this.fetchData()
+  },
   mounted() {
-    this.fristName = '内部待审(' + this.param.num1 + ')'
-    this.secondName = '内审已反馈(' + this.param.num2 + ')'
-    this.thirdName = '客户待审(' + this.param.num3 + ')'
-    this.fourthName = '客户已反馈(' + this.param.num4 + ')'
+    let _this = this
+    _this.fristName = '内部待审(' + _this.param.num1 + ')'
+    _this.secondName = '内审已反馈(' + _this.param.num2 + ')'
+    _this.thirdName = '客户待审(' + _this.param.num3 + ')'
+    _this.fourthName = '客户已反馈(' + _this.param.num4 + ')'
   },
   methods: {
     choseSort(ide) {
@@ -428,41 +385,50 @@ export default {
     cancel(){
       this.$Message.info('点击了取消');
     },
+    // get(url, params, call) {
+    //   /*获取列表信息*/
+    //   this.$http.get(url,{params: params}).then(function (res) {
+    //     call(res);
+    //   }, function (error) {
+    //   });
+    // },
     fetchData() {   //获取阶段数据
       let _this = this;
       let data = {
-        status: this.status,
-        search: this.searchInput
+        status: _this.status,
+        search: _this.searchInput
       }
-      this.post(fetchstagetaskData,data,(res) => {
-          //任务类型状态
-          let dataColortd = res.data.data;
-          for(var i=0;i<dataColortd.length;i++){
-            let colorText = res.data.data[i].status_text;
-            if (colorText === '等待开始'){
-              res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-start" }
-            }else if(colorText === '执行中'){
-              res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
-            }else if(colorText === '暂停'){
-              res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
-            }else if(colorText === '完成'){
-              res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
-            };
-            //判断主列表下是否含有子列表
-            if (dataColortd[i].child != undefined ){
-              res.data.data[i]._expanded = false;
-            }else {
-              res.data.data[i]._disableExpand = true;
-            }
+      _this.$axios.get(fetchstagetaskData+'&status='+_this.status+'&search='+_this.searchInput)
+      // _this.$axios.post(fetchstagetaskData,data)
+      .then(res => res.data)
+      .then(res => {
+        // let date = (Date.parse(new Date()))/1000;
+        // console.log(date)
+        if(res.err_code == 0) {
+          if(_this.status == '1') {
+            _this.fristData = res.data
+            _this.param.num1 = res.page.count
+          } else if(_this.status == '2') {
+            _this.secondData = res.data
+            _this.param.num2 = res.page.count
+          } else if(_this.status == '3') {
+            _this.thirdData = res.data
+            _this.param.num3 = res.page.count
+          } else if(_this.status == '4') {
+            _this.fourthData = res.data
+            _this.param.num4 = res.page.count
           }
-          cIs.dataList = res.data.data;
         }
-      );
+      })
+      // _this.get(fetchstagetaskData,data,(res) => {
+      //     console.log(res.data)
+      //   }
+      // );
     }
   }
 }
 </script>
 
 <style lang='less'>
-@import "./project.less";
+@import "./style/project.less";
 </style>

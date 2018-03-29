@@ -12,7 +12,7 @@
     mounted(){
       let oIframe = document.getElementById('show-iframe');
       let deviceWidth = document.documentElement.clientWidth-210;
-      let deviceHeight = document.documentElement.clientHeight-90;
+      let deviceHeight = document.documentElement.clientHeight-85;
       oIframe.style.width = deviceWidth + 'px';
       oIframe.style.height = deviceHeight + 'px';
     },

@@ -29,7 +29,6 @@
 
 .gdfCell, .gdfColHeader {
   border-bottom: 1px solid #eee;
-  /*border-right: 1px solid #eee;*/
 }
 
 
@@ -51,7 +50,6 @@
   padding: 0;
   width: 100%;
   overflow: hidden;
-
   background-color: #ffcccc;
 }
 
@@ -113,9 +111,12 @@
 .ganttHead1,.ganttHead2{
   height:20px;
 }
+.ganttHead1 th{
+  border-bottom:1px solid #ccc;
+}
 
 .ganttHead1 th,.ganttHead2 th{
-  border-left:1px solid white;
+  border-left:1px solid #f1f1f1;
   padding: 0;
   margin: 0;
 }
@@ -138,8 +139,13 @@
 
 .ganttButtonBar{
   position:relative;
-  padding:5px;
-  height:55px;
+  height:23px;
+  line-height:23px;
+  overflow:hidden;
+  background:#e5e5e5;
+  margin-left:5px;
+  margin-right:15px;
+  border:1px solid #ddd;
 }
 
 .ganttButtonBar .buttons, .ganttButtonBar h1 {
@@ -149,7 +155,12 @@
 
 
 .ganttButtonBar .button span.teamworkIcon{
-  font-size: 150%
+  font-size: 90%;
+  background:#fff;
+  border:1px solid #ccc;
+  float:left;
+  margin-top:1px;
+  margin-right:2px;
 }
 
 .ganttButtonSeparator{
@@ -490,7 +501,9 @@ input[readonly]{
 
 
 /*--------------------------------------OpenDiv--------------------------------------*/
-.selectDate{position:absolute;top:10px;right:10px;font-size:12px;}
+.headTool-right{float:right;font-size:12px;}
+.headTool-right span{float:left;margin-left:2px;}
+.selectDate{font-size:12px;padding:2px 0px 3px 0px;border:0px;border-left:1px solid #ccc;margin-top:0px;}
 .openDetails{border:2px solid #3bc3ad;background:#fff;position:absolute;top:0px;left:0px;z-index:9999;display:none;}
 .appRect{stroke:black;}
 .openShow{position:absolute;top:0px;left:0px;background:#ffffcf;border:1px solid #a8a87b;width:490px;z-index:9999;display:none;padding:5px 10px;cursor:pointer;}

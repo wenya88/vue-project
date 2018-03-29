@@ -23,6 +23,7 @@
     .stem-l {
         margin-left: 10rem;
     }
+
     .spaceTb {
         padding: 21px 21px;
     }
@@ -195,7 +196,14 @@
     <!-- <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer> -->
 </template>
 <script>
+    import {typeInfo} from '../../config/env.js';
+    import Icon from "iview/src/components/icon/icon";
+    import Caspanel from "iview/src/components/cascader/caspanel";
     export default {
+        components: {
+            Caspanel,
+            Icon,
+        },
         data() {
             return {
                 data5: [
@@ -251,32 +259,22 @@
                                 children: [
                                     {
                                         title: '特效',
-                                        expand: true
+                                        expand: true,
                                     },
                                     {
                                         title: '3D角色',
-                                        expand: true
+                                        expand: true,
                                     },
                                     {
                                         title: '地编',
-                                        expand: true
+                                        expand: true,
                                     },
                                     {
                                         title: '动作',
-                                        expand: true
+                                        expand: true,
                                     },
                                 ]
                             },
-                            {
-                                title: 'child 1-2',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-2-1',
-                                        expand: true
-                                    }
-                                ]
-                            }
                         ]
                     }
                 ],
@@ -504,6 +502,16 @@
             },
             accefileRemove(index) {
                 this.acfileAdd.items[index].status = 0;
+            },
+            forEach() {
+                this.get(typeInfo,
+                    {
+                        id:1
+                    },
+                    (res) => {
+
+                    }
+                );
             }
         }
     }

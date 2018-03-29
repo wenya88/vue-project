@@ -1,5 +1,4 @@
 import Main from '@/views/Main.vue';
-
 // 不作为Main组件的子页面展示的页面单独写，如下
 export const loginRouter = {
     path: '/login',
@@ -9,7 +8,6 @@ export const loginRouter = {
     },
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
-
 export const page404 = {
     path: '/*',
     name: 'error-404',
@@ -18,7 +16,6 @@ export const page404 = {
     },
     component: resolve => { require(['@/views/error-page/404.vue'], resolve); }
 };
-
 export const page403 = {
     path: '/403',
     meta: {
@@ -27,7 +24,6 @@ export const page403 = {
     name: 'error-403',
     component: resolve => { require(['@//views/error-page/403.vue'], resolve); }
 };
-
 export const page500 = {
     path: '/500',
     meta: {
@@ -36,8 +32,6 @@ export const page500 = {
     name: 'error-500',
     component: resolve => { require(['@/views/error-page/500.vue'], resolve); }
 };
-
-
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
 export const otherRouter = 
     {
@@ -230,35 +224,35 @@ export const appRouter = [
             }
         ]
     }, {
-        path: '/depot',
+        path: '/artsquare',
         icon: 'ios-folder',
-        name: 'depot',
+        name: 'artsquare',
         title: '艺术广场',
         component: Main,
         // redirect: '/depot/project',
         children: [
             {
-                path: '/depot/project',
+                path: '/artsquare/home',
                 icon: 'ios-paper-outline',
-                name: 'dProject',
+                name: 'aHome',
                 title: '艺术广场',
-                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+                component: resolve => { require(['@/views/artsquare/home.vue'], resolve); }
             }
         ]
     }, {
-        path: '/depot',
+        path: '/artwiki',
         icon: 'ios-folder',
-        name: 'depot',
+        name: 'artwiki',
         title: '艺术WIKI',
         component: Main,
         // redirect: '/depot/project',
         children: [
             {
-                path: '/depot/project',
+                path: '/artwiki/home',
                 icon: 'ios-paper-outline',
-                name: 'dProject',
+                name: 'awkHome',
                 title: '艺术WIKI',
-                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+                component: resolve => { require(['@/views/artwiki/home.vue'], resolve); }
             }
         ]
     }, {
@@ -336,7 +330,6 @@ export const appRouter = [
         ]
     }
 ];
-
 // 不显示在左侧和顶部的路由放在下面的pageRouter里
 // export const pageRouter = [
 //     {
@@ -376,7 +369,6 @@ export const appRouter = [
 //         component: require('@/pages/project/details.vue')
 //     }
 // ]
-
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
@@ -386,3 +378,5 @@ export const routers = [
     page403,
     page404
 ];
+
+

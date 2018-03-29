@@ -7,20 +7,25 @@
                     <Input v-model="datl.name"></Input>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
-                <FormItem label="任务时间">
-                    <DatePicker :value="datl.end_date" format="yyyy年MM月dd日" type="date" :options="disableTime"
+                <FormItem label="开始时间">
+                    <DatePicker :value="datl.expect_start_date" format="yyyy-MM-dd" type="date" :options="disableTime"
+                                placeholder="选择时间" style="width: 100%"></DatePicker>
+                    <!--@on-blur="blurTj()"-->
+                </FormItem>
+                <FormItem label="结束时间">
+                    <DatePicker :value="datl.expect_end_date" format="yyyy-MM-dd" type="date" :options="disableTime2"
                                 placeholder="选择时间" style="width: 100%"></DatePicker>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
                 <FormItem label="子项目">
-                    <Select v-model="model1">
-                        <Option v-for="item in cityList" :value="item.end_date"
-                                :key="item.end_date"></Option>
+                    <Select v-model="datl.project">
+                        <Option :value="datl.project"
+                                :key="datl.project"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="参与人">
                     <Tag v-for="item in fruit" :key="item" :name="item" closable
-                         @on-close="handleClose2" type="border">{{item}}
+                         @on-close="removePartici" type="border">{{item}}
                     </Tag>
                     <Dropdown trigger="click" class="dropBig">
                         <a href="javascript:void(0)">
@@ -36,6 +41,7 @@
                                 <ul class="meberli">
                                     <li
                                             v-for="(item,index) in tabs"
+                                            :key="item.tabs"
                                             :class="{active:index == num}"
                                             @click="memberList(index)">{{item}}
                                     </li>
@@ -46,11 +52,12 @@
                                     <div class="tabCon">
                                         <div
                                                 v-for='(itemCon,index) in tabContents'
+                                                :key="itemCon.tabContents"
                                                 v-show="index == num">
                                             <Card dis-hover>
                                                 <CheckboxGroup v-model="fruit">
                                                     <Checkbox :label="i"
-                                                              v-for='(i,d) in itemCon'></Checkbox>
+                                                              v-for='(i,d) in itemCon' :key="i.itemCon"></Checkbox>
                                                 </CheckboxGroup>
                                             </Card>
                                         </div>
@@ -62,9 +69,9 @@
                     </Dropdown>
                 </FormItem>
                 <FormItem label="任务类型">
-                    <Select v-model="model2">
-                        <Option v-for="item in cityList1" :value="item.value"
-                                :key="item.value"></Option>
+                    <Select v-model="datl.tasktype_name">
+                        <Option :value="datl.tasktype_name"
+                                :key="datl.tasktype_name"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="文件要求">
@@ -93,7 +100,7 @@
                     任务要求
                 </h2>
                 <FormItem label="参考图片">
-                    <div class="demo-upload-list" v-for="item in uploadList">
+                    <div class="demo-upload-list" v-for="item in uploadList" :key="item.uploadList">
                         <template v-if="item.status === 'finished'">
                             <img :src="item.url">
                             <div class="demo-upload-list-cover">
@@ -138,7 +145,7 @@
                     </Upload>
                 </FormItem>
                 <FormItem label="要求说明">
-                    <Input v-model="formLeft.head" type="textarea"
+                    <Input v-model="datl.name" type="textarea"
                            :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
@@ -155,15 +162,21 @@
 
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
+    import {gettasklistDetails} from "../../../../config/env.js";
     // import {updatetaskData} from "../../../../config/env.js";
     export default {
-        props:['datl','handleRender'],
+        props:['datl'],
         components: {
             UploadList,
         },
         data() {
             return {
                 disableTime: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                disableTime2:{
                     disabledDate(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
@@ -213,7 +226,7 @@
                     "次世代(11)"
                 ],
                 tabContents: [
-                    ['李霄霄', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅', '王二帅'],
+                    ['李霄霄', '王二帅'],
                     ['赵三娃', '陈无敌'],
                     ['哈哈', '嘻嘻洗洗'],
                     ['哇娃娃', '呜呜呜呜',]
@@ -235,36 +248,22 @@
                 imgName: '',
                 visible: false,
                 uploadList: [],
-                //下拉列表
-                cityList: [
-                    {
-                        end_date:''
-                    },
-                ],
-                model1: '',
-                cityList1: [
-                    {
-                        value: '原画组',
-                    },
-                ],
-                model2: '',
                 formLeft:{
                     name:'',
-                    end_date:'',
+                    tasktype_name:'',
+                    expect_start_date:'',
+                    expect_end_date:'',
                 },
                 dataList: []
             }
         },
         mounted() {
-            //获取数据接口
+            // 获取数据接口
             // let cIs = this;
-            // this.get(updatetaskData,
-            //     {
-            //         project_id: 2
-            //     },
-            //     (res) => {
-            //         cIs.dataList = res.data.data;
-            //         console.log(res.data.data)
+            // console.log(cIs);
+            // this.get(gettasklistDetails,
+            //     (sd) => {
+            //         cIs.dataList = sd.data.data;
             //     }
             // );
             //调用图片上传功能
@@ -329,26 +328,17 @@
                 }
                 return check;
             },
-            //失去焦点，发送数据
-            // blurTj() {
-            //     this.get(gettasklist,
-            //         this.formLeft,
-            //         (callSave) => {
-            //         }
-            //     );
-            // },
             /**
              * get请求
              */
-            get(url, params, call) {
-                /*获取列表信息*/
-                this.$http.get(url,{params: params}).then(function (res) {
-                    call(res);
-                }, function (error) {
-                    console.log("error");
-                });
-            },
-
+            // get(url, params, call) {
+            //     /*获取列表信息*/
+            //     this.$http.get(url,{params: params}).then(function (sd) {
+            //         call(sd);
+            //     }, function (error) {
+            //         console.log(error);
+            //     });
+            // },
         }
 
     }

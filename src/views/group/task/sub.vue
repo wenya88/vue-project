@@ -1,84 +1,56 @@
 <style>
-td.ivu-table-expanded-cell{
-	padding: 0 !important;
-}
-.table_border .ivu-table-wrapper{
-	border: 0;
-}
+    @import "../../../../src/styles/task/task.css";
 
+    td.ivu-table-expanded-cell {
+        padding: 0 !important;
+    }
+
+    .table_border .ivu-table-wrapper {
+        border: 0;
+    }
 </style>
 <template>
-	<div class="table_border">
-		<Content :style="{background: '#fff'}">
-			<Table :show-header="false"  :columns="columns8" :data="dataList" size="small" ref="table"></Table>
-		</Content>
-	</div>
+    <div class="table_border">
+        <Content :style="{background: '#fff'}">
+            <Table :show-header="false" :columns="columnsTask" :data="dataList" size="small" ref="table"></Table>
+        </Content>
+    </div>
 </template>
 <script>
-	export default {
-		data () {
-			return {
-                columns8: [
+    import {gettasklistData} from "../../../config/env.js";
+    import {deletetaskData} from "../../../config/env.js";
+    // import {updatetaskData} from "../../../config/env.js";
+    // import {addtasklistData} from "../../../config/env.js";
+    export default {
+        components: {
+
+        },
+        data() {
+            return {
+                columnsTask: [
                     {
                         width: 50,
                     },
                     {
-                        title: "任务名称",
+                        title: "任务",
                         key: "name",
                         align: 'center',
-                        filters: [
-                            {
-                                label: '1',
-                                value: 1,
-                            },
-                            {
-                                label: '2',
-                                value: 2
-                            }
-                        ],
-                        filterMultiple: false,
-                        filterMethod(value, row) {
-                            if (value === 1) {
-                                return row.show > 4000;
-                            } else if (value === 2) {
-                                return row.show < 4000;
-                            }
-                        }
                     },
                     {
                         title: "状态",
-                        key: "status",
+                        key: "status_text",
                         align: 'center',
-                        width: 90,
+                        sortable: true,
                     },
                     {
-                        title: "类型",
-                        key: "type",
+                        title: "子项目",
+                        key: "tasktype_name",
                         align: 'center',
-                        filters: [
-                            {
-                                label: '1',
-                                value: 1
-                            },
-                            {
-                                label: '2',
-                                value: 2
-                            }
-                        ],
-                        filterMultiple: false,
-                        filterMethod(value, row) {
-                            if (value === 1) {
-                                return row.show > 4000;
-                            } else if (value === 2) {
-                                return row.show < 4000;
-                            }
-                        },
                     },
                     {
-                        title: "参与/负责人",
+                        title: "参与人",
                         align: 'center',
                         render: function (h, params) {
-                            console.log(params.row.name)
                             return h('div', [
                                 h('Avatar', {
                                     props: {
@@ -92,8 +64,59 @@ td.ivu-table-expanded-cell{
                                         src: 'https://i.loli.net/2017/08/21/599a521472424.jpg',
                                     },
                                 }),
-                                h('span', {}, params.row.head),
+                                h('span', {}, params.row.name),
                             ])
+                        },
+                    },
+                    {
+                        title: "类型",
+                        key: "status",
+                        align: 'center',
+
+                    },
+                    {
+                        title: "实施阶段",
+                        align: 'center',
+                        width: '300px',
+                        render: function (h) {
+                            return h('Steps', {
+                                    props: {
+                                        current: 0,
+                                        status: 'wait',
+                                        size: 'small',
+                                        direction: 'horizontal'
+                                    }
+                                },
+                                [
+                                    h('Step', {
+                                        props: {
+                                            title: '1',
+
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '2',
+
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '3',
+
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '4',
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '5',
+                                        },
+                                    })
+                                ]);
                         },
                     },
                     {
@@ -101,64 +124,18 @@ td.ivu-table-expanded-cell{
                         align: 'center',
                     },
                     {
-                        title: "进度阶段",
-                        sortable: true,
+                        title: "更新时间",
                         align: 'center',
-                        width:'300px',
-                        render: function (h) {
-                            return h('Steps', [
-                                h('Step', {
-                                    props: {
-                                        direction: 'vertical',
-                                        size: 'small'
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        size: 'small',
-                                        direction: 'vertical',
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        size: 'small',
-                                        direction: 'vertical',
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        size: 'small',
-                                        direction: 'vertical',
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        size: 'small',
-                                        direction: 'vertical',
-                                    },
-                                })
-                            ]);
-                        }
+                        key: 'expect_end_date',
+                        width: '100px',
                     },
                     {
-                        title: "进度比例",
+                        title: "已用时",
                         align: 'center',
                     },
                     {
-                        title: "已进行",
+                        title: "剩余",
                         align: 'center',
-                    },
-                    {
-                        title: "最近更新",
-                        sortable: true,
-                        align: 'center',
-                    },
-                    {
-                        title: "到期日",
-                        key: "rest_time",
-                        sortable: true,
-                        align: 'center',
-                        width:'100px'
                     },
                     {
                         title: "操作",
@@ -177,58 +154,95 @@ td.ivu-table-expanded-cell{
                                         click: () => {
                                             let cIs = this;
                                             cIs.handleRender = true;
-                                            cIs.show(params.index)
+                                            cIs.show(params.index);
+                                            cIs.contShow = 0;
                                         }
                                     }
                                 }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small',
+                                        confirm: true,
+                                        title: '您确定要删除这条数据吗?',
+                                        transfer: true
+                                    },
+                                    on: {
+                                        click: () => {
+                                            let cIs = this;
+                                            cIs.removetasklistData(params.index);
+                                        }
+                                    }
+                                }, '删除')
                             ]);
                         },
                     },
                 ],
-                dataList: [
-				// {
-				// 	state:"实施中",
-				// 	name: "架构处理",
-				// 	timeremaining: "19%",
-				// 	principal: "大大",
-				// 	type: "原画",
-				// 	cellClassName:{
-				// 		state: 'demo-table-info-cell-stateT'
-				// 	},
-				// },
-				// {
-				// 	state:"实施中",
-				// 	name: "架构处理",
-				// 	timeremaining: "19%",
-				// 	principal: "大大",
-				// 	type: "原画",
-				// 	cellClassName:{
-				// 		state: 'demo-table-info-cell-state',
-				// 	}
-				// },
-				]
-			}
-		},
+                dataList: []
+            }
+        },
         mounted() {
-            this.get();
+            this.forEachData();
         },
         methods: {
             /**
              * get请求
              */
-            get: function () {
-                /*发送请求*/
-                var url = gettasklistData;
-                var params = {
-                    name: ""
-                }
-                let cIs = this;
-                this.$http.get(url, params).then(function (res) {
-                    cIs.dataList = res.data.params.list;
-                    console.log(res.data);
+            get(url, params, call) {
+                /*获取列表信息*/
+                this.$http.get(url, {params: params}).then(function (res) {
+                    call(res);
                 }, function (error) {
                 });
             },
-		},
-	}
+            //model 数据
+            // show(index) {
+            //     this.formLeft = this.dataList[index];
+            // },
+            //删除数据
+            removetasklistData(index) {
+                let cIs = this;
+                let removeData = this.dataList[index].id;
+                this.get(deletetaskData,
+                    {
+                        id: removeData
+                    },
+                    () => {
+                        cIs.forEachData();
+                    }
+                );
+            },
+            //遍历列表数据
+            forEachData() {
+                let cIs = this;
+                this.get(gettasklistData,
+                    {
+                        project_id: 1
+                    },
+                    (res) => {
+                        //任务类型状态
+                        let dataColortd = res.data.data;
+                        for (var i = 0; i < dataColortd.length; i++) {
+                            let colorText = dataColortd[i].status_text;
+                            if (colorText === '等待开始'){
+                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-start" }
+                            }else if(colorText === '执行中'){
+                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
+                            }else if(colorText === '暂停'){
+                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
+                            }else if(colorText === '完成'){
+                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
+                            };
+                            //判断主列表下是否含有子列表
+                            if (dataColortd[i].child !== undefined) {
+                                cIs.dataList = dataColortd[i].child;
+                            } else {
+
+                            }
+                        }
+                    }
+                );
+            }
+        },
+    }
 </script>

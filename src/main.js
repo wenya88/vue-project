@@ -4,10 +4,13 @@ import {router} from './router/index';
 import store from './store';
 import App from './app.vue';
 import VueResource from 'vue-resource';
+import axios from 'axios'
 import 'iview/dist/styles/iview.css';
 import './theme/dist/iview.css';
 import 'vue-event-calendar/dist/style.css';
 import vueEventCalendar from 'vue-event-calendar';
+
+Vue.prototype.$axios = axios
 Vue.use(vueEventCalendar, {locale: 'zh'})
 
 Vue.use(iView);

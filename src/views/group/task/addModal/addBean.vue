@@ -1,28 +1,26 @@
 <template>
-    <Row>
-        <Col span="16">
-        <div class="subtaskArea">
-            <Progress :percent="45" status="active" style="margin-bottom: 30px"></Progress>
-            <Button type="primary" size="small" style="margin-bottom: 10px">增加子任务</Button>
-            <Table border :columns="columnsTask" :data="dataList"></Table>
-        </div>
-        </Col>
-        <Col span="7">
-        <div>
+    <div>
+        <Row>
+            <Col span="7">
             <Form label-position="left" :label-width="80">
                 <FormItem label="任务名称">
                     <Input v-model="datl.name"></Input>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
-                <FormItem label="任务时间">
-                    <DatePicker :value="datl.expect_start_date" format="yyyy年MM月dd日" type="date" :options="disableTime"
+                <FormItem label="开始时间">
+                    <DatePicker :value="datl.expect_start_date" format="yyyy-MM-dd" type="date" :options="disableTime"
+                                placeholder="选择时间" style="width: 100%"></DatePicker>
+                    <!--@on-blur="blurTj()"-->
+                </FormItem>
+                <FormItem label="结束时间">
+                    <DatePicker :value="datl.expect_end_date" format="yyyy-MM-dd" type="date" :options="disableTime2"
                                 placeholder="选择时间" style="width: 100%"></DatePicker>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
                 <FormItem label="子项目">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
+                    <Select v-model="datl.project">
+                        <Option :value="datl.project"
+                                :key="datl.project"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="参与人">
@@ -152,15 +150,17 @@
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
             </Form>
-        </div>
-        </Col>
-    </Row>
+            </Col>
+            <Col span="16">
+            </Col>
+        </Row>
+    </div>
 </template>
 
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
-    import {gettasklistData} from "../../../../config/env.js";
-    import {deletetaskData} from "../../../../config/env.js";
+    import {gettasklistDetails} from "../../../../config/env.js";
+    // import {updatetaskData} from "../../../../config/env.js";
     export default {
         props:['datl'],
         components: {
@@ -173,10 +173,15 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                columnsTask: [
+                disableTime2:{
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                subtaskCum: [
                     {
                         title: '子任务名称',
-                        key: 'name',
+                        key: 'subtaskName',
                         align: 'center',
                     },
                     {
@@ -218,7 +223,7 @@
                     "次世代(11)"
                 ],
                 tabContents: [
-                    ['李霄霄', '王二帅', '王二帅', '王二帅', '王二帅'],
+                    ['李霄霄', '王二帅'],
                     ['赵三娃', '陈无敌'],
                     ['哈哈', '嘻嘻洗洗'],
                     ['哇娃娃', '呜呜呜呜',]
@@ -240,33 +245,24 @@
                 imgName: '',
                 visible: false,
                 uploadList: [],
-                //下拉列表
-                cityList: [
-                    {
-                        value: '原画组',
-                    },
-                    {
-                        value: '地编组',
-                    },
-                    {
-                        value: '原画组',
-                    },
-                ],
-                model1: '',
-                cityList1: [
-                    {
-                        value: '原画组',
-                    },
-                ],
-                model2: '',
-                formLeft: {
-                    name: '',
+                formLeft:{
+                    name:'',
+                    tasktype_name:'',
+                    expect_start_date:'',
+                    expect_end_date:'',
                 },
                 dataList: []
             }
         },
         mounted() {
-            this.forEachData();
+            // 获取数据接口
+            // let cIs = this;
+            // console.log(cIs);
+            // this.get(gettasklistDetails,
+            //     (sd) => {
+            //         cIs.dataList = sd.data.data;
+            //     }
+            // );
             //调用图片上传功能
             this.uploadList = this.$refs.upload.fileList;
         },
@@ -332,44 +328,14 @@
             /**
              * get请求
              */
-            get(url, params, call) {
-                /*获取列表信息*/
-                this.$http.get(url, {params: params}).then(function (res) {
-                    call(res);
-                }, function (error) {
-                });
-            },
-            //遍历列表数据
-            forEachData() {
-                let cIs = this;
-                this.get(gettasklistData,
-                    {
-                        project_id: 1
-                    },
-                    (res) => {
-                        //任务类型状态
-                        let dataColortd = res.data.data;
-                        for (var i = 0; i < dataColortd.length; i++) {
-                            let colorText = dataColortd[i].status_text;
-                            if (colorText === '等待开始'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-start" }
-                            }else if(colorText === '执行中'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
-                            }else if(colorText === '暂停'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
-                            }else if(colorText === '完成'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
-                            };
-                            //判断主列表下是否含有子列表
-                            if (dataColortd[i].child !== undefined) {
-                                cIs.dataList = dataColortd[i].child;
-                            } else {
-
-                            }
-                        }
-                    }
-                );
-            }
+            // get(url, params, call) {
+            //     /*获取列表信息*/
+            //     this.$http.get(url,{params: params}).then(function (sd) {
+            //         call(sd);
+            //     }, function (error) {
+            //         console.log(error);
+            //     });
+            // },
         }
 
     }

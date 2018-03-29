@@ -589,12 +589,12 @@ Ganttalendar.prototype.drawTask = function (task) {
 
   function _createTaskSVG(task, dimensions) {
     var svg = self.svg;
-    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, 20, {class:"taskBox taskBoxSVG", taskid:task.id});
+    var taskSvg = svg.svg(self.tasksGroup, dimensions.x, dimensions.y, dimensions.width, 14, {class:"taskBox taskBoxSVG", taskid:task.id});
 
     //svg.title(taskSvg, task.name);
     //external box
     var lw=100+"%";
-    var layout = svg.rect(taskSvg, 0, 5, lw, "100%", {class:"taskLayout", rx:"0", ry:"0"});
+    var layout = svg.rect(taskSvg, 0, 8, lw, "100%", {class:"taskLayout", rx:"0", ry:"0"});
 
     if (task.hasExternalDep) {
       layout.style.fill = "url(#extDep)";
@@ -617,24 +617,24 @@ Ganttalendar.prototype.drawTask = function (task) {
     //status
     if (dimensions.width > 15){
 
-      (function showPoint(num){
+      // (function showPoint(num){
         var gdata="";
         // 进度条上面的显示
-        $.ajax({
-          type:"get",
-          url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
-          async:false,
-          dataType:"json",
-          success:function(msg){
-            if(msg.err_code==0){
-                gdata=msg.data;
-            }
-          },
-          error:function(){
-            console.log("请求失败！")
-          }
-
-        });
+        // $.ajax({
+        //   type:"get",
+        //   url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
+        //   async:false,
+        //   dataType:"json",
+        //   success:function(msg){
+        //     if(msg.err_code==0){
+        //         gdata=msg.data;
+        //     }
+        //   },
+        //   error:function(){
+        //     console.log("请求失败！")
+        //   }
+        //
+        // });
 
         //进度条
         var n=20+"%";
@@ -645,45 +645,45 @@ Ganttalendar.prototype.drawTask = function (task) {
         //判断图标的颜色，如果为黄，则进度条为灰色
         if(task.status=="STATUS_SUSPENDED"){
           layout.style.fill = "url(#taskAsh)";//灰色背景
-          svg.rect(taskSvg, 0, 5, n, 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
-          for(var ss=0;ss<gdata.length;ss++){
-            if($("#tasksGroup svg").index()==ss){
-              svg.text(taskSvg,an/2.5+"%", 21, gdata[ss].progress+"/"+gdata[ss].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"});
-            }
-          }
+          svg.rect(taskSvg, 0, 8, n, 14, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//黄色标记背景宽度
+          // for(var ss=0;ss<gdata.length;ss++){
+          //   if($("#tasksGroup svg").index()==ss){
+          //     svg.text(taskSvg,an/2.5+"%", 21, gdata[ss].progress+"/"+gdata[ss].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"});
+          //   }
+          // }
           //svg.rect(taskSvg, -30, 3, 25, 25, {stroke:1, rx:"0", ry:"0", status:"STATUS_RED", class:"taskStatusSVG SVG_RED"});
           //svg.image(taskSvg, -30, 5, 25, 25, "res/link-icon.png",{class:"SVG_RED"})//添加图片
         }
 
         if(task.status=="STATUS_ACTIVE"){
-          for(var sa=0;sa<gdata.length;sa++){
-            if($("#tasksGroup svg").index()==sa){
-              svg.text(taskSvg, "47%", 21, gdata[sa].progress+"/"+gdata[sa].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-            }
-          }
+          // for(var sa=0;sa<gdata.length;sa++){
+          //   if($("#tasksGroup svg").index()==sa){
+          //     svg.text(taskSvg, "47%", 21, gdata[sa].progress+"/"+gdata[sa].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+          //   }
+          // }
         }
 
         if(task.status=="STATUS_FAILED"){
-          svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//灰色状态
-          for(var sf=0;sf<gdata.length;sf++){
-            if($("#tasksGroup svg").index()==sf){
-              svg.text(taskSvg, "42%", 21, gdata[sf].progress+"/"+gdata[sf].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-            }
-          }
+          svg.rect(taskSvg, 0, 8, "100%", 14, {stroke:1, rx:"0", ry:"0", status:task.status, class:"taskStatusSVG"});//灰色状态
+          // for(var sf=0;sf<gdata.length;sf++){
+          //   if($("#tasksGroup svg").index()==sf){
+          //     svg.text(taskSvg, "42%", 21, gdata[sf].progress+"/"+gdata[sf].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+          //   }
+          // }
         }
 
         if(task.status=="STATUS_DONE"){
-          svg.rect(taskSvg, 0, 5, "100%", 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_SUSPENDED", class:"taskStatusSVG"});
-          for(var sd=0;sd<gdata.length;sd++){
-            if($("#tasksGroup svg").index()==sd){
-             svg.text(taskSvg, "47%", 21, gdata[sd].progress+"/"+gdata[sd].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
-            }
-          }
-          svg.rect(taskSvg, "101%", 5, 25, 20, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
+          svg.rect(taskSvg, 0, 8, "100%", 14, {stroke:1, rx:"0", ry:"0", status:"STATUS_SUSPENDED", class:"taskStatusSVG"});
+          // for(var sd=0;sd<gdata.length;sd++){
+          //   if($("#tasksGroup svg").index()==sd){
+          //    svg.text(taskSvg, "47%", 21, gdata[sd].progress+"/"+gdata[sd].stage_count, {class:"taskLabelSVG", transform:"translate(2,-1)"}); //追加文字
+          //   }
+          // }
+          svg.rect(taskSvg, "101%", 8, 25, 14, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
           svg.text(taskSvg,"101.5%", 21, "+"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
         }
 
-      })(2);
+      // })(2);
 
 	}
 
@@ -737,7 +737,7 @@ Ganttalendar.prototype.drawTask = function (task) {
             var addinptVal=$(this).val();
             $(".peopleInt").val(addinptVal);
             $(".thispeo").val(addinptVal);
-            $(this).parents("div").hide();
+            $(".addpeople").hide();
           }else{
             var addinptVal=$(this).val();
             $(".peopleInt").val($(".peopleInt").val().replace(addinptVal,''));
@@ -754,12 +754,10 @@ Ganttalendar.prototype.drawTask = function (task) {
         e.stopPropagation();
       });
 
-
       $(document).click(function(){
         $(".addpeople").hide();
         $(".gdfper input").removeClass("thispeo");
       });
-
 
 
     	// $(".openShow").click(function(e){
@@ -790,8 +788,10 @@ Ganttalendar.prototype.drawTask = function (task) {
     //svg.text(taskSvg, "100%", 18, task.name, {class:"taskLabelSVG", transform:"translate(8,-8)"});
 
     //link tool
-    svg.circle(taskSvg, "0", 14, 4, {class:"taskLinkStartSVG linkHandleSVG", transform:"translate(0)"});
-    svg.circle(taskSvg, "100%", 14, 4, {class:"taskLinkEndSVG linkHandleSVG", transform:"translate(0)"});
+    if (task.level>0) {
+      svg.circle(taskSvg, "0", 14, 4, {class: "taskLinkStartSVG linkHandleSVG", transform: "translate(0)"});
+      svg.circle(taskSvg, "100%", 14, 4, {class: "taskLinkEndSVG linkHandleSVG", transform: "translate(0)"});
+    }
     return taskSvg
   }
 

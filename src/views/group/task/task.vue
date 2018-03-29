@@ -25,14 +25,14 @@
                                     <bea-n v-if="contShow === 0" :datl="formLeft"></bea-n>
                                 </TabPane>
                                 <TabPane label="子任务">
-                                    <sub-task v-if="contShow === 1"></sub-task>
+                                    <sub-task v-if="contShow === 1" :datl="formLeft"></sub-task>
                                 </TabPane>
                                 <TabPane label="日志">
-                                    <jou-rnal v-if="contShow === 2"></jou-rnal>
+                                    <jou-rnal v-if="contShow === 2" :datl="formLeft"></jou-rnal>
                                 </TabPane>
                             </Tabs>
                             <div slot="footer">
-                                <!--<Button type="error" size="large">ssd</Button>-->
+                                <!--<Button type="error" size="large"></Button>-->
                             </div>
                         </Modal>
                         <Modal :styles="{top: '30px'}" v-model="excelModal" width="1300">
@@ -40,34 +40,66 @@
                             <div><h2 style="color: #2b85e4;">批量导入任务</h2></div>
                             <div style="height: 500px">
                                 <div style="margin-top: 30px">
-                                <Steps :current="1">
-                                    <Step title="上传任务excel文件"></Step>
-                                    <Step title="匹配任务字段"></Step>
-                                    <Step title="核对确认数据"></Step>
-                                    <Step title="批量导入完成"></Step>
-                                </Steps>
+                                    <Steps :current="1">
+                                        <Step title="上传任务excel文件"></Step>
+                                        <Step title="匹配任务字段"></Step>
+                                        <Step title="核对确认数据"></Step>
+                                        <Step title="批量导入完成"></Step>
+                                    </Steps>
                                 </div>
                                 <div style="margin: 20px 0 20px 0;color: #2b85e4;"><h3>请上传任务excel文件</h3></div>
                                 <div>
                                     <Row>
                                         <Col span="12">
                                         <Upload action="//jsonplaceholder.typicode.com/posts/">
-                                        <Input v-model="value13" placeholder="限xlsx / xls格式" style="width: 800px;">
-                                            <Button type="ghost" slot="append"  icon="ios-cloud-upload-outline" style="background: #2b85e4;color: #fff;">上传文件</Button>
-                                        </Input>
+                                            <Input v-model="value13" placeholder="限xlsx / xls格式" style="width: 800px;">
+                                            <Button type="ghost" slot="append" icon="ios-cloud-upload-outline"
+                                                    style="background: #2b85e4;color: #fff;">上传文件
+                                            </Button>
+                                            </Input>
                                         </Upload>
                                         </Col>
                                     </Row>
                                 </div>
-                                <h3 style="margin: 20px 0 20px 0">按照系统标准模板编写，批量导入更便捷 <span style="color: #2b85e4;">下载参考模版</span></h3>
+                                <h3 style="margin: 20px 0 20px 0">按照系统标准模板编写，批量导入更便捷 <span style="color: #2b85e4;">下载参考模版</span>
+                                </h3>
                                 <Button type="primary" style="position: absolute;bottom: 50px;width: 200px">下一步</Button>
                             </div>
                             <div slot="footer"></div>
                         </Modal>
+                        <Modal :styles="{top: '30px'}" v-model="addModal" width="1300" @on-cancel="addtasklistData">
+                            <div class="icon-header">
+                                <Row :gutter="40">
+                                    <Col span="4">
+                                    <Icon type="ios-star-outline" size="23"></Icon>
+                                    </Col>
+                                    <Col span="4">
+                                    <Icon type="ios-trash-outline" size="23"></Icon>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div slot="header">
+                            </div>
+                            <Tabs type="card" @on-click="clickFun2">
+                                <TabPane label="基本管理">
+                                    <add-bean v-if="contShow2 === 0" :datl="formLeft"></add-bean>
+                                </TabPane>
+                                <TabPane label="子任务">
+                                    <addsub-task v-if="contShow2 === 1" :datl="formLeft"></addsub-task>
+                                </TabPane>
+                            </Tabs>
+                            <div slot="footer">
+                                <!--<Button type="error" size="large"></Button>-->
+                            </div>
+                        </Modal>
                         <div style="width: 70%">
                             <Row type="flex" justify="start" class="code-row-bg">
-                                <Col span="2"> <Button type="primary" class="btton-right" @click="excelModal = true">Excle导入</Button></Col>
-                                <Col span="2"> <Button type="success" @click="addtasklistData()">新增任务</Button></Col>
+                                <Col span="2">
+                                <Button type="primary" class="btton-right" @click="excelModal = true">Excle导入</Button>
+                                </Col>
+                                <Col span="2">
+                                <Button type="success" @click="addModal = true,addtasklistData()">新增任务</Button>
+                                </Col>
                             </Row>
                         </div>
                         <Table :columns="columnsTask" :data="dataList" size="small" ref="table"></Table>
@@ -80,17 +112,25 @@
 <script>
     import sub from './sub.vue';
     import Icon from "iview/src/components/icon/icon";
-    import {gettasklistData} from "../../../config/env.js";
-    import {deletetaskData} from "../../../config/env.js";
-    import {addtasklistData} from "../../../config/env.js";
+    import {
+        gettasklistData,
+        deletetaskData,
+        updatetaskData,
+        addtasklistData,
+        cateList
+    } from "../../../config/env.js";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import beaN from './modalContainers/beaN';
     import subTask from './modalContainers/subTask';
-    import jouRnal from './modalContainers/jouRnal'
+    import jouRnal from './modalContainers/jouRnal';
+    import addBean from './addModal/addBean';
+    import addsubTask from './addModal/addsubTask';
     import Layout from "iview/src/components/layout/layout";
 
     export default {
         components: {
+            addBean,
+            addsubTask,
             Layout,
             beaN,
             subTask,
@@ -102,13 +142,21 @@
         data() {
             return {
                 contShow: '',
+                contShow2: '',
                 value13: '',
                 formLeft: {
+                    id: '',
                     name: '',
+                    project: '',
+                    project_child: '',
+                    tasktype_id: '',
+                    expect_start_time: '',
+                    expect_end_time: '',
                 },
                 //弹出层
                 handleRender: false,
                 excelModal: false,
+                addModal: false,
                 columnsTask: [
                     {
                         type: 'expand',
@@ -117,7 +165,6 @@
                             return h(sub, {
                                 props: {
                                     row: params.row,
-
                                 },
                             })
                         }
@@ -129,20 +176,13 @@
                     },
                     {
                         title: "状态",
-                        key: "status",
+                        key: "status_text",
                         align: 'center',
-                        width: 90,
                         sortable: true,
                     },
                     {
-                        title: "类型",
-                        key: "status_text",
-                        align: 'center',
-
-                    },
-                    {
                         title: "子项目",
-                        key: "project",
+                        key: "tasktype_name",
                         align: 'center',
                     },
                     {
@@ -167,8 +207,10 @@
                         },
                     },
                     {
-                        title: "任务文件",
+                        title: "类型",
+                        key: "status",
                         align: 'center',
+
                     },
                     {
                         title: "实施阶段",
@@ -176,49 +218,53 @@
                         width: '300px',
                         render: function (h) {
                             return h('Steps', {
-                                props: {
-                                    current: 0,
-                                    status:'wait',
-                                    size: 'small',
-                                    direction:'horizontal'
-                                }
-                            },
-                            [
-                                h('Step', {
                                     props: {
-                                        title: '1',
+                                        current: 1,
+                                        key: 'state',
+                                        status: 'wait',
+                                        size: 'small',
+                                        direction: 'horizontal'
+                                    }
+                                },
+                                [
+                                    h('Step', {
+                                        props: {
+                                            title: '1',
 
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        title: '2',
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '2',
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '3',
 
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        title: '3',
-
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        title: '4',
-                                    },
-                                }),
-                                h('Step', {
-                                    props: {
-                                        title: '5',
-                                    },
-                                })
-                            ]);
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '4',
+                                        },
+                                    }),
+                                    h('Step', {
+                                        props: {
+                                            title: '5',
+                                        },
+                                    })
+                                ]);
+                        },
                     },
+                    {
+                        title: "任务文件",
+                        align: 'center',
                     },
                     {
                         title: "更新时间",
                         align: 'center',
-                        key:'end_date',
+                        key: 'expect_end_date',
                         width: '100px',
                     },
                     {
@@ -229,11 +275,10 @@
                         title: "剩余",
                         align: 'center',
                     },
-
                     {
                         title: "操作",
                         align: 'center',
-                        width:'200px',
+                        width: '200px',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -257,9 +302,9 @@
                                     props: {
                                         type: 'error',
                                         size: 'small',
-                                            confirm: true,
-                                            title: '您确定要删除这条数据吗?',
-                                            transfer: true
+                                        confirm: true,
+                                        title: '您确定要删除这条数据吗?',
+                                        transfer: true
                                     },
                                     on: {
                                         click: () => {
@@ -279,26 +324,46 @@
             this.forEachData();
         },
         methods: {
-            cancel(){
-                this.$Message.info('点击了取消');
+            //当modal关闭时，执行编辑保存方法
+            cancel() {
+                let cIs = this;
+                let dateForm = {}, detailId = cIs.formLeft.id;
+                dateForm.id = detailId;
+                dateForm.father = cIs.formLeft.father ? cIs.formLeft.father : 0;
+                dateForm.name = cIs.formLeft.name;
+                dateForm.project = cIs.formLeft.project;
+                // dateForm.project_child = cIs.formLeft.project_child;
+                dateForm.tasktype_id = cIs.formLeft.tasktype_id;
+                dateForm.expect_start_time = cIs.formLeft.expect_start_time;
+                dateForm.expect_end_time = cIs.formLeft.expect_end_time;
+                cIs.forEachData();
+                this.get(updatetaskData, dateForm,
+                    () => {
+                        cIs.forEachData();
+                    }
+                );
+                this.$Message.info('关闭并保存');
             },
-            clickFun(r){
+            clickFun(r) {
                 this.contShow = r;
-                },
+            },
+            clickFun2(s) {
+                this.contShow2 = s;
+            },
             exportData(type) {
                 if (type === 1) {
                     this.$refs.table.exportCsv({
-                        filename: 'The original data'
+                        filename: '原始数据的处理'
                     });
                 } else if (type === 2) {
                     this.$refs.table.exportCsv({
-                        filename: 'Sorting and filtering data',
+                        filename: '排序和过滤数据',
                         original: false
                     });
                 } else if (type === 3) {
                     this.$refs.table.exportCsv({
-                        filename: 'Custom data',
-                        columns: this.columns8.filter((col, sub) => sub < 4),
+                        filename: '自定义数据',
+                        columns: this.columnsTask.filter((col, sub) => sub < 4),
                         data: this.dataList.filter((data, sub) => sub < 4)
                     });
                 }
@@ -308,26 +373,30 @@
              */
             get(url, params, call) {
                 /*获取列表信息*/
-                this.$http.get(url,{params: params}).then(function (res) {
+                this.$http.get(url, {params: params}).then(function (res) {
                     call(res);
                 }, function (error) {
+                    this.$Message.error('数据加载出错了！请刷新浏览器');
                 });
             },
             //model 数据
             show(index) {
-                this.formLeft = this.dataList[index] ;
+                this.formLeft = this.dataList[index];
+                console.log(this.formLeft);
             },
-            addtasklistData(){
+            // 新增列表
+            addtasklistData() {
                 let cIs = this;
+                let dateForm = {};
+                dateForm.father = cIs.formLeft.father ? cIs.formLeft.father : 0;
+                dateForm.name = cIs.formLeft.name;
+                dateForm.project = cIs.formLeft.project;
+                dateForm.project_child = cIs.formLeft.project_child;
+                dateForm.tasktype_id = cIs.formLeft.tasktype_id;
+                dateForm.expect_start_time = cIs.formLeft.expect_start_time;
+                dateForm.expect_end_time = cIs.formLeft.expect_end_time;
+                cIs.forEachData();
                 this.get(addtasklistData,
-                    {
-                        name:'无标题',
-                        project:'1',
-                        project_child:'2',
-                        tasktype_id:'3',
-                        expect_start_time:'YYYY-MM-DD HH:ii:ss',
-                        expect_end_time:'YYYY-MM-DD HH:ii:ss ',
-                    },
                     () => {
                         cIs.forEachData();
                     }
@@ -339,7 +408,7 @@
                 let removeData = this.dataList[index].id;
                 this.get(deletetaskData,
                     {
-                        id:removeData
+                        id: removeData
                     },
                     () => {
                         cIs.forEachData();
@@ -356,27 +425,49 @@
                     (res) => {
                         //任务类型状态
                         let dataColortd = res.data.data;
-                        for(var i=0;i<dataColortd.length;i++){
-                            let colorText = res.data.data[i].status_text;
-                            if (colorText === '等待开始'){
-                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-start" }
-                            }else if(colorText === '执行中'){
-                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
-                            }else if(colorText === '暂停'){
-                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
-                            }else if(colorText === '完成'){
-                                res.data.data[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
-                            };
+                        for (var i = 0; i < dataColortd.length; i++) {
+                            let colorText = dataColortd[i].status_text;
+                            if (colorText === '等待开始') {
+                                dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-start"}
+                            } else if (colorText === '执行中') {
+                                dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-execution"}
+                            } else if (colorText === '暂停') {
+                                dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-pause"}
+                            } else if (colorText === '完成') {
+                                dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-complete"}
+                            }
+                            ;
                             //判断主列表下是否含有子列表
-                            if (dataColortd[i].child != undefined ){
-                                res.data.data[i]._expanded = false;
-                            }else {
-                                res.data.data[i]._disableExpand = true;
+                            if (dataColortd[i].child != undefined) {
+                                dataColortd[i]._expanded = false;
+                            } else {
+                                dataColortd[i]._disableExpand = true;
                             }
                         }
-                        cIs.dataList = res.data.data;
+                        cIs.dataList = dataColortd;
                     }
                 );
+                //子项目类型
+                // this.get(cateList,
+                //     {
+                //         company_id: 1
+                //     },
+                //     (res) => {
+                //         //任务类型
+                //         this.tasktype ={};
+                //         let cateli = res.data.data;
+                //         for (var i = 0; i < cateli.length; i++) {
+                //             let cateid = cateli[i].tasktype;
+                //             console.log(cateid);
+                //             if(cateli[i].tasktype != undefined){
+                //                 console.log(1);
+                //             }else{
+                //                 console.log(2);
+                //             }
+                //         }
+                //         cIs.dataList = cateli;
+                //     }
+                // );
             }
         }
     }
