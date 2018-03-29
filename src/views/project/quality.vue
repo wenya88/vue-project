@@ -23,7 +23,7 @@
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
-            <Col span="12">
+            <Col span="10">
               <Input 
               v-model="searchInput" 
               icon="search" 
@@ -38,6 +38,8 @@
             <Col span="8" v-for="(item,index) in fristData" :key="index">
             <div class="card" @click="handleRender = true">
               <div class="card-box">
+                <!-- <Icon type="heart" color="red" v-if=""></Icon>
+                <Icon type="pause" v-else-if=""></Icon> -->
                 <img class="card-box-pic" :src="item.thumb"/>
                 <div class="tips">
                   <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
@@ -50,7 +52,7 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25" rowspan="2">
-                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
+                    <img class="icon" src="../../images/leader.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
@@ -297,7 +299,7 @@
 </template>
 
 <script>
-import beaN from './modal/beaN';
+import beaN from './components/beaN';
 // import axios from 'axios'
 import {fetchstagetaskData} from "../../config/env.js";
 export default {
@@ -370,6 +372,7 @@ export default {
   },
   created() {
     this.fetchData()
+    console.log(this.param.num1)
   },
   mounted() {
     let _this = this
@@ -381,6 +384,7 @@ export default {
   methods: {
     choseSort(ide) {
       this.num = ide
+      this.fetchData()
     },
     cancel(){
       this.$Message.info('点击了取消');
@@ -399,7 +403,12 @@ export default {
         search: _this.searchInput
       }
       _this.$axios.get(fetchstagetaskData+'&status='+_this.status+'&search='+_this.searchInput)
-      // _this.$axios.post(fetchstagetaskData,data)
+      // _this.$axios.post('/task/stage-page',data)
+      // _this.$axios({
+      //     method: 'post',
+      //     url: '/task/stage-page',
+      //     data: data
+      //   })
       .then(res => res.data)
       .then(res => {
         // let date = (Date.parse(new Date()))/1000;
@@ -407,15 +416,19 @@ export default {
         if(res.err_code == 0) {
           if(_this.status == '1') {
             _this.fristData = res.data
+            _this.searchInput = ''
             _this.param.num1 = res.page.count
           } else if(_this.status == '2') {
             _this.secondData = res.data
+            _this.searchInput = ''
             _this.param.num2 = res.page.count
           } else if(_this.status == '3') {
             _this.thirdData = res.data
+            _this.searchInput = ''
             _this.param.num3 = res.page.count
           } else if(_this.status == '4') {
             _this.fourthData = res.data
+            _this.searchInput = ''
             _this.param.num4 = res.page.count
           }
         }

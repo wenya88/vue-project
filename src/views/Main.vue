@@ -113,16 +113,18 @@ export default {
     mounted() {
         this.init();
         this.updateMenu();
+        let currentRoute = location.hash
         let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
         this.menuList.forEach((item) => {
             if(routeName === item.name) {
                 this.subMenu = item.children
                 let menuArr = item.children
                 console.log(routeName,this.subMenu)
-                this.$router.push(menuArr[0].path)
+                this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
             }
         })
         this.activePath = this.$route.path
+        console.log(this.activePath)
     },
     computed: {
         menuList() {

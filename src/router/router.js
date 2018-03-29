@@ -83,6 +83,12 @@ export const appRouter = [
                 title: '质量管理',
                 component: resolve => { require(['@/views/project/quality.vue'], resolve); }
             }, {
+                path: '/project/pigeonhole',
+                icon: 'ios-paper-outline',
+                name: 'pigeonhole',
+                title: '归档文件',
+                component: resolve => { require(['@/views/project/pigeonhole.vue'], resolve); }
+            }, {
                 path: '/project/schedule',
                 icon: 'ios-paper-outline',
                 name: 'schedule',

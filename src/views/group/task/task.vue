@@ -7,7 +7,7 @@
             <Layout>
                 <Layout>
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-                        <Modal :styles="{top: '30px'}" v-model="handleRender" width="1300" @on-cancel="cancel">
+                        <Modal :styles="{top: '30px'}" v-model="handleRender" width="1300" @on-cancel="cancelisM">
                             <div class="icon-header">
                                 <Row :gutter="40">
                                     <Col span="4">
@@ -67,7 +67,7 @@
                             </div>
                             <div slot="footer"></div>
                         </Modal>
-                        <Modal :styles="{top: '30px'}" v-model="addModal" width="1300" @on-cancel="addtasklistData">
+                        <Modal :styles="{top: '30px'}" v-model="addModal" width="1300" @on-cancel="addtaskList">
                             <div class="icon-header">
                                 <Row :gutter="40">
                                     <Col span="4">
@@ -82,10 +82,10 @@
                             </div>
                             <Tabs type="card" @on-click="clickFun2">
                                 <TabPane label="基本管理">
-                                    <add-bean v-if="contShow2 === 0" :datl="formLeft"></add-bean>
+                                    <add-bean v-if="contShow2 === 0" :admoda="formLeft"></add-bean>
                                 </TabPane>
                                 <TabPane label="子任务">
-                                    <addsub-task v-if="contShow2 === 1" :datl="formLeft"></addsub-task>
+                                    <addsub-task v-if="contShow2 === 1" :admoda="formLeft"></addsub-task>
                                 </TabPane>
                             </Tabs>
                             <div slot="footer">
@@ -98,11 +98,11 @@
                                 <Button type="primary" class="btton-right" @click="excelModal = true">Excle导入</Button>
                                 </Col>
                                 <Col span="2">
-                                <Button type="success" @click="addModal = true,addtasklistData()">新增任务</Button>
+                                <Button type="success" @click="addModal = true,contShow2 = 0">新增任务</Button>
                                 </Col>
                             </Row>
                         </div>
-                        <Table :columns="columnsTask" :data="dataList" size="small" ref="table"></Table>
+                        <Table :columns="columnsTask" :ellipsis="true" :data="dataList" size="small" ref="table"></Table>
                     </Content>
                 </Layout>
             </Layout>
@@ -152,6 +152,7 @@
                     tasktype_id: '',
                     expect_start_time: '',
                     expect_end_time: '',
+                    run_uname:'',
                 },
                 //弹出层
                 handleRender: false,
@@ -173,49 +174,56 @@
                         title: "任务",
                         key: "name",
                         align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "状态",
                         key: "status_text",
-                        align: 'center',
                         sortable: true,
+                        align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "子项目",
                         key: "tasktype_name",
                         align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "参与人",
                         align: 'center',
-                        render: function (h, params) {
-                            return h('div', [
-                                h('Avatar', {
-                                    props: {
-                                        shape: 'circle',
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    attrs: {
-                                        src: 'https://i.loli.net/2017/08/21/599a521472424.jpg',
-                                    },
-                                }),
-                                h('span', {}, params.row.name),
-                            ])
-                        },
+                        width: '100px',
+                        key: 'run_uname',
+                        ellipsis:true,
+                        // render: function (h, params) {
+                        //     return h('div', [
+                        //         h('Avatar', {
+                        //             props: {
+                        //                 // shape: 'circle',
+                        //                 size: 'small',
+                        //             },
+                        //             style: {
+                        //                 marginRight: '5px'
+                        //             },
+                        //             attrs: {
+                        //                 src: 'https://i.loli.net/2017/08/21/599a521472424.jpg',
+                        //             },
+                        //         }),
+                        //         h('span', {}, params.row.name),
+                        //     ])
+                        // },
                     },
                     {
                         title: "类型",
-                        key: "status",
+                        // key: "status",
                         align: 'center',
-
+                        ellipsis:true,
                     },
                     {
                         title: "实施阶段",
                         align: 'center',
                         width: '300px',
+                        ellipsis:true,
                         render: function (h) {
                             return h('Steps', {
                                     props: {
@@ -260,20 +268,24 @@
                     {
                         title: "任务文件",
                         align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "更新时间",
                         align: 'center',
                         key: 'expect_end_date',
                         width: '100px',
+                        ellipsis:true,
                     },
                     {
                         title: "已用时",
                         align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "剩余",
                         align: 'center',
+                        ellipsis:true,
                     },
                     {
                         title: "操作",
@@ -325,7 +337,7 @@
         },
         methods: {
             //当modal关闭时，执行编辑保存方法
-            cancel() {
+            cancelisM() {
                 let cIs = this;
                 let dateForm = {}, detailId = cIs.formLeft.id;
                 dateForm.id = detailId;
@@ -385,20 +397,22 @@
                 console.log(this.formLeft);
             },
             // 新增列表
-            addtasklistData() {
+            addtaskList() {
                 let cIs = this;
                 let dateForm = {};
                 dateForm.father = cIs.formLeft.father ? cIs.formLeft.father : 0;
                 dateForm.name = cIs.formLeft.name;
-                dateForm.project = cIs.formLeft.project;
-                dateForm.project_child = cIs.formLeft.project_child;
+                dateForm.project = '1';
+                dateForm.project_child = '1';
                 dateForm.tasktype_id = cIs.formLeft.tasktype_id;
-                dateForm.expect_start_time = cIs.formLeft.expect_start_time;
-                dateForm.expect_end_time = cIs.formLeft.expect_end_time;
+                dateForm.expect_start_time = '2018-3-29';
+                dateForm.expect_end_time ='2018-3-30';
+                dateForm.description = cIs.formLeft.description;
                 cIs.forEachData();
-                this.get(addtasklistData,
+                this.get(addtasklistData,dateForm,
                     () => {
                         cIs.forEachData();
+                        cIs.userFormSearch = null
                     }
                 );
             },
@@ -415,7 +429,7 @@
                     }
                 );
             },
-            //遍历列表数据
+            //遍历主任务列表数据
             forEachData() {
                 let cIs = this;
                 this.get(gettasklistData,
@@ -423,17 +437,18 @@
                         project_id: 1
                     },
                     (res) => {
-                        //任务类型状态
+                        //主任务数据渲染及状态上色
                         let dataColortd = res.data.data;
                         for (var i = 0; i < dataColortd.length; i++) {
+                            let statusText = dataColortd[i].status;
                             let colorText = dataColortd[i].status_text;
-                            if (colorText === '等待开始') {
+                            if (statusText === '1' || colorText === '等待开始') {
                                 dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-start"}
-                            } else if (colorText === '执行中') {
+                            } else if (statusText === '2' || colorText === '执行中') {
                                 dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-execution"}
-                            } else if (colorText === '暂停') {
+                            } else if (statusText === '3' || colorText === '暂停') {
                                 dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-pause"}
-                            } else if (colorText === '完成') {
+                            } else if (statusText === '4' || colorText === '完成') {
                                 dataColortd[i].cellClassName = {status_text: "demo-table-info-cell-complete"}
                             }
                             ;

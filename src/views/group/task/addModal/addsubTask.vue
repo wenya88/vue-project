@@ -14,15 +14,15 @@
                     <Input v-model="datl.name"></Input>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
-                <FormItem label="任务时间">
-                    <DatePicker :value="datl.expect_start_date" format="yyyy年MM月dd日" type="date" :options="disableTime"
+                <FormItem label="开始时间">
+                    <DatePicker :value="datl.expect_start_time" format="yyyy-MM-dd" type="date" :options="disableTime"
                                 placeholder="选择时间" style="width: 100%"></DatePicker>
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
                 <FormItem label="子项目">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
+                    <Select v-model="datl.project_child">
+                        <Option :value="datl.project_child"
+                                :key="datl.project_child"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="参与人">
@@ -71,9 +71,9 @@
                     </Dropdown>
                 </FormItem>
                 <FormItem label="任务类型">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
+                    <Select v-model="datl.tasktype_id">
+                        <Option :value="datl.tasktype_id"
+                                :key="datl.tasktype_id"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="文件要求">
@@ -106,8 +106,6 @@
                         <template v-if="item.status === 'finished'">
                             <img :src="item.url">
                             <div class="demo-upload-list-cover">
-                                <!--<Icon type="ios-eye-outline"-->
-                                <!--@click.native="handleView(item.name)"></Icon>-->
                                 <Icon type="ios-trash-outline"
                                       @click.native="handleRemove(item)"></Icon>
                             </div>
@@ -159,8 +157,6 @@
 
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
-    import {gettasklistData} from "../../../../config/env.js";
-    import {deletetaskData} from "../../../../config/env.js";
     export default {
         props:['datl'],
         components: {
@@ -205,12 +201,6 @@
                         }
                     }
                 ],
-                subtaskData: [
-                    {
-                        subtaskName: '暂无名称',
-                        schedule: '暂无进度',
-                    },
-                ],
                 tabs: [
                     "全部成员(33)",
                     "3D模型(11)",
@@ -237,28 +227,7 @@
                         'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
                     }
                 ],
-                imgName: '',
-                visible: false,
                 uploadList: [],
-                //下拉列表
-                cityList: [
-                    {
-                        value: '原画组',
-                    },
-                    {
-                        value: '地编组',
-                    },
-                    {
-                        value: '原画组',
-                    },
-                ],
-                model1: '',
-                cityList1: [
-                    {
-                        value: '原画组',
-                    },
-                ],
-                model2: '',
                 formLeft: {
                     name: '',
                 },
@@ -266,7 +235,6 @@
             }
         },
         mounted() {
-            this.forEachData();
             //调用图片上传功能
             this.uploadList = this.$refs.upload.fileList;
         },
@@ -329,48 +297,6 @@
                 }
                 return check;
             },
-            /**
-             * get请求
-             */
-            get(url, params, call) {
-                /*获取列表信息*/
-                this.$http.get(url, {params: params}).then(function (res) {
-                    call(res);
-                }, function (error) {
-                });
-            },
-            //遍历列表数据
-            forEachData() {
-                let cIs = this;
-                this.get(gettasklistData,
-                    {
-                        project_id: 1
-                    },
-                    (res) => {
-                        //任务类型状态
-                        let dataColortd = res.data.data;
-                        for (var i = 0; i < dataColortd.length; i++) {
-                            let colorText = dataColortd[i].status_text;
-                            if (colorText === '等待开始'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-start" }
-                            }else if(colorText === '执行中'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-execution" }
-                            }else if(colorText === '暂停'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-pause" }
-                            }else if(colorText === '完成'){
-                                dataColortd[i].cellClassName = { status_text : "demo-table-info-cell-complete" }
-                            };
-                            //判断主列表下是否含有子列表
-                            if (dataColortd[i].child !== undefined) {
-                                cIs.dataList = dataColortd[i].child;
-                            } else {
-
-                            }
-                        }
-                    }
-                );
-            }
         }
-
     }
 </script>

@@ -4,23 +4,21 @@
             <Col span="7">
             <Form label-position="left" :label-width="80">
                 <FormItem label="任务名称">
-                    <Input v-model="datl.name"></Input>
-                    <!--@on-blur="blurTj()"-->
+                    <Input v-model="admoda.name"></Input>
                 </FormItem>
                 <FormItem label="开始时间">
-                    <DatePicker :value="datl.expect_start_date" format="yyyy-MM-dd" type="date" :options="disableTime"
+                    <DatePicker :value="admoda.expect_start_time" format="yyyy-MM-dd" type="date" :options="disableTime"
                                 placeholder="选择时间" style="width: 100%"></DatePicker>
-                    <!--@on-blur="blurTj()"-->
+
                 </FormItem>
                 <FormItem label="结束时间">
-                    <DatePicker :value="datl.expect_end_date" format="yyyy-MM-dd" type="date" :options="disableTime2"
+                    <DatePicker :value="admoda.expect_end_time" format="yyyy-MM-dd" type="date" :options="disableTime2"
                                 placeholder="选择时间" style="width: 100%"></DatePicker>
-                    <!--@on-blur="blurTj()"-->
                 </FormItem>
                 <FormItem label="子项目">
-                    <Select v-model="datl.project">
-                        <Option :value="datl.project"
-                                :key="datl.project"></Option>
+                    <Select v-model="admoda.project">
+                        <Option :value="admoda.project_child"
+                                :key="admoda.project_child"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="参与人">
@@ -69,9 +67,9 @@
                     </Dropdown>
                 </FormItem>
                 <FormItem label="任务类型">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
+                    <Select v-model="admoda.tasktype_id">
+                        <Option :value="admoda.tasktype_id"
+                                :key="admoda.tasktype_id"></Option>
                     </Select>
                 </FormItem>
                 <FormItem label="文件要求">
@@ -104,8 +102,6 @@
                         <template v-if="item.status === 'finished'">
                             <img :src="item.url">
                             <div class="demo-upload-list-cover">
-                                <!--<Icon type="ios-eye-outline"-->
-                                <!--@click.native="handleView(item.name)"></Icon>-->
                                 <Icon type="ios-trash-outline"
                                       @click.native="handleRemove(item)"></Icon>
                             </div>
@@ -145,13 +141,10 @@
                     </Upload>
                 </FormItem>
                 <FormItem label="要求说明">
-                    <Input v-model="datl.name" type="textarea"
+                    <Input v-model="admoda.name" type="textarea"
                            :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
-                    <!--@on-blur="blurTj()"-->
                 </FormItem>
             </Form>
-            </Col>
-            <Col span="16">
             </Col>
         </Row>
     </div>
@@ -159,10 +152,8 @@
 
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
-    import {gettasklistDetails} from "../../../../config/env.js";
-    // import {updatetaskData} from "../../../../config/env.js";
     export default {
-        props:['datl'],
+        props:['admoda'],
         components: {
             UploadList,
         },
@@ -178,44 +169,6 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                subtaskCum: [
-                    {
-                        title: '子任务名称',
-                        key: 'subtaskName',
-                        align: 'center',
-                    },
-                    {
-                        title: '进度',
-                        key: 'schedule',
-                        align: 'center',
-                    },
-                    {
-                        title: '操作',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.index)
-                                        }
-                                    }
-                                }, '删除')
-                            ]);
-                        }
-                    }
-                ],
-                subtaskData: [
-                    {
-                        subtaskName: '暂无名称',
-                        schedule: '暂无进度',
-                    },
-                ],
                 tabs: [
                     "全部成员(33)",
                     "3D模型(11)",
@@ -228,6 +181,7 @@
                     ['哈哈', '嘻嘻洗洗'],
                     ['哇娃娃', '呜呜呜呜',]
                 ],
+                list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                 num: 1,
                 value1: '',
                 fruit: [],
@@ -242,27 +196,18 @@
                         'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
                     }
                 ],
-                imgName: '',
-                visible: false,
                 uploadList: [],
                 formLeft:{
                     name:'',
                     tasktype_name:'',
                     expect_start_date:'',
                     expect_end_date:'',
+                    dtasktype_name:''
                 },
                 dataList: []
             }
         },
         mounted() {
-            // 获取数据接口
-            // let cIs = this;
-            // console.log(cIs);
-            // this.get(gettasklistDetails,
-            //     (sd) => {
-            //         cIs.dataList = sd.data.data;
-            //     }
-            // );
             //调用图片上传功能
             this.uploadList = this.$refs.upload.fileList;
         },
@@ -325,17 +270,6 @@
                 }
                 return check;
             },
-            /**
-             * get请求
-             */
-            // get(url, params, call) {
-            //     /*获取列表信息*/
-            //     this.$http.get(url,{params: params}).then(function (sd) {
-            //         call(sd);
-            //     }, function (error) {
-            //         console.log(error);
-            //     });
-            // },
         }
 
     }

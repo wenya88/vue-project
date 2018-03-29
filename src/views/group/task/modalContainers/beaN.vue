@@ -162,8 +162,6 @@
 
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
-    import {gettasklistDetails} from "../../../../config/env.js";
-    // import {updatetaskData} from "../../../../config/env.js";
     export default {
         props:['datl'],
         components: {
@@ -181,44 +179,6 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                subtaskCum: [
-                    {
-                        title: '子任务名称',
-                        key: 'subtaskName',
-                        align: 'center',
-                    },
-                    {
-                        title: '进度',
-                        key: 'schedule',
-                        align: 'center',
-                    },
-                    {
-                        title: '操作',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.index)
-                                        }
-                                    }
-                                }, '删除')
-                            ]);
-                        }
-                    }
-                ],
-                subtaskData: [
-                    {
-                        subtaskName: '暂无名称',
-                        schedule: '暂无进度',
-                    },
-                ],
                 tabs: [
                     "全部成员(33)",
                     "3D模型(11)",
@@ -231,6 +191,7 @@
                     ['哈哈', '嘻嘻洗洗'],
                     ['哇娃娃', '呜呜呜呜',]
                 ],
+                list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                 num: 1,
                 value1: '',
                 fruit: [],
@@ -245,8 +206,6 @@
                         'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
                     }
                 ],
-                imgName: '',
-                visible: false,
                 uploadList: [],
                 formLeft:{
                     name:'',
@@ -258,14 +217,6 @@
             }
         },
         mounted() {
-            // 获取数据接口
-            // let cIs = this;
-            // console.log(cIs);
-            // this.get(gettasklistDetails,
-            //     (sd) => {
-            //         cIs.dataList = sd.data.data;
-            //     }
-            // );
             //调用图片上传功能
             this.uploadList = this.$refs.upload.fileList;
         },
@@ -328,18 +279,6 @@
                 }
                 return check;
             },
-            /**
-             * get请求
-             */
-            // get(url, params, call) {
-            //     /*获取列表信息*/
-            //     this.$http.get(url,{params: params}).then(function (sd) {
-            //         call(sd);
-            //     }, function (error) {
-            //         console.log(error);
-            //     });
-            // },
         }
-
     }
 </script>
