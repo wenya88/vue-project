@@ -119,12 +119,12 @@ export default {
             if(routeName === item.name) {
                 this.subMenu = item.children
                 let menuArr = item.children
-                console.log(routeName,this.subMenu)
+                // console.log(routeName,this.subMenu)
                 this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
             }
         })
         this.activePath = this.$route.path
-        console.log(this.activePath)
+        // console.log(this.activePath)
     },
     computed: {
         menuList() {
@@ -165,7 +165,7 @@ export default {
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
                     let menuArr = item.children
-                    console.log(this.$route.name,this.subMenu)
+                    // console.log(this.$route.name,this.subMenu)
                     this.$router.push(menuArr[0].path)
                 }
             })

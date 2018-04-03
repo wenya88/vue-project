@@ -327,11 +327,10 @@ export const appRouter = [
                 component: resolve => { require(['@/views/page/page.vue'], resolve); }
             },
             {
-                path: '/page/followUpQuality',
-                icon: 'ios-paper-outline',
-                title: '质量跟进',
-                name: 'followUpQuality',
-                component: resolve => { require(['@/views/page/followUpQuality.vue'], resolve); }
+                path: '/page/grid',
+                title: '拖拽功能',
+                name: 'grid',
+                component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
             }
         ]
     }

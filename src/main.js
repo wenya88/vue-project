@@ -10,9 +10,9 @@ import './theme/dist/iview.css';
 import 'vue-event-calendar/dist/style.css';
 import vueEventCalendar from 'vue-event-calendar';
 
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.baseURL = 'http://192.168.2.19/index.php?r=task';
-// Vue.prototype.$ajax = axios;
+axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
 Vue.use(vueEventCalendar, {locale: 'zh'})
 

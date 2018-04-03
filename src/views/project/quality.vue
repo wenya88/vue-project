@@ -1,16 +1,13 @@
 <template>
   <div class="quality">
     <Tabs value="1" :animated="false" v-model="status" @on-click="fetchData()">
-      <TabPane :label="fristName" name="1">
-        <ul class="sort">
-          <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
-            <Icon :type='item.icon'></Icon>{{item.label}}</li>
-        </ul>
+      <TabPane :label="'内部待审(' + param.num1 + ')'" name="1">
+        <my-sort :sortList="ndsSortList" @choiced="filterTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="4"> 类型:
@@ -69,11 +66,8 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="secondName" name="2">
-        <ul class="sort">
-          <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
-            <Icon :type='item.icon'></Icon>{{item.label}}</li>
-        </ul>
+      <TabPane :label="'内审已反馈(' + param.num2 + ')'" name="2">
+        <my-sort :sortList="nsfkSortList" @choiced="filterTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
@@ -113,7 +107,7 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25">
-                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
+                    <img class="icon" src="../../images/leader.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
@@ -142,11 +136,8 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="thirdName" name="3">
-        <ul class="sort">
-          <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
-            <Icon :type='item.icon'></Icon>{{item.label}}</li>
-        </ul>
+      <TabPane :label="'客户待审(' + param.num3 + ')'" name="3">
+        <my-sort :sortList="khdsSortList" @choiced="filterTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
@@ -186,7 +177,7 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25" rowspan="2">
-                    <img class="icon" src="../../images/logo.png" /> {{item.run_uname}}
+                    <img class="icon" src="../../images/leader.png" /> {{item.run_uname}}
                   </td>
                 </tr>
                 <tr class="fb">
@@ -203,11 +194,8 @@
           </Row>
         </div>
       </TabPane>
-      <TabPane :label="fourthName" name="4">
-        <ul class="sort">
-          <li v-for="(item,index) in sortList" :key="index" :class="{'actived': num == index}" @click="choseSort(index)">
-            <Icon :type='item.icon'></Icon>{{item.label}}</li>
-        </ul>
+      <TabPane :label="'客户已反馈(' + param.num4 + ')'" name="4">
+        <my-sort :sortList="khfkSortList" @choiced="filterTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
@@ -247,7 +235,7 @@
                   <td class="w25">完成阶段</td>
                   <td class="w25">剩余时间</td>
                   <td class="w25">
-                    <img class="icon" src="../../images/logo.png" /> 张娇颖
+                    <img class="icon" src="../../images/leader.png" /> 张娇颖
                   </td>
                 </tr>
                 <tr class="fb">
@@ -300,9 +288,14 @@
 
 <script>
 import beaN from './components/beaN';
+import mySort from '../main-components/sort'
 // import axios from 'axios'
 import {fetchstagetaskData} from "../../config/env.js";
+import { mapGetters } from 'vuex'
 export default {
+  components: {
+    mySort
+  },
   data() {
     return {
       num: 0,
@@ -314,28 +307,13 @@ export default {
         num3: 0,
         num4: 0
       },
-      fristName: '',
-      secondName: '',
-      thirdName: '',
-      fourthName: '',
       status: '1',
+      sortStatus: '',
       searchInput: '',
       fristData: [],
       secondData: [],
       thirdData: [],
       fourthData: [],
-      sortList: [
-        {
-          label: '等待修改',
-          icon: 'ios-arrow-thin-down'
-        }, {
-          label: '反馈时间',
-          icon: 'ios-arrow-thin-down'
-        }, {
-          label: '剩余时间',
-          icon: 'ios-arrow-thin-up'
-        }
-      ],
       handleRender: false,
       cityList: [
         {
@@ -370,73 +348,107 @@ export default {
       }
     }
   },
-  created() {
-    this.fetchData()
-    console.log(this.param.num1)
+  computed: {
+    ...mapGetters({
+      ndsSortList: 'getNdsSortList',
+      nsfkSortList: 'getNsfkSortList',
+      khdsSortList: 'getKhdsSortList',
+      khfkSortList: 'getKhfkSortList',
+      statusList: 'getStatusList'
+    })
   },
-  mounted() {
-    let _this = this
-    _this.fristName = '内部待审(' + _this.param.num1 + ')'
-    _this.secondName = '内审已反馈(' + _this.param.num2 + ')'
-    _this.thirdName = '客户待审(' + _this.param.num3 + ')'
-    _this.fourthName = '客户已反馈(' + _this.param.num4 + ')'
+  created() {
+    this.fetchData();
+    this.fetchNum(1);
+    this.fetchNum(2);
+    this.fetchNum(3);
+    this.fetchNum(4);
   },
   methods: {
-    choseSort(ide) {
-      this.num = ide
+    filterTime(val) {
+      if(val == 0) {
+        this.sortStatus = 'create_time'
+      } else if(val == 1) {
+        this.sortStatus = 'inside_audit_time'
+      } else if(val == 2) {
+        this.sortStatus = 'client_audit_time'
+      }
       this.fetchData()
     },
     cancel(){
       this.$Message.info('点击了取消');
     },
-    // get(url, params, call) {
-    //   /*获取列表信息*/
-    //   this.$http.get(url,{params: params}).then(function (res) {
-    //     call(res);
-    //   }, function (error) {
-    //   });
-    // },
-    fetchData() {   //获取阶段数据
-      let _this = this;
-      let data = {
-        status: _this.status,
-        search: _this.searchInput
-      }
-      _this.$axios.get(fetchstagetaskData+'&status='+_this.status+'&search='+_this.searchInput)
-      // _this.$axios.post('/task/stage-page',data)
-      // _this.$axios({
-      //     method: 'post',
-      //     url: '/task/stage-page',
-      //     data: data
-      //   })
+    fetchNum(str) {
+      this.$axios.get('/task/stage-page',{
+        params: {
+          status: str + ''
+        }
+      })
       .then(res => res.data)
       .then(res => {
-        // let date = (Date.parse(new Date()))/1000;
-        // console.log(date)
         if(res.err_code == 0) {
-          if(_this.status == '1') {
-            _this.fristData = res.data
-            _this.searchInput = ''
-            _this.param.num1 = res.page.count
-          } else if(_this.status == '2') {
-            _this.secondData = res.data
-            _this.searchInput = ''
-            _this.param.num2 = res.page.count
-          } else if(_this.status == '3') {
-            _this.thirdData = res.data
-            _this.searchInput = ''
-            _this.param.num3 = res.page.count
-          } else if(_this.status == '4') {
-            _this.fourthData = res.data
-            _this.searchInput = ''
-            _this.param.num4 = res.page.count
+          // let number = 'this.param.num'+ str;
+          if(str == 1) {
+            this.param.num1 = res.page.count
+          } else if(str == 2) {
+            this.param.num2 = res.page.count
+          } else if(str == 3) {
+            this.param.num3 = res.page.count
+          } else if(str == 4) {
+            this.param.num4 = res.page.count
           }
         }
       })
-      // _this.get(fetchstagetaskData,data,(res) => {
-      //     console.log(res.data)
+    },
+    fetchData() {   //获取阶段数据
+      // for(let i=1; i<5; i++ ) {
+      //   if(i==1) {
+      //     this.status = '1';
+      //     fetchUrl;
+      //   } else if(i==2) {
+      //     this.status = '2';
+      //     fetchUrl;
+      //   } else if(i==3) {
+      //     this.status = '3';
+      //     fetchUrl;
+      //   } else if(i==4) {
+      //     this.status = '4';
+      //     fetchUrl;
       //   }
-      // );
+      //   break
+      //   console.log(i)
+      // }
+      // this.$axios.get('/task/stage-page&status='+this.status+'&search='+this.searchInput+'&order='+this.sortStatus+'&task_status=')
+      // this.$axios.post('/task/stage-page',data)
+      this.$axios.get('/task/stage-page', {
+        params: {
+          status: this.status,
+          search: this.searchInput,
+          order: this.sortStatus
+        }
+      })
+      .then(res => res.data)
+      .then(res => {
+        if(res.err_code == 0) {
+          if(this.status == '1') {
+            this.fristData = res.data
+            this.searchInput = ''
+            // this.param.num1 = res.page.count
+          } else if(this.status == '2') {
+            this.secondData = res.data
+            this.searchInput = ''
+            // this.param.num2 = res.page.count
+          } else if(this.status == '3') {
+            this.thirdData = res.data
+            this.searchInput = ''
+            // this.param.num3 = res.page.count
+          } else if(this.status == '4') {
+            this.fourthData = res.data
+            this.searchInput = ''
+            // this.param.num4 = res.page.count
+          }
+        }
+      })
     }
   }
 }
