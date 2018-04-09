@@ -1,28 +1,43 @@
 <template>
   <div class="grid">
-    <div id="content">
-      <button @click="decreaseWidth">Decrease Width</button>
-      <button @click="increaseWidth">Increase Width</button>
-      <button @click="addItem">Add an item</button>
-      <!-- Add to show rtl support -->
-      <button @click="changeDirection">Change Direction</button>
-      <input type="checkbox" v-model="draggable"/> Draggable
-      <input type="checkbox" v-model="resizable"/> Resizable
-      <input type="checkbox" v-model="mirrored"/> Mirrored
-      <br/>
-      Row Height: <input type="number" v-model="rowHeight"/> Col nums: <input type="number" v-model="colNum"/>
-      <br/>
-      <grid-layout
-        :layout="layout"
-        :col-num="parseInt(colNum)"
-        :row-height="rowHeight"
-        :is-draggable="draggable"
-        :is-resizable="resizable"
-        :is-mirrored="mirrored"
-        :vertical-compact="true"
-        :use-css-transforms="true"
-      >
-          <grid-item v-for="item in layout" :key="item.i"
+    <div class="handleBox" v-if="isLayout">
+      <Button type="primary" icon="plus-round" @click="openAddItem()">增加模块</Button>
+      <Button type="primary">保存</Button>
+      <Button type="ghost" @click="cancel()">取消</Button>
+    </div>
+    <div class="handleBox" v-else>
+      <Button type="primary" icon="ios-search" @click="changeLayout()">布局调整</Button>
+    </div>
+    <Tabs :animated="false">
+      <TabPane label="我的工作">
+        <!-- <grid-layout
+          :layout="layout"
+          :col-num="parseInt(colNum)"
+          :row-height="rowHeight"
+          :is-draggable="draggable"
+          :is-resizable="resizable"
+          :is-mirrored="mirrored"
+          :vertical-compact="true"
+          :use-css-transforms="true"
+        > -->
+           <!-- <mdPending
+            :x="0"
+            :y="0"
+            :w="6"
+            :h="2"
+            :min-w="2"
+            :min-h="2"
+            :i="0"
+            @resize="resize"
+            @move="move"
+            @resized="resized"
+            @moved="moved"
+            title="重点关注"
+            icon="navicon-round"
+            :operable="isLayout"
+          >
+          </mdPending>  -->
+           <!-- <grid-item v-for="item in layout" :key="item.i"
             :x="item.x"
             :y="item.y"
             :w="item.w"
@@ -34,119 +49,165 @@
             @move="move"
             @resized="resized"
             @moved="moved"
-          >
-          {{item.i}}
-              <!--<custom-drag-element :text="item.i"></custom-drag-element>-->
-              <!-- <test-element :text="item.i"></test-element> -->
-              <!--<button @click="clicked">CLICK ME!</button>-->
-          </grid-item>
-      </grid-layout>
-      <hr/>
-    </div>
+          > 
+             <test-element :text="item.i"></test-element>
+          </grid-item>    -->
+        <!-- </grid-layout> -->
+        <mdProject
+          title="我负责的项目"
+          icon="navicon-round"
+          :operable="isLayout">
+          <div class="module-body">
+            
+          </div>
+        </mdProject>
+        <mdFollow
+          title="重点关注"
+          icon="navicon-round"
+          :operable="isLayout">
+          <div class="module-body">
+            
+          </div>
+        </mdFollow> 
+      </TabPane>
+      <TabPane label="日程安排">日程安排</TabPane>
+    </Tabs>
+    <Modal v-model="modules" width="500">
+      <p slot="header" style="text-align:left;margin-left: 10px;">
+        <span>增加功能模块</span>
+      </p>
+      <div style="float: left;">
+        <div class="module-item" 
+        v-for="(item,index) in moduleList" 
+        :key="index" 
+        :class="{'actived' : moduleNum == index}"
+        @click="choiced(index)">
+          <div class="module-item-top">
+            <div class="module-item-top-left">
+              <img :src="item.img" />
+            </div>
+            <div class="module-item-top-right">
+              <div class="title">{{item.title}}</div>
+              <Icon type="checkmark-circled" class="icon" color="#00cc00" v-if="isModule"></Icon>
+              <div class="message">{{item.content}}</div>
+            </div>
+          </div>
+          <div class="module-item-bottom" v-if="isModule">
+            <div class="module-item-bottom-left">
+              <span>数据来源</span>
+              <Select v-model="model3" style="width:120px">
+                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+            </div>
+            <div class="module-item-bottom-right">
+              <span>输入功能模块名称</span>
+              <Input v-model="moduleName" placeholder="模块名称" style="width: 290px"></Input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div slot="footer" style="text-align: left;border-top: 0;">
+        <Button type="primary">确定</Button>
+        <Button type="ghost" @click="closeMd()">取消</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
-import GridItem from './GridItem.vue';
-import GridLayout from './GridLayout.vue';
-// var GridLayout = VueGridLayout.GridLayout;
-// var GridItem = VueGridLayout.GridItem;
+import mdProject from "./components/mdProject";
+import mdFollow from "./components/mdFollow";
+import mdPending from "./components/mdPending";
+import GridItem from './components/GridItem.vue';
+import GridLayout from './components/GridLayout.vue';
+import TestElement from './components/TestElement.vue';
 var testLayout = [
-    {"x":0,"y":0,"w":2,"h":2,"i":"0", resizable: true, draggable: true},
-    {"x":2,"y":0,"w":2,"h":4,"i":"1", resizable: null, draggable: null},
-    {"x":4,"y":0,"w":2,"h":5,"i":"2", resizable: false, draggable: false},
-    {"x":6,"y":0,"w":2,"h":3,"i":"3", resizable: false, draggable: false},
-    {"x":8,"y":0,"w":2,"h":3,"i":"4", resizable: false, draggable: false},
-    {"x":10,"y":0,"w":2,"h":3,"i":"5", resizable: false, draggable: false},
-    {"x":0,"y":5,"w":2,"h":5,"i":"6", resizable: false, draggable: false},
-    {"x":2,"y":5,"w":2,"h":5,"i":"7", resizable: false, draggable: false},
-    {"x":4,"y":5,"w":2,"h":5,"i":"8", resizable: false, draggable: false},
-    {"x":6,"y":4,"w":2,"h":4,"i":"9", resizable: false, draggable: false},
-    {"x":8,"y":4,"w":2,"h":4,"i":"10", resizable: false, draggable: false},
-    {"x":10,"y":4,"w":2,"h":4,"i":"11", resizable: false, draggable: false},
-    {"x":0,"y":10,"w":2,"h":5,"i":"12", resizable: false, draggable: false},
-    {"x":2,"y":10,"w":2,"h":5,"i":"13", resizable: false, draggable: false},
-    {"x":4,"y":8,"w":2,"h":4,"i":"14", resizable: false, draggable: false},
-    {"x":6,"y":8,"w":2,"h":4,"i":"15", resizable: false, draggable: false},
-    {"x":8,"y":10,"w":2,"h":5,"i":"16", resizable: false, draggable: false},
-    {"x":10,"y":4,"w":2,"h":2,"i":"17", resizable: false, draggable: false},
-    {"x":0,"y":9,"w":2,"h":3,"i":"18", resizable: false, draggable: false},
-    {"x":2,"y":6,"w":2,"h":2,"i":"19", resizable: false, draggable: false}
+  {"x":0,"y":0,"w":2,"h":2,"i":"0", resizable: true, draggable: true},
+  {"x":2,"y":6,"w":2,"h":2,"i":"1", resizable: false, draggable: false}
 ];
-
 export default {
-  name: 'grid',
   components: {
+    mdProject,
+    mdFollow,
+    mdPending,
     GridLayout,
-    GridItem
+    GridItem,
+    TestElement
   },
   data() {
     return {
+      isLayout: false,
+      modules: false,
+      isModule: false,
       layout: JSON.parse(JSON.stringify(testLayout)),
-      draggable: true,
-      resizable: true,
+      draggable: false,
+      resizable: false,
       mirrored: false,
       rowHeight: 30,
       colNum: 12,
-      index: 0
+      index: 0,
+      moduleNum: null,
+      moduleName: '',
+      model3: '',
+      cityList: [{
+        value: 'New York',
+        label: 'New York'
+      },{
+        value: 'London',
+        label: 'London'
+      }],
+      moduleList: [{
+        title: '我的任务清单',
+        content: '相关功能模块描述相关功能模块描述相关功能模块描述相关功能功能模块描述相关功能模块描述',
+        img: '/src/images/logo.png'
+      },{
+        title: '待审文件',
+        content: '相关功能模块描述相关功能模块描述相关功能模块描述相关功能功能模块描述相关功能模块描述',
+        img: '/src/images/logo.png'
+      },{
+        title: '客户已审',
+        content: '相关功能模块描述相关功能模块描述相关功能模块描述相关功能功能模块描述相关功能模块描述',
+        img: '/src/images/logo.png'
+      }]
     }
-  },
-  mounted() {
-    this.index = this.layout.length;
   },
   methods: {
-    clicked() {
-      window.alert("click!");
+    changeLayout() {
+      this.isLayout = true
+      this.draggable = true
+      this.resizable = true
     },
-    increaseWidth() {
-      var width = document.getElementById("content").offsetWidth;
-      width += 20;
-      document.getElementById("content").style.width = width+"px";
+    cancel() {
+      this.isLayout = false
+      this.draggable = false
+      this.resizable = false
     },
-    decreaseWidth() {
-      var width = document.getElementById("content").offsetWidth;
-      width -= 20;
-      document.getElementById("content").style.width = width+"px";
+    closeMd() {
+      this.modules = false
     },
-    removeItem(item) {
-      this.layout.splice(this.layout.indexOf(item), 1);
+    openAddItem() {
+      this.modules = true
     },
-    addItem() {
-      var self = this;
-      //console.log("### LENGTH: " + this.layout.length);
-      var item = {"x":0,"y":0,"w":2,"h":2,"i":this.index+"", whatever: "bbb"};
-      this.index++;
-      this.layout.push(item);
+    choiced(item) {
+      this.moduleNum = item
+      this.isModule = true
     },
     move(i, newX, newY) {
-      console.log("move i="+i+",x="+newX+",y="+newY)
+      console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
     },
-    resize(i, newH, newW) {
-      console.log("resize i="+i+",H="+newH+",w="+newW)
+    resize(i, newH, newW){
+      console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW);
     },
-    moved(i, newX, newY) {
-      console.log("### MOVED i=" + i + ", X=" + newX + ", Y=" + newY)
+    moved(i, newX, newY){
+      console.log("### MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
     },
-    resized(i, newH, newW, newHPX, newWPx) {
-      console.log("### RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx)
+    resized(i, newH, newW, newHPx, newWPx){
+      console.log("### RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
     },
-    changeDirection() {
-      let documentDirection = (document.dir != undefined) ?
-          document.dir : 
-          document.getElementsByTagName('html')[0].getAttribute("dir");
-      let toggle = ""
-      if(documentDirection == "rtl") {
-        toggle = "ltr"
-      } else {
-        toggle = "rtl"
-      }
-      let html = document.getElementsByTagName("html")[0];
-      html.setAttribute('dir', toggle)
-    }
   }
 }
 </script>
 
-<style>
-
+<style lang="less">
+@import "./style/grid.less";
 </style>

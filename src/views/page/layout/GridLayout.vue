@@ -18,9 +18,9 @@
 </style>
 <script>
     import Vue from 'vue';
-    var elementResizeDetectorMaker = require("element-resize-detector");
+    // var elementResizeDetectorMaker = require("element-resize-detector");
 
-    // import {bottom, compact, getLayoutItem, moveElement, validateLayout} from './utils';
+    import {bottom, compact, getLayoutItem, moveElement, validateLayout} from './utils';
     //var eventBus = require('./eventBus');
     import GridItem from './GridItem.vue'
 
@@ -135,12 +135,12 @@
 
                     self.updateHeight();
                     self.$nextTick(function () {
-                        var erd = elementResizeDetectorMaker({
-                            strategy: "scroll" //<- For ultra performance.
-                        });
-                        erd.listenTo(self.$refs.item, function (element) {
-                            self.onWindowResize();
-                        });
+                        // var erd = elementResizeDetectorMaker({
+                        //     strategy: "scroll" //<- For ultra performance.
+                        // });
+                        // erd.listenTo(self.$refs.item, function (element) {
+                        //     self.onWindowResize();
+                        // });
                     });
                 });
                 window.onload = function() {
@@ -153,12 +153,12 @@
 
                     self.updateHeight();
                     self.$nextTick(function () {
-                        var erd = elementResizeDetectorMaker({
-                            strategy: "scroll" //<- For ultra performance.
-                        });
-                        erd.listenTo(self.$refs.item, function (element) {
-                            self.onWindowResize();
-                        });
+                        // var erd = elementResizeDetectorMaker({
+                        //     strategy: "scroll" //<- For ultra performance.
+                        // });
+                        // erd.listenTo(self.$refs.item, function (element) {
+                        //     self.onWindowResize();
+                        // });
                     });
 
                 };

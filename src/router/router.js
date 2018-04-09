@@ -140,7 +140,14 @@ export const appRouter = [
                 name: 'setting',
                 title: '设置',
                 component: resolve => { require(['@/views/epibol/setting.vue'], resolve); }
-            }
+            },
+            {
+            path: '/epibol/imPlementer',
+            icon: 'ios-paper-outline',
+            name: 'setting',
+            title: '实施人员',
+            component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
+          }
         ]
     }, {
         path: '/customer',
@@ -331,6 +338,12 @@ export const appRouter = [
                 title: '拖拽功能',
                 name: 'grid',
                 component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
+            },
+            {
+                path: '/page/layout',
+                title: '拖拽布局',
+                name: 'layout',
+                component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
             }
         ]
     }
