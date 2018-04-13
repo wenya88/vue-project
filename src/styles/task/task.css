@@ -5,9 +5,17 @@
     /*border-radius: 4px;*/
     overflow: hidden;
 }
-
-button.btton-right {
-    margin-bottom: 20px;
+.main .sidebar-menu-con{
+    z-index: 0 !important;
+}
+.ivu-select-dropdown{
+    position: absolute !important;
+}
+.btnStting{
+    float: right;
+}
+.btnStting button {
+    margin-right: 25px;
 }
 .ivu-table .demo-table-info-cell-start span,
 .ivu-table .demo-table-info-cell-complete span,
@@ -48,12 +56,6 @@ button.btton-right {
     top: 55px;
     padding: 0 !important;
 }
-
-.icon-header {
-    position: absolute;
-    right: 60px;
-}
-
 .area_model {
     height: 700px;
     border: 1px solid #d7dde4;

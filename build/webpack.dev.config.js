@@ -7,9 +7,9 @@ const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
 
-fs.open('./env.js', 'w', function(err, fd) {
+fs.open('./env.js', 'w', function (err, fd) {
     const buf = 'export default "development";';
-    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
+    fs.write(fd, buf, 0, buf.length, 0, function (err, written, buffer) { });
 });
 
 module.exports = merge(webpackBaseConfig, {
@@ -37,6 +37,9 @@ module.exports = merge(webpackBaseConfig, {
     ],
     //设置跨域代理
     devServer: {
+        // autoOpenBrowser: true,
+        // assetsSubDirectory: 'static',
+        // assetsPublicPath: '/',
         historyApiFallback: true,
         hot: true,
         inline: true,
@@ -44,12 +47,19 @@ module.exports = merge(webpackBaseConfig, {
         proxy: {
             //匹配代理的url
             '/task': {
-            // 目标服务器地址
-              target: 'http://192.168.2.19/index.php?r=task/task',
-              //路径重写
-              pathRewrite: {'^/task' : ''},
-              changeOrigin: true
+                // 目标服务器地址
+                target: 'http://192.168.2.19/index.php?r=task',
+                //路径重写
+                pathRewrite: { '^/task': '/task' },
+                changeOrigin: true
+            },
+            '/login': {
+                // 登录
+                target: 'http://192.168.2.19/index.php?r=system',
+                //路径重写
+                pathRewrite: { '^/login': '/login' },
+                changeOrigin: true
             }
-         }
+        }
     }
 });

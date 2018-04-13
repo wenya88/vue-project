@@ -1,5 +1,5 @@
 <template>
-  <div>外包概况页</div>
+  <div>公司概况</div>
 </template>
 
 <script>

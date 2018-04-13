@@ -1,29 +1,91 @@
 .login{
     width: 100%;
     height: 100%;
-    background-image: url('https://file.iviewui.com/iview-admin/login_bg.jpg');
-    background-size: cover;
-    background-position: center;
+    // background-image: url('https://file.iviewui.com/iview-admin/login_bg.jpg');
+    // background-size: cover;
+    // background-position: center;
     position: relative;
+    &-purple{
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-top: 100px solid #544c93;
+        border-right: 150px solid transparent;
+        height: 100%;
+        width: 56%;
+    }
+    .bg{
+        background: url(/src/images/loginbg.png) no-repeat center left;
+        width: 50%;
+        position: absolute;
+        z-index: 2;
+        background-position: -83px;
+    }
+    &-yellow{
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-bottom: 100px solid #ffbe36;
+        border-left: 150px solid transparent;
+        height: 100%;
+        width: 56%;
+    }
     &-con{
         position: absolute;
-        right: 160px;
+        right: 210px;
         top: 50%;
         transform: translateY(-60%);
-        width: 300px;
-        &-header{
-            font-size: 16px;
-            font-weight: 300;
-            text-align: center;
-            padding: 30px 0;
+        width: 520px;
+        height: 620px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #888888;
+        .title{
+            height: 80px;
+            line-height: 80px;
+            box-shadow: 0px 5px 5px #e8e8e8;
+            font-size: 28px;
+            color: #ffa35d;
+            padding: 0 20px;
+            span{
+                color: #ababab;
+                font-size: 14px;
+                float: right;
+            }
         }
         .form-con{
-            padding: 10px 0 0;
-        }
-        .login-tip{
-            font-size: 10px;
-            text-align: center;
-            color: #c3c3c3;
+            width: 440px;
+            margin: 100px auto 40px;
+            .itemname{
+                font-size: 14px;
+                color: #b2b2b2;
+                padding-left: 10px;
+            }
+            .ivu-input{
+                border: none;
+                border-bottom: 1px solid #e0e0df;
+                border-radius: 0;
+                outline: none;
+                font-size: 18px;
+                color: #757575;
+                height: 50px;
+                line-height: 50px;
+            }
+            .ivu-btn-primary{
+                position: fixed;
+                bottom: 40px;
+                width: 440px;
+                height: 80px;
+                background: #544c93;
+                border: 1px solid #544c93;
+                font-size: 30px;
+            }
+            img{
+                width: 30px;
+                position: absolute;
+                right: 0;
+                margin-top: -40px;
+            }
         }
     }
 }

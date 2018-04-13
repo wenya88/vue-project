@@ -1,5 +1,5 @@
 <template>
-  <div>进度管理</div>
+  <div>项目进度</div>
 </template>
 
 <script>

@@ -3,47 +3,101 @@
 </style>
 
 <template>
-    <div class="login" @keydown.enter="handleSubmit">
+    <div class="login">
+        <div class="login-purple" :style="`border-top:${bodyHight}px solid #544c93`"></div>
+        <div class="bg" :style="`height:${bodyHight}px`"></div>
+        <div class="login-yellow" :style="`border-bottom:${bodyHight}px solid #ffbe36`"></div>
         <div class="login-con">
-            <Card :bordered="false">
-                <p slot="title">
-                    <Icon type="log-in"></Icon>
-                    欢迎登录
-                </p>
-                <div class="form-con">
-                    <Form ref="loginForm" :model="form" :rules="rules">
-                        <FormItem prop="userName">
-                            <Input v-model="form.userName" placeholder="请输入用户名">
-                                <span slot="prepend">
-                                    <Icon :size="16" type="person"></Icon>
-                                </span>
-                            </Input>
-                        </FormItem>
-                        <FormItem prop="password">
-                            <Input type="password" v-model="form.password" placeholder="请输入密码">
-                                <span slot="prepend">
-                                    <Icon :size="14" type="locked"></Icon>
-                                </span>
-                            </Input>
-                        </FormItem>
-                        <FormItem>
-                            <Button @click="handleSubmit" type="primary" long>登录</Button>
-                        </FormItem>
-                    </Form>
-                </div>
-            </Card>
+            <div class="title" v-if="isRegister">注册<span @click="changeMode('register')">登录</span></div>
+            <div class="title" v-else>登录<span @click="changeMode('login')"><Icon type="person-add"></Icon> 注册</span></div>
+            <div class="form-con" v-if="isRegister" @keydown.enter="onRegister('register')">
+                <Form ref="register" :model="register" :rules="ruleCustom">
+                    <FormItem prop="userName">
+                        <div class="itemname">邮箱账号</div>
+                        <Input v-model="register.userName" placeholder="请输入邮箱账号"></Input>
+                    </FormItem>
+                    <FormItem prop="passwd">
+                        <div class="itemname">密码</div>
+                        <Input v-model="register.passwd" :type="pwpic.pwdType" placeholder="请输入密码"></Input>
+                        <img :src="pwpic2.src" @click="changeType()"/>
+                    </FormItem>
+                    <FormItem prop="passwdCheck">
+                        <div class="itemname">再次输入密码</div>
+                        <Input v-model="register.passwdCheck" id="a" :type="pwpic2.pwdType" placeholder="请再次输入密码"></Input>
+                        <img :src="pwpic2.src" @click="changeType2()"/>
+                    </FormItem>
+                    <FormItem>
+                        <Button @click="onRegister('register')" type="primary" long>注 册</Button>
+                    </FormItem> 
+                </Form>
+            </div>
+            <div class="form-con" v-else @keydown.enter="onSubmit('login')">
+                <Form ref="login" :model="loginform" :rules="rules">
+                    <FormItem prop="userName">
+                        <div class="itemname">邮箱账号</div>
+                        <Input v-model="loginform.userName" placeholder="请输入邮箱账号"></Input>
+                    </FormItem>
+                    <FormItem prop="password">
+                        <div class="itemname">密码</div>
+                        <Input v-model="loginform.password" type="password" placeholder="请输入密码"></Input>
+                        <img :src="pwpic.src" @click="changeType()"/>
+                    </FormItem>
+                    <FormItem>
+                        <Button @click="onSubmit('login')" type="primary" long>登 录</Button>
+                    </FormItem>
+                </Form>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+var qs = require('querystring');
+import axios from 'axios'
 import Cookies from 'js-cookie';
+import {authLogin} from "../config/env.js";
 export default {
     data () {
+        const validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入密码'));
+            } else {
+                if (this.register.passwdCheck !== '') {
+                    // 对第二个密码框单独验证
+                    this.$refs.register.validateField('passwdCheck');
+                }
+                callback();
+            }
+        };
+        const validatePassCheck = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请再次输入密码'));
+            } else if (value !== this.register.passwd) {
+                callback(new Error('两次密码不一致!'));
+            } else {
+                callback();
+            }
+        };
         return {
-            form: {
+            isRegister: false,
+            bodyHight: 500,
+            publicKey: '',
+            pwpic:{
+                pwdType:"password",
+                src: "/src/images/close_eyes.png"
+            },
+            pwpic2:{
+                pwdType:"password",
+                src: "/src/images/close_eyes.png"
+            },
+            loginform: {
                 userName: '',
                 password: ''
+            },
+            register: {
+                userName: '',
+                passwd: '',
+                passwdCheck: ''
             },
             rules: {
                 userName: [
@@ -51,20 +105,121 @@ export default {
                 ],
                 password: [
                     { required: true, message: '密码不能为空', trigger: 'blur' }
+                ],
+                passwd: [
+                    { validator: validatePass, trigger: 'blur' }
+                ],
+                passwdCheck: [
+                    { validator: validatePassCheck, trigger: 'blur' }
+                ]
+            },
+            ruleCustom: {
+                userName: [
+                    { required: true, message: '账号不能为空', trigger: 'blur' }
+                ],
+                passwd: [
+                    { validator: validatePass, trigger: 'blur' }
+                ],
+                passwdCheck: [
+                    { validator: validatePassCheck, trigger: 'blur' }
                 ]
             }
         };
     },
+    /**
+     * 创建XXX
+     * */
+    created() {
+        this.bodyHight = document.documentElement.clientHeight;
+        this.fetchKey();
+    },
     methods: {
-        handleSubmit () {
-            this.$refs.loginForm.validate((valid) => {
+        changeMode(mode) {
+            if(mode == 'login') {
+                this.isRegister = true;
+                this.loginform.userName = '';
+                this.loginform.password = '';
+            } else if(mode == 'register') {
+                this.isRegister = false;
+                this.register.userName = '';
+                this.register.password = '';
+                this.register.passwdCheck = '';
+            }
+        },
+        fetchKey() {
+            // this.$axios.get(authLogin+'/get-public-secret-key')
+            this.$axios.get('/login/get-public-secret-key')
+            .then(res => res.data)
+            .then(res => {
+                if(res.err_code == 0) {
+                    this.publicKey = res.public_key
+                }
+            })
+        },
+        onRegister(name) {
+            let encrypt = new JSEncrypt();
+            encrypt.setPublicKey(this.publicKey);
+            let password = encrypt.encrypt(md5(md5(this.register.passwd)));
+            let data = {
+                "account": this.register.userName,
+                "password": password
+            };
+            this.$refs[name].validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    this.$router.push({
-                        name: 'home_index'
-                    });
+                    this.$axios.post('/login/register', data)
+                    .then(res => res.data)
+                    .then(res => {
+                        console.log(res)
+                        if(res.err_code == 0) {
+                            this.loginform.userName = this.register.userName;
+                            this.loginform.password = this.register.passwd;
+                            this.onSubmit(login);
+                        } else {
+                            this.$Message.warning(res.err_message);
+                        }
+                    })
+                } else {
+                    this.$Message.error('Fail!');
                 }
             });
+        },
+        onSubmit(name) {
+            let encrypt = new JSEncrypt();
+            encrypt.setPublicKey(this.publicKey);
+            let password = encrypt.encrypt(md5(md5(this.loginform.password)));
+            let data = {
+                "account": this.loginform.userName,
+                "password": password
+            };
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    Cookies.set('user', this.loginform.userName);
+                    // Cookies.set('password', this.form.password);
+                    this.$axios.post('/login/login', data)
+                    .then(res => res.data)
+                    .then(res => {
+                        if(res.err_code == 0) {
+                            localStorage.token = res.token
+                            axios.defaults.headers.common['token'] = res.token;
+                            this.$router.push('/home/home')
+                        } else {
+                            this.$Message.warning(res.err_message);
+                        }
+                    })
+                    // Cookies.set('user', this.form.userName);
+                    // this.$router.push({
+                    //     name: 'home_index'
+                    // });
+                }
+            });
+        },
+        changeType(){
+            this.pwpic.pwdType = this.pwpic.pwdType === 'password' ? 'text' : 'password';
+            this.pwpic.src = this.pwpic.src == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+        },
+        changeType2(){
+            this.pwpic2.pwdType = this.pwpic2.pwdType === 'password' ? 'text' : 'password';
+            this.pwpic2.src = this.pwpic2.src == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
         }
     }
 };

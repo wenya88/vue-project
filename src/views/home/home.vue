@@ -3,7 +3,8 @@
 </style>
 <template>
     <div class="home-main">
-        <Button type="primary" @click="linkTo('/home/login')">登录</Button>
+        <!-- 主页 -->
+         <Button type="primary" @click="logout()">退出登录</Button> 
     </div>
 </template>
 
@@ -23,6 +24,17 @@ export default {
             else {
                 this.$router.push(url)
             }
+        },
+        logout() {
+            this.$axios.get('/login/logout')
+            .then( res => res.data)
+            .then( res => {
+                console.log(res)
+                // if(res.responseCode == 1) {
+                //     localStorage.removeItem('token');
+                //     this.$router.push('/')
+                // }
+            })
         }
     }
 };
