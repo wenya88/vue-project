@@ -422,12 +422,14 @@ Ganttalendar.prototype.drawTask = function (task) {
       	//鼠标双击事件
         //self.master.showTaskEditor($(this).attr("taskid"));
           console.log("当前task_id:"+$(this).attr("taskid")) //返回当前进度条的ID
+          
+          userTaskID=$(this).attr("taskid")
         	var cwidth,cheight
 	        cwidth=$(window).width()/1.5;
 	        cheight=$(window).height()/1.3;
-	        $(".openDetails").css({"width":cwidth,"height":cheight,"top":"10%","left":"15%","display":"block"});
+          $(".openDetails").css({"width":cwidth,"height":cheight,"top":"10%","left":"15%","display":"block"});
 	        e.stopPropagation()
-
+          userTaskFun(userTaskID)
         	$(".openDetails").click(function(e){
 				  $(this).show;
 				  e.stopPropagation()
@@ -612,33 +614,49 @@ Ganttalendar.prototype.drawTask = function (task) {
     //status
     // if (dimensions.width > 15){
     //console.log(dimensions)
-        var taskStart=new Date(((task.start)/1000)*1000);
-        var taskStart_Y=taskStart.getFullYear();
-        var taskStart_M=taskStart.getMonth()+1;
-        var taskStart_D=taskStart.getDate()
-        var taskStartDate=taskStart_Y+"-"+taskStart_M+"-"+taskStart_D;
+    
+       function ganttPost(){
+          // var taskID=task.id;
+          // var taskName=task.name;  
+          // var taskName=task.name;
+          // var taskID=task.id;
+          // onsole.log(taskName+" "+taskID)
+          // var taskURL="http://192.168.2.19/index.php?r=task/task/update";
+          // $.ajax({
+          //   type:'post',
+          //   url:taskURL,
+          //   async:true,
+          //   dataType:"json",
+          //   data:{"id":taskID,"name":taskName},
+          //   //data:{"id":taskID,"name":taskName,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate},
+          //   success:function(msg){
+          //     console.log(msg)
+          //   }
+          // })
+      }
+            
+        // $(".taskBoxSVG").mousedown(function(){
+          // var taskStart=new Date(((task.start)/1000)*1000);
+          // var taskStart_Y=taskStart.getFullYear();
+          // var taskStart_M=taskStart.getMonth()+1;
+          // var taskStart_D=taskStart.getDate()
+          // var taskStartDate=taskStart_Y+"-"+taskStart_M+"-"+taskStart_D;
 
-        var taskEnd=new Date((parseInt((task.end)/1000))*1000);
-        var taskEnd_Y=taskEnd.getFullYear();
-        var taskEnd_M=taskEnd.getMonth()+1;
-        var taskEnd_D=taskEnd.getDate()
-        var taskEndDate=taskEnd_Y+"-"+taskEnd_M+"-"+taskEnd_D;
-
-        //console.log(taskStartDate+"--"+taskEndDate)
-        var taskName=task.name;
-        var taskID=task.id;
-        var taskURL="http://192.168.2.19/index.php?r=task/task/update";
-        $.ajax({
-          type:'post',
-          url:taskURL,
-          async:true,
-          dataType:"json",
-           data:{"id":taskID,"name":taskName},
-           //data:{"id":taskID,"name":taskName,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate},
-          success:function(msg){
-            //console.log(msg)
-          }
-        })
+          // var taskEnd=new Date((parseInt((task.end)/1000))*1000);
+          // var taskEnd_Y=taskEnd.getFullYear();
+          // var taskEnd_M=taskEnd.getMonth()+1;
+          // var taskEnd_D=taskEnd.getDate()
+          // var taskEndDate=taskEnd_Y+"-"+taskEnd_M+"-"+taskEnd_D;
+          // console.log(taskStartDate+"--"+taskEndDate)
+          // $.post(taskURL,{"id":taskID,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate}).then(function(msg){
+          //   console.log(msg)
+          // })
+        // })
+        //  $.post(taskURL,{"id":taskID,"name":taskName}).then(function(msg){
+        //     console.log(msg)
+        //  })
+        
+        
         //SVG上的时间戳
         //console.log("开始时间："+(task.start)/1000+"结束时间："+parseInt((task.end)/1000))
 
@@ -646,8 +664,8 @@ Ganttalendar.prototype.drawTask = function (task) {
     // }
         // var gdata="";
         //进度条
-        // var n=20+"%";
-        // var an=n.replace("%","");
+        var n=20+"%";
+        var an=n.replace("%","");
 
         //判断图标的颜色，如果为黄，则进度条为灰色
         if(task.status=="STATUS_SUSPENDED"){
@@ -666,12 +684,11 @@ Ganttalendar.prototype.drawTask = function (task) {
           svg.rect(taskSvg, "101%", 8, 25, 14, {stroke:1, rx:"0", ry:"0", status:"STATUS_DONE", class:"taskStatusSVG"});
           svg.text(taskSvg,"101.5%", 21, "+"+8, {class:"taskLabelSVG", transform:"translate(2,-1)"});
         }
-
-
+              
 
     //图标事件
     $(function(){
-
+      
     	//点击
     	$(".taskBoxSVG").hover(function(){
     	  var oTop=$(this).offset().top;
@@ -971,18 +988,61 @@ Ganttalendar.prototype.reset = function () {
 Ganttalendar.prototype.redrawTasks = function () {
   //[expand]
   var collapsedDescendant = this.master.getCollapsedDescendant();
+  var Garr=[];
   for (var i = 0; i < this.master.tasks.length; i++) {
     var task = this.master.tasks[i];
     if (collapsedDescendant.indexOf(task) >= 0) continue;
     this.drawTask(task);
+    Garr.push(task)
+    // console.log(task.id+":"+task.name)
   }
+  console.log(Garr)
+  function ganttNameUpdata(){
+    for(var i=0;i<Garr.length;i++){
+        var taskID=Garr[i].id;
+        var taskName=Garr[i].name;
+         $.post(taskURL,{"id":taskID,"name":taskName}).then(function(msg){
+            console.log(msg)
+        })
+        console.log(taskName)
+    }
+  }
+
+  function ganttSVGUpdata(){
+    for(var s=0;s<Garr.length;s++){
+          var taskID=Garr[s].id;
+          var taskStart=new Date(((Garr[s].start)/1000)*1000);
+          var taskStart_Y=taskStart.getFullYear();
+          var taskStart_M=taskStart.getMonth()+1;
+          var taskStart_D=taskStart.getDate();
+          var taskStartDate=taskStart_Y+"-"+taskStart_M+"-"+taskStart_D;
+
+          var taskEnd=new Date((parseInt((Garr[s].end)/1000))*1000);
+          var taskEnd_Y=taskEnd.getFullYear();
+          var taskEnd_M=taskEnd.getMonth()+1;
+          var taskEnd_D=taskEnd.getDate();
+          var taskEndDate=taskEnd_Y+"-"+taskEnd_M+"-"+taskEnd_D;
+          console.log(taskStartDate+"--"+taskEndDate);
+          $.post(taskURL,{"id":taskID,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate}).then(function(msg){
+            console.log(msg)
+          })
+    }
+          
+  }
+
+  $(".gdfCell input").blur(function(){
+    ganttNameUpdata()
+    
+  })
+
+  $(".taskBoxSVG").mouseleave(function(){
+    ganttSVGUpdata()
+  })
 };
 
 
 // 刷新甘特图
 Ganttalendar.prototype.refreshGantt = function () {
-  //console.debug("refreshGantt")
-
   if (this.showCriticalPath) {
     this.master.computeCriticalPath();
   }

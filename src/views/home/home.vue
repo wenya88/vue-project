@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 export default {
     name: 'home',
     data () {
@@ -26,10 +27,14 @@ export default {
             }
         },
         logout() {
-            this.$axios.get('/login/logout')
+            this.$axios.get('/login/info')
             .then( res => res.data)
             .then( res => {
-                console.log(res)
+                if(res.err_code == 0){
+                    Cookies.remove('user');
+                    localStorage.removeItem('token');
+                    this.$router.push('/login');
+                }
                 // if(res.responseCode == 1) {
                 //     localStorage.removeItem('token');
                 //     this.$router.push('/')

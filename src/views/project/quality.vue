@@ -11,8 +11,10 @@
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+              <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+                <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+              </OptionGroup> 
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -24,7 +26,7 @@
               <Input 
               v-model="searchInput" 
               icon="search" 
-              placeholder="项目 / 负责人" 
+              placeholder="任务 / 负责人" 
               style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"
               @keyup.enter.native="fetchData()"></Input>
             </Col>
@@ -33,7 +35,7 @@
         <div class="tab-main">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="(item,index) in fristData" :key="index">
-            <div class="card" @click="handleRender = true">
+            <div class="card" @click="fetchFileData(item.task_id, item.stage)">
               <div class="card-box">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
                 <Icon type="pause" v-else-if=""></Icon> -->
@@ -86,7 +88,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="项目 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -156,7 +158,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="项目 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -214,7 +216,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="项目 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -265,39 +267,23 @@
         </div>
       </TabPane>
     </Tabs>
-    <Modal :styles="{top: '30px'}" v-model="handleRender" width="1300" @on-cancel="cancel">
-      <div class="icon-header">
-        <Row :gutter="40">
-          <Col span="4">
-          <Icon type="ios-star-outline" size="23"></Icon>
-          </Col>
-          <Col span="4">
-          <Icon type="ios-trash-outline" size="23"></Icon>
-          </Col>
-        </Row>
-      </div>
-      <div slot="header">
-      </div>
-      <!-- <bea-n :datl="formLeft"></bea-n> -->
-      <div slot="footer">
-          <!--<Button type="error" size="large">ssd</Button>-->
-      </div>
-    </Modal>
+    <tab-modal :editData="formLeft" v-show="isTabModal" @close="closeTabmodal"></tab-modal>
   </div>
 </template>
 
 <script>
-import beaN from './components/beaN';
+var qs = require('querystring');
+import tabModal from './components/task/tabModal';
 import mySort from '../main-components/sort'
-// import axios from 'axios'
-import {fetchstagetaskData} from "../../config/env.js";
 import { mapGetters } from 'vuex'
 export default {
   components: {
-    mySort
+    mySort,
+    tabModal
   },
   data() {
     return {
+      isTabModal: false,
       num: 0,
       date: (Date.parse(new Date()))/1000,
       showNum: null,
@@ -342,10 +328,20 @@ export default {
         }
       ],
       model: '',
+      taskType: '',
       value: '',
       formLeft: {
+        id: '',
         name: '',
-      }
+        project: '',
+        project_child: '',
+        tasktype_id: '',
+        expect_start_time: '',
+        expect_end_time: '',
+        run_uname: '',
+        stage_name: ''
+      },
+      dataList: []
     }
   },
   computed: {
@@ -354,7 +350,8 @@ export default {
       nsfkSortList: 'getNsfkSortList',
       khdsSortList: 'getKhdsSortList',
       khfkSortList: 'getKhfkSortList',
-      statusList: 'getStatusList'
+      statusList: 'getStatusList',
+      taskList: 'getTaskType'
     })
   },
   created() {
@@ -363,8 +360,12 @@ export default {
     this.fetchNum(2);
     this.fetchNum(3);
     this.fetchNum(4);
+    this.getTaskList();
   },
   methods: {
+    /**
+     * 文件筛选条件
+     */
     filterTime(val) {
       if(val == 0) {
         this.sortStatus = 'create_time'
@@ -378,16 +379,17 @@ export default {
     cancel(){
       this.$Message.info('点击了取消');
     },
+    /**
+     * 获取文件不同阶段的文件数
+     */
     fetchNum(str) {
-      this.$axios.get('/task/stage-page',{
-        params: {
-          status: str + ''
-        }
-      })
+      let data = {
+        status: str + ''
+      }
+      this.$axios.post('/task/stage-page', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
-          // let number = 'this.param.num'+ str;
           if(str == 1) {
             this.param.num1 = res.page.count
           } else if(str == 2) {
@@ -400,54 +402,73 @@ export default {
         }
       })
     },
-    fetchData() {   //获取阶段数据
-      // for(let i=1; i<5; i++ ) {
-      //   if(i==1) {
-      //     this.status = '1';
-      //     fetchUrl;
-      //   } else if(i==2) {
-      //     this.status = '2';
-      //     fetchUrl;
-      //   } else if(i==3) {
-      //     this.status = '3';
-      //     fetchUrl;
-      //   } else if(i==4) {
-      //     this.status = '4';
-      //     fetchUrl;
-      //   }
-      //   break
-      //   console.log(i)
-      // }
-      // this.$axios.get('/task/stage-page&status='+this.status+'&search='+this.searchInput+'&order='+this.sortStatus+'&task_status=')
-      // this.$axios.post('/task/stage-page',data)
-      this.$axios.get('/task/stage-page', {
-        params: {
+    /**
+     * 获取阶段数据
+     */
+    fetchData() {
+      this.$Loading.start();
+      let data = {
           status: this.status,
           search: this.searchInput,
-          order: this.sortStatus
-        }
-      })
+          order: this.sortStatus,
+          tasktype_id: this.taskType
+      }
+      this.$axios.post('/task/stage-page', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
           if(this.status == '1') {
             this.fristData = res.data
             this.searchInput = ''
-            // this.param.num1 = res.page.count
           } else if(this.status == '2') {
             this.secondData = res.data
             this.searchInput = ''
-            // this.param.num2 = res.page.count
           } else if(this.status == '3') {
             this.thirdData = res.data
             this.searchInput = ''
-            // this.param.num3 = res.page.count
           } else if(this.status == '4') {
             this.fourthData = res.data
             this.searchInput = ''
-            // this.param.num4 = res.page.count
           }
+          this.$Loading.finish();
+        } else {
+          this.$Loading.error();
         }
+      })
+    },
+    /**
+     * 从store中把任务类型获取出来
+     */
+    getTaskList() {
+      let data = {
+        company_id: 1
+      }
+      this.$store.dispatch('fetchTaskList', qs.stringify(data));
+    },
+    showTabmodal() {
+      this.isTabModal = true
+      this.formLeft = this.dataList[index]
+    },
+    closeTabmodal() {
+
+    },
+    /**
+     * 获取阶段文件中某个文件的详情
+     * 任务id  必传
+     * 阶段  非必传
+     */
+    fetchFileData(fileId,sNum) {
+      this.$Loading.start();
+      let data = {
+        task_id: fileId,
+        stage: sNum
+      }
+      this.$axios.post('/task/stage-list', qs.stringify(data))
+      .then(res => res.data)
+      .then(res => {
+        console.log(res)
+        this.isTabModal = true
+        this.$Loading.finish();
       })
     }
   }

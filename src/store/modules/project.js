@@ -1,5 +1,8 @@
 'use strict'
 
+import Vue from 'vue'
+import Axios from '../request'
+
 const state = {
   ndsSortList: [
     {
@@ -81,17 +84,25 @@ const getters = {
 
 const actions = {
   fetchTaskList({commit, state}, data) {
-    Axios.post('/api/auth/auth/list', data)
+    Axios.post('/task-type/cate-list', data)
       .then(response => response.data)
       .then(response => response.data)
       .then(response => {
-        commit('updateAuthList', response)
+        // response.forEach((item) => {
+        //   console.log("item",item.tasktype)
+        //   let tasktype = [];
+        //   tasktype.push(item.tasktype)
+        //   console.log("tasktype",tasktype)
+        // })
+        commit('updateTaskList', response)
       })
   }
 }
 
 const mutations = {
-
+  updateTaskList(state, data){
+    state.taskType = data;
+  }
 }
 
 export default {

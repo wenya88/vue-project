@@ -59,6 +59,13 @@ module.exports = merge(webpackBaseConfig, {
                 //路径重写
                 pathRewrite: { '^/login': '/login' },
                 changeOrigin: true
+            },
+            '/file': {
+                // 登录
+                target: 'http://192.168.2.19/index.php?r=file',
+                //路径重写
+                pathRewrite: { '^/file': '/file' },
+                changeOrigin: true
             }
         }
     }

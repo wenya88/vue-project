@@ -161,15 +161,14 @@ export default {
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.register.passwd)));
             let data = {
-                "account": this.register.userName,
-                "password": password
+                account: this.register.userName,
+                password: password
             };
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$axios.post('/login/register', data)
+                    this.$axios.post('/login/register', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
-                        console.log(res)
                         if(res.err_code == 0) {
                             this.loginform.userName = this.register.userName;
                             this.loginform.password = this.register.passwd;
@@ -188,14 +187,14 @@ export default {
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.loginform.password)));
             let data = {
-                "account": this.loginform.userName,
-                "password": password
+                account: this.loginform.userName,
+                password: password
             };
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     Cookies.set('user', this.loginform.userName);
                     // Cookies.set('password', this.form.password);
-                    this.$axios.post('/login/login', data)
+                    this.$axios.post('/login/login', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {

@@ -31,6 +31,8 @@
   <script src="ganttMaster.js"></script>
   <script>
     var userId=1;
+    var userTaskID;
+    var taskURL="http://192.168.2.19/index.php?r=task/task/update";
   </script>
   <script src="ganttArr.js"></script>
 </head>
@@ -291,7 +293,13 @@
 </div>
 
 <div class="openDetails">
-	<span>X</span>
+  <span>X</span>
+  <script>
+    function userTaskFun(userTaskID){
+        userTaskID=userTaskID;
+        alert(userTaskID);
+    }
+  </script>
 </div>
 
 <div class="addpeople">

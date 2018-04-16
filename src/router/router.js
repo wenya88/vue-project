@@ -108,19 +108,14 @@ export const appRouter = [
               title: '图片编辑组件',
               component: resolve => { require(['@/views/project/components/imgEditor.vue'], resolve); }
             },
-            {
-              path: '/project/vedioEditor',
-              icon: 'ios-paper-outline',
-              name: 'statistics',
-              title: '视频标注组件',
-              component: resolve => { require(['@/views/project/components/vedioEditor.vue'], resolve); }
-            },
-            {
-                path: '/project/grid',
-                title: '拖拽功能',
-                name: 'grid',
-                component: resolve => { require(['@/views/project/grid/grid.vue'], resolve); }
-            }
+            // {
+            // {
+            //   path: '/project/vedioEditor',
+            //   icon: 'ios-paper-outline',
+            //   name: 'statistics',
+            //   title: '视频标注组件',
+            //   component: resolve => { require(['@/views/project/components/vedioEditor.vue'], resolve); }
+            // }
         ]
     },
     {
@@ -295,79 +290,40 @@ export const appRouter = [
                 component: resolve => { require(['@/views/artwiki/home.vue'], resolve); }
             }
         ]
-    },
-    //{
-    //     path: '/group',
-    //     icon: 'ios-folder',
-    //     name: 'group',
-    //     title: '分包项目管理',
-    //     component: Main,
-    //     // redirect: '/group/page2',
-    //     children: [
-    //         {
-    //             path: '/group/task',
-    //             icon: 'ios-paper-outline',
-    //             name: 'task',
-    //             title: '任务管理',
-    //             component: resolve => { require(['@/views/group/task/task.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/group/page3',
-    //             icon: 'ios-list-outline',
-    //             name: 'page3',
-    //             title: '任务管理',
-    //             component: resolve => { require(['@/views/group/page1/taskManage.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/group/page4',
-    //             icon: 'ios-list-outline',
-    //             name: 'page4',
-    //             title: '日历管理',
-    //             component: resolve => { require(['@/views/group/page1/calend.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/group/page5',
-    //             icon: 'ios-list-outline',
-    //             name: 'page5',
-    //             title: '进度统计',
-    //             component: resolve => { require(['@/views/group/page1/echarts.vue'], resolve); }
-    //         }
-    //     ]
-    // },
-    // {
-    //     path: '/page',
-    //     icon: 'ios-paper',
-    //     title: '项目管理',
-    //     name: 'page',
-    //     component: Main,
-    //     children: [
-    //         {
-    //             path: '/page/taskClass',
-    //             icon: 'ios-paper-outline',
-    //             name: 'taskClass',
-    //             title: '任务类别库',
-    //             component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/page/index',
-    //             title: 'Page',
-    //             name: 'page_index',
-    //             component: resolve => { require(['@/views/page/page.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/page/grid',
-    //             title: '拖拽功能',
-    //             name: 'grid',
-    //             component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
-    //         },
-    //         {
-    //             path: '/page/layout',
-    //             title: '拖拽布局',
-    //             name: 'layout',
-    //             component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
-    //         }
-    //     ]
-    // }
+     },
+    {
+        path: '/typeLibrary',
+        icon: 'ios-paper',
+        title: '项目管理',
+        name: 'typeLibrary',
+        component: Main,
+        children: [
+            // {
+            //     path: '/page/taskClass',
+            //     icon: 'ios-paper-outline',
+            //     name: 'taskClass',
+            //     title: '任务类别库',
+            //     component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
+            // },
+            // {
+            //     path: '/page/index',
+            //     title: 'Page',
+            //     name: 'page_index',
+            //     component: resolve => { require(['@/views/page/page.vue'], resolve); }
+            // },
+            // {
+            //     path: '/page/grid',
+            //     title: '拖拽功能',
+            //     name: 'grid',
+            //     component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
+            // },
+            // {
+            //     path: '/page/layout',
+            //     title: '拖拽布局',
+            //     name: 'layout',
+            //     component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
+            // }
+        ]    }
 ];
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [

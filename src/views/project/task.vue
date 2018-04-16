@@ -9,7 +9,7 @@
         </div>
         <Tabs>
             <Tab-pane label="列表模式" icon="ios-list-outline">
-                    <task></task>
+                <task></task>
             </Tab-pane>
             <Tab-pane label="甘特图模式" icon="podium">
                 <iframe id="show-iframe" frameborder=0 name="showHere" scrolling=auto
@@ -54,7 +54,6 @@
                         $(this).addClass("active");
                     })
                 })
-                console.log(tId)
             }
         }
     }

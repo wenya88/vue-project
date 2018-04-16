@@ -19,7 +19,7 @@
           <Input 
           v-model="searchInput" 
           icon="search" 
-          placeholder="项目 / 负责人" 
+          placeholder="任务 / 负责人" 
           style="width: 200px;float: right;margin-right: 20px;margin-top: 3px;"
           @keyup.enter.native="fetchData()"></Input>
         </Col>
@@ -38,7 +38,7 @@
             <td class="w15"><span class="tag">{{item.tasktype_name}}</span></td>
             <td class="w55">{{item.task_name}}</td>
             <td class="w20"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
-            <td class="w10"><Icon type="ios-download"></Icon></td>
+            <td class="w10" @click="downloadFile()"><Icon type="ios-download"></Icon></td>
           </tr>
         </table>
       </div>
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+var qs = require('querystring');
 export default {
   data() {
     return {
@@ -90,18 +91,27 @@ export default {
   methods: {
     fetchData() {
       let _this = this;
-      _this.$axios.get('/task/stage-page',{
-        params: {
-          status: 5,
-          search: _this.searchInput
-        }
-      })
+      let data = {
+        status: 5,
+        search: _this.searchInput
+      }
+      _this.$axios.post('/task/stage-page',qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
           _this.fileData = res.data
           console.log(_this.fileData)
         }
+      })
+    },
+    downloadFile(fileId) {
+      let data = {
+        fid: fileId
+      }
+      this.$axios.post('/file/get-file', qs.stringify(data))
+      .then(res => res.data)
+      .then(res => {
+        console.log(res)
       })
     }
   }

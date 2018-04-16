@@ -1,6 +1,5 @@
 
 window.onload=function(){
-
   function getGantt(num){
     $.ajax({
       type:"get",
@@ -11,6 +10,7 @@ window.onload=function(){
         var data=msg.data;
         if(msg.err_code==0){
           var arr=[];
+          var Parr=[];
           $.each(data,function(index,item){
             var obj={
               "id":item.id,
@@ -29,9 +29,13 @@ window.onload=function(){
               "assigs":[],
               "hasChild":true
             }
+            var Pobj={
+              "project":item.project
+            }
             arr.push(obj)
+            Parr.push(Pobj)
           });
-
+          
           arr.forEach(function(aitem){
             if(aitem.status=='1'){
               aitem.status="STATUS_FAILED";
@@ -45,19 +49,21 @@ window.onload=function(){
           });
 
           var proChild;
+          var projectID=Parr[0].project;
           $.ajax({
             type:"get",
             async:false,
-            url:"http://192.168.2.19/index.php?r=task/project/child-list&id"+num,
+            url:"http://192.168.2.19/index.php?r=task/project/child-list&id="+projectID,
             dataType:"json",
             success:function(data){
               proChild=data.data
+              console.log(proChild)
             }
           });
 
           proChild.forEach(function(pitem){
               arr.forEach(function(patime){
-                if(patime.projectChild==pitem.project_id){
+                if(patime.projectChild==pitem.id){
                   patime.projectChild=pitem.name
                 }else{
                   patime.projectChild="----"
