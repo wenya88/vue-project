@@ -2,7 +2,7 @@
   <div class="quality">
     <Tabs value="1" :animated="false" v-model="status" @on-click="fetchData()">
       <TabPane :label="'内部待审(' + param.num1 + ')'" name="1">
-        <my-sort :sortList="ndsSortList" @choiced="filterTime"></my-sort>
+        <my-sort :sortList="ndsSortList" @choiced="filterFTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
@@ -22,7 +22,7 @@
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
-            <Col span="10">
+            <Col span="12">
               <Input 
               v-model="searchInput" 
               icon="search" 
@@ -32,10 +32,10 @@
             </Col>
           </Row>
         </div>
-        <div class="tab-main">
+        <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="(item,index) in fristData" :key="index">
-            <div class="card" @click="fetchFileData(item.task_id, item.stage)">
+            <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
                 <Icon type="pause" v-else-if=""></Icon> -->
@@ -69,17 +69,19 @@
         </div>
       </TabPane>
       <TabPane :label="'内审已反馈(' + param.num2 + ')'" name="2">
-        <my-sort :sortList="nsfkSortList" @choiced="filterTime"></my-sort>
+        <my-sort :sortList="nsfkSortList" @choiced="filterSTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+              <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+                <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+              </OptionGroup> 
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -92,10 +94,10 @@
             </Col>
           </Row>
         </div>
-        <div class="tab-main">
+        <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="(item,index) in secondData" :key="index">
-            <div class="card" @click="modal1 = true">
+            <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
                 <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
@@ -139,17 +141,19 @@
         </div>
       </TabPane>
       <TabPane :label="'客户待审(' + param.num3 + ')'" name="3">
-        <my-sort :sortList="khdsSortList" @choiced="filterTime"></my-sort>
+        <my-sort :sortList="khdsSortList" @choiced="filterTTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+              <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+                <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+              </OptionGroup> 
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -162,10 +166,10 @@
             </Col>
           </Row>
         </div>
-        <div class="tab-main">
+        <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="item in thirdData" :key="item.title">
-            <div class="card" @click="handleRender = true">
+            <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
                 <img class="card-box-pic" :src="item.thumb"/>
                 <div class="tips">
@@ -197,17 +201,19 @@
         </div>
       </TabPane>
       <TabPane :label="'客户已反馈(' + param.num4 + ')'" name="4">
-        <my-sort :sortList="khfkSortList" @choiced="filterTime"></my-sort>
+        <my-sort :sortList="khfkSortList" @choiced="filterFTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+              <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+                <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+              </OptionGroup> 
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -220,10 +226,10 @@
             </Col>
           </Row>
         </div>
-        <div class="tab-main">
+        <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="item in fourthData" :key="item.title">
-            <div class="card" @click="modal1 = true">
+            <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
                 <img class="card-box-pic" src="../../images/logo.png" />
                 <div class="tips">
@@ -267,19 +273,87 @@
         </div>
       </TabPane>
     </Tabs>
-    <tab-modal :editData="formLeft" v-show="isTabModal" @close="closeTabmodal"></tab-modal>
+    <base-model 
+    :editData="formLeft" 
+    v-show="isTabModal" 
+    @close="closeTabmodal" 
+    :isDisabled="true"
+    >
+    <div slot="one">
+      <FormItem label="子项目">
+        <Select v-model="subpId" :disabled="true">
+          <Option v-for="(item,index) in subProjectList" :value="item.id" :key="index">{{item.name}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="任务类型">
+        <Select v-model="taskType" :disabled="true">
+          <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+            <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+          </OptionGroup>
+          <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
+        </Select>
+      </FormItem>
+    </div>
+    <div class="edit" slot="two">
+      <div v-show="status == 1">
+        <input class="message" type="text" v-model="feedback" placeholder="输入您要反馈的内容" />
+        <div class="change">需修改</div>
+        <div class="success">通过</div>
+      </div>  
+      <div v-show="status == 2" style="margin: 20px 0 0 20px;">
+        <ul class="list">
+          <li>反馈内容</li>
+          <li>反馈结果</li>
+          <li>反馈人</li>
+          <li>反馈时间</li>
+        </ul>
+        <ul class="list">
+          <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
+          <li>需修改</li>
+          <li>刘德华</li>
+          <li>今天/3天前</li>
+        </ul>
+      </div>
+      <div v-show="status == 3" style="margin: 20px 0 0 100px;">
+        <ul class="list">
+          <li>反馈状态</li>
+          <li>反馈人</li>
+          <li>等待时间</li>
+        </ul>
+        <ul class="list">
+          <li>客户待审</li>
+          <li>四川义美游有限公司</li>
+          <li>今天提交/3天前</li>
+        </ul>
+      </div>
+      <div v-show="status == 4" style="margin: 20px 0 0 20px;">
+        <ul class="list">
+          <li>反馈内容</li>
+          <li>反馈结果</li>
+          <li>反馈人</li>
+          <li>反馈时间</li>
+        </ul>
+        <ul class="list">
+          <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
+          <li>需修改</li>
+          <li>刘德华</li>
+          <li>今天/3天前</li>
+        </ul>
+      </div>
+    </div>
+    </base-model>
   </div>
 </template>
 
 <script>
 var qs = require('querystring');
-import tabModal from './components/task/tabModal';
+import baseModel from '../main-components/model/baseModel';
 import mySort from '../main-components/sort'
 import { mapGetters } from 'vuex'
 export default {
   components: {
     mySort,
-    tabModal
+    baseModel
   },
   data() {
     return {
@@ -287,12 +361,14 @@ export default {
       num: 0,
       date: (Date.parse(new Date()))/1000,
       showNum: null,
+      boxHeight: 300,
       param: {
         num1: 0,
         num2: 0,
         num3: 0,
         num4: 0
       },
+      feedback: '',
       status: '1',
       sortStatus: '',
       searchInput: '',
@@ -329,19 +405,9 @@ export default {
       ],
       model: '',
       taskType: '',
+      subpId: null,
       value: '',
-      formLeft: {
-        id: '',
-        name: '',
-        project: '',
-        project_child: '',
-        tasktype_id: '',
-        expect_start_time: '',
-        expect_end_time: '',
-        run_uname: '',
-        stage_name: ''
-      },
-      dataList: []
+      formLeft: {}
     }
   },
   computed: {
@@ -351,7 +417,8 @@ export default {
       khdsSortList: 'getKhdsSortList',
       khfkSortList: 'getKhfkSortList',
       statusList: 'getStatusList',
-      taskList: 'getTaskType'
+      taskList: 'getTaskType',
+      subProjectList: 'getSubProjectList'
     })
   },
   created() {
@@ -362,11 +429,44 @@ export default {
     this.fetchNum(4);
     this.getTaskList();
   },
+  mounted() {
+    // console.log('元素高度',document.getElementById("model").offsetHeight);
+  },
   methods: {
     /**
      * 文件筛选条件
      */
-    filterTime(val) {
+    filterFTime(val) {
+      if(val == 0) {
+        this.sortStatus = 'create_time'
+      } else if(val == 1) {
+        this.sortStatus = 'inside_audit_time'
+      } else if(val == 2) {
+        this.sortStatus = 'client_audit_time'
+      }
+      this.fetchData()
+    },
+    filterSTime(val) {
+      if(val == 0) {
+        this.sortStatus = 'create_time'
+      } else if(val == 1) {
+        this.sortStatus = 'inside_audit_time'
+      } else if(val == 2) {
+        this.sortStatus = 'client_audit_time'
+      }
+      this.fetchData()
+    },
+    filterTTime(val) {
+      if(val == 0) {
+        this.sortStatus = 'create_time'
+      } else if(val == 1) {
+        this.sortStatus = 'inside_audit_time'
+      } else if(val == 2) {
+        this.sortStatus = 'client_audit_time'
+      }
+      this.fetchData()
+    },
+    filterFTime(val) {
       if(val == 0) {
         this.sortStatus = 'create_time'
       } else if(val == 1) {
@@ -386,7 +486,7 @@ export default {
       let data = {
         status: str + ''
       }
-      this.$axios.post('/task/stage-page', qs.stringify(data))
+      this.$axios.post('/task/task/stage-page', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
@@ -406,14 +506,17 @@ export default {
      * 获取阶段数据
      */
     fetchData() {
+      this.taskType = '';
+      this.searchInput = '';
       this.$Loading.start();
       let data = {
           status: this.status,
           search: this.searchInput,
           order: this.sortStatus,
-          tasktype_id: this.taskType
+          tasktype_id: this.taskType,
+          order_by: 'desc'
       }
-      this.$axios.post('/task/stage-page', qs.stringify(data))
+      this.$axios.post('/task/task/stage-page', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
@@ -445,30 +548,38 @@ export default {
       }
       this.$store.dispatch('fetchTaskList', qs.stringify(data));
     },
-    showTabmodal() {
-      this.isTabModal = true
-      this.formLeft = this.dataList[index]
+    getSubProject(pId) {
+      let data = {
+        id: pId
+      }
+      this.$store.dispatch('fetchSubProject', qs.stringify(data));
     },
     closeTabmodal() {
-
+      this.isTabModal = false;
+      // this.taskType = '';
+      // this.fetchData();
     },
     /**
      * 获取阶段文件中某个文件的详情
      * 任务id  必传
      * 阶段  非必传
      */
-    fetchFileData(fileId,sNum) {
+    fetchFileData(fileId) {
       this.$Loading.start();
+      this.boxHeight = 0;
       let data = {
-        task_id: fileId,
-        stage: sNum
+        id: fileId
       }
-      this.$axios.post('/task/stage-list', qs.stringify(data))
+      this.$axios.post('/task/task/stage-info', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
-        console.log(res)
-        this.isTabModal = true
+        this.isTabModal = true;
+        this.formLeft = res;
+        // console.log('formLeft',this.formLeft)
         this.$Loading.finish();
+        this.getSubProject(res.project_id)
+        this.taskType = res.task_id
+        this.subpId = parseInt(res.project_child_id)
       })
     }
   }

@@ -50,21 +50,21 @@ module.exports = merge(webpackBaseConfig, {
                 // 目标服务器地址
                 target: 'http://192.168.2.19/index.php?r=task',
                 //路径重写
-                pathRewrite: { '^/task': '/task' },
+                pathRewrite: { '^/task': '' },
                 changeOrigin: true
             },
-            '/login': {
+            '/system': {
                 // 登录
                 target: 'http://192.168.2.19/index.php?r=system',
                 //路径重写
-                pathRewrite: { '^/login': '/login' },
+                pathRewrite: { '^/system': '' },
                 changeOrigin: true
             },
             '/file': {
                 // 登录
                 target: 'http://192.168.2.19/index.php?r=file',
                 //路径重写
-                pathRewrite: { '^/file': '/file' },
+                pathRewrite: { '^/file': '' },
                 changeOrigin: true
             }
         }

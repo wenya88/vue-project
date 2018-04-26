@@ -2,7 +2,9 @@
   <div class="sort">
     <ul>
       <li v-for="(item,index) in sortList" :key="index" :class="{'actived': sortIndex == index}" @click="choseSort(index)">
-        <Icon :type='item.icon'></Icon>{{item.label}}</li>
+        <i class="descIcon"></i>
+        <!-- <Icon :type='item.icon'></Icon> -->
+        {{item.label}}</li>
     </ul>
   </div>
 </template>
@@ -34,6 +36,19 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  /* .sort li:before{
+   content:url(/src/images/desc.png); 
+  width: 14px;
+  height: 14px;
+  background: url(/src/images/desc.png) no-repeat;
+}   */
+.descIcon{
+  width: 14px;
+  height: 14px;
+  background: url(/src/images/desc.png) no-repeat center center / 100% 100%;
+  display: block;
+  position: absolute;
+  top: 10px;
+}
 </style>

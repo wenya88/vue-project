@@ -11,13 +11,14 @@ import 'vue-event-calendar/dist/style.css';
 import vueEventCalendar from 'vue-event-calendar';
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.baseURL = 'http://192.168.2.19/index.php?r=task';
+// axios.defaults.baseURL = 'http://192.168.2.19/index.php';
 axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
 var token = localStorage.token
 if(localStorage.token) {
   axios.defaults.headers.common['token'] = localStorage.token;
 }
+localStorage.pid = 1
 Vue.use(vueEventCalendar, {locale: 'zh'})
 Vue.use(iView);
 Vue.use(VueResource);

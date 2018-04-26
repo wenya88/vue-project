@@ -19,26 +19,26 @@
 </style>
 <template>
     <div class="imgEditorCom">
-        <div class="imgFocus" id="signx"><img src="https://file.iviewui.com/iview-admin/login_bg.jpg"/></div>
+        <div class="imgFocus" id="signx"><img v-for="item in IMGdata" :src="item.file"/></div>
+        <button class="actionPost">确认</button>
     </div>
 </template>
 <script>
-
+  import {baseUrl} from '../../../config/env.js'
   export default {
     data () {
       return {
-        data:[
-            {left:100,top:300,message:"测试"},
-            {left:400,top:100,message:"测试2"}
-          ]
+        data:[],
+        mdata:[],
+        IMGdata:[],
+        fileID:11
       }
     },
     mounted(){
-      this.defue();
-      this.imgdef();
+      this.get();
     },
     methods:{
-      defue(){
+      defue(fileID){
         (function($){
           var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
           var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
@@ -102,7 +102,7 @@
                 if(changeSignColor){
                   $('#Ts'+indexId).css("border",signColor+" 3px solid");
                 }//改变了颜色
-                    var mes={left:cX-15,top:cY-15,message:text};
+                var mes={left:cX-15,top:cY-15,message:text};
                 Data[Data.length]=mes;
               }
             });//确认编辑
@@ -123,29 +123,7 @@
               deleteData(Rleft,Rtop);
               $('#Ts'+removeId).remove();
             });//删除标记
-            // $(document).on('mouseover','[id*=Ts]',function(){
-            //   var l=$(this).offset().left,T=$(this).offset().top;
-            //   $('.hintBox').remove();
-            //   var t=$(this).attr("theSign");
-            //   $('body').append("<div class='hintBox'>"+t+"</div>");
-            //   var Hw=$('.hintBox').width(),Hh=$('.hintBox').height();
-            //   if(Hh>35){
-            //     $('.hintBox').css({"text-align":"left"});
-            //   }
-            //   $('.hintBox').append("<div class='triangle-down'></div>");
-            //   $('.triangle-down').css({"left":Hw/2-10,"top":Hh});
-            //   $('.hintBox').css({"left":l-Hw/2+15,"top":T-Hh-6});
-            //   if(changeBodyColor){
-            //     $('.hintBox').css("background",bodyColor);
-            //     $('.triangle-down').css("border-top","10px solid "+bodyColor);
-            //   }
-            //   if(changeFontColor){
-            //     $('.hintBox').css("color",fontColor);
-            //   }
-            // });//显示提示
-            // $(document).on('mouseleave','[id*=Ts]',function(){
-            //   $('.hintBox').remove();
-            // });
+          
             $(document).click(function(){
               $('.chooseBox').remove();
             });
@@ -166,7 +144,7 @@
             for(var i=0;i<data.length;i++){
               indexId++
               $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
-              $('#Ts'+l).css({"left":data[i].left,"top":data[i].top});
+              $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
               if(changeSignColor){
                 $('#Ts'+l).css("border",signColor+" 3px solid");
               }//改变了颜色
@@ -174,11 +152,71 @@
             }
             indexId=l;
           }//载入数据
+
+          $(".actionPost").click(function(){
+            var url=baseUrl+'index.php?r=task/task/inside-audit';
+            var ImgData={
+                  "stage_id": 49,
+                  "audit": 2,
+                  "feedbac": "",
+                  "file": [{
+                    "file_id": fileID,
+                    "tag": Data
+                  }]
+                }
+            $.ajax({
+              type:'post',
+              url:url,
+              data:ImgData,
+              async:true,
+              dataType:"json",
+              success:function(msg){
+               console.log(msg)
+             },
+             error:function(){
+               alert('请求失败!')
+             }
+             
+            })
+              console.log(ImgData)
+          })
+
         })(jQuery);
       },
       imgdef(){
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
+      },
+      get(){
+        let url=baseUrl+'index.php?r=task/task/stage-list';
+        let params={
+          'task_id':109
+        };
+        this.$http.get(url,{params:params}).then(function(msg){
+            let Sdate=msg.data.data
+            Sdate.forEach(function(element) {
+             if(element.hasOwnProperty("file")){
+                  this.mdata.push(element.file)
+             }        
+            },this);
+            let Vdata,VIdata
+            let fileID=this.fileID
+            this.mdata.forEach(function(Melement,index){
+              for(let i=0;i<Melement.length;i++){
+                if(Melement[i].id==fileID){
+                  Vdata=Melement[i].tag;
+                  VIdata=Melement[i];
+                }
+              }
+            })
+            this.data=Vdata;
+            this.IMGdata.push(VIdata);
+            this.defue(this.fileID);
+            this.imgdef();
+        },()=>{
+          alert('请求失败！')
+        })
+       
       }
     }
 

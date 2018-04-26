@@ -10,14 +10,14 @@
         overflow: hidden;
     }*/
 
-.ivu-layout-header {
-    background: #fff !important;
-}
+// .ivu-layout-header {
+//     background: #fff !important;
+// }
 
 .layout-logo {
     width: 100px;
     height: 30px;
-    background: #fff !important;
+    // background: #fff !important;
     border-radius: 3px;
     float: left;
     position: relative;
@@ -47,7 +47,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div :style="{background: '#fff',paddingLeft: shrink?'60px':'0'}" class="main-header-con">
+        <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
                     <div class="layout-logo stem-logo" @click="collapsedSider()">
@@ -55,27 +55,32 @@
                     </div>
                     <div class="layout-nav stem-l">
                         <Menu mode="horizontal" :active-name="activePath">
-                             <MenuItem :name="item.path" v-for="item in subMenu" :key="item.path" :label="item.title">
-                                <Icon :type="item.icon"></Icon>
-                                <router-link :to="item.path">{{item.title}}</router-link>
+                             <MenuItem 
+                             :name="item.path" 
+                             v-for="item in subMenu" 
+                             :key="item.path" 
+                             :label="item.title">
+                                <!-- <Icon :type="item.icon"></Icon> -->
+                                 <!-- {{item.title}}  -->
+                                  <router-link :to="item.path">{{item.title}}</router-link>  
                             </MenuItem>  
                         </Menu>
                     </div>
                 </Menu>
             </Header>
         </div>
-        <div class="main-content">
-            <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
+        <div class="main-content" :style="`height:${centerHight}px`">
+            <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
                 <Menu>
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
                         <template slot="title">
-                            <Icon :type="item.icon"></Icon>
+                            <Icon :type="item.icon" size="16"></Icon>
                             <router-link :to="item.path">{{item.title}}</router-link>
                         </template>
                     </Submenu>
                 </Menu>
             </div>
-             <div class="single-page-con" :style="{left: showMenu?'200px':'0'}">
+             <div class="single-page-con">
                 <div class="single-page">
                     <router-view></router-view>
                 </div>
@@ -99,7 +104,8 @@ export default {
             showMenu: false,
             userName: '',
             subMenu: [],
-            activePath: ''
+            activePath: '',
+            centerHight: 0
         };
     },
     watch: {
@@ -109,6 +115,18 @@ export default {
         //     }
         // }
         '$route': 'updateMenu'
+    },
+    created() {
+        let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
+        let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+        this.centerHight = bodyHight - 120
+        console.log(this.centerHight)
+        if(bodyWidth <= 1366) {
+
+        } else {
+
+        }
+        // console.log(document.documentElement.clientWidth)
     },
     mounted() {
         this.init();
@@ -136,6 +154,7 @@ export default {
             this.userName = Cookies.get('user');
         },
         linkTo(url, params) {
+            alert('121212')
             if (params) {
                 this.$router.push({ path: url, query: params });
             }
@@ -157,6 +176,7 @@ export default {
             } else {
                 this.showMenu = false
             }
+            console.log('121221')
         },
         updateMenu() {
             this.menuList.forEach((item) => {

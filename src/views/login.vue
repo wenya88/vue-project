@@ -127,10 +127,12 @@ export default {
         };
     },
     /**
-     * 创建XXX
+     * 页面加载前
      * */
     created() {
         this.bodyHight = document.documentElement.clientHeight;
+    },
+    mounted() {
         this.fetchKey();
     },
     methods: {
@@ -148,7 +150,7 @@ export default {
         },
         fetchKey() {
             // this.$axios.get(authLogin+'/get-public-secret-key')
-            this.$axios.get('/login/get-public-secret-key')
+            this.$axios.get('/system/login/get-public-secret-key')
             .then(res => res.data)
             .then(res => {
                 if(res.err_code == 0) {
@@ -166,7 +168,7 @@ export default {
             };
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$axios.post('/login/register', qs.stringify(data))
+                    this.$axios.post('/system/login/register', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
@@ -194,7 +196,7 @@ export default {
                 if (valid) {
                     Cookies.set('user', this.loginform.userName);
                     // Cookies.set('password', this.form.password);
-                    this.$axios.post('/login/login', qs.stringify(data))
+                    this.$axios.post('/system/login/login', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {

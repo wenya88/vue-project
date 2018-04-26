@@ -70,7 +70,8 @@ const state = {
       value: 4
     }
   ],
-  taskType: []
+  taskType: [],
+  subProjectList: []
 }
 
 const getters = {
@@ -79,29 +80,35 @@ const getters = {
   getKhdsSortList: state => state.khdsSortList,
   getKhfkSortList: state => state.khfkSortList,
   getStatusList: state => state.statusList,
-  getTaskType: state => state.taskType
+  getTaskType: state => state.taskType,
+  getSubProjectList:  state => state.subProjectList
 }
 
 const actions = {
   fetchTaskList({commit, state}, data) {
-    Axios.post('/task-type/cate-list', data)
+    Axios.post('/task/task-type/cate-list', data)
       .then(response => response.data)
       .then(response => response.data)
       .then(response => {
-        // response.forEach((item) => {
-        //   console.log("item",item.tasktype)
-        //   let tasktype = [];
-        //   tasktype.push(item.tasktype)
-        //   console.log("tasktype",tasktype)
-        // })
         commit('updateTaskList', response)
       })
+  },
+  fetchSubProject({commit, state}, data) {
+    Axios.post('/task/project/child-list', data)
+    .then(res => res.data)
+    .then(res => res.data)
+    .then(res => {
+      commit('updateSubProjectList', res)
+    })
   }
 }
 
 const mutations = {
   updateTaskList(state, data){
     state.taskType = data;
+  },
+  updateSubProjectList(state, data) {
+    state.subProjectList = data
   }
 }
 

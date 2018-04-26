@@ -69,6 +69,9 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'task',
                 title: '任务管理',
+                component: resolve => { require(['@/views/project/task.vue'], resolve); }
+            },{
+                path: '/project/schedule',
                 icon: 'ios-paper-outline',
                 name: 'schedule',
                 title: '项目进度',

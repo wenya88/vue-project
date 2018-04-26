@@ -3,12 +3,23 @@
 @gray: #e8e8e8;
 @blue: #39f;
 .quality, .pigeonhole{
+  // position: relative;
+  // top: 0;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+  // .ivu-tabs{
+  //   position: absolute;
+  // }
   .ivu-col-span-8{
     padding: 10px 20px;
     .card{
       border: 1px solid @gray;
-      border-radius: 5px;
-      background: @gray;
+      // border-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background: @white;
+      box-shadow: 0 1px 10px #b5b5b5;
       &-box{
         position: relative;
         width: 100%;
@@ -28,7 +39,7 @@
           height: 36px;
           line-height: 36px;
           bottom: 0;
-          background: rgba(0, 0, 0, .5);
+          background: rgba(0, 0, 0, .2);
           color: @white;
           padding: 0 10px;
           display: none;
@@ -116,28 +127,65 @@
     color: #888;
   }
   .sort{
-    width: 12%;
+    width: 15%;
     position: absolute;
     top: 0;
-    left: 50%;
-    margin-left: -100px;
+    left: 36%;
+    // margin-left: -100px;
     height: 37px;
     line-height: 37px;
+    text-align: right;
+    padding-right: 14px;
     li{
       width: calc( 100% / 3);
       float: left;
       cursor: pointer;
+      padding-right: 5px;
     }
     .actived{
       color: @blue;
     }
   }
   .screen{
-    width: 42%;
+    width: 46%;
     position: absolute;
     top: 0;
     right: 0;
     height: 37px;
     line-height: 37px;
+  }
+  .message{
+    width: 554px;
+    float: left;
+    height: 48px;
+    margin: 25px;
+    border: 0;
+    border-bottom: 1px solid #d7d7d7;
+  }
+  .change, .success{
+    background: #ff9900;
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    border-radius: 50%;
+    float: left;
+    margin: 25px;
+  }
+  .success{
+    background: #6c0;
+  }
+  .list li{
+    float: left;
+    width: 130px;
+    line-height: 30px;
+    text-align: center;
+    border-left: 1px solid #d7d7d7;
+  }
+  .list li:first-child{
+    width: 390px;
+    text-align: left;
+    border-left: 0;
   }
 }
