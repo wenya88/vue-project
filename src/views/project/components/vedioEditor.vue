@@ -37,14 +37,14 @@
   	</div>
 </template>
 <script>
+
 import videojs from 'video.js';
 import {baseUrl} from '../../../config/env.js';
 export default {
     data(){
         return{
             data:[],
-            Vdata:[],
-            Idata:[],
+            TID:49,
             fileID:10
         }
     },
@@ -207,7 +207,7 @@ export default {
                         "audit":2,
                         "feedback":"",
                         "file":[{
-                            "file_id":10,
+                            "file_id":fileID,
                             "tag":Data
                            }]
                     };
@@ -239,7 +239,7 @@ export default {
                     var DthisTiem=thisTiem;
                     var RthisTiem=DthisTiem.replace('.','_');
                     $(".bBs"+RthisTiem).show();
-                    console.log(RthisTiem);
+                    //console.log(RthisTiem);
                     myFun(thisTiem);
                 })	
 
@@ -255,7 +255,7 @@ export default {
             $.sign.bindSign('.V_markVjs');
             $.sign.loadingSign(this.data);
             document.oncontextmenu = function(e){
-                        e.preventDefault();
+                e.preventDefault();
             };
         },
         VedioGet(){
@@ -266,23 +266,23 @@ export default {
             }
             _this.$http.get(url,{params:params}).then(function(msg){
                 let FData=msg.data.data;
-                FData.forEach(function(element){
-                    if(element.hasOwnProperty("file")){
-                        _this.Vdata.push(element.file)
+                let TID=_this.TID;
+                let Vdata;
+
+                //遍历出符合TID数组
+                for(let i=0;i<FData.length;i++){
+                    if(FData[i].id==TID){
+                        Vdata=FData[i].file
                     }
-                });
-                let DVDate,DIData;
-                let fileID=_this.fileID;
-                _this.Vdata.forEach(function(element){
-                    for(let i=0;i<element.length;i++){
-                        if(element[i].id==fileID){
-                            DVDate=element[i].tag;
-                            DIData=element[i];
-                        }
+                };
+
+                //遍历出符合fileID数组
+                Vdata.forEach(function(element) {
+                    if(element.id==_this.fileID){
+                        _this.data=element.tag
                     }
-                })
-                _this.data=DVDate;
-                _this.Idata=DIData;
+                }, this);
+
                 _this.Vdefault(_this.fileID);
                 _this.vedioLoad();
             },()=>{

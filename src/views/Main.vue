@@ -47,6 +47,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
+        <div class="cover"></div>
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
@@ -69,6 +70,37 @@
                 </Menu>
             </Header>
         </div>
+        <div class="main-header-avator">
+             <div class="user-dropdown-menu-con" style="float: left;">
+                <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
+                    <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                    <span style="padding: 0 50px 0 10px;color: #fff;">{{ userName }}</span>
+                    <!-- <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
+                        <a href="javascript:void(0)">
+                            <span class="main-user-name">{{ userName }}</span>
+                            <Icon type="arrow-down-b"></Icon>
+                        </a>
+                        <DropdownMenu slot="list">
+                            <DropdownItem name="ownSpace">个人中心</DropdownItem>
+                            <DropdownItem name="loginout" divided>退出登录</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown> -->
+                </Row>
+            </div>
+            <message-tip v-model="mesCount"></message-tip>
+            <div class="navicon-con">
+                <Dropdown style="margin-left: 20px" trigger="click" @on-click="handleClickUserDropdown">
+                    <a href="javascript:void(0)" style="padding-top: 8px;display: block;">
+                        <!-- 菜单(居中) -->
+                        <Icon type="navicon" size="32"></Icon>
+                    </a>
+                    <DropdownMenu slot="list">
+                        <DropdownItem name="ownSpace">个人中心</DropdownItem>
+                        <DropdownItem name="loginout" divided>退出登录</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+            </div>
+        </div>
         <div class="main-content" :style="`height:${centerHight}px`">
             <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
                 <Menu>
@@ -90,13 +122,14 @@
 </template>
 <script>
 import Cookies from 'js-cookie';
+import messageTip from './main-components/message-tip.vue';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
 import themeSwitch from './main-components/theme-switch/theme-switch.vue';
-
 export default {
     components: {
         shrinkableMenu,
-        themeSwitch
+        themeSwitch,
+        messageTip
     },
     data() {
         return {
@@ -105,7 +138,8 @@ export default {
             userName: '',
             subMenu: [],
             activePath: '',
-            centerHight: 0
+            centerHight: 0,
+            avatorPath: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg'
         };
     },
     watch: {
@@ -119,12 +153,11 @@ export default {
     created() {
         let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
         let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
-        this.centerHight = bodyHight - 120
-        console.log(this.centerHight)
         if(bodyWidth <= 1366) {
-
+            this.centerHight = bodyHight - 90
         } else {
-
+            this.centerHight = bodyHight - 120
+            console.log(this.centerHight)
         }
         // console.log(document.documentElement.clientWidth)
     },
@@ -147,7 +180,13 @@ export default {
     computed: {
         menuList() {
             return this.$store.state.app.menuList;
-        }
+        },
+        mesCount () {
+            return this.$store.state.app.messageCount;
+        },
+        // avatorPath () {
+        //     return localStorage.avatorImgPath;
+        // }
     },
     methods: {
         init() {
@@ -166,9 +205,18 @@ export default {
             this.shrink = !this.shrink;
         },
         handleClickUserDropdown(name) {
-            this.$router.push({
-                name: 'login'
-            });
+            if(name == 'loginout') {
+                this.$axios.get('/system/login/info')
+                .then( res => res.data)
+                .then( res => {
+                    if(res.err_code == 0){
+                        Cookies.remove('user');
+                        localStorage.removeItem('token');
+                        this.$router.push('/login');
+                    }
+                })
+            }
+            // this.$router.push('/login');
         },
         collapsedSider() {
             if (this.showMenu == false) {

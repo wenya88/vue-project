@@ -11,6 +11,7 @@ const app = {
         ],
         menuTheme: 'dark', // 主题
         themeColor: '',
+        messageCount: 0,
     },
     mutations: {
         updateMenulist (state) {
@@ -22,6 +23,9 @@ const app = {
         changeMainTheme (state, mainTheme) {
             state.themeColor = mainTheme;
         },
+        setMessageCount (state, count) {
+            state.messageCount = count;
+        }
     }
 };
 

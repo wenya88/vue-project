@@ -1,24 +1,30 @@
 
 
 .modal-backdrop {
-    position: relative;
-    top: -45px;
+    position: absolute;
+    top: -54px;
     right: 0;
     bottom: 0;
+    padding: 300px 0 100px;
     left: 0;
-    /* background-color: rgba(0, 0, 0, .3); */
-    display: flex;
+    /* background-color: rgba(0, 0, 0, .3); */    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999999 !important;
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
 }
-.ivu-table-wrapper{
-    position: absolute !important; 
+.ivu-layout{
+    background: #fff !important;
+}
+.ivu-tabs-ink-bar{
+    z-index: 0 !important;
+}
+/* .tableStyle{
+    position: relative !important; 
     top: 45px !important;
     right: 0;
     left: 0;
-}
+} */
 .modal {
     background-color: #fff;
     box-shadow: 2px 2px 20px 1px;
@@ -55,16 +61,13 @@
     padding: 10px;
     cursor: pointer;
     font-weight: bold;
-    color: #4aae9b;
+    color: rgb(43, 133, 228);
     background-color: transparent;
     margin: -20px 40px;
 }
 
 .btn-green {
-    color: #fff;
-    background-color: #4aae9b;
-    border: 1px solid #4aae9b;
-    border-radius: 2px;
+    margin-left: 10px;
 }
 
 .modal-fade-enter, .modal-fade-leave-active {

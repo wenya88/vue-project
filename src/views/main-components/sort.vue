@@ -14,7 +14,7 @@ export default {
   name: 'sort',
   data() {
     return {
-      sortIndex: 0
+      sortIndex: null
     }
   },
   props: {

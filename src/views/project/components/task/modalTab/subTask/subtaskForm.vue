@@ -11,10 +11,9 @@
                     <!--@on-blur="blurTj()"-->
                 </FormItem>
                 <FormItem label="子项目">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
-                    </Select>
+                    <!-- <Select>
+                        <Option :value="datl.project_id" :key="datl.project_id"></Option>
+                    </Select> -->
                 </FormItem>
                 <FormItem label="参与人">
                     <Tag v-for="item in fruit" :key="item" :name="item" closable
@@ -62,10 +61,9 @@
                     </Dropdown>
                 </FormItem>
                 <FormItem label="任务类型">
-                    <Select v-model="datl.tasktype_name">
-                        <Option :value="datl.tasktype_name"
-                                :key="datl.tasktype_name"></Option>
-                    </Select>
+                    <!-- <Select>
+                        <Option v-for="(item,index) in fileList" :value="item.tasktype_name" :key="item.name">{{item.name}}</Option>
+                    </Select> -->
                 </FormItem>
                 <FormItem label="文件要求">
                     <div>
@@ -138,9 +136,8 @@
                     </Upload>
                 </FormItem>
                 <FormItem label="要求说明">
-                    <Input v-model="datl.name" type="textarea"
+                    <Input v-model="datl.description" type="textarea"
                            :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
-                    <!--@on-blur="blurTj()"-->
                 </FormItem>
             </Form>
         </div>
@@ -149,7 +146,6 @@
 <script>
     import UploadList from "iview/src/components/upload/upload-list";
     import {gettasklistData} from "../../../../../../config/env.js";
-    import {deletetaskData} from "../../../../../../config/env.js";
     export default {
         props:['datl'],
         components: {
@@ -188,7 +184,6 @@
                         'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
                     }
                 ],
-                imgName: '',
                 visible: false,
                 uploadList: [],
                 //下拉列表
@@ -203,21 +198,17 @@
                         value: '原画组',
                     },
                 ],
-                model1: '',
                 cityList1: [
                     {
                         value: '原画组',
                     },
                 ],
-                model2: '',
-                formLeft: {
-                    name: '',
-                },
+                formLeft: {},
 
             }
         },
         mounted() {
-            this.forEachData();
+            // this.forEachData();
             //调用图片上传功能
             this.uploadList = this.$refs.upload.fileList;
         },

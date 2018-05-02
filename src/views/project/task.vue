@@ -1,22 +1,14 @@
 <template>
-    <div>
-        <div class="taskHead">
-            <div class="taskInfo">
-                <b>项目任务(15)</b>
-                <span v-for="(index,item) in taskTag"><a href="javascript:;" @click=sTag(taskTag[item].taskID)>{{taskTag[item].name}}({{taskTag[item].num}})</a></span>
-            </div>
-            <div class="clear"></div>
-        </div>
-            <Tabs>
-            <Tab-pane label="列表模式" icon="ios-list-outline">
-                <task></task>
-            </Tab-pane>
-            <Tab-pane label="甘特图模式" icon="podium">
-                <iframe id="show-iframe" frameborder=0 name="showHere" scrolling=auto
-                        src="../../../src/views/project/gantt/gantt.html"></iframe>
-            </Tab-pane>
-        </Tabs>
-    </div>
+  <div>
+    <Tabs>
+      <Tab-pane label="列表模式" icon="ios-list-outline">
+        <task></task>
+      </Tab-pane>
+      <Tab-pane label="甘特图模式" icon="podium">
+        <iframe id="show-iframe" frameborder=0 name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>
+      </Tab-pane>
+    </Tabs>
+  </div>
 </template>
 
 <script>
@@ -26,19 +18,10 @@ export default {
     task: task
   },
   data() {
-    return {
-      taskTag: [
-        { name: "原画组", num: 10, taskID: "yh" },
-        { name: "特效组", num: 7, taskID: "tx" },
-        { name: "动作组", num: 15, taskID: "dz" },
-        { name: "策划组", num: 3, taskID: "ch" }
-      ],
-      TagClass: false
-    };
+    return {};
   },
   mounted() {
     this.autoH();
-    this.sTag();
   },
   methods: {
     autoH() {
@@ -46,14 +29,6 @@ export default {
       let deviceHeight = document.documentElement.clientHeight - 190;
       oIframe.style.width = 100 + "%";
       oIframe.style.height = deviceHeight + "px";
-    },
-    sTag(tId) {
-      $(() => {
-        $(".taskInfo span a").click(function() {
-          $(".taskInfo span a").removeClass("active");
-          $(this).addClass("active");
-        });
-      });
     }
   }
 };

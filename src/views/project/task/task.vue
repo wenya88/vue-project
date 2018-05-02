@@ -4,42 +4,185 @@
 .main-header-con {
   z-index: 0 !important;
 }
+
+.showAdd {
+  display: inline-block;
+}
+
+.hideAdd {
+  display: none;
+}
+.showEdit {
+  display: inline-block;
+}
+.hideEdit {
+  display: none;
+}
+
+.dropChild .ivu-select-dropdown {
+  width: 300px !important;
+  top: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.taskHead .taskInfo .active {
+  padding: 0 !important;
+  height: 35px;
+  line-height: 35px;
+}
+.meberli li {
+  height: 35px;
+  line-height: 35px;
+}
+.pushDa Input {
+  width: 100px !important;
+  border-right: 0 !important;
+  border-radius: 0 !important;
+  position: relative;
+}
+.borderNome Input {
+  border-radius: 0 !important;
+  right: 34px;
+  position: relative;
+}
+.hideIconDel {
+  display: none;
+}
+.taskHead .taskInfo .hideIconDel {
+  margin-left: 5px;
+  font-size: 15px;
+  color: #5c6b77;
+}
 </style>
 <template>
-    <div class="layout">
+  <div class="layout">
+    <Layout>
+      <Layout>
         <Layout>
-            <Layout>
-                <Layout>
-                    <div style="background: #FFFFFF">
-                        <div class="btnStting">
-                            <Button type="success" @click="showaddFormodal">新增任务</Button>
-                            <Button type="primary" @click="showExcelmodal">Excle导入</Button>
+          <div class="taskHead">
+            <div class="taskInfo">
+              <b>项目任务(15)</b>
+              <span v-for="(index,item) in taskTag" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                <a href="javascript:;" @click=sTag(taskTag[item].project_id)>{{taskTag[item].name}}({{taskTag[item].num}})
+                  <span class="hideIconDel" @click="EditoverShow">
+                    <Icon type="edit" style="cursor: pointer;"></Icon>
+                  </span>
+                  <span class="hideIconDel" @click="childDel(index.id)">
+                    <Icon type="trash-a" style="cursor: pointer;"></Icon>
+                  </span>
+                </a>
+              </span>
+              <span :class="{showAdd:showText,hideAdd:hideText}">
+                <Dropdown trigger="click" class="dropChild">
+                  <a href="javascript:void(0)" class="pushDa">
+                    <Input icon="ios-plus-empty" placeholder="参与人" clearable></Input>
+                  </a>
+                  <DropdownMenu slot="list">
+                    <Input v-model="value1" placeholder="参与人姓名/名字首字母" clearable style="width: 100%"></Input>
+                    <Row :gutter="16">
+                      <Col span="10" class="demo-tabs-style2 memberList">
+                      <ul class="meberli">
+                        <li v-for="(item,index) in tabs" :key="item.tabs" :class="{active:index == num}" @click="memberList(index)">{{item}}
+                        </li>
+                      </ul>
+                      </Col>
+                      <Col span="12" align="center" class="scrollBorder">
+                      <Scroll :on-reach-bottom="handleReachBottom">
+                        <div class="tabCon">
+                          <div v-for='(itemCon,index) in tabContents' :key="itemCon.tabContents" v-show="index == num">
+                            <Card dis-hover>
+                              <CheckboxGroup v-model="fruit">
+                                <Checkbox :label="i,d" v-for='(i,d) in itemCon' :key="i.itemCon"></Checkbox>
+                              </CheckboxGroup>
+                            </Card>
+                          </div>
                         </div>
-                    </div>
-                    <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-                        <tab-modal :editData="formLeft" v-show="isTabModal" @close="closeTabmodal"></tab-modal>
-                        <excel-modal v-show="isexcelModal" @close="closeModal"></excel-modal>
-                        <addform-modal :addData="addmodalData" v-show="isaddFormModal" @close="addcloseModal"></addform-modal>
-                        <Table :columns="columnsTask" :ellipsis="true" :data="dataList" size="small" ref="table"></Table>
-                    </Content>
-                </Layout>
-            </Layout>
+                      </Scroll>
+                      </Col>
+                    </Row>
+                  </DropdownMenu>
+                </Dropdown>
+                <span class="borderNome">
+                  <Input v-model="addVal" placeholder="输入子项目名称" clearable style="width: 200px"></Input>
+                </span>
+                <Button type="success" @click="saveChild">保存</Button>
+                <Button @click="outHide">取消</Button>
+              </span>
+              <span :class="{showEdit:showEditText,hideEdit:hideEditText}">
+                <Dropdown trigger="click" class="dropChild">
+                  <a href="javascript:void(0)" class="pushDa">
+                    <Input icon="ios-plus-empty" placeholder="参与人" clearable></Input>
+                  </a>
+                  <DropdownMenu slot="list">
+                    <Input v-model="value1" placeholder="参与人姓名/名字首字母" clearable style="width: 100%"></Input>
+                    <Row :gutter="16">
+                      <Col span="10" class="demo-tabs-style2 memberList">
+                      <ul class="meberli">
+                        <li v-for="(item,index) in tabs" :key="item.tabs" :class="{active:index == num}" @click="memberList(index)">{{item}}
+                        </li>
+                      </ul>
+                      </Col>
+                      <Col span="12" align="center" class="scrollBorder">
+                      <Scroll :on-reach-bottom="handleReachBottom">
+                        <div class="tabCon">
+                          <div v-for='(itemCon,index) in tabContents' :key="itemCon.tabContents" v-show="index == num">
+                            <Card dis-hover>
+                              <CheckboxGroup v-model="fruit">
+                                <Checkbox :label="i,d" v-for='(i,d) in itemCon' :key="i.itemCon"></Checkbox>
+                              </CheckboxGroup>
+                            </Card>
+                          </div>
+                        </div>
+                      </Scroll>
+                      </Col>
+                    </Row>
+                  </DropdownMenu>
+                </Dropdown>
+                <span class="borderNome">
+                  <Input v-model="editVal" placeholder="输入子项目名称" clearable style="width: 200px"></Input>
+                </span>
+                <Button type="success" @click="EditSave">保存</Button>
+                <Button @click="EditoutHide">取消</Button>
+              </span>
+            </div>
+            <div @click="overShow">
+              <Icon type="plus-round" style="float:right;font-size:25px;color:#2d8cf0; cursor: pointer;"></Icon>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div style="background: #FFFFFF">
+            <div class="btnStting">
+              <Button type="success" @click="showaddFormodal">新增任务</Button>
+              <Button type="primary" @click="showExcelmodal">Excle导入</Button>
+            </div>
+          </div>
+          <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
+            <!-- 任务列表编辑modal组件 -->
+            <edit-list-modal :editData="formLeft" v-if="isTabModal" @close="closeEditmodal"></edit-list-modal>
+            <!-- excel解析modal组件 -->
+            <excel-modal v-if="isexcelModal" @close="closeModal"></excel-modal>
+            <!-- 新增任务modal组件 -->
+            <addform-modal :addData="addmodalData" v-if="isaddFormModal" @close="closeAdd" @addmodal="addcloseModal"></addform-modal>
+            <!-- 任务列表父组件 -->
+            <Table :columns="columnsTask" :ellipsis="true" :data="dataList" size="small" ref="table" class="tableStyle"></Table>
+          </Content>
         </Layout>
-    </div>
+      </Layout>
+    </Layout>
+  </div>
 </template>
 <script>
+var qs = require("querystring");
 import sub from "./sub.vue";
 import Icon from "iview/src/components/icon/icon";
-import tabModal from "../components/task/tabModal";
+import editListModal from "../components/task/editListModal";
 import excelModal from "../components/task/excelModal";
 import addformModal from "../components/task/addformModal";
 import {
   gettasklistData,
   deletetaskData,
-  updatetaskData,
-  addtasklistData,
   gettasklistDetails,
-  cateList,
+  projectList,
   getChildList
 } from "../../../config/env.js";
 // import Caspanel from "iview/src/components/cascader/caspanel";
@@ -47,7 +190,7 @@ import Layout from "iview/src/components/layout/layout";
 
 export default {
   components: {
-    tabModal,
+    editListModal,
     excelModal,
     addformModal,
     Layout,
@@ -56,6 +199,25 @@ export default {
   },
   data() {
     return {
+      tabs: ["全部成员(33)", "3D模型(11)", "地编组(11)", "次世代(11)"],
+      tabContents: [
+        ["李霄霄", "王二帅"],
+        ["赵三娃", "陈无敌"],
+        ["哈哈", "嘻嘻洗洗"],
+        ["哇娃娃", "呜呜呜呜"]
+      ],
+      fruit: [],
+      list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      num: 1,
+      value1: "",
+      taskTag: [],
+      TagClass: false,
+      showText: false,
+      hideText: true,
+      showEditText: false,
+      hideEditText: true,
+      addVal: "",
+      editVal: "",
       isTabModal: false,
       isexcelModal: false,
       isaddFormModal: false,
@@ -69,10 +231,11 @@ export default {
         {
           type: "expand",
           width: 50,
-          render: (h, params) => {
+          render: (h, subdow) => {
             return h(sub, {
+              //子任务下拉
               props: {
-                row: params.row
+                row: subdow.row
               }
             });
           }
@@ -92,7 +255,7 @@ export default {
         },
         {
           title: "子项目",
-          key:'project_name',
+          key: "project_child_name",
           align: "center",
           ellipsis: true
         },
@@ -112,7 +275,7 @@ export default {
         {
           title: "实施阶段",
           align: "center",
-          width: "300px",
+          width: "550px",
           ellipsis: true,
           render: function(h) {
             let current = this.progress;
@@ -127,27 +290,27 @@ export default {
               [
                 h("Step", {
                   props: {
-                    title: "1"
+                    title: "test1",
                   }
                 }),
                 h("Step", {
                   props: {
-                    title: "2"
+                    title: "test2"
                   }
                 }),
                 h("Step", {
                   props: {
-                    title: "3"
+                    title: "test3"
                   }
                 }),
                 h("Step", {
                   props: {
-                    title: "4"
+                    title: "test4"
                   }
                 }),
                 h("Step", {
                   props: {
-                    title: "5"
+                    title: "test5"
                   }
                 })
               ]
@@ -157,12 +320,13 @@ export default {
         {
           title: "任务文件",
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          key: "file_id"
         },
         {
           title: "更新时间",
           align: "center",
-          key: "expect_end_date",
+          key: "update_date",
           width: "100px",
           ellipsis: true
         },
@@ -174,6 +338,7 @@ export default {
         {
           title: "剩余",
           align: "center",
+          key: "expect_work_day",
           ellipsis: true
         },
         {
@@ -229,8 +394,108 @@ export default {
   },
   mounted() {
     this.forEachData();
+    this.getProjectId();
   },
   methods: {
+    //hover子“项目任务”编辑，删除图标
+    dataDetails: function(e) {
+      let el = event.currentTarget.children[0].children[0];
+      let el2 = event.currentTarget.children[0].children[1];
+      el.style.display = "inline-block";
+      el2.style.display = "inline-block";
+    },
+    hiddenDetail: function(e) {
+      let el = event.currentTarget.children[0].children[0];
+      let el2 = event.currentTarget.children[0].children[1];
+      el.style.display = "";
+      el2.style.display = "";
+    },
+    //子“项目任务”筛选切换样式
+    sTag() {
+      $(() => {
+        console.log(11111);
+        $(".taskInfo span a").click(function() {
+          $(".taskInfo span a").removeClass("active");
+          $(this).addClass("active");
+        });
+      });
+    },
+    //刪除，子“项目任务”筛选
+    childDel: function(id) {
+      let cdt = this;
+      let delObj = {};
+      delObj.id = id;
+      cdt.$axios
+        .post("/task/project/child-delete", qs.stringify(delObj))
+        .then(del => {
+          if (del.data.err_code === 0) {
+            cdt.getProjectId();
+            cdt.$Message.success("刪除成功！");
+          } else {
+            cdt.$Message.error(dis.data.err_message);
+          }
+        });
+    },
+    //编辑，子“项目任务”筛选
+    EditSave: function() {
+      let edt = this;
+      let edtObj = {};
+      edtObj.id = edt.givePid.id;
+      edtObj.name = edt.editVal;
+      edt.$axios
+        .post("task/project/child-update", qs.stringify(edtObj))
+        .then(edit => {
+          if (edit.data.err_code === 0) {
+            edt.getProjectId();
+            edt.$Message.success("编辑成功！");
+          } else {
+            edt.$Message.error(edit.data.err_message);
+          }
+          edt.EditoutHide();
+        });
+    },
+    // 新增保存，子“项目任务”
+    saveChild: function() {
+      let cIa = this;
+      let aDc = {};
+      aDc.project_id = cIa.givePid.project_id;
+      aDc.name = cIa.addVal;
+      cIa.$axios
+        .post("/task/project/child-add", qs.stringify(aDc))
+        .then(dis => {
+          if (dis.data.err_code === 0) {
+            cIa.getProjectId();
+            cIa.$Message.success("新增子项目成功！");
+            cIa.addVal = "";
+          } else {
+            cIa.$Message.error(dis.data.err_message);
+          }
+          cIa.outHide();
+        })
+        .catch(error => {
+          cIa.$Message.error("请求失败，请刷新重试！");
+        });
+    },
+    // 新增子“项目任务”文本编辑显示
+    overShow() {
+      this.showText = !this.showText;
+      this.hideText = !this.hideText;
+    },
+    // 新增子“项目任务”文本编辑隐藏
+    outHide() {
+      this.showText = !this.showText;
+      this.hideText = !this.hideText;
+    },
+    // 编辑子“项目任务”文本编辑显示
+    EditoverShow(index) {
+      this.showEditText = !this.showEditText;
+      this.hideEditText = !this.hideEditText;
+    },
+    // 编辑子“项目任务”文本编辑隐藏
+    EditoutHide() {
+      this.showEditText = !this.showEditText;
+      this.hideEditText = !this.hideEditText;
+    },
     /**
      * modal
      */
@@ -238,41 +503,22 @@ export default {
     showExcelmodal: function() {
       this.isexcelModal = true;
     },
-    //model 数据
+    //编辑model 数据
     showTabmodal: function(index) {
-      this.isTabModal = true;
-      this.formLeft = this.dataList[index];
-      this.addmodalData = this.dataList[index];
-      console.log(this.formLeft);
-      console.log(this.addmodalData);
+      this.getforechDailt(this.dataList[index].id);
     },
     showaddFormodal: function(index) {
       this.isaddFormModal = true;
+      this.addmodalData = {};
     },
-    //关闭
+    //关闭excel model
     closeModal: function() {
       this.isexcelModal = false;
     },
-    //当modal关闭时，执行编辑保存方法
-    closeTabmodal: function() {
-      let cIs = this;
-      let dateForm = {},
-      detailId = cIs.formLeft.id;
-      dateForm.id = detailId;
-      dateForm.father = cIs.formLeft.father ? cIs.formLeft.father : 0;
-      dateForm.name = cIs.formLeft.name;
-      dateForm.project = cIs.formLeft.project_name;
-      dateForm.project_child = cIs.formLeft.project_child;
-      dateForm.tasktype_name = cIs.formLeft.tasktype_name;
-      dateForm.expect_start_time = cIs.formLeft.expect_start_time;
-      dateForm.expect_end_time = cIs.formLeft.expect_end_time;
-      dateForm.description = cIs.formLeft.description;
-      cIs.forEachData();
-      this.get(updatetaskData, dateForm, () => {
-        cIs.forEachData();
-      });
-      this.$Message.info("关闭并保存");
+    //编辑后关闭modal
+    closeEditmodal: function() {
       this.isTabModal = false;
+      this.forEachData();
     },
     exportData(type) {
       if (type === 1) {
@@ -292,6 +538,22 @@ export default {
         });
       }
     },
+    //参与人滚动条
+    handleReachBottom() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const last = this.list1[this.list1.length - 1];
+          for (let i = 1; i < 11; i++) {
+            this.list1.push(last + i);
+          }
+          resolve();
+        }, 2000);
+      });
+    },
+    //参与人选项卡
+    memberList(index) {
+      this.num = index;
+    },
     /**
      * get请求
      */
@@ -307,21 +569,11 @@ export default {
       );
     },
     // 新增任务列表
+    closeAdd: function() {
+      this.isaddFormModal = false;
+      this.forEachData();
+    },
     addcloseModal: function() {
-      let cIs = this;
-      let dateForm = {};
-      dateForm.father = cIs.addmodalData.father ? cIs.addmodalData.father : 0;
-      dateForm.name = cIs.addmodalData.name;
-      dateForm.project = cIs.addmodalData.project_name;
-      dateForm.tasktype_name = cIs.addmodalData.tasktype_name;
-      dateForm.expect_start_time = cIs.addmodalData.expect_start_time;
-      dateForm.expect_end_time = cIs.addmodalData.expect_end_time;
-      dateForm.description = cIs.addmodalData.description;
-      cIs.forEachData();
-      this.get(addtasklistData, dateForm, () => {
-        cIs.forEachData();
-        cIs.userFormSearch = null;
-      });
       this.isaddFormModal = false;
     },
     //删除数据
@@ -335,10 +587,10 @@ export default {
         },
         () => {
           cIs.forEachData();
+          this.$Message.success("删除成功");
         }
       );
     },
-
     //遍历主任务列表数据
     forEachData() {
       let cIs = this;
@@ -350,6 +602,7 @@ export default {
         res => {
           //主任务数据渲染及状态上色
           let dataColortd = res.data.data;
+
           for (var i = 0; i < dataColortd.length; i++) {
             let statusText = dataColortd[i].status;
             let colorText = dataColortd[i].status_text;
@@ -376,11 +629,60 @@ export default {
             } else {
               dataColortd[i]._disableExpand = true;
             }
-            // //获取主列表阶段进度
+            //获取主列表阶段进度
             let current = dataColortd[i].progress;
           }
           cIs.dataList = dataColortd;
-          console.log('主任务',cIs.dataList)
+          dataColortd.forEach(stg => {
+            if (stg.stage) {
+              stg.stage.forEach(ds => {
+                this.stage_name = ds.stage_name;
+              });
+            }
+          });
+        }
+      );
+    },
+    //获取任务列表详情
+    getforechDailt(id) {
+      let fDi = this;
+      fDi.get(
+        gettasklistDetails,
+        {
+          id: id
+        },
+        res => {
+          fDi.formLeft = res.body;
+          fDi.isTabModal = true;
+        }
+      );
+    },
+    //获取項目列表
+    getProjectId() {
+      let cHd = this;
+      cHd.get(projectList, {}, res => {
+        cHd.projectId = res.data.project;
+        //遍历获取项目id
+        cHd.projectId.forEach(id => {
+          cHd.prId = id.id;
+        });
+        cHd.getChildId();
+      });
+    },
+    //获取子项目id
+    getChildId() {
+      let Hid = this;
+      Hid.get(
+        getChildList,
+        {
+          id: Hid.prId
+        },
+        res => {
+          //赋值子项目列表
+          Hid.taskTag = res.data.data;
+          Hid.taskTag.forEach(pid => {
+            Hid.givePid = pid;
+          });
         }
       );
     }

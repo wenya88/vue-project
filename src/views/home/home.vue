@@ -27,7 +27,7 @@ export default {
             }
         },
         logout() {
-            this.$axios.get('/login/info')
+            this.$axios.get('/system/login/info')
             .then( res => res.data)
             .then( res => {
                 if(res.err_code == 0){

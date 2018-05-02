@@ -19,12 +19,12 @@
                     <FormItem prop="passwd">
                         <div class="itemname">密码</div>
                         <Input v-model="register.passwd" :type="pwpic.pwdType" placeholder="请输入密码"></Input>
-                        <img :src="pwpic2.src" @click="changeType()"/>
+                        <img :src="pwpic.src" @click="changeType()"/>
                     </FormItem>
                     <FormItem prop="passwdCheck">
                         <div class="itemname">再次输入密码</div>
-                        <Input v-model="register.passwdCheck" id="a" :type="pwpic2.pwdType" placeholder="请再次输入密码"></Input>
-                        <img :src="pwpic2.src" @click="changeType2()"/>
+                        <Input v-model="register.passwdCheck" id="a" :type="pwpic2.pwdType2" placeholder="请再次输入密码"></Input>
+                        <img :src="pwpic2.src2" @click="changeType2()"/>
                     </FormItem>
                     <FormItem>
                         <Button @click="onRegister('register')" type="primary" long>注 册</Button>
@@ -33,14 +33,14 @@
             </div>
             <div class="form-con" v-else @keydown.enter="onSubmit('login')">
                 <Form ref="login" :model="loginform" :rules="rules">
-                    <FormItem prop="userName">
+                    <FormItem prop="email">
                         <div class="itemname">邮箱账号</div>
-                        <Input v-model="loginform.userName" placeholder="请输入邮箱账号"></Input>
+                        <Input v-model="loginform.email" placeholder="请输入邮箱账号"></Input>
                     </FormItem>
                     <FormItem prop="password">
                         <div class="itemname">密码</div>
-                        <Input v-model="loginform.password" type="password" placeholder="请输入密码"></Input>
-                        <img :src="pwpic.src" @click="changeType()"/>
+                        <Input v-model="loginform.password" :type="pwpic3.pwdType3" placeholder="请输入密码"></Input>
+                        <img :src="pwpic3.src3" @click="changeType3()"/>
                     </FormItem>
                     <FormItem>
                         <Button @click="onSubmit('login')" type="primary" long>登 录</Button>
@@ -87,11 +87,15 @@ export default {
                 src: "/src/images/close_eyes.png"
             },
             pwpic2:{
-                pwdType:"password",
-                src: "/src/images/close_eyes.png"
+                pwdType2:"password",
+                src2: "/src/images/close_eyes.png"
+            },
+            pwpic3:{
+                pwdType3:"password",
+                src3: "/src/images/close_eyes.png"
             },
             loginform: {
-                userName: '',
+                email: '',
                 password: ''
             },
             register: {
@@ -100,17 +104,17 @@ export default {
                 passwdCheck: ''
             },
             rules: {
-                userName: [
+                email: [
                     { required: true, message: '账号不能为空', trigger: 'blur' }
                 ],
                 password: [
                     { required: true, message: '密码不能为空', trigger: 'blur' }
-                ],
-                passwd: [
-                    { validator: validatePass, trigger: 'blur' }
-                ],
-                passwdCheck: [
-                    { validator: validatePassCheck, trigger: 'blur' }
+                // ],
+                // passwd: [
+                //     { validator: validatePass, trigger: 'blur' }
+                // ],
+                // passwdCheck: [
+                //     { validator: validatePassCheck, trigger: 'blur' }
                 ]
             },
             ruleCustom: {
@@ -189,12 +193,12 @@ export default {
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.loginform.password)));
             let data = {
-                account: this.loginform.userName,
+                account: this.loginform.email,
                 password: password
             };
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.loginform.userName);
+                    Cookies.set('user', this.loginform.email);
                     // Cookies.set('password', this.form.password);
                     this.$axios.post('/system/login/login', qs.stringify(data))
                     .then(res => res.data)
@@ -219,8 +223,12 @@ export default {
             this.pwpic.src = this.pwpic.src == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
         },
         changeType2(){
-            this.pwpic2.pwdType = this.pwpic2.pwdType === 'password' ? 'text' : 'password';
-            this.pwpic2.src = this.pwpic2.src == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+            this.pwpic2.pwdType2 = this.pwpic2.pwdType2 === 'password' ? 'text' : 'password';
+            this.pwpic2.src2 = this.pwpic2.src2 == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+        },
+        changeType3(){
+            this.pwpic3.pwdType3 = this.pwpic3.pwdType3 === 'password' ? 'text' : 'password';
+            this.pwpic3.src3 = this.pwpic3.src3 == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
         }
     }
 };

@@ -105,12 +105,12 @@ export const appRouter = [
                 component: resolve => { require(['@/views/project/setting.vue'], resolve); }
             },
             {
-              path: '/project/imgEditor',
+              path: '/project/ImgRoll',
               icon: 'ios-paper-outline',
               name: 'statistics',
-              title: '图片编辑组件',
-              component: resolve => { require(['@/views/project/components/imgEditor.vue'], resolve); }
-            },
+              title: '文件标注',
+              component: resolve => { require(['@/views/project/components/ImgRoll.vue'], resolve); }
+            }
             // {
             // {
             //   path: '/project/vedioEditor',

@@ -1,5 +1,7 @@
 <template>
   <transition name="modal-fade">
+    <!-- <div>
+    <div class="cover"></div> -->
     <div class="modal-backdrop">
       <div class="modal">
         <div class="modal-header">
@@ -150,6 +152,7 @@
         </div>
       </div>
     </div>
+    <!-- </div> -->
   </transition>
 </template>
 <script>

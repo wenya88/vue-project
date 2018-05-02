@@ -24,9 +24,9 @@ const state = {
       label: '等待修改',
       icon: 'ios-arrow-thin-down'
     }, {
-      label: '反馈时间',
-      icon: 'ios-arrow-thin-down'
-    }, {
+    //   label: '反馈时间',
+    //   icon: 'ios-arrow-thin-down'
+    // }, {
       label: '剩余时间',
       icon: 'ios-arrow-thin-up'
     }

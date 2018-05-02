@@ -1,5 +1,5 @@
 <style>
-    .imgEditorCom{width:650px;height:500px;}
+    .imgEditorCom{width:100%;height:400px;}
     .imgFocus{margin-bottom:5px;}
     .imgFocus img{width:100%;height:100%;}
     .chooseBox{height:auto;position:absolute;z-index:100;background:#fff;box-shadow:#000 0 0 2px;-webkit-box-shadow:#000 0 0 2px}
@@ -19,19 +19,24 @@
 </style>
 <template>
     <div class="imgEditorCom">
-        <div class="imgFocus" id="signx"><img v-for="item in IMGdata" :src="item.file"/></div>
+        <div class="imgFocus" id="signx"><img :src="url" />
         <button class="actionPost">确认</button>
+        </div>
+        {{IMGlist}}
     </div>
 </template>
 <script>
-  import {baseUrl} from '../../../config/env.js'
+  var qs = require('querystring')
+  import {baseUrl} from '../../../config/env.js';
   export default {
     data () {
       return {
         data:[],
-        mdata:[],
         IMGdata:[],
-        fileID:11
+        url:'http://192.168.2.19/index.php?r=file/file/get-file&fid=400',
+        TID:80,
+        TaskID:0,
+        IMGlist:[]
       }
     },
     mounted(){
@@ -62,7 +67,6 @@
           });
 
           function defined(dom){
-
             //鼠标右键
             $(document).on("mousedown",dom,function(e){
               e.preventDefault();
@@ -154,13 +158,14 @@
           }//载入数据
 
           $(".actionPost").click(function(){
+            
             var url=baseUrl+'index.php?r=task/task/inside-audit';
             var ImgData={
-                  "stage_id": 49,
+                  "stage_id": fileID,
                   "audit": 2,
                   "feedbac": "",
                   "file": [{
-                    "file_id": fileID,
+                    "file_id": 49,
                     "tag": Data
                   }]
                 }
@@ -188,33 +193,42 @@
         $.sign.loadingSign(this.data);
       },
       get(){
-        let url=baseUrl+'index.php?r=task/task/stage-list';
-        let params={
-          'task_id':109
-        };
-        this.$http.get(url,{params:params}).then(function(msg){
-            let Sdate=msg.data.data
-            Sdate.forEach(function(element) {
-             if(element.hasOwnProperty("file")){
-                  this.mdata.push(element.file)
-             }        
-            },this);
-            let Vdata,VIdata
-            let fileID=this.fileID
-            this.mdata.forEach(function(Melement,index){
-              for(let i=0;i<Melement.length;i++){
-                if(Melement[i].id==fileID){
-                  Vdata=Melement[i].tag;
-                  VIdata=Melement[i];
-                }
-              }
-            })
-            this.data=Vdata;
-            this.IMGdata.push(VIdata);
-            this.defue(this.fileID);
-            this.imgdef();
+           let _this=this
+           let TaskID=sessionStorage.TaskID
+           
+          // let TaskID=Cookies.get('TaskID')
+           let url='/task/task/stage-info&id='+TaskID;
+          _this.$axios.get(url).then(function(msg){
+            let Sdate=msg.data;
+            if(Sdate.err_code==0){
+                Sdate.file.forEach(element => {
+                    _this.IMGlist.push(element)
+                });
+            let fileID = Sdate.stage_id
+            _this.defue(fileID);
+            _this.imgdef();
+            }else{
+              return
+            }
+      //       let Vdata;
+      //       let TID=_this.TID;
+      //       //遍历出符合TID数组
+      //       for(let i=0;i<Sdate.length;i++){
+      //           if(Sdate[i].id==TID){
+      //               Vdata=Sdate[i].file
+      //           }
+      //       };
+
+      //       //遍历出符合fileID数组
+      //       Vdata.forEach(function(element) {
+      //           if(element.id==_this.fileID){
+      //                 _this.IMGdata.push(element);
+      //                 _this.data=element.tag
+      //           }
+      //       }, _this);
+           
         },()=>{
-          alert('请求失败！')
+          alert("请求失败!")
         })
        
       }

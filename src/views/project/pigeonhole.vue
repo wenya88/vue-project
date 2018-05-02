@@ -6,7 +6,7 @@
         <Button type="primary">全部下载</Button>
         </Col>
         <Col span="2"> 类型:
-        <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+        <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
           <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
             <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
           </OptionGroup> 
@@ -41,7 +41,7 @@
             <td class="w15"><span class="tag">{{item.tasktype_name}}</span></td>
             <td class="w55">{{item.name}}</td>
             <td class="w20"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
-            <td class="w10" @click="downloadFile(item.task_id,1)"><Icon type="ios-download"></Icon></td>
+            <td class="w10" @click="downloadFile(item.id,1)"><Icon type="ios-download"></Icon></td>
           </tr>
         </table>
       </div>
@@ -91,6 +91,7 @@ export default {
       searchInput: '',
       fileData: [],
       text: '任务 / 负责人',
+      selTaskType: '',
       taskType: '',
       subpId: null,
       status: '',
@@ -141,7 +142,7 @@ export default {
       // console.log(this.tasktype)
       let data = {
         status: this.status,
-        tasktype: this.tasktype,
+        tasktype: this.selTaskType,
         project_id: localStorage.pid,
         project_child_id: '',
         search: this.searchInput
@@ -206,7 +207,7 @@ export default {
         this.formLeft = res;
         // this.$Loading.finish();
         // this.getSubProject(res.project_id)
-        this.taskType = res.tasktype_id
+        this.taskType = res.tasktype_id+''
         this.subpId = res.project_child
       })
     }

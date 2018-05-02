@@ -1,6 +1,6 @@
 <template>
   <div class="quality">
-    <Tabs value="1" :animated="false" v-model="status" @on-click="fetchData()">
+    <Tabs value="1" :animated="false" v-model="status" @on-click="changeTabs()">
       <TabPane :label="'内部待审(' + param.num1 + ')'" name="1">
         <my-sort :sortList="ndsSortList" @choiced="filterFTime"></my-sort>
         <div class="screen">
@@ -11,10 +11,10 @@
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+            <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
               <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
                 <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-              </OptionGroup> 
+              </OptionGroup>
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -23,12 +23,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input 
-              v-model="searchInput" 
-              icon="search" 
-              placeholder="任务 / 负责人" 
-              style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"
-              @keyup.enter.native="fetchData()"></Input>
+            <Input v-model="searchInput" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;" @keyup.enter.native="fetchData()"></Input>
             </Col>
           </Row>
         </div>
@@ -38,8 +33,8 @@
             <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
-                <Icon type="pause" v-else-if=""></Icon> -->
-                <img class="card-box-pic" :src="item.thumb"/>
+                  <Icon type="pause" v-else-if=""></Icon> -->
+                <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
                   <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
                   <span class="date">上传：{{item.create_date}}</span>
@@ -66,6 +61,7 @@
             </div>
             </Col>
           </Row>
+          <span @click="changePageIndex()">加载更多</span>
         </div>
       </TabPane>
       <TabPane :label="'内审已反馈(' + param.num2 + ')'" name="2">
@@ -78,10 +74,10 @@
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+            <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
               <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
                 <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-              </OptionGroup> 
+              </OptionGroup>
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -90,7 +86,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+            <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -150,10 +146,10 @@
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+            <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
               <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
                 <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-              </OptionGroup> 
+              </OptionGroup>
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -162,7 +158,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+            <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -171,7 +167,7 @@
             <Col span="8" v-for="item in thirdData" :key="item.title">
             <div class="card" @click="fetchFileData(item.stage_id)">
               <div class="card-box">
-                <img class="card-box-pic" :src="item.thumb"/>
+                <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
                   <span class="tag">{{item.type}}</span>{{item.task_name}}
                   <span class="date">上传：{{item.create_date}}</span>
@@ -210,10 +206,10 @@
             </Select>
             </Col>
             <Col span="4"> 类型:
-            <Select v-model="taskType" style="width:80px" @on-change="fetchData()">
+            <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
               <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
                 <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-              </OptionGroup> 
+              </OptionGroup>
             </Select>
             </Col>
             <Col span="4"> 关注:
@@ -222,7 +218,7 @@
             </Select>
             </Col>
             <Col span="12">
-              <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
+            <Input v-model="value" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;"></Input>
             </Col>
           </Row>
         </div>
@@ -273,74 +269,69 @@
         </div>
       </TabPane>
     </Tabs>
-    <base-model 
-    :editData="formLeft" 
-    v-show="isTabModal" 
-    @close="closeTabmodal" 
-    :isDisabled="true"
-    >
-    <div slot="one">
-      <FormItem label="子项目">
-        <Select v-model="subpId" :disabled="true">
-          <Option v-for="(item,index) in subProjectList" :value="item.id" :key="index">{{item.name}}</Option>
-        </Select>
-      </FormItem>
-      <FormItem label="任务类型">
-        <Select v-model="taskType" :disabled="true">
-          <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
-            <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-          </OptionGroup>
-          <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
-        </Select>
-      </FormItem>
-    </div>
-    <div class="edit" slot="two">
-      <div v-show="status == 1">
-        <input class="message" type="text" v-model="feedback" placeholder="输入您要反馈的内容" />
-        <div class="change">需修改</div>
-        <div class="success">通过</div>
-      </div>  
-      <div v-show="status == 2" style="margin: 20px 0 0 20px;">
-        <ul class="list">
-          <li>反馈内容</li>
-          <li>反馈结果</li>
-          <li>反馈人</li>
-          <li>反馈时间</li>
-        </ul>
-        <ul class="list">
-          <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
-          <li>需修改</li>
-          <li>刘德华</li>
-          <li>今天/3天前</li>
-        </ul>
+    <base-model :editData="formLeft" v-show="isTabModal" @close="closeTabmodal" :isDisabled="true">
+      <div slot="one">
+        <FormItem label="子项目">
+          <Select v-model="subpId" :disabled="true">
+            <Option v-for="(item,index) in subProjectList" :value="item.id" :key="index">{{item.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="任务类型">
+          <Select v-model="taskType" :disabled="true">
+            <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+              <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+            </OptionGroup>
+            <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
+          </Select>
+        </FormItem>
       </div>
-      <div v-show="status == 3" style="margin: 20px 0 0 100px;">
-        <ul class="list">
-          <li>反馈状态</li>
-          <li>反馈人</li>
-          <li>等待时间</li>
-        </ul>
-        <ul class="list">
-          <li>客户待审</li>
-          <li>四川义美游有限公司</li>
-          <li>今天提交/3天前</li>
-        </ul>
+      <div class="edit" slot="two">
+        <div v-show="status == 1">
+          <input class="message" type="text" v-model="feedback" placeholder="输入您要反馈的内容" />
+          <div class="change">需修改</div>
+          <div class="success">通过</div>
+        </div>
+        <div v-show="status == 2" style="margin: 20px 0 0 20px;">
+          <ul class="list">
+            <li>反馈内容</li>
+            <li>反馈结果</li>
+            <li>反馈人</li>
+            <li>反馈时间</li>
+          </ul>
+          <ul class="list">
+            <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
+            <li>需修改</li>
+            <li>刘德华</li>
+            <li>今天/3天前</li>
+          </ul>
+        </div>
+        <div v-show="status == 3" style="margin: 20px 0 0 100px;">
+          <ul class="list">
+            <li>反馈状态</li>
+            <li>反馈人</li>
+            <li>等待时间</li>
+          </ul>
+          <ul class="list">
+            <li>客户待审</li>
+            <li>四川义美游有限公司</li>
+            <li>今天提交/3天前</li>
+          </ul>
+        </div>
+        <div v-show="status == 4" style="margin: 20px 0 0 20px;">
+          <ul class="list">
+            <li>反馈内容</li>
+            <li>反馈结果</li>
+            <li>反馈人</li>
+            <li>反馈时间</li>
+          </ul>
+          <ul class="list">
+            <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
+            <li>需修改</li>
+            <li>刘德华</li>
+            <li>今天/3天前</li>
+          </ul>
+        </div>
       </div>
-      <div v-show="status == 4" style="margin: 20px 0 0 20px;">
-        <ul class="list">
-          <li>反馈内容</li>
-          <li>反馈结果</li>
-          <li>反馈人</li>
-          <li>反馈时间</li>
-        </ul>
-        <ul class="list">
-          <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
-          <li>需修改</li>
-          <li>刘德华</li>
-          <li>今天/3天前</li>
-        </ul>
-      </div>
-    </div>
     </base-model>
   </div>
 </template>
@@ -359,7 +350,7 @@ export default {
     return {
       isTabModal: false,
       num: 0,
-      date: (Date.parse(new Date()))/1000,
+      date: (Date.parse(new Date())) / 1000,
       showNum: null,
       boxHeight: 300,
       param: {
@@ -405,9 +396,12 @@ export default {
       ],
       model: '',
       taskType: '',
+      selTaskType: '',
       subpId: null,
       value: '',
-      formLeft: {}
+      formLeft: {},
+      page: 1,
+      loading: false
     }
   },
   computed: {
@@ -430,53 +424,86 @@ export default {
     this.getTaskList();
   },
   mounted() {
-    // console.log('元素高度',document.getElementById("model").offsetHeight);
+  },
+  directives: {
+    /**
+     * 滚动加载的自定义指令
+     */
+    scroll: {
+      bind: function (el, binding, vnode) {
+        window.addEventListener('scroll', vnode.context.scrollLoad)
+      },
+　　　　//路由转跳到其他页面时，会调用unbind，解绑滚动加载事件。
+      unbind: function (el,binding, vnode) {
+        window.removeEventListener('scroll', vnode.context.scrollLoad)
+      }
+    }
   },
   methods: {
+    changePageIndex(){
+      this.page += 1;
+      this.fetchData();
+    },
+    changeTabs() {
+      this.page = 1;
+      this.fetchData()
+    },
     /**
      * 文件筛选条件
      */
     filterFTime(val) {
-      if(val == 0) {
-        this.sortStatus = 'create_time'
-      } else if(val == 1) {
-        this.sortStatus = 'inside_audit_time'
-      } else if(val == 2) {
-        this.sortStatus = 'client_audit_time'
+      if (val == 0) {
+        this.sortStatus = 'create_time';
+        this.page = 1;
+      } else if (val == 1) {
+        this.sortStatus = 'inside_audit_time';
+        this.page = 1;
+      } else if (val == 2) {
+        this.sortStatus = 'client_audit_time';
+        this.page = 1;
       }
       this.fetchData()
     },
     filterSTime(val) {
-      if(val == 0) {
-        this.sortStatus = 'create_time'
-      } else if(val == 1) {
-        this.sortStatus = 'inside_audit_time'
-      } else if(val == 2) {
-        this.sortStatus = 'client_audit_time'
+      if (val == 0) {
+        this.sortStatus = 'inside_audit_time';
+        this.page = 1;
+      // } else if (val == 1) {
+      //   this.sortStatus = 'inside_audit_time';
+        // this.page = 1;
+      } else if (val == 1) {
+        this.sortStatus = 'expect_end_time';
+        this.page = 1;
       }
       this.fetchData()
     },
     filterTTime(val) {
-      if(val == 0) {
-        this.sortStatus = 'create_time'
-      } else if(val == 1) {
-        this.sortStatus = 'inside_audit_time'
-      } else if(val == 2) {
-        this.sortStatus = 'client_audit_time'
+      if (val == 0) {
+        this.sortStatus = 'inside_audit_time';
+        this.page = 1;
+      } else if (val == 1) {
+        this.sortStatus = 'inside_audit_time';
+        this.page = 1;
+      } else if (val == 2) {
+        this.sortStatus = 'expect_end_time';
+        this.page = 1;
       }
       this.fetchData()
     },
     filterFTime(val) {
-      if(val == 0) {
-        this.sortStatus = 'create_time'
-      } else if(val == 1) {
-        this.sortStatus = 'inside_audit_time'
-      } else if(val == 2) {
-        this.sortStatus = 'client_audit_time'
+      if (val == 0) {
+        this.sortStatus = 'client_audit_time';
+        this.page = 1;
+      } else if (val == 1) {
+        this.sortStatus = 'client_audit_time';
+        this.page = 1;
+      } else if (val == 2) {
+        this.sortStatus = 'expect_end_time';
+        this.page = 1;
       }
       this.fetchData()
     },
-    cancel(){
+    cancel() {
       this.$Message.info('点击了取消');
     },
     /**
@@ -487,57 +514,78 @@ export default {
         status: str + ''
       }
       this.$axios.post('/task/task/stage-page', qs.stringify(data))
-      .then(res => res.data)
-      .then(res => {
-        if(res.err_code == 0) {
-          if(str == 1) {
-            this.param.num1 = res.page.count
-          } else if(str == 2) {
-            this.param.num2 = res.page.count
-          } else if(str == 3) {
-            this.param.num3 = res.page.count
-          } else if(str == 4) {
-            this.param.num4 = res.page.count
+        .then(res => res.data)
+        .then(res => {
+          if (res.err_code == 0) {
+            if (str == 1) {
+              this.param.num1 = res.page.count
+            } else if (str == 2) {
+              this.param.num2 = res.page.count
+            } else if (str == 3) {
+              this.param.num3 = res.page.count
+            } else if (str == 4) {
+              this.param.num4 = res.page.count
+            }
           }
-        }
-      })
+        })
     },
     /**
      * 获取阶段数据
      */
     fetchData() {
-      this.taskType = '';
       this.searchInput = '';
       this.$Loading.start();
       let data = {
-          status: this.status,
-          search: this.searchInput,
-          order: this.sortStatus,
-          tasktype_id: this.taskType,
-          order_by: 'desc'
+        status: this.status,
+        search: this.searchInput,
+        order: this.sortStatus,
+        tasktype_id: this.selTaskType,
+        page: this.page
+        // order_by: 'desc'
       }
       this.$axios.post('/task/task/stage-page', qs.stringify(data))
-      .then(res => res.data)
-      .then(res => {
-        if(res.err_code == 0) {
-          if(this.status == '1') {
-            this.fristData = res.data
-            this.searchInput = ''
-          } else if(this.status == '2') {
-            this.secondData = res.data
-            this.searchInput = ''
-          } else if(this.status == '3') {
-            this.thirdData = res.data
-            this.searchInput = ''
-          } else if(this.status == '4') {
-            this.fourthData = res.data
-            this.searchInput = ''
+        .then(res => res.data)
+        .then(res => {
+          if (res.err_code == 0) {
+            if (this.status == '1') {
+              if(this.page == 1) {
+                this.fristData = res.data
+              } else{
+                this.fristData.push.apply(this.fristData,res.data);
+              }
+              this.searchInput = ''
+            } else if (this.status == '2') {
+              res.data.forEach((item) => {
+                this.secondData.push(item)
+              });
+              if(this.page == 1) {
+                this.secondData = res.data
+              } else{
+                this.secondData.push.apply(this.secondData,res.data);
+              }
+              this.searchInput = ''
+            } else if (this.status == '3') {
+              if(this.page == 1) {
+                this.thirdData = res.data
+              } else{
+                this.thirdData.push.apply(this.thirdData,res.data);
+              }
+              // this.thirdData = res.data
+              this.searchInput = ''
+            } else if (this.status == '4') {
+              if(this.page == 1) {
+                this.fourthData = res.data
+              } else{
+                this.fourthData.push.apply(this.fourthData,res.data);
+              }
+              // this.fourthData = res.data
+              this.searchInput = ''
+            }
+            this.$Loading.finish();
+          } else {
+            this.$Loading.error();
           }
-          this.$Loading.finish();
-        } else {
-          this.$Loading.error();
-        }
-      })
+        })
     },
     /**
      * 从store中把任务类型获取出来
@@ -556,6 +604,7 @@ export default {
     },
     closeTabmodal() {
       this.isTabModal = false;
+      localStorage.display = 'none'
       // this.taskType = '';
       // this.fetchData();
     },
@@ -571,16 +620,135 @@ export default {
         id: fileId
       }
       this.$axios.post('/task/task/stage-info', qs.stringify(data))
-      .then(res => res.data)
-      .then(res => {
-        this.isTabModal = true;
-        this.formLeft = res;
-        // console.log('formLeft',this.formLeft)
-        this.$Loading.finish();
-        this.getSubProject(res.project_id)
-        this.taskType = res.task_id
-        this.subpId = parseInt(res.project_child_id)
-      })
+        .then(res => res.data)
+        .then(res => {
+          this.isTabModal = true;
+          this.formLeft = res;
+          // console.log('formLeft',this.formLeft)
+          localStorage.display = 'block'
+          this.$Loading.finish();
+          this.getSubProject(res.project_id)
+          this.taskType = res.tasktype_id
+          this.subpId = parseInt(res.project_child_id)
+        })
+    },
+    /**
+     * 获取滚动条当前的位置
+     */
+    getScrollTop() {
+      let scrollTop = 0; 
+      if (document.documentElement && document.documentElement.scrollTop) { 
+        scrollTop = document.documentElement.scrollTop; 
+      } else if (document.body) { 
+        scrollTop = document.body.scrollTop; 
+      } 
+      return scrollTop;
+    },
+    /**
+     * 获取当前可视范围的高度
+     */
+    getClientHeight() {
+      let clientHeight = 0; 
+      if (document.body.clientHeight && document.documentElement.clientHeight) { 
+        clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight); 
+      } else { 
+        clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight); 
+      } 
+      return clientHeight; 
+    },
+    /**
+     * 获取文档完整的高度
+     */
+    getScrollHeight() {
+      return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight); 
+    },
+    loadMore() {
+      alert('111')
+      if (!this.loading) {
+        this.loading = true
+        // 请求下一页数据
+        let data = {
+          status: this.status,
+          search: this.searchInput,
+          order: this.sortStatus,
+          tasktype_id: this.taskType,
+          page: this.page++
+        }
+        this.$axios.post('/task/task/stage-page', qs.stringify(data))
+          .then(res => res.data)
+          .then(res => {
+            if (res.err_code == 0) {
+              if (this.status == '1') {
+                this.fristData.push(res.data)
+                this.searchInput = ''
+              } else if (this.status == '2') {
+                this.secondData.push(res.data)
+                this.searchInput = ''
+              } else if (this.status == '3') {
+                this.thirdData.push(res.data)
+                this.searchInput = ''
+              } else if (this.status == '4') {
+                this.fourthData.push(res.data)
+                this.searchInput = ''
+              }
+            } else {
+              this.$Loading.error();
+            }
+          })
+        // 重新填充数据
+        // this.lists = this.lists.concat(this.$store.state.lists)
+        this.loading = false
+      }
+    },
+    scrollLoad() {
+      //滚动条高度（页面被卷去高度）
+      // let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+      let scrollTop = window.scrollY;
+      console.log(scrollTop);
+      //滚动条总高度
+      // let bodyHeight = document.body.scrollHeight ||  document.documentElement.scrollHeight;
+      let bodyHeight = document.body.scrollHeight;
+      console.log(bodyHeight,window.innerHeight);
+
+      if (scrollTop + window.innerHeight > bodyHeight) {
+        alert('按空格键阿拉山口挂掉了')
+        //判断请求发送标志位，避免重复请求(这个需要自己在data里声明，直接贴代码会报错。默认为false，发送请求前改为true， 请求完成回调函数里改回false)
+        // if (!this.loading) {
+        //   this.loading = true
+        //   // 请求下一页数据
+        //   let data = {
+        //     status: this.status,
+        //     search: this.searchInput,
+        //     order: this.sortStatus,
+        //     tasktype_id: this.taskType,
+        //     page: this.page++
+        //   }
+        //   this.$axios.post('/task/task/stage-page', qs.stringify(data))
+        //     .then(res => res.data)
+        //     .then(res => {
+        //       if (res.err_code == 0) {
+        //         if (this.status == '1') {
+        //           this.fristData.push(res.data)
+        //           this.searchInput = ''
+        //         } else if (this.status == '2') {
+        //           this.secondData.push(res.data)
+        //           this.searchInput = ''
+        //         } else if (this.status == '3') {
+        //           this.thirdData.push(res.data)
+        //           this.searchInput = ''
+        //         } else if (this.status == '4') {
+        //           this.fourthData.push(res.data)
+        //           this.searchInput = ''
+        //         }
+        //       } else {
+        //         this.$Loading.error();
+        //       }
+        //     })
+        //   // 重新填充数据
+        //   // this.lists = this.lists.concat(this.$store.state.lists)
+        //   this.loading = false
+        // }
+      }
     }
   }
 }
