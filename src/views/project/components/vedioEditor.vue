@@ -38,7 +38,7 @@
 </template>
 <script>
 
-import videojs from 'video.js';
+// import videojs from 'video.js';
 import {baseUrl} from '../../../config/env.js';
 export default {
     data(){
