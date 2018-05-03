@@ -1,7 +1,15 @@
 <style>
     .imgEditorCom{width:100%;height:400px;}
+    .imgEditorCom .controlListRow{position:absolute;z-index:11;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;}
+    .imgEditorCom .stageListRow{background:rgba(0,0,0,0.5);width:320px;position:absolute;z-index:9999;height:200px;display:none;overflow-y:auto;}
+    .imgEditorCom .stageListRow ul{margin:10px;}
+    .imgEditorCom .stageListRow ul li{border-radius:4px;line-height:20px;font-size:12px;}
+    .imgEditorCom .stageListRow .showBg{background:#eaeab5;}
+    .imgEditorCom .stageListRow ul li:hover{border-style:solid;}
+    .imgEditorCom .stageListRow ul em{float:right;text-align:right;font-size:12px;}
+    .imgEditorCom .stageListRow .clear{clear:both;}
     .imgFocus{margin-bottom:5px;}
-    .imgFocus img{width:100%;height:100%;}
+    .imgFocus img{width:100%;}
     .chooseBox{height:auto;position:absolute;z-index:100;background:#fff;box-shadow:#000 0 0 2px;-webkit-box-shadow:#000 0 0 2px}
     .chooseBox ul{width:100%;height:auto;cursor:pointer;list-style:none}
     .chooseBox ul li{width:100%;height:20px;color:#000;font-size:12px;text-align:center;line-height:20px;padding:0px 4px;}
@@ -19,10 +27,34 @@
 </style>
 <template>
     <div class="imgEditorCom">
-        <div class="imgFocus" id="signx"><img :src="url" />
-        <button class="actionPost">确认</button>
+        <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
+        <div class="stageListRow" @mouseleave="hideStageList">
+            <ul>
+              <li v-for="(item,index) in IMGlist" @click="changCont(
+                      item.file.file,
+                      item.file.tag,
+                      item.status,
+                      item.inside_audit_time,
+                      item.client_audit_time,
+                      item.inside_audit_date,
+                      item.client_audit_date,
+                      item.inside_audit_uid,
+                      item.client_audit_uid,
+                      index
+                  )" :class="{showBg:index==liIndex}"> 
+                  <span>{{index+1}}<br/>{{item.stage}}</span>
+                  <em>
+                    {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
+                    {{item.status | filtStat}}
+                  </em>
+                  <div class="clear"></div>
+              </li>
+            </ul>
+            
         </div>
-        {{IMGlist}}
+        <div class="imgFocus" id="signx"><img :src="url" /></div>
+        <div v-if="AllowEdit"><button class="actionPost">确认</button></div>
+        <div v-else>反馈状态:{{StateFeedBack | filtStat}} 时间:{{insTime>cliTiem?insDate:cliDate}}审核人:{{insTime>cliTiem?insUid:cliUid}}</div>
     </div>
 </template>
 <script>
@@ -33,16 +65,56 @@
       return {
         data:[],
         IMGdata:[],
-        url:'http://192.168.2.19/index.php?r=file/file/get-file&fid=400',
+        url:'',
         TID:80,
         TaskID:0,
-        IMGlist:[]
+        IMGlist:[],
+        AllowEdit:Boolean,
+        StateFeedBack:0,
+        insTime:0,
+        cliTiem:0,
+        insDate:0,
+        cliDate:0,
+        insUid:0,
+        cliUid:0,
+        liIndex:0
+      }
+    },
+    filters:{
+      filtStat(val){
+            if(val==1){
+              return '内部待审'
+            }else if(val==2){
+              return '客户待审'
+            }else if(val==3){
+              return '内部已反馈'
+            }else if(val==4){
+              return '客户已反馈'
+            }else if(val==5){
+              return '审核通过'
+            }else{
+              return '--'
+            }
       }
     },
     mounted(){
+      this.url=sessionStorage.FileURl;
       this.get();
     },
     methods:{
+      changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index){
+         this.url=file;
+         this.data=tag;
+         this.StateFeedBack=status;
+         this.insTime=insTime;
+         this.cliTiem=cliTiem;
+         this.insDate=insDate;
+         this.cliDate=cliDate;
+         this.insUid=insUid;
+         this.cliUid=cliUid;
+         this.liIndex=index
+         this.imgdef();
+      },
       defue(fileID){
         (function($){
           var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
@@ -144,6 +216,7 @@
             }
           }//删除数据
           function loading(data){
+            $(".signIndex").remove()
             var l=Data.length;
             for(var i=0;i<data.length;i++){
               indexId++
@@ -157,8 +230,7 @@
             indexId=l;
           }//载入数据
 
-          $(".actionPost").click(function(){
-            
+          $(".actionPost").click(function(){   
             var url=baseUrl+'index.php?r=task/task/inside-audit';
             var ImgData={
                   "stage_id": fileID,
@@ -193,15 +265,23 @@
         $.sign.loadingSign(this.data);
       },
       get(){
-           let _this=this
-           let TaskID=sessionStorage.TaskID
-           
-          // let TaskID=Cookies.get('TaskID')
-           let url='/task/task/stage-info&id='+TaskID;
+           let _this=this;
+          //  控件图片和列表的高度
+           $('.imgFocus img,.stageListRow').height($(window).height()-320);
+          //  控制图片是否可标注
+           if(sessionStorage.AllowEdit=='true'){
+             this.AllowEdit=true
+           }else{
+             this.AllowEdit=false
+           }
+          //  获取图片的标注信息
+           let TaskID=sessionStorage.TaskID;
+           let url='/task/task/task-stage&task_id='+TaskID;
           _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
+            console.log(Sdate)
             if(Sdate.err_code==0){
-                Sdate.file.forEach(element => {
+                Sdate.data.forEach(element => {
                     _this.IMGlist.push(element)
                 });
             let fileID = Sdate.stage_id
@@ -230,7 +310,14 @@
         },()=>{
           alert("请求失败!")
         })
-       
+      },
+      showStageList(){
+          document.getElementsByClassName('controlListRow')[0].style.display='none';
+          document.getElementsByClassName('stageListRow')[0].style.display='block';
+      },
+      hideStageList(){
+          document.getElementsByClassName('controlListRow')[0].style.display='block';
+          document.getElementsByClassName('stageListRow')[0].style.display='none';
       }
     }
 

@@ -84,15 +84,15 @@ export default {
             publicKey: '',
             pwpic:{
                 pwdType:"password",
-                src: "/src/images/close_eyes.png"
+                src: "../images/close_eyes.png"
             },
             pwpic2:{
                 pwdType2:"password",
-                src2: "/src/images/close_eyes.png"
+                src2: "../images/close_eyes.png"
             },
             pwpic3:{
                 pwdType3:"password",
-                src3: "/src/images/close_eyes.png"
+                src3: "../images/close_eyes.png"
             },
             loginform: {
                 email: '',
@@ -220,15 +220,15 @@ export default {
         },
         changeType(){
             this.pwpic.pwdType = this.pwpic.pwdType === 'password' ? 'text' : 'password';
-            this.pwpic.src = this.pwpic.src == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+            this.pwpic.src = this.pwpic.src == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
         },
         changeType2(){
             this.pwpic2.pwdType2 = this.pwpic2.pwdType2 === 'password' ? 'text' : 'password';
-            this.pwpic2.src2 = this.pwpic2.src2 == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+            this.pwpic2.src2 = this.pwpic2.src2 == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
         },
         changeType3(){
             this.pwpic3.pwdType3 = this.pwpic3.pwdType3 === 'password' ? 'text' : 'password';
-            this.pwpic3.src3 = this.pwpic3.src3 == "/src/images/close_eyes.png" ? "/src/images/open_eyes.png" : "/src/images/close_eyes.png";
+            this.pwpic3.src3 = this.pwpic3.src3 == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
         }
     }
 };

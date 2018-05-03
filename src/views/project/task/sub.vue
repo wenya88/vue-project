@@ -12,13 +12,13 @@ td.ivu-table-expanded-cell {
   <div class="table_border">
     <Content :style="{background: '#fff'}">
       <edit-submodal :editSubData="subForm" v-if="isubListModal" @close="closeSubListmodal"></edit-submodal>
-      <Table :show-header="false" :columns="subColumns" :data="dataList" size="small" ref="table"></Table>
+      <Table :show-header="false" :columns="subColumns" :data="Subdata" size="small" ref="table"></Table>
     </Content>
   </div>
 </template>
 <script>
 import {
-  //   deletetaskData,
+  deletetaskData,
   updatetaskData,
   gettasklistData,
   gettasklistDetails
@@ -185,11 +185,12 @@ export default {
           }
         }
       ],
-      dataList: []
+      Subdata: []
     };
   },
   created() {
     this.forEachSubData();
+    this.getforechDailt();
   },
   methods: {
     //关闭modal
@@ -198,7 +199,7 @@ export default {
     },
     showSubListmodal: function(index) {
       this.isubListModal = true;
-      this.getforechDailt(this.dataList[index].id);
+      this.getforechDailt(this.Subdata[index].id);
     },
     /**
      * 请求数据
@@ -215,16 +216,17 @@ export default {
     //删除子任务列表数据
     removetaskSub(index) {
       let cIs = this;
-      //   let removeSubData = this.dataList[index].id;
-      //   this.get(
-      //     deletetaskData,
-      //     {
-      //       id: removeSubData
-      //     },
-      //     () => {
-      //       cIs.forEachSubData();
-      //     }
-      //   );
+      let removeSubData = this.Subdata[index].id;
+      this.get(
+        deletetaskData,
+        {
+          id: removeSubData
+        },
+        () => {
+          cIs.$Message.success("刪除子任务成功！");
+          cIs.forEachSubData();
+        }
+      );
     },
     //遍历子任务列表数据
     forEachSubData() {
@@ -241,6 +243,7 @@ export default {
             dataColortd[i].status;
             dataColortd[i].status_text;
             let child = dataColortd[i].child;
+            console.log(child);
             if (child) {
               for (var k = 0; k < child.length; k++) {
                 if (
@@ -273,9 +276,9 @@ export default {
                   };
                 }
               }
-              cIs.dataList = child;
+              // cIs.Subdata = child;
+              this.Subdata = child;
             }
-            // console.log(child);
           }
         }
       );

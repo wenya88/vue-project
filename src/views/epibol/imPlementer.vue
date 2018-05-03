@@ -61,7 +61,7 @@
                                       <div class="beInOper">
                                           <h3>实施中({{dataUnderway.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)" @click="taskDetaInfo(item.id)">
+                                              <li v-for="item in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)" @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
                                                   <span>
                                                       <s>{{item.name}}</s>
                                                       <br/><i class="projectRow">{{item.project_name | DefName }}</i>
@@ -76,6 +76,7 @@
                                                   <div class="clear"></div>
                                               </li>
                                           </ul>
+                                          
                                           <!-- 文件上传 -->
                                           <Modal v-model="modal"  @on-ok="ok"  width="800">
                                               <UploadM></UploadM>
@@ -101,7 +102,7 @@
                                                     </FormItem>
                                                     </div>
                                                 <div slot="three">
-                                                    <ImgEditor></ImgEditor>
+                                                    <ImgEditor v-if="imgConponent"></ImgEditor>
                                                 </div>
                                           </FinishModel>
                                           <!-- 任务详情结束 -->
@@ -110,7 +111,7 @@
                                       <div class="theUpcom">
                                           <h3>即将实施({{dataWait.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataWait"  @click="taskDetaInfo(item.id)">
+                                              <li v-for="item in dataWait"  @click="taskDetaInfo(item.id,item)">
                                                   <span><s>{{item.name}}</s><br/>
                                                     <p v-if="item.expect_start_time<=Mdate?false:true">{{item.project_name}}</p>
                                                     <p v-if="item.expect_start_time<=Mdate?true:false">
@@ -121,11 +122,12 @@
                                                   <div class="clear"></div>
                                               </li>
                                           </ul>
+
                                       </div>
                                       <div class="Completed">
                                           <h3>已完成({{dataAccom.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataAccom"  @click="taskDetaInfo(item.id)">
+                                              <li v-for="item in dataAccom"  @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
                                                   <span class="spanTop"><Icon type="android-checkbox" color="mediumseagreen" size="18"></Icon></span>
                                                   <span>{{item.name}}</span>
                                                   <em>{{item.end_date}}</em>
@@ -221,7 +223,9 @@
         subpId:'',
         tType:'',
         childList:[],
-        taskType:[]
+        taskType:[],
+        imgConponent:false,
+        AllowEdit:false
       }
     },
     components:{Calend,UploadM,FinishModel,ImgEditor},
@@ -322,12 +326,16 @@
     },
     methods:{
     //  打开任务详情
-    taskDetaInfo(id){
+    taskDetaInfo(id,type,file,TaskID){
         let _this=this;
         _this.modelTask=true;
         let url='/task/task/info&id='+id;
-        sessionStorage.TaskID=id;
-        // Cookies.set('TaskID',id)
+        sessionStorage.TaskID=TaskID;
+        sessionStorage.FileURl=file;
+        sessionStorage.AllowEdit=_this.AllowEdit;
+        if(type=='image'){
+          _this.imgConponent=true
+        }
         _this.$axios.get(url).then((val)=>{
             let TaskDeta=val.data
             _this.BaseObj.id=TaskDeta.id;
@@ -341,7 +349,6 @@
         },()=>{
             alert("请求失败!")
         })
-        
     },
     //   关闭Model
     CloseModel(){
@@ -550,7 +557,7 @@
 
     .imTaskList{border:1px solid #ddd;text-align:left;}
     .imTaskList dt,.feedBack dt,.jobCalend dt{border-bottom:1px solid #ddd;padding:6px 10px;font-weight:bold;font-size:14px;background:#f7f7f7;}
-    .imTaskList .projectRow{width:100px;display:inline-block;margin-right:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;height:12px;line-height:12px;}
+    .imTaskList .projectRow{width:70px;display:inline-block;margin-right:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;height:12px;line-height:12px;}
     .beInOper,.theUpcom{padding:10px;border-right:1px solid #ddd;float:left;width:33%;}
     .Completed{margin-left:66%;padding:10px;}
     .beInOper ul,.theUpcom ul,.Completed ul{overflow:auto;}

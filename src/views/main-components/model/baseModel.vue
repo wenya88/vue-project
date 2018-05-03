@@ -142,7 +142,7 @@
               </Form>
               </Col>
               <Col span="16">
-              <three-dmodel></three-dmodel>
+              <!-- <three-dmodel></three-dmodel> -->
               <div class="edit">
                 <slot name="two"></slot> 
               </div>
@@ -169,7 +169,7 @@ export default {
     isDisabled: {
       type: Boolean,
       default: false
-    },
+    }
     // subpId: {    //子项目id
     //   type: Number,
     //   default: null

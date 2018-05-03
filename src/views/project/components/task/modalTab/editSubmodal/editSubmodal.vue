@@ -129,7 +129,7 @@
                   </Upload>
                 </FormItem>
                 <FormItem label="参考附件">
-                  <Upload :data="{'type':'image'}" :default-file-list="defaultflie" :on-success="fileSuccess" multiple action="http://192.168.2.19/index.php?r=file/file/file-upload">
+                  <Upload name="affix" multiple :show-upload-list="true" :on-success="fileSuccess" :on-format-error="handleFormatError" :data="{'type':'image'}" action="http://192.168.2.19/index.php?r=file/file/file-upload">
                     <Button type="ghost" icon="ios-cloud-upload-outline">上传
                     </Button>
                   </Upload>
@@ -191,7 +191,6 @@ export default {
       fruit: [],
       //上传图片
       defaultList: [],
-      defaultflie: [],
       uploadList: [],
       setypeClass: [],
       fileName: [],
@@ -220,15 +219,14 @@ export default {
     }
     if (file) {
       file.forEach(fl => {
-        arr.push({
+        arr2.push({
           url: fl
         });
       });
-      this.defaultflie = arr2;
+      this.fileName = arr2;
       this.fileUrl = file;
     }
   },
-
   mounted() {
     //调用图片上传功能
     this.uploadList = this.$refs.upload.fileList;
@@ -255,6 +253,7 @@ export default {
       dateForm.file = JSON.stringify(cIs.fileUrl)
         ? JSON.stringify(cIs.fileName)
         : 0;
+      console.log(dateForm.file);
       cIs.$axios
         .post("/task/task/update", qs.stringify(dateForm))
         .then(res => {

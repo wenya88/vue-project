@@ -53,6 +53,9 @@
   font-size: 15px;
   color: #5c6b77;
 }
+.taskHead .taskInfo a {
+  color: #666;
+}
 </style>
 <template>
   <div class="layout">
@@ -223,6 +226,7 @@ export default {
       isaddFormModal: false,
       addmodalData: {},
       formLeft: {},
+      subData: {},
       //弹出层
       handleRender: false,
       excelModal: false,
@@ -290,7 +294,7 @@ export default {
               [
                 h("Step", {
                   props: {
-                    title: "test1",
+                    title: "test1"
                   }
                 }),
                 h("Step", {
@@ -602,7 +606,6 @@ export default {
         res => {
           //主任务数据渲染及状态上色
           let dataColortd = res.data.data;
-
           for (var i = 0; i < dataColortd.length; i++) {
             let statusText = dataColortd[i].status;
             let colorText = dataColortd[i].status_text;
