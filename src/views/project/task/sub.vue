@@ -6,26 +6,33 @@ td.ivu-table-expanded-cell {
 .table_border .ivu-table-wrapper {
   border: 0;
 }
+.sub-header .ivu-table-header {
+  display: none;
+}
 </style>
 <template>
   <!-- 子任务列表父组件 -->
   <div class="table_border">
     <Content :style="{background: '#fff'}">
       <edit-submodal :editSubData="subForm" v-if="isubListModal" @close="closeSubListmodal"></edit-submodal>
-      <Table :show-header="false" :columns="subColumns" :data="Subdata" size="small" ref="table"></Table>
+      <div class="sub-header">
+        <Table :columns="subColumns" :data="row.child" size="small"></Table>
+      </div>
     </Content>
   </div>
 </template>
 <script>
 import {
   deletetaskData,
-  updatetaskData,
   gettasklistData,
   gettasklistDetails
 } from "../../../config/env.js";
 import editSubmodal from "../components/task/modalTab/editSubmodal/editSubmodal";
 export default {
   components: { editSubmodal },
+  props: {
+    row: Object
+  },
   data() {
     return {
       subForm: {},
@@ -33,7 +40,7 @@ export default {
       isubListModal: false,
       subColumns: [
         {
-          width: 50,
+          width: 25,
           align: "center"
         },
         {
@@ -47,7 +54,8 @@ export default {
           key: "status_text",
           sortable: true,
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          width: 100
         },
         {
           title: "子项目",
@@ -58,7 +66,6 @@ export default {
         {
           title: "参与人",
           align: "center",
-          width: "100px",
           key: "run_uname",
           ellipsis: true
         },
@@ -66,12 +73,13 @@ export default {
           title: "类型",
           key: "tasktype_name",
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          width: 78
         },
         {
           title: "实施阶段",
           align: "center",
-          width: "550px",
+          width: 400,
           ellipsis: true,
           render: function(h) {
             return h(
@@ -117,13 +125,13 @@ export default {
         {
           title: "任务文件",
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          key: "file_id"
         },
         {
           title: "更新时间",
           align: "center",
           key: "expect_end_date",
-          width: "100px",
           ellipsis: true
         },
         {
@@ -139,7 +147,7 @@ export default {
         {
           title: "操作",
           align: "center",
-          width: "200px",
+          width: 178,
           ellipsis: true,
           render: (h, params) => {
             return h("div", [
@@ -156,7 +164,7 @@ export default {
                   on: {
                     click: () => {
                       let cIs = this;
-                      cIs.showSubListmodal(params.index);
+                      cIs.showSubListmodal(params.row);
                     }
                   }
                 },
@@ -175,7 +183,7 @@ export default {
                   on: {
                     click: () => {
                       let cIs = this;
-                      cIs.removetaskSub(params.index);
+                      cIs.removetaskSub(params.row);
                     }
                   }
                 },
@@ -184,8 +192,7 @@ export default {
             ]);
           }
         }
-      ],
-      Subdata: []
+      ]
     };
   },
   created() {
@@ -197,9 +204,10 @@ export default {
     closeSubListmodal() {
       this.isubListModal = false;
     },
-    showSubListmodal: function(index) {
+    showSubListmodal: function(rq) {
       this.isubListModal = true;
-      this.getforechDailt(this.Subdata[index].id);
+      this.getforechDailt(rq.id);
+      console.log(rq.id);
     },
     /**
      * 请求数据
@@ -214,9 +222,9 @@ export default {
       );
     },
     //删除子任务列表数据
-    removetaskSub(index) {
+    removetaskSub() {
       let cIs = this;
-      let removeSubData = this.Subdata[index].id;
+      let removeSubData = this.row.id;
       this.get(
         deletetaskData,
         {
@@ -243,7 +251,6 @@ export default {
             dataColortd[i].status;
             dataColortd[i].status_text;
             let child = dataColortd[i].child;
-            console.log(child);
             if (child) {
               for (var k = 0; k < child.length; k++) {
                 if (
@@ -276,9 +283,8 @@ export default {
                   };
                 }
               }
-              // cIs.Subdata = child;
-              this.Subdata = child;
             }
+            cIs.row.child = child;
           }
         }
       );

@@ -103,6 +103,8 @@
                                                     </div>
                                                 <div slot="three">
                                                     <ImgEditor v-if="imgConponent"></ImgEditor>
+                                                    <VidEditor v-if="vidConponent"></VidEditor>
+                                                    <div v-if="startStage"><button type="primary">开始任务</button></div>
                                                 </div>
                                           </FinishModel>
                                           <!-- 任务详情结束 -->
@@ -111,7 +113,7 @@
                                       <div class="theUpcom">
                                           <h3>即将实施({{dataWait.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataWait"  @click="taskDetaInfo(item.id,item)">
+                                              <li v-for="item in dataWait"  @click="taskDetaInfo(item.id)">
                                                   <span><s>{{item.name}}</s><br/>
                                                     <p v-if="item.expect_start_time<=Mdate?false:true">{{item.project_name}}</p>
                                                     <p v-if="item.expect_start_time<=Mdate?true:false">
@@ -133,7 +135,7 @@
                                                   <em>{{item.end_date}}</em>
                                                   <div class="clear"></div>
                                               </li>
-                                              
+                                              <button @click="loadAdd" v-show="accomMore">加载更多</button>
                                           </ul>
                                       </div>
                                       <div class="clear"></div>
@@ -200,6 +202,7 @@
   import UploadM from './imPlementer/UpLoadModal.vue';
   import FinishModel from '../main-components/model/finishModel.vue';
   import ImgEditor from '../project/components/imgEditor.vue';
+  import VidEditor from '../project/components/vedioEditor.vue'
   export default {
     data(){
       return{
@@ -225,10 +228,15 @@
         childList:[],
         taskType:[],
         imgConponent:false,
-        AllowEdit:false
+        vidConponent:false,
+        AllowEdit:false,
+        pageIndex:1,
+        maxPage:0,
+        accomMore:true,
+        startStage:false
       }
     },
-    components:{Calend,UploadM,FinishModel,ImgEditor},
+    components:{Calend,UploadM,FinishModel,ImgEditor,VidEditor},
     
     mounted(){
       this.onLoad();
@@ -325,16 +333,43 @@
         }
     },
     methods:{
+        loadAdd(){
+            if(this.pageIndex<this.maxPage){
+                this.pageIndex+=1;
+                console.log(this.pageIndex)
+                this.taskAccom()
+                setTimeout(()=>{
+                    if(this.pageIndex==this.maxPage){
+                    this.accomMore=false;
+                    }
+                },1000)
+            }
+        },
     //  打开任务详情
     taskDetaInfo(id,type,file,TaskID){
         let _this=this;
         _this.modelTask=true;
         let url='/task/task/info&id='+id;
+        // 本地缓存信息
         sessionStorage.TaskID=TaskID;
         sessionStorage.FileURl=file;
+
+        // 是否显示编辑信息
         sessionStorage.AllowEdit=_this.AllowEdit;
+
+        // 判断是什么类型，显示什么组件
         if(type=='image'){
-          _this.imgConponent=true
+          _this.imgConponent=true;
+          _this.vidConponent=false;
+          _this.startStage=false;
+        }else if(type=='video'){
+          _this.vidConponent=true;
+          _this.imgConponent=false;
+          _this.startStage=false;
+        }else if(type==undefined){
+          _this.vidConponent=false;
+          _this.imgConponent=false;
+          _this.startStage=true;
         }
         _this.$axios.get(url).then((val)=>{
             let TaskDeta=val.data
@@ -347,7 +382,7 @@
             _this.subpId=TaskDeta.project_child_name;
             _this.tType=TaskDeta.tasktype_name;       
         },()=>{
-            alert("请求失败!")
+            alert("请求失败!!")
         })
     },
     //   关闭Model
@@ -366,7 +401,7 @@
         let url='/task/task/stage-page';
         // let params={is_my:1};
         let params={};
-        _this.$http.get(url,{params}).then((data)=>{
+        _this.$axios.get(url,{params}).then((data)=>{
             _this.dataFeedBack=data.data.data.slice(0,8);
         },()=>{
           alert("请求失败!")
@@ -376,9 +411,11 @@
     //   正在实施数据请求
       taskGet(){
           let _this=this;
-          let url='/task/task/page';
-          let params={};
-          _this.$http.get(url,params).then((msg)=>{
+          let url='/task/task/page&page='+_this.pageIndex;
+          _this.$axios.get(url).then((msg)=>{
+            // 获取总页数
+              _this.maxPage=msg.data.page.count_page;
+            // 获取数据
               let MsgData=msg.data.data;
               MsgData.forEach(function(element) {
                   if(element.status==2){
@@ -398,9 +435,9 @@
     //   已完成数据请求
       taskAccom(){
           let _this=this;
-          let url='/task/task/page';
+          let url='/task/task/page&page='+_this.pageIndex;
           let params={};
-          _this.$http.get(url,params).then((msg)=>{
+          _this.$axios.get(url,params).then((msg)=>{
                let MsgData=msg.data.data;
                 MsgData.forEach(function(element) {
                  if(element.status==4){
@@ -454,7 +491,7 @@
             let _this=this;
             let MainData=_this.MainFlie;
             let MinData=_this.MinFile;
-            console.log(MinData)
+            // console.log(MinData)
             if(MainData.length>0){
                 //MainFile
                 let MFid=MainData[0].response.file.fid;
@@ -484,8 +521,7 @@
                         is_main:0
                     })
                 })
-                console.log(Mainobj)
-
+                // console.log(Mainobj)
                 let url='/task/task/stage-upload';
                 
                 let Mparams={
@@ -501,8 +537,7 @@
                         _this.MainFlie=[];
                         _this.MinFile=[];
                         _this.AddMinFile=[];
-                        let FileVal=[];
-                        _this.$bus.emit("RemoveFile",FileVal)
+                        _this.$bus.emit("RemoveFile");
                 }
                 },()=>{
                     _this.$Message.error('提交失败')

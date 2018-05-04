@@ -54,7 +54,7 @@
         </div>
         <div class="imgFocus" id="signx"><img :src="url" /></div>
         <div v-if="AllowEdit"><button class="actionPost">确认</button></div>
-        <div v-else>反馈状态:{{StateFeedBack | filtStat}} 时间:{{insTime>cliTiem?insDate:cliDate}}审核人:{{insTime>cliTiem?insUid:cliUid}}</div>
+        <div v-if="SataeInfo">反馈状态:{{StateFeedBack | filtStat}} 时间:{{insTime>cliTiem?insDate:cliDate}}审核人:{{insTime>cliTiem?insUid:cliUid}}</div>
     </div>
 </template>
 <script>
@@ -70,6 +70,7 @@
         TaskID:0,
         IMGlist:[],
         AllowEdit:Boolean,
+        SataeInfo:Boolean,
         StateFeedBack:0,
         insTime:0,
         cliTiem:0,
@@ -115,7 +116,7 @@
          this.liIndex=index
          this.imgdef();
       },
-      defue(fileID){
+      defue(fileID,SataeInfo){
         (function($){
           var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
           var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
@@ -139,6 +140,10 @@
           });
 
           function defined(dom){
+            //是否显示标记
+            if(SataeInfo==true||SataeInfo==undefined){
+                return
+            }
             //鼠标右键
             $(document).on("mousedown",dom,function(e){
               e.preventDefault();
@@ -270,43 +275,42 @@
            $('.imgFocus img,.stageListRow').height($(window).height()-320);
           //  控制图片是否可标注
            if(sessionStorage.AllowEdit=='true'){
-             this.AllowEdit=true
-           }else{
-             this.AllowEdit=false
-           }
+                _this.AllowEdit=true;
+                _this.SataeInfo=false;
+            }else if(sessionStorage.AllowEdit=='false'){
+                _this.AllowEdit=false
+                 _this.SataeInfo=true;
+            }else if(sessionStorage.AllowEdit==undefined){
+                _this.AllowEdit=false;
+                _this.SataeInfo=false;
+            }
           //  获取图片的标注信息
            let TaskID=sessionStorage.TaskID;
            let url='/task/task/task-stage&task_id='+TaskID;
           _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
-            console.log(Sdate)
             if(Sdate.err_code==0){
                 Sdate.data.forEach(element => {
                     _this.IMGlist.push(element)
                 });
-            let fileID = Sdate.stage_id
-            _this.defue(fileID);
+            // 设置初始化值
+            _this.data=_this.IMGlist[0].tag;
+            _this.StateFeedBack=_this.IMGlist[0].status;
+            _this.insTime=_this.IMGlist[0].insTime;
+            _this.cliTiem=_this.IMGlist[0].cliTiem;
+            _this.insDate=_this.IMGlist[0].insDate;
+            _this.cliDate=_this.IMGlist[0].cliDate;
+            _this.insUid=_this.IMGlist[0].insUid;
+            _this.cliUid=_this.IMGlist[0].cliUid;
+            // 把StageID传到提交
+            let fileID = Sdate.stage_id;
+            let SataeInfo=_this.SataeInfo
+            _this.defue(fileID,SataeInfo);
             _this.imgdef();
+            document.oncontextmenu=new Function("event.returnValue=false;");
             }else{
               return
-            }
-      //       let Vdata;
-      //       let TID=_this.TID;
-      //       //遍历出符合TID数组
-      //       for(let i=0;i<Sdate.length;i++){
-      //           if(Sdate[i].id==TID){
-      //               Vdata=Sdate[i].file
-      //           }
-      //       };
-
-      //       //遍历出符合fileID数组
-      //       Vdata.forEach(function(element) {
-      //           if(element.id==_this.fileID){
-      //                 _this.IMGdata.push(element);
-      //                 _this.data=element.tag
-      //           }
-      //       }, _this);
-           
+            }          
         },()=>{
           alert("请求失败!")
         })

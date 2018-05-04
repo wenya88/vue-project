@@ -281,7 +281,7 @@
               <div class="modal-footer">
                 <slot name="footer">
                   <Button @click="close" class="btn-green">取消</Button>
-                  <Button type="primary" @click="subSave" class="btn-green">保存</Button>
+                  <Button type="primary" @click="subSave" class="btn-green sd">保存</Button>
                 </slot>
               </div>
             </TabPane>
@@ -302,12 +302,8 @@ import {
   projectList,
   projDatali,
   cateList,
-  updatetaskData,
-  gettasklistData,
-  gettasklistDetails,
   deletetaskData
 } from "../../../../config/env.js";
-import editSubmodalVue from "./modalTab/editSubmodal/editSubmodal.vue";
 export default {
   props: ["editData"],
   components: {
@@ -717,6 +713,7 @@ export default {
           cIs.getProjectId();
         }
       );
+      this.subData.splice(index, 1);
     }
   }
 };

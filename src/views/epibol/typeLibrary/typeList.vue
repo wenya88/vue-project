@@ -87,8 +87,9 @@ export default {
         //点击列表
         function zTreeOnClick(event, treeId, treeNode) {
           let id = treeNode.id;
-          if (id) {
-            _this.$emit("getListId", id);
+          let liName = treeNode.name;
+          if ((id, liName)) {
+            _this.$emit("getListId", id, liName);
           }
         }
         let newCount = 1;
@@ -96,7 +97,6 @@ export default {
         function addHoverDom(treeId, treeNode) {
           //增加按钮的样式
           let sObj = $("#" + treeNode.tId + "_span");
-          console.log(sObj);
           if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0)
             return;
           let addStr =
@@ -108,13 +108,18 @@ export default {
           let btn = $("#addBtn_" + treeNode.tId);
           if (btn)
             btn.bind("click", function() {
-              console.log("增加分类");
+              console.log("新增列表");
               let zTree = $.fn.zTree.getZTreeObj("treeDemo");
               zTree.addNodes(treeNode, {
                 id: 100 + newCount,
                 pId: treeNode.id,
                 name: "自定义类型" + newCount++
               });
+              var nodes = treeNode.children;
+              console.log(nodes.length - 1);
+              if (nodes.length > 0) {
+                zTree.selectNode(nodes[nodes.length - 1]);
+              }
               return false;
             });
         }

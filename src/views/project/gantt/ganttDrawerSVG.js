@@ -996,7 +996,6 @@ Ganttalendar.prototype.redrawTasks = function () {
     Garr.push(task)
     // console.log(task.id+":"+task.name)
   }
-  console.log(Garr)
   function ganttNameUpdata(){
     for(var i=0;i<Garr.length;i++){
         var taskID=Garr[i].id;

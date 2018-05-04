@@ -232,7 +232,6 @@ export default {
     this.uploadList = this.$refs.upload.fileList;
     this.getProjectId();
     this.getTaskClass();
-    // this.forEachData();
   },
   methods: {
     subEdit: function() {

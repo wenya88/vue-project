@@ -83,7 +83,7 @@
         },
         mounted () {
             this.uploadList = this.$refs.upload.fileList;
-            this.$bus.on("RemoveFile",(val)=>{
+            this.$bus.on("RemoveFile",()=>{
                 this.$refs.upload.fileList.splice(0);
                 // this.uploadList=[];
             })
@@ -91,7 +91,6 @@
     }
 </script>
 <style>
-    
     .MainFile .demo-upload-list{
         display: block;
         width: 298px;

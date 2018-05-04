@@ -64,13 +64,13 @@
         <Layout>
           <div class="taskHead">
             <div class="taskInfo">
-              <b>项目任务(15)</b>
-              <span v-for="(index,item) in taskTag" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
-                <a href="javascript:;" @click=sTag(taskTag[item].project_id)>{{taskTag[item].name}}({{taskTag[item].num}})
+              <b>项目任务</b>
+              <span v-for="(item,index) in taskTag" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                <a href="javascript:;" @click=sTag(item)>{{item.name}}({{item.task_count}})
                   <span class="hideIconDel" @click="EditoverShow">
                     <Icon type="edit" style="cursor: pointer;"></Icon>
                   </span>
-                  <span class="hideIconDel" @click="childDel(index.id)">
+                  <span class="hideIconDel" @click="childDel(item.id)">
                     <Icon type="trash-a" style="cursor: pointer;"></Icon>
                   </span>
                 </a>
@@ -234,7 +234,7 @@ export default {
       columnsTask: [
         {
           type: "expand",
-          width: 50,
+          width: 20,
           render: (h, subdow) => {
             return h(sub, {
               //子任务下拉
@@ -253,9 +253,9 @@ export default {
         {
           title: "状态",
           key: "status_text",
-          sortable: true,
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          width: 100
         },
         {
           title: "子项目",
@@ -266,7 +266,6 @@ export default {
         {
           title: "参与人",
           align: "center",
-          width: "100px",
           key: "run_uname",
           ellipsis: true
         },
@@ -279,8 +278,8 @@ export default {
         {
           title: "实施阶段",
           align: "center",
-          width: "550px",
           ellipsis: true,
+          width: 400,
           render: function(h) {
             let current = this.progress;
             return h(
@@ -325,19 +324,20 @@ export default {
           title: "任务文件",
           align: "center",
           ellipsis: true,
-          key: "file_id"
+          key: "file_id",
+          width: 100
         },
         {
           title: "更新时间",
           align: "center",
           key: "update_date",
-          width: "100px",
           ellipsis: true
         },
         {
           title: "已用时",
           align: "center",
-          ellipsis: true
+          ellipsis: true,
+          key: "create_time"
         },
         {
           title: "剩余",
@@ -348,7 +348,7 @@ export default {
         {
           title: "操作",
           align: "center",
-          width: "200px",
+          width: 180,
           render: (h, params) => {
             return h("div", [
               h(
@@ -415,14 +415,12 @@ export default {
       el2.style.display = "";
     },
     //子“项目任务”筛选切换样式
-    sTag() {
-      $(() => {
-        console.log(11111);
-        $(".taskInfo span a").click(function() {
-          $(".taskInfo span a").removeClass("active");
-          $(this).addClass("active");
-        });
+    sTag(tem) {
+      $(".taskHead .taskInfo a").click(function() {
+        $(".taskHead .taskInfo a").removeClass("active");
+        $(this).addClass("active");
       });
+      this.forEachData(tem);
     },
     //刪除，子“项目任务”筛选
     childDel: function(id) {
@@ -452,6 +450,7 @@ export default {
           if (edit.data.err_code === 0) {
             edt.getProjectId();
             edt.$Message.success("编辑成功！");
+            this.editVal = "";
           } else {
             edt.$Message.error(edit.data.err_message);
           }
@@ -596,55 +595,55 @@ export default {
       );
     },
     //遍历主任务列表数据
-    forEachData() {
+    forEachData(pid) {
+      let data = {};
+      data.project_id = 1;
+      if (pid) {
+        delete data.project_id;
+        data.project_child_id = pid.id;
+      }
       let cIs = this;
-      this.get(
-        gettasklistData,
-        {
-          project_id: 1
-        },
-        res => {
-          //主任务数据渲染及状态上色
-          let dataColortd = res.data.data;
-          for (var i = 0; i < dataColortd.length; i++) {
-            let statusText = dataColortd[i].status;
-            let colorText = dataColortd[i].status_text;
-            if (statusText === "1" || colorText === "等待开始") {
-              dataColortd[i].cellClassName = {
-                status_text: "demo-table-info-cell-start"
-              };
-            } else if (statusText === "2" || colorText === "执行中") {
-              dataColortd[i].cellClassName = {
-                status_text: "demo-table-info-cell-execution"
-              };
-            } else if (statusText === "3" || colorText === "暂停") {
-              dataColortd[i].cellClassName = {
-                status_text: "demo-table-info-cell-pause"
-              };
-            } else if (statusText === "4" || colorText === "完成") {
-              dataColortd[i].cellClassName = {
-                status_text: "demo-table-info-cell-complete"
-              };
-            }
-            //判断主列表下是否含有子列表
-            if (dataColortd[i].child != undefined) {
-              dataColortd[i]._expanded = false;
-            } else {
-              dataColortd[i]._disableExpand = true;
-            }
-            //获取主列表阶段进度
-            let current = dataColortd[i].progress;
+      this.get(gettasklistData, data, res => {
+        //主任务数据渲染及状态上色
+        let dataColortd = res.data.data;
+        for (var i = 0; i < dataColortd.length; i++) {
+          let statusText = dataColortd[i].status;
+          let colorText = dataColortd[i].status_text;
+          if (statusText === "1" || colorText === "等待开始") {
+            dataColortd[i].cellClassName = {
+              status_text: "demo-table-info-cell-start"
+            };
+          } else if (statusText === "2" || colorText === "执行中") {
+            dataColortd[i].cellClassName = {
+              status_text: "demo-table-info-cell-execution"
+            };
+          } else if (statusText === "3" || colorText === "暂停") {
+            dataColortd[i].cellClassName = {
+              status_text: "demo-table-info-cell-pause"
+            };
+          } else if (statusText === "4" || colorText === "完成") {
+            dataColortd[i].cellClassName = {
+              status_text: "demo-table-info-cell-complete"
+            };
           }
-          cIs.dataList = dataColortd;
-          dataColortd.forEach(stg => {
-            if (stg.stage) {
-              stg.stage.forEach(ds => {
-                this.stage_name = ds.stage_name;
-              });
-            }
-          });
+          //判断主列表下是否含有子列表
+          if (dataColortd[i].child != undefined) {
+            dataColortd[i]._expanded = false;
+          } else {
+            dataColortd[i]._disableExpand = true;
+          }
+          //获取主列表阶段进度
+          let current = dataColortd[i].progress;
         }
-      );
+        cIs.dataList = dataColortd;
+        dataColortd.forEach(stg => {
+          if (stg.stage) {
+            stg.stage.forEach(ds => {
+              this.stage_name = ds.stage_name;
+            });
+          }
+        });
+      });
     },
     //获取任务列表详情
     getforechDailt(id) {

@@ -24,7 +24,7 @@
                     <FormItem prop="passwdCheck">
                         <div class="itemname">再次输入密码</div>
                         <Input v-model="register.passwdCheck" id="a" :type="pwpic2.pwdType2" placeholder="请再次输入密码"></Input>
-                        <img :src="pwpic2.src2" @click="changeType2()"/>
+                        <img :src="pwpic2.src" @click="changeType2()"/>
                     </FormItem>
                     <FormItem>
                         <Button @click="onRegister('register')" type="primary" long>注 册</Button>
@@ -40,7 +40,7 @@
                     <FormItem prop="password">
                         <div class="itemname">密码</div>
                         <Input v-model="loginform.password" :type="pwpic3.pwdType3" placeholder="请输入密码"></Input>
-                        <img :src="pwpic3.src3" @click="changeType3()"/>
+                        <img :src="pwpic3.src" @click="changeType3()"/>
                     </FormItem>
                     <FormItem>
                         <Button @click="onSubmit('login')" type="primary" long>登 录</Button>
@@ -56,6 +56,8 @@ var qs = require('querystring');
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import {authLogin} from "../config/env.js";
+import src from '../images/close_eyes.png'
+import src2 from '../images/open_eyes.png'
 export default {
     data () {
         const validatePass = (rule, value, callback) => {
@@ -84,15 +86,15 @@ export default {
             publicKey: '',
             pwpic:{
                 pwdType:"password",
-                src: "../images/close_eyes.png"
+                src
             },
             pwpic2:{
                 pwdType2:"password",
-                src2: "../images/close_eyes.png"
+                src
             },
             pwpic3:{
                 pwdType3:"password",
-                src3: "../images/close_eyes.png"
+                src
             },
             loginform: {
                 email: '',
@@ -220,15 +222,15 @@ export default {
         },
         changeType(){
             this.pwpic.pwdType = this.pwpic.pwdType === 'password' ? 'text' : 'password';
-            this.pwpic.src = this.pwpic.src == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
+            this.pwpic.src = this.pwpic.src == src ? src2 : src;
         },
         changeType2(){
             this.pwpic2.pwdType2 = this.pwpic2.pwdType2 === 'password' ? 'text' : 'password';
-            this.pwpic2.src2 = this.pwpic2.src2 == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
+            this.pwpic2.src = this.pwpic2.src == src ? src2 : src;
         },
         changeType3(){
             this.pwpic3.pwdType3 = this.pwpic3.pwdType3 === 'password' ? 'text' : 'password';
-            this.pwpic3.src3 = this.pwpic3.src3 == "../images/close_eyes.png" ? "../images/open_eyes.png" : "../images/close_eyes.png";
+            this.pwpic3.src = this.pwpic3.src == src ? src2 : src;
         }
     }
 };

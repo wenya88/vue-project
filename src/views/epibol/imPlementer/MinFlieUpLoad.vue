@@ -82,7 +82,7 @@
         mounted () {
             let _this=this
             _this.MuploadList = _this.$refs.upload.fileList;
-            _this.$bus.on('RemoveFile',(val)=>{
+            _this.$bus.on('RemoveFile',()=>{
                _this.$refs.upload.fileList.splice(0);
             });
         },

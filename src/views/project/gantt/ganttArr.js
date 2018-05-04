@@ -57,7 +57,6 @@ window.onload=function(){
             dataType:"json",
             success:function(data){
               proChild=data.data
-              console.log(proChild)
             }
           });
 

@@ -51,6 +51,12 @@
 .displayHide {
   display: none;
 }
+.ivu-steps.ivu-steps-small .ivu-steps-content {
+  padding: 0 !important;
+}
+.hideIconDel {
+  display: none;
+}
 </style>
 <template>
   <Content :style="{padding: '24px 0', minHeight: '280px', background: '#fff'}">
@@ -67,15 +73,24 @@
         </Row>
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
           <h4 :style="{paddingBottom:'10px'}">类型名称</h4>
-          <Input :style="{width:'800px',paddingBottom:'20px'}" placeholder="输入任务类型名称" v-model="formLeft.tasktype_name"></Input>
+          <!-- formLeft.tasktype_name -->
+          <Input :style="{width:'800px',paddingBottom:'20px'}" placeholder="输入任务类型名称" v-model="listN"></Input>
           <h4 :style="{paddingBottom:'10px'}">沟通确认阶段</h4>
           <Row>
             <Col span="22">
             <h2 class="spaceTb">
-              <div @mouseover="overShow" @mouseout="outHide">
-                <Steps :style="{width:'800px'}" :current="1" size="small">
-                  <span :class="{show:showText,hide:hideText}" class="restdele">x</span>
-                  <Step title="已完成" content="这里是该步骤的描述信息" v-for="step in stepCount" :key="step" :name="step">
+
+              <div v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                <span class="hideIconDel">
+                  <a class="restdele">x</a>
+                </span>
+                <Steps :style="{width:'800px'}" :current="current" size="small">
+                  <Step :content="this.stageName" v-for="step in stepCount" :key="step" :name="step">
+                    <!-- <br>
+                    <Input style="width: 100px" size="small"></Input>
+                    <br>
+                    <Checkbox v-model="single">内审后提交客户确认
+                    </Checkbox> -->
                   </Step>
                 </Steps>
               </div>
@@ -148,11 +163,10 @@
     </Row>
     <Row>
       <Col span="7">
-      <Button type="primary" style="float: right;width: 200px">提交</Button>
+      <Button type="primary" style="float: right;width: 200px" @click="taskClassubmit">提交</Button>
       </Col>
     </Row>
   </Content>
-  <!-- <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer> -->
 </template>
 <script>
 var qs = require("querystring");
@@ -169,15 +183,17 @@ export default {
   },
   data() {
     return {
+      current: 0,
       reqeData: {},
       reqarn: {},
       reqArrt: {},
-      showText: false,
-      hideText: true,
+      single: false,
       junctShow: false,
       junctHide: true,
       stepCount: [0],
       fileFormat: "",
+      stageName: "",
+      listN: "",
       formLeft: {},
       index: 1,
       formDynamic: {
@@ -227,9 +243,41 @@ export default {
     };
   },
   mounted() {
-    this.ListEachId();
+    // this.ListEachId();
   },
   methods: {
+    //hover阶段，删除图标
+    dataDetails: function(e) {
+      let el = event.currentTarget.children[0].children[0];
+      el.style.display = "inline-block";
+    },
+    hiddenDetail: function(e) {
+      let el = event.currentTarget.children[0].children[0];
+      el.style.display = "";
+    },
+    taskClassubmit: function() {
+      let csb = this;
+      let csbObj = {};
+      csbObj.id = csb.formLeft.id;
+      csbObj.category_id = csb.formLeft.category_id;
+      csbObj.tasktype_name = csb.formLeft.tasktype_name;
+      // csbObj.stage = csb.formLeft.stage;
+      // csbObj.file = csb.formLeft.file;
+      csb.$axios
+        .post("/task/task-type/update", qs.stringify(csbObj))
+        .then(res => {
+          console.log(res.data.err_code);
+          if (res.data.err_code === 0) {
+            this.$Message.success("编辑类型成功！");
+            this.taskClassforEach();
+          } else {
+            this.$Message.error("编辑类型失败，请重试！");
+          }
+        })
+        .catch(error => {
+          this.$Message.error("编辑类型失败，请重试！");
+        });
+    },
     fileSave: function() {
       let fsv = this;
       let fsvObj = {};
@@ -248,22 +296,16 @@ export default {
     addJunctHide() {
       this.junctHide = !this.junctHide;
     },
-    overShow() {
-      this.showText = !this.showText;
-      this.hideText = !this.hideText;
-    },
-    outHide() {
-      this.showText = !this.showText;
-      this.hideText = !this.hideText;
-    },
+    //沟通确认阶段
     addSteps() {
       let aSp = this;
-      if (aSp.stepCount.length >= 6) {
+      if (aSp.stepCount.length >= 6 || aSp.current >= 6) {
         // aSp.stepCount.push(aSp.stepCount[aSp.stepCount.length - 1] + 1);
         this.$Message.error("最多只能添加6个阶段");
-        return;
+        aSp.current = 6;
       } else {
         aSp.stepCount.push(0);
+        aSp.current += 1;
       }
     },
     /**
@@ -297,42 +339,41 @@ export default {
       );
     },
     // 任务类型分类
-    ListEachId() {
-      let fiC = this;
-      this.get(
-        cateList,
-        {
-          company_id: 1
-        },
-        res => {
-          let listId = res.data.data;
-        }
-      );
-    },
+    // ListEachId() {
+    //   let fiC = this;
+    //   this.get(
+    //     cateList,
+    //     {
+    //       company_id: 1
+    //     },
+    //     res => {
+    //       let listId = res.data.data;
+    //     }
+    //   );
+    // },
     //遍历任务类别详情数据
-    forEach() {
-      let fiC = this;
+    taskClassforEach() {
+      let cif = this;
       this.get(
         typeInfo,
         {
-          id: fiC.listId
+          id: cif.listId
         },
         res => {
-          fiC.formLeft = res.data;
-          let getformData = fiC.formLeft.file;
-          // getformData.forEach((file, index) => {
-          //   fiC.fileData = file;
-          // });
-          fiC.accesData = res.data.file;
-          fiC.giveSave = res.data.category_id;
-          fiC.giveName = res.data.tasktype_name;
+          cif.formLeft = res.data;
+          cif.accesData = res.data.file;
+          let stage = res.body.stage;
+          stage.forEach(stN => {
+            cif.stageName = stN.stage_name;
+          });
         }
       );
     },
-    //获取id
-    change(id) {
+    //从左边列表组件中获取id,name
+    change(id, liName) {
+      this.listN = liName;
       this.listId = id;
-      this.forEach();
+      this.taskClassforEach();
     },
     //或者select文件格式选择后id
     getSelectId(r) {
