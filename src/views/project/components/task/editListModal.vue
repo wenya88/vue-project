@@ -7,11 +7,11 @@
           <div class=""></div>
           <Row :gutter="100">
             <Col span="1">
-            <Icon type="ios-star-outline" size="23"></Icon>
+            <Icon type="ios-star-outline" style="color:#666;cursor: pointer;margin-left:20px;" size="23"></Icon>
             </Col>
             <Col span="1">
-            <div>
-              <Icon type="ios-trash-outline" size="23" style="cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
+            <div @click="delTaskdeile">
+              <Icon type="trash-b" size="23" style="color:red;cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
             </div>
             </Col>
             <Col span="2">
@@ -84,21 +84,26 @@
                     <FormItem label="文件要求">
                       <div>
                         <Card :bordered="true" style="text-align: center">
-                          <Row :gutter="16">
-                            <Col span="8">
-                            <div class="car-bg">模型</div>
-                            </Col>
-                            <Col span="8">
-                            <div>PSD</div>
-                            </Col>
-                            <Col span="8">
-                            <div>贴图</div>
-                            </Col>
-                          </Row>
-                          <Tag>大小：8000*200</Tag>
-                          <Tag>分辨率：72PDI</Tag>
-                          <Tag>坐标：默认归零</Tag>
-                          <Tag>贴面：2000</Tag>
+                          <Tabs type="card">
+                            <TabPane label="模型">
+                              <Tag>大小：8000*200</Tag>
+                              <Tag>分辨率：72PDI</Tag>
+                              <Tag>坐标：默认归零</Tag>
+                              <Tag>贴面：2000</Tag>
+                            </TabPane>
+                            <TabPane label="PSD">
+                              <Tag>大小：8000*200</Tag>
+                              <Tag>分辨率：72PDI</Tag>
+                              <Tag>坐标：默认归零</Tag>
+                              <Tag>贴面：2000</Tag>
+                            </TabPane>
+                            <TabPane label="贴图">
+                              <Tag>大小：8000*200</Tag>
+                              <Tag>分辨率：72PDI</Tag>
+                              <Tag>坐标：默认归零</Tag>
+                              <Tag>贴面：2000</Tag>
+                            </TabPane>
+                          </Tabs>
                         </Card>
                       </div>
                     </FormItem>
@@ -138,7 +143,7 @@
                   </Form>
                   </Col>
                   <Col span="16">
-                  <three-dmodel></three-dmodel>
+                  <div>3D模型组件</div>
                   </Col>
                 </Row>
               </div>
@@ -247,21 +252,27 @@
                       任务要求
                     </h2>
                     <FormItem label="参考图片">
-                      <div class="demo-upload-list" v-for="item in uploadList" :key="item.uploadList">
+                      <!-- <div class="demo-upload-list" v-for="item in uploadList">
                         <template v-if="item.status === 'finished'">
                           <img :src="item.url">
                           <div class="demo-upload-list-cover">
+                            <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
                             <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                           </div>
                         </template>
                         <template v-else>
                           <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                         </template>
-                      </div>
-                      <Upload name="cert" ref="upload" :show-upload-list="false" :default-file-list="defaultList" :on-success="handleSuccess" :format="['jpg','jpeg','png']" :max-size="2048" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" :data="{'type':'image'}" action="http://192.168.2.19/index.php?r=file/file/file-upload" style="display: inline-block;width:80px;">
-                        <div style="width: 80px;height:58px;line-height: 28px;">
+                      </div> -->
+                      <!-- <Upload ref="upload" :show-upload-list="false" :default-file-list="defaultList" :on-success="handleSuccess" :format="['jpg','jpeg','png']" :max-size="2048" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="display: inline-block;width:58px;">
+                        <div style="width: 58px;height:58px;line-height: 58px;">
                           <Icon type="camera" size="20"></Icon>
-                          <p>可拖拽上传</p>
+                        </div>
+                      </Upload> -->
+                      <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+                        <div style="padding: 20px 0">
+                          <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                          <p>Click or drag files here to upload</p>
                         </div>
                       </Upload>
                     </FormItem>
@@ -281,12 +292,27 @@
               <div class="modal-footer">
                 <slot name="footer">
                   <Button @click="close" class="btn-green">取消</Button>
-                  <Button type="primary" @click="subSave" class="btn-green sd">保存</Button>
+                  <Button type="primary" @click="subSave" class="btn-green">保存</Button>
                 </slot>
               </div>
             </TabPane>
             <TabPane label="日志">
-              <jou-rnal></jou-rnal>
+              <div class="layout">
+                <Layout>
+                  <Layout>
+                    <Layout>
+                      <Timeline>
+                        <TimelineItem v-for="item in editData.log" :key="item.getlog">{{item.time}}
+                          <span>李小小</span>
+                          <span>{{item.action}}</span>
+                          <span>{{item.text}}</span>
+                          <span style="color: #ed3f14">{{item.nickname}}</span>
+                        </TimelineItem>
+                      </Timeline>
+                    </Layout>
+                  </Layout>
+                </Layout>
+              </div>
             </TabPane>
           </Tabs>
         </div>
@@ -296,8 +322,6 @@
 </template>
 <script>
 var qs = require("querystring");
-import threeDmodel from "./modalTab/beaN/threeDmodel";
-import jouRnal from "./modalTab/jouRnal/jouRnal";
 import {
   projectList,
   projDatali,
@@ -306,10 +330,7 @@ import {
 } from "../../../../config/env.js";
 export default {
   props: ["editData"],
-  components: {
-    threeDmodel,
-    jouRnal
-  },
+  components: {},
   // props: ['show'],
   data() {
     return {
@@ -556,6 +577,22 @@ export default {
     close: function() {
       this.$emit("close");
     },
+    //刪除任务
+    delTaskdeile(index) {
+      let cIs = this;
+      let removeData = this.editData.id;
+      this.get(
+        deletetaskData,
+        {
+          id: removeData
+        },
+        () => {
+          cIs.forEachData();
+          cIs.$emit("close");
+          cIs.$Message.success("删除成功");
+        }
+      );
+    },
     //参与人滚动条
     handleReachBottom() {
       return new Promise(resolve => {
@@ -720,4 +757,8 @@ export default {
 </script>
 <style scoped>
 @import "../../style/taskModal.css";
+.btn-close {
+  position: absolute;
+  margin-top: -15px !important;
+}
 </style>

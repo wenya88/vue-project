@@ -21,7 +21,7 @@
             :show-upload-list="false"
             :default-file-list="defaultList"
             :on-success="handleSuccess"
-            :format="['jpg','jpeg','png']"
+            :format="['jpg','jpeg','png','gif']"
             :max-size="2048"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
@@ -30,8 +30,8 @@
             type="drag"
             action="/file/file/file-upload"
             style="display: inline-block;width:58px;">
-            <div style="width: 58px;height:58px;line-height: 58px;">
-                <Icon type="camera" size="20"></Icon>
+            <div style="width: 58px;padding:10px 0px">
+                <Icon type="android-upload" size="30"></Icon>
             </div>
         </Upload>
     </div>

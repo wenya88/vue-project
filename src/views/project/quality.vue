@@ -30,7 +30,7 @@
         <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="(item,index) in fristData" :key="index">
-            <div class="card" @click="fetchFileData(item.stage_id)">
+            <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
               <div class="card-box">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
                   <Icon type="pause" v-else-if=""></Icon> -->
@@ -61,10 +61,10 @@
             </div>
             </Col>
           </Row>
-          <span @click="changePageIndex()">加载更多</span>
+          <span class="more" @click="changePageIndex()">{{moreText}}</span>
         </div>
       </TabPane>
-      <TabPane :label="'内审已反馈(' + param.num2 + ')'" name="2">
+      <TabPane :label="'内审已反馈(' + param.num2 + ')'" name="3">
         <my-sort :sortList="nsfkSortList" @choiced="filterSTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
@@ -134,9 +134,10 @@
             </div>
             </Col>
           </Row>
+          <span class="more" @click="changePageIndex()">{{moreText}}</span>
         </div>
       </TabPane>
-      <TabPane :label="'客户待审(' + param.num3 + ')'" name="3">
+      <TabPane :label="'客户待审(' + param.num3 + ')'" name="2">
         <my-sort :sortList="khdsSortList" @choiced="filterTTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
@@ -194,10 +195,11 @@
             </div>
             </Col>
           </Row>
+          <span class="more" @click="changePageIndex()">{{moreText}}</span>
         </div>
       </TabPane>
       <TabPane :label="'客户已反馈(' + param.num4 + ')'" name="4">
-        <my-sort :sortList="khfkSortList" @choiced="filterFTime"></my-sort>
+        <my-sort :sortList="khfkSortList" @choiced="filterFoTime"></my-sort>
         <div class="screen">
           <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"> 状态:
@@ -266,6 +268,7 @@
             </div>
             </Col>
           </Row>
+          <span class="more" @click="changePageIndex()">{{moreText}}</span>
         </div>
       </TabPane>
     </Tabs>
@@ -284,6 +287,12 @@
             <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
           </Select>
         </FormItem>
+      </div>
+      <div slot="three">
+        <ImgEditor v-if="imgConponent"></ImgEditor>
+        <VidEditor v-if="vidConponent"></VidEditor>
+        <!-- <div v-if="startStage"><button type="primary">开始任务</button></div>
+        <div v-if="NotType" class="notIMG">暂未上传任务文件</div> -->
       </div>
       <div class="edit" slot="two">
         <div v-show="status == 1">
@@ -340,6 +349,8 @@
 var qs = require('querystring');
 import baseModel from '../main-components/model/baseModel';
 import mySort from '../main-components/sort'
+import ImgEditor from '../project/components/imgEditor.vue';
+import VidEditor from '../project/components/vedioEditor.vue'
 import { mapGetters } from 'vuex'
 export default {
   components: {
@@ -353,6 +364,7 @@ export default {
       date: (Date.parse(new Date())) / 1000,
       showNum: null,
       boxHeight: 300,
+      moreText: '加载更多',
       param: {
         num1: 0,
         num2: 0,
@@ -368,6 +380,8 @@ export default {
       thirdData: [],
       fourthData: [],
       handleRender: false,
+      imgConponent:false,
+      vidConponent:false,
       cityList: [
         {
           value: 'New York',
@@ -490,7 +504,7 @@ export default {
       }
       this.fetchData()
     },
-    filterFTime(val) {
+    filterFoTime(val) {
       if (val == 0) {
         this.sortStatus = 'client_audit_time';
         this.page = 1;
@@ -519,9 +533,9 @@ export default {
           if (res.err_code == 0) {
             if (str == 1) {
               this.param.num1 = res.page.count
-            } else if (str == 2) {
-              this.param.num2 = res.page.count
             } else if (str == 3) {
+              this.param.num2 = res.page.count
+            } else if (str == 2) {
               this.param.num3 = res.page.count
             } else if (str == 4) {
               this.param.num4 = res.page.count
@@ -572,6 +586,15 @@ export default {
               }
               // this.thirdData = res.data
               this.searchInput = ''
+              res.data.forEach((item) => {
+                this.secondData.push(item)
+              });
+              if(this.page == 1) {
+                this.secondData = res.data
+              } else{
+                this.secondData.push.apply(this.secondData,res.data);
+              }
+              this.searchInput = ''
             } else if (this.status == '4') {
               if(this.page == 1) {
                 this.fourthData = res.data
@@ -580,6 +603,10 @@ export default {
               }
               // this.fourthData = res.data
               this.searchInput = ''
+            }
+            // console.log(typeof parseInt(this.page))
+            if(parseInt(this.page) == res.page.count_page) {
+              this.moreText = '没有更多内容'
             }
             this.$Loading.finish();
           } else {
@@ -610,14 +637,14 @@ export default {
     },
     /**
      * 获取阶段文件中某个文件的详情
-     * 任务id  必传
+     * 阶段id  必传
      * 阶段  非必传
      */
-    fetchFileData(fileId) {
+    fetchFileData(stageId,type,file,taskId) {
       this.$Loading.start();
       this.boxHeight = 0;
       let data = {
-        id: fileId
+        id: stageId
       }
       this.$axios.post('/task/task/stage-info', qs.stringify(data))
         .then(res => res.data)

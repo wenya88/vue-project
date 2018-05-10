@@ -62,8 +62,8 @@
                              :key="item.path" 
                              :label="item.title">
                                 <!-- <Icon :type="item.icon"></Icon> -->
-                                 <!-- {{item.title}}  -->
-                                  <router-link :to="item.path">{{item.title}}</router-link>  
+                                <!-- {{item.title}}   -->
+                                <router-link :to="item.path">{{item.title}}</router-link>   
                             </MenuItem>  
                         </Menu>
                     </div>
@@ -107,7 +107,7 @@
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
                         <template slot="title">
                             <Icon :type="item.icon" size="16"></Icon>
-                            <router-link :to="item.path">{{item.title}}</router-link>
+                            <router-link :to="item.path" @click.native="collapsedSider()">{{item.title}}</router-link>
                         </template>
                     </Submenu>
                 </Menu>
@@ -157,13 +157,16 @@ export default {
             this.centerHight = bodyHight - 90
         } else {
             this.centerHight = bodyHight - 120
-            console.log(this.centerHight)
+            // console.log(this.centerHight)
         }
         // console.log(document.documentElement.clientWidth)
     },
     mounted() {
         this.init();
         this.updateMenu();
+        /**
+         * 刷新当前页面路由设置
+         */
         let currentRoute = location.hash
         let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
         this.menuList.forEach((item) => {
@@ -193,7 +196,6 @@ export default {
             this.userName = Cookies.get('user');
         },
         linkTo(url, params) {
-            alert('121212')
             if (params) {
                 this.$router.push({ path: url, query: params });
             }
@@ -224,34 +226,35 @@ export default {
             } else {
                 this.showMenu = false
             }
-            console.log('121221')
         },
         updateMenu() {
             this.menuList.forEach((item) => {
                 // let routeName = this.$route.name
-                // console.log(routeName)
+                // console.log(this.$route.name)
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
                     let menuArr = item.children
-                    // console.log(this.$route.name,this.subMenu)
+                    console.log(this.$route.name,this.subMenu)
                     this.$router.push(menuArr[0].path)
                 }
             })
             this.activePath = this.$route.path
+            // console.log(this.activePath)
         },
         handleChange(name) {
-            let willpush = true;
-            if (this.beforePush !== undefined) {
-                if (!this.beforePush(name)) {
-                    willpush = false;
-                }
-            }
-            if (willpush) {
+            console.log(name)
+            // let willpush = true;
+            // if (this.beforePush !== undefined) {
+            //     if (!this.beforePush(name)) {
+            //         willpush = false;
+            //     }
+            // }
+            // if (willpush) {
                 this.$router.push({
                     name: name
                 });
-            }
-            this.$emit('on-change', name);
+            // }
+            // this.$emit('on-change', name);
         }
     }
 }

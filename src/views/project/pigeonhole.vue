@@ -94,7 +94,7 @@ export default {
       selTaskType: '',
       taskType: '',
       subpId: null,
-      status: '',
+      status: '4',
       cityList: [
         {
           value: 'New York',

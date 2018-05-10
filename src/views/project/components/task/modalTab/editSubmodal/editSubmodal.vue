@@ -7,11 +7,11 @@
           <div class=""></div>
           <Row :gutter="100">
             <Col span="1">
-            <Icon type="ios-star-outline" size="23"></Icon>
+            <Icon type="ios-star-outline" style="color:#666;cursor: pointer;margin-left:20px;" size="23"></Icon>
             </Col>
             <Col span="1">
-            <div>
-              <Icon type="ios-trash-outline" size="23" style="cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
+            <div @click="delSubdeile">
+              <Icon type="trash-b" size="23" style="color:red;cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
             </div>
             </Col>
             <Col span="2">
@@ -160,7 +160,8 @@ import {
   projDatali,
   cateList,
   updatetaskData,
-  gettasklistData
+  gettasklistData,
+  deletetaskData
 } from "../../../../../../config/env.js";
 export default {
   props: ["editSubData"],
@@ -268,15 +269,30 @@ export default {
         });
     },
     handleChange(date) {
-      this.editSubList.expect_start_time = date;
+      this.editSubData.expect_start_time = date;
       console.log(date);
     },
     handleChange2(date) {
-      this.editSubList.expect_end_time = date;
+      this.editSubData.expect_end_time = date;
       console.log(date);
     },
     close: function() {
       this.$emit("close");
+    },
+    //刪除子任务
+    delSubdeile() {
+      let cIs = this;
+      let removeSubData = this.editSubData.id;
+      this.get(
+        deletetaskData,
+        {
+          id: removeSubData
+        },
+        () => {
+          this.$emit("close");
+          cIs.$Message.success("刪除子任务成功！");
+        }
+      );
     },
     //参与人滚动条
     handleReachBottom() {
@@ -413,5 +429,9 @@ export default {
 @import "../../../../style/taskModal.css";
 .modal {
   width: 800px;
+}
+.btn-close {
+  position: absolute;
+  margin-top: -15px !important;
 }
 </style>

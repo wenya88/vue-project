@@ -1,12 +1,11 @@
 <template>
-    <div>
+    <div style="height:100%">
         <h4>每日任务统计</h4>
         <div class="taskTip"><span>任务数量：<b>120</b> </span><span>已完成：<b>120</b> </span><span>剩作：<b>0</b> </span><span>待审文件：<b>12</b></span></div>
         <div id="echartLine"></div>
     </div>
 </template>
 <style>
-    #echartLine{height:400px;}
     .taskTip{position:absolute;margin-top:5px;margin-left:40px;}
     .taskTip span{margin-right:20px;}
     .taskTip span b{color:#ff9900;}
@@ -14,9 +13,16 @@
 <script>
   export default{
     mounted(){
-      this.myCharts()
+       this.autoHeight(); 
+       this.myCharts();
+    },
+    updated(){
     },
     methods:{
+      autoHeight(){
+          let getH=document.body.clientHeight-200;
+          document.getElementById("echartLine").style.height=getH+"px";
+      },
       myCharts(){
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('echartLine'));
@@ -106,7 +112,7 @@
             },
           },
           dataZoom: [{
-            height: 20,
+            height: 30,
             show: true,
             realtime: true,
             start: 10,

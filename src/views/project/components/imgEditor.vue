@@ -1,30 +1,3 @@
-<style>
-    .imgEditorCom{width:100%;height:400px;}
-    .imgEditorCom .controlListRow{position:absolute;z-index:11;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;}
-    .imgEditorCom .stageListRow{background:rgba(0,0,0,0.5);width:320px;position:absolute;z-index:9999;height:200px;display:none;overflow-y:auto;}
-    .imgEditorCom .stageListRow ul{margin:10px;}
-    .imgEditorCom .stageListRow ul li{border-radius:4px;line-height:20px;font-size:12px;}
-    .imgEditorCom .stageListRow .showBg{background:#eaeab5;}
-    .imgEditorCom .stageListRow ul li:hover{border-style:solid;}
-    .imgEditorCom .stageListRow ul em{float:right;text-align:right;font-size:12px;}
-    .imgEditorCom .stageListRow .clear{clear:both;}
-    .imgFocus{margin-bottom:5px;}
-    .imgFocus img{width:100%;}
-    .chooseBox{height:auto;position:absolute;z-index:100;background:#fff;box-shadow:#000 0 0 2px;-webkit-box-shadow:#000 0 0 2px}
-    .chooseBox ul{width:100%;height:auto;cursor:pointer;list-style:none}
-    .chooseBox ul li{width:100%;height:20px;color:#000;font-size:12px;text-align:center;line-height:20px;padding:0px 4px;}
-    .chooseBox ul li:hover{background:#3498db;color:#fff}
-    .inputSignBox{width:250px;height:120px;position:absolute;z-index:200;background:#fff;box-shadow:#000 0 0 4px;-webkit-box-shadow:#000 0 0 4px;-webkit-border-radius:0px;overflow:hidden}
-    .outSignbox{width:100%;height:29px;color:#1b1b1b;line-height:29px;text-align:center;font-size:16px;cursor:pointer;font-weight:bold;border-bottom:#d9d6d6 1px solid}
-    .signbox{width:240px;height:62px;line-height:17px;outline:0;margin:0 auto;color:#000;font-size:14px;font-weight:400;overflow:hidden;text-align:left}
-    .signbox em{width:auto;height:17px;line-height:17px;color:#a8a8a8;font-style:normal;}
-    .sureSign{width:100%;height:29px;border-top:#d9d6d6 1px solid;line-height:29px;text-align:center;cursor:pointer;font-weight:bold;font-size:14px;color:#fff;background:#3498db}
-    .signIndex{width:15px;height:15px;border:rgba(251,251,251,0.4) 3px solid;position:absolute;z-index:99;border-radius:100%;text-align:center;line-height:25px;}
-    .hintBox{margin:0;position:absolute;min-width:50px;max-width:240px;max-height:100px;min-height:20px;z-index:101;background:rgba(0,0,0,0.5);color:#fff;line-height:20px;font-size:12px;text-align:center}
-    .triangle-down{position:absolute;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:5px solid rgba(0,0,0,0.5);z-index:101}
-    .signIndex .hintBox{top:-28px;left:-45px;width:100px;padding-left:5px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;border-radius:4px;}
-    .signIndex .triangle-down{left:-5px;top:-8px;}
-</style>
 <template>
     <div class="imgEditorCom">
         <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
@@ -327,3 +300,6 @@
 
   }
 </script>
+<style lang='less'>
+@import '../../../styles/imgEditor.less';
+</style>

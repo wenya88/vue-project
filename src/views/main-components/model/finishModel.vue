@@ -6,11 +6,11 @@
           <div class=""></div>
           <Row :gutter="100">
             <Col span="1">
-            <Icon type="ios-star-outline" size="23"></Icon>
+            <Icon type="ios-star-outline" style="color:#666;cursor: pointer;margin-left:20px;" size="23"></Icon>
             </Col>
             <Col span="1">
             <div>
-              <Icon type="ios-trash-outline" size="23" style="cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
+              <Icon type="trash-b" size="23" style="color:red;cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
             </div>
             </Col>
             <Col span="2">
@@ -72,14 +72,14 @@
                     </DropdownMenu>
                   </Dropdown>
                 </FormItem>
-                <slot name="one"></slot> 
+                <slot name="one"></slot>
                 <!-- <FormItem label="任务类型">
                   <Select v-model="taskType" :disabled="isDisabled">
                     <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
                       <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
                     </OptionGroup>  -->
-                    <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
-                  <!-- </Select>
+                <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
+                <!-- </Select>
                 </FormItem> -->
                 <FormItem label="文件要求">
                   <div>
@@ -142,7 +142,7 @@
               <Col span="16">
               <!-- <three-dmodel></three-dmodel> -->
               <div class="edit">
-                <slot name="two"></slot> 
+                <slot name="two"></slot>
                 <slot name="three"></slot>
               </div>
               </Col>
@@ -154,15 +154,13 @@
   </transition>
 </template>
 <script>
-import threeDmodel from '../../project/components/task/modalTab/beaN/threeDmodel';
-
 export default {
-  name: 'finishModel',
+  name: "finishModel",
   // props: ['editData'],
   props: {
     editData: {
       type: Object,
-      default: ''
+      default: ""
     },
     isDisabled: {
       type: Boolean,
@@ -185,12 +183,9 @@ export default {
     //   default: []
     // }
   },
-  components: {
-    threeDmodel
-  },
   data() {
     return {
-      seleData: '',
+      seleData: "",
       // subpList: [],
       disableTime: {
         disabledDate(date) {
@@ -202,44 +197,41 @@ export default {
           return date && date.valueOf() < Date.now() - 86400000;
         }
       },
-      tabs: [
-        "全部成员(33)",
-        "3D模型(11)",
-        "地编组(11)",
-        "次世代(11)"
-      ],
+      tabs: ["全部成员(33)", "3D模型(11)", "地编组(11)", "次世代(11)"],
       tabContents: [
-        ['李霄霄', '王二帅'],
-        ['赵三娃', '陈无敌'],
-        ['哈哈', '嘻嘻洗洗'],
-        ['哇娃娃', '呜呜呜呜',]
+        ["李霄霄", "王二帅"],
+        ["赵三娃", "陈无敌"],
+        ["哈哈", "嘻嘻洗洗"],
+        ["哇娃娃", "呜呜呜呜"]
       ],
       list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       num: 1,
-      value1: '',
+      value1: "",
       fruit: [],
       //上传图片
       defaultList: [
         {
-          'name': 'a42bdcc1178e62b4694c830f028db5c0',
-          'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+          name: "a42bdcc1178e62b4694c830f028db5c0",
+          url:
+            "https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar"
         },
         {
-          'name': 'bc7521e033abdd1e92222d733590f104',
-          'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+          name: "bc7521e033abdd1e92222d733590f104",
+          url:
+            "https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
         }
       ],
       uploadList: [],
       formLeft: {
-        name: '',
-        tasktype_name: '',
-        expect_start_date: '',
-        expect_end_date: '',
-        dtasktype_name: '',
-        project: ''
+        name: "",
+        tasktype_name: "",
+        expect_start_date: "",
+        expect_end_date: "",
+        dtasktype_name: "",
+        project: ""
       },
-      dataList: [],
-    }
+      dataList: []
+    };
   },
   mounted() {
     //调用图片上传功能
@@ -255,7 +247,7 @@ export default {
       console.log(date);
     },
     close: function() {
-      this.$emit('close');
+      this.$emit("close");
     },
     //参与人滚动条
     handleReachBottom() {
@@ -288,21 +280,22 @@ export default {
     },
     // 上传成功返回数据
     handleSuccess(res, file) {
-      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+      file.url =
+        "https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar";
+      file.name = "7eb99afb9d5f317c912f08b5212fd69a";
     },
     //判断图片格式
     handleFormatError(file) {
       this.$Notice.warning({
-        title: '文件格式不正确',
-        desc: '文件格式 ' + file.name + ' 不正确，请选择jpg或png'
+        title: "文件格式不正确",
+        desc: "文件格式 " + file.name + " 不正确，请选择jpg或png"
       });
     },
     //判断图片大小
     handleMaxSize(file) {
       this.$Notice.warning({
-        title: '文件大小超过限制',
-        desc: '文件  ' + file.name + ' 太大了，不超过2M。'
+        title: "文件大小超过限制",
+        desc: "文件  " + file.name + " 太大了，不超过2M。"
       });
     },
     //判断图片最多上传张数
@@ -310,17 +303,17 @@ export default {
       const check = this.uploadList.length < 5;
       if (!check) {
         this.$Notice.warning({
-          title: '最多可以上传5张图片。'
+          title: "最多可以上传5张图片。"
         });
       }
       return check;
-    },
+    }
   }
-}
+};
 </script>
 <style scoped>
 @import "../../project/style/taskModal.css";
-.edit{
+.edit {
   margin-left: 20px;
 }
 </style>

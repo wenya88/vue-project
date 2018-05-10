@@ -1,34 +1,5 @@
-<style>
-    .SuvCont .headerTitle{border-bottom:1px solid #d7dde4;padding-bottom:5px;}
-    .SuvCont .headerTitle h2,h5{line-height:26px;}
-    .SuvCont .headerTitle h2 span{margin-left:20px;font-size:14px;font-weight:normal;}
-    .SuvCont .headerTitle h5{margin-top:5px;font-weight:normal;}
-    .SuvCont .more{text-align:right;padding-right:5px;}
-    .SuvCont .SuvCont{padding-top:10px;}
-    .SuvCont a{font-size:12px;}
-    .SuvCont .rowColumn{margin:20px 0px;}
-    .SuvCont .rowColumn>.column dt span{margin-left:5px;}
-    .SuvCont .rowColumn>.column{width:49%;float:left;}
-    .SuvCont .rowColumn>.column:nth-of-type(2){width:49%;float:right;}
-    .SuvCont .rowColumn>.column dt{font-size:130%;}
-    .SuvCont .rowColumn>.column dt>.more{font-style:normal;float:right;}
-    .SuvCont .rowColumn>.column dd{margin-top:15px;width:100%;}
-    .SuvCont .rowColumn>.column dd>.div{float:left;width:40%;}
-    .SuvCont .rowColumn>.column dd>.div:nth-of-type(2){width:60%;}
-    .SuvCont .rowColumn>.column .border{border:1px solid #d7dde4;}
-    .SuvCont .rowColumn>.column .padding{padding:20px;}
-    .SuvCont .rowColumn>.column .padding span{width:15%;text-align:left;display:inline-block;}
-    .SuvCont .rowColumn>.column .padding span:nth-of-type(2){width:45%;}
-    .SuvCont .rowColumn>.column .padding span:nth-of-type(3){width:20%;}
-    .SuvCont .rowColumn>.column .padding span:nth-of-type(4){width:15%;text-align:left;padding-left:10px;}
-    .SuvCont .rowColumn>.column .padding span img{width:20px;height:20px;border-radius:100%;float:left;margin-right:6px;margin-top:-5px;}
-    .SuvCont .rowColumn>.column .padding span i{font-style:normal;width: 70%;text-align:center;background:#ededed;display:inline-block;border-radius:6px;padding:0px;}
-    .SuvCont .rowColumn>.column .padding .time{color:darkorange;}
-    .SuvCont .rowColumn>.column .inside span em{font-style:normal;color:#888;margin-left:10px;}
-    .SuvCont .rowColumn>.column .inside span{width:20%;}
-    .SuvCont .rowColumn>.column .inside span:nth-of-type(2){width:60%;}
-    .SuvCont .rowColumn>.column .inside span:nth-of-type(3){width:15%;padding-left:10px;}
-    .clear{clear:both;}
+<style lang="less">
+   @import '../../styles/home.less';
 </style>
 <template>
     <div class="SuvCont">
@@ -60,7 +31,8 @@
                     <dt><Icon type="compose"></Icon><span>客户已反馈</span><em class="more"><router-link to="">查看全部</router-link></em></dt>
                     <dd class="border padding">
                         <Timeline>
-                            <Timeline-item :color="[Kitem.stage_id==dataList[0].stage_id?'darkorange':'lightgray']" v-for="Kitem in dataList">
+                            <!-- <Timeline-item :color="[Kitem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Kitem in dataList"> -->
+                                <Timeline-item color="lightgray" v-for="Kitem in dataList">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Kitem.client_audit_time|fromatDate}}</span>
                                 <span>{{Kitem.task_name}}</span>
@@ -76,7 +48,8 @@
                     <dt><Icon type="android-clipboard"></Icon><span>内部待审</span><em class="more"><router-link to="">查看全部</router-link></em></dt>
                     <dd class="border padding inside">
                         <Timeline>
-                            <Timeline-item :color="[Litem.stage_id==dataList[0].stage_id?'darkorange':'lightgray']" v-for="Litem in dataList">
+                            <!-- <Timeline-item :color="[Litem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Litem in dataList"> -->
+                            <Timeline-item color="lightgray" v-for="Litem in dataList">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Litem.inside_audit_time|fromatDate}} <em>上传</em></span>
                                 <span>{{Litem.task_name}}</span>
@@ -107,6 +80,8 @@
     data(){
       return{
         dataList:[],
+        dark:'#ff8c00',
+        gray:'#d3d3d3'
       }
     },
     filters:{
@@ -129,11 +104,12 @@
 
     },
     methods:{
-      get() {
-        let url = surveyListData;
+      get(){
+        let _this=this  
+        let url = '/task/task/stage-page';
         let params = {};
-        this.$http.get(url, params).then(function (data) {
-          this.dataList=data.data.data.slice(0,9);
+        _this.$http.get(url, params).then(function (data) {
+          _this.dataList=data.data.data.slice(0,8);
         }, function (error) {
           console.log(error)
         });

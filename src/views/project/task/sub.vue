@@ -207,7 +207,6 @@ export default {
     showSubListmodal: function(rq) {
       this.isubListModal = true;
       this.getforechDailt(rq.id);
-      console.log(rq.id);
     },
     /**
      * 请求数据

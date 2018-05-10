@@ -4,11 +4,9 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-
 function resolve (dir) {
     return path.join(__dirname, dir);
 }
-
 module.exports = {
     entry: {
         main: '@/main',
@@ -65,10 +63,9 @@ module.exports = {
                     fallback: 'style-loader'
                 }),
             },
-
             {
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-                loader: 'url-loader?limit=1024'
+                loader: 'url-loader?limit=8192'
             },
             {
                 test: /\.(html|tpl)$/,
@@ -88,14 +85,15 @@ module.exports = {
             jQuery: "jquery",
             $: "jquery"
         })
-
     ],
     resolve: {
         extensions: ['.js', '.vue'],
         alias: {
             'vue': 'vue/dist/vue.esm.js',
             '@': resolve('../src'),
-            'jquery': 'jquery'
+            'jquery': 'jquery',
+            'jsencrypt': '@/js/jsencrypt.min.js',
+            'md5': '@/js/md5.min.js'
         }
     }
 };

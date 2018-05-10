@@ -1,15 +1,21 @@
 <template>
     <div>
-        <h4>任务类型工时统计</h4>
+        <h2>任务类型工时统计</h2>
         <div id="echartTypeTask"></div>
     </div>
 </template>
 <style>
-    #echartTypeTask{height:400px;margin-top:20px;}
+    #echartTypeTask{height:400px;}
 </style>
 <script>
   export default{
     mounted(){
+      this.myCharts()
+    },
+    updated(){
+      this.myCharts()
+    },
+    activated(){
       this.myCharts()
     },
     methods:{
@@ -36,13 +42,12 @@
             }
           },
           grid: {
-            left: '15%',
-            right: '10%',
+            left: '25',
+            right: '10',
           },
           xAxis: {
             type: 'category',
             data: ['原画', 'UI', '动作', '特效','地编','原画成员'],
-
             nameTextStyle: {
               color: '#3259B8',
               fontSize: 14,
@@ -63,7 +68,6 @@
 
           yAxis: {
             type: 'value',
-
             nameTextStyle: {
               color: '#3259B8',
               fontSize: 14,

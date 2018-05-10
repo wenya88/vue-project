@@ -29,7 +29,7 @@
             action="/file/file/file-upload"
             style="display:block;width:100%;">
             <div style="width:100%;padding:70px 0px;display:block;">
-                <Icon type="ios-cloud-upload" size="22" style="color: #777"></Icon> 文件上传（可拖入上传）
+                <Icon type="android-upload" size="30"></Icon> 文件上传（可拖入上传）
              </div>
         </Upload>
     </div>

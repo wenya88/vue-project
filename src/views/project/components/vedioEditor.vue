@@ -1,38 +1,5 @@
-<style>
-     @import '../../../styles/video-js.css'; 
-    .m {width: 740px;height: 400px;margin-left: auto;margin-right: auto;position:absolute;}
-    .m .controlListRow{position:absolute;z-index:999;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;}
-    .m .stageListRow{background:rgba(0,0,0,0.5);width:320px;position:absolute;z-index:9999;height:200px;display:none;overflow-y:auto;}
-    .m .stageListRow ul{margin:10px;}
-    .m .stageListRow ul li{border-radius:4px;line-height:20px;font-size:12px;}
-    .m .stageListRow .showBg{background:#eaeab5;}
-    .m .stageListRow ul li:hover{border-style:solid;}
-    .m .stageListRow ul em{float:right;text-align:right;font-size:12px;}
-    .m .stageListRow .clear{clear:both;}
-    .video-js .vjs-slider {position: relative;cursor: pointer;padding: 0;user-select: none;background-color: #73859f;background-color: rgba(148, 159, 115, 0.5);}
-    .video-js .vjs-play-progress {background-color: #ffffff;}
-    .V_markVjs{background:rgba(0,0,0,0.4);position:absolute;z-index:100;left:-48px;}
-    .V_chooseBox{height:auto;position:absolute;z-index:100;background:#fff;box-shadow:#000 0 0 2px;-webkit-box-shadow:#000 0 0 2px}
-    .V_chooseBox ul{width:100%;height:auto;cursor:pointer;list-style:none;margin:0px;padding:0px;}
-    .V_chooseBox ul li{height:20px;color:#000;font-size:12px;text-align:center;line-height:20px;padding:0px 4px;}
-    .V_chooseBox ul li:hover{background:#3498db;color:#fff}
-    .V_inputSignBox{width:250px;height:120px;position:absolute;z-index:200;background:#fff;box-shadow:#000 0 0 4px;-webkit-box-shadow:#000 0 0 4px;-webkit-border-radius:0px;overflow:hidden}
-    .V_outSignbox{width:100%;height:29px;color:#1b1b1b;line-height:29px;text-align:center;font-size:12px;cursor:pointer;font-weight:bold;border-bottom:#d9d6d6 1px solid}
-    .V_signbox{width:240px;height:62px;line-height:17px;outline:0;margin:0 auto;color:#000;font-size:12px;font-weight:400;overflow:hidden;text-align:left}
-    .V_signbox em{width:auto;height:17px;line-height:17px;color:#a8a8a8;font-style:normal;}
-    .V_sureSign{width:100%;height:29px;border-top:#d9d6d6 1px solid;line-height:29px;text-align:center;cursor:pointer;font-weight:bold;font-size:12px;color:#fff;background:#3498db}
-    .V_signIndex{display:none;width:15px;height:15px;border:rgba(251,251,251,0.4) 3px solid;position:absolute;z-index:99;border-radius:100%;text-align:center;font-size:12px;}
-
-    .V_hintBox{margin:0;position:absolute;min-width:50px;max-width:240px;max-height:100px;min-height:20px;z-index:101;background:rgba(0,0,0,0.5);color:#fff;line-height:20px;font-size:12px;text-align:center}
-    .V_signIndex .V_hintBox{top:-28px;left:-46px;width:100px;padding-left:5px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;border-radius:4px;}
-    .V_signIndex .V_triangle-down{left:-3px;top:-8px;}
-    .V_video-js ul{padding:0px;}
-    .V_triangle-down{position:absolute;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:5px solid rgba(0,0,0,0.5);z-index:101}
-    .V_progressBar{position:absolute;width:0px;height:10px;z-index:99;background:rgba(0,0,0,0.3);}
-    .V_progressBar>.V_barSpan{width:2px;height:10px;display:inline-block;background:#fff;position:absolute;left:0;overflow:hidden;text-indent:10px;} 
-</style>
 <template>
-    <div class="m">
+    <div class="videoM">
       <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
       <div class="stageListRow" @mouseleave="hideStageList">
             <ul>
@@ -408,5 +375,6 @@ export default {
     }
 }
 </script>
-
-
+<style lang="less">
+     @import '../../../styles/vedioEditor.less';
+</style>

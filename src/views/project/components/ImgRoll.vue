@@ -112,6 +112,7 @@ export default {
                 script.async = true;  
                 script.src = "http://vjs.zencdn.net/6.6.3/video.js"  
                 head.appendChild(script);
+                script.classList.add("video_js")
                 
                 console.log("fileID"+id+"|| TID"+this.TID)
             }else if(type=="image"){

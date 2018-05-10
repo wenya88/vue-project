@@ -53,6 +53,8 @@
 
 <script>
 var qs = require('querystring');
+var jsencrypt = require('jsencrypt');
+var md5 = require('md5');
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import {authLogin} from "../config/env.js";

@@ -113,8 +113,6 @@
                     <template v-if="item.status === 'finished'">
                       <img :src="item.url">
                       <div class="demo-upload-list-cover">
-                        <!--<Icon type="ios-eye-outline"-->
-                        <!--@click.native="handleView(item.name)"></Icon>-->
                         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                       </div>
                     </template>
@@ -131,12 +129,12 @@
                 </FormItem>
                 <FormItem label="参考附件">
                   <Upload :format="['jpg','jpeg','png']" multiple action="//jsonplaceholder.typicode.com/posts/">
-                    <Button type="ghost" icon="ios-cloud-upload-outline">上传
+                    <Button type="ghost" icon="ios-cloud-upload-outline" :disabled="isDisabled">上传
                     </Button>
                   </Upload>
                 </FormItem>
                 <FormItem label="要求说明">
-                  <Input v-model="editData.name" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
+                  <Input v-model="editData.name" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明" :disabled="isDisabled"></Input>
                   <!--@on-blur="blurTj()"-->
                 </FormItem>
               </Form>
@@ -144,6 +142,7 @@
               <Col span="16">
               <!-- <three-dmodel></three-dmodel> -->
               <div class="edit">
+                <slot name="three"></slot>
                 <slot name="two"></slot> 
               </div>
               </Col>
@@ -156,8 +155,6 @@
   </transition>
 </template>
 <script>
-import threeDmodel from '../../project/components/task/modalTab/beaN/threeDmodel';
-
 export default {
   name: 'baseModel',
   // props: ['editData'],
@@ -186,9 +183,6 @@ export default {
     //   type: Array,
     //   default: []
     // }
-  },
-  components: {
-    threeDmodel
   },
   data() {
     return {

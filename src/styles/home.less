@@ -1,0 +1,87 @@
+@import './common.less';
+.SuvCont{
+    .headerTitle{
+        border-bottom:1px solid #d7dde4;padding-bottom:5px;
+        h2{
+            line-height:26px;
+            span{
+                margin-left:20px;font-size:14px;font-weight:normal;
+            }
+        }
+        h5{
+            margin-top:5px;font-weight:normal;
+            &:extend(.SuvCont .headerTitle h2);
+        }
+    }
+    .more{
+        text-align:right;padding-right:5px;
+    }
+    .SuvCont{
+        padding-top:10px;
+    }
+    a{
+        font-size:12px;
+    }
+    .rowColumn{
+        margin:20px 0px;
+        &>.column{
+            width:49%;float:left;
+            dt{
+                font-size:130%;
+                span{
+                    margin-left:5px;
+                }
+                &>.more{
+                    font-style:normal;float:right;
+                }
+            }
+            dd{
+                margin-top:15px;width:100%;
+                &>.div{
+                    float:left;width:40%;
+                }
+                &>.div:nth-of-type(2){
+                    width:60%;
+                }
+            }
+            .border{
+                border:0px solid #d7dde4;border-radius:@borderRadius12;box-shadow:@boxShadow;
+            }
+            .padding{
+                padding:20px;
+                span{
+                    width:15%;text-align:left;display:inline-block;
+                    &:nth-of-type(2){width:45%;}
+                    &:nth-of-type(3){width:20%;}
+                    &:nth-of-type(4){width:15%;text-align:left;padding-left:10px;}
+                    img{
+                        width:20px;height:20px;border-radius:100%;float:left;margin-right:6px;margin-top:-5px;
+                    }
+                }
+                &>i{
+                    font-style:normal;width: 70%;text-align:center;background:#ededed;display:inline-block;border-radius:6px;padding:0px;
+                }
+                .time{
+                    color:darkorange;
+                }
+            }
+            .inside{
+                span{
+                    width:20%;
+                    em{
+                        font-style:normal;color:#888;margin-left:10px;
+                    }
+                    &:nth-of-type(2){width:60%;}
+                    &:nth-of-type(3){width:15%;padding-left:10px;}
+                }
+            }
+        }
+        &>.column:nth-of-type(2){
+            width:49%;float:right;
+          
+        }
+    }
+}
+.clear{
+    clear:both;
+}

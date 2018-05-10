@@ -10,8 +10,9 @@ import './theme/dist/iview.css';
 import 'vue-event-calendar/dist/style.css';
 import vueEventCalendar from 'vue-event-calendar';
 import Bus from './config/bus.js'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.baseURL = 'http://192.168.2.19/index.php';
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.baseURL = 'http://192.168.2.19';
+// axios.defaults.baseURL = 'http://59.111.95.148'
 axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
 var token = localStorage.token

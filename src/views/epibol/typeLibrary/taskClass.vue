@@ -45,18 +45,12 @@
 .hide {
   display: none;
 }
-.displayShow {
-  display: block;
-}
-.displayHide {
-  display: none;
-}
 .ivu-steps.ivu-steps-small .ivu-steps-content {
   padding: 0 !important;
 }
-.hideIconDel {
+/* .hideIconDel {
   display: none;
-}
+} */
 </style>
 <template>
   <Content :style="{padding: '24px 0', minHeight: '280px', background: '#fff'}">
@@ -73,24 +67,23 @@
         </Row>
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
           <h4 :style="{paddingBottom:'10px'}">类型名称</h4>
-          <!-- formLeft.tasktype_name -->
           <Input :style="{width:'800px',paddingBottom:'20px'}" placeholder="输入任务类型名称" v-model="listN"></Input>
           <h4 :style="{paddingBottom:'10px'}">沟通确认阶段</h4>
           <Row>
             <Col span="22">
             <h2 class="spaceTb">
-
               <div v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
-                <span class="hideIconDel">
-                  <a class="restdele">x</a>
-                </span>
                 <Steps :style="{width:'800px'}" :current="current" size="small">
-                  <Step :content="this.stageName" v-for="step in stepCount" :key="step" :name="step">
-                    <!-- <br>
-                    <Input style="width: 100px" size="small"></Input>
+                  <Step v-for="step in stepCount" :key="step.sage" :name="step" :title="step.stage_name" :content="step.stage_name">
                     <br>
-                    <Checkbox v-model="single">内审后提交客户确认
-                    </Checkbox> -->
+                    <Input style="width: 100px" size="small" v-model="step.stage_name"></Input>
+                    <br>
+                    <Checkbox>内审后提交客户确认
+                    </Checkbox>
+                    <!-- <div class="hideIconDel">
+                      <button class="restdele">刪除</button>
+                    </div> -->
+                    <Button>刪除</Button>
                   </Step>
                 </Steps>
               </div>
@@ -104,18 +97,20 @@
           </Row>
           <h2 :style="{padding:'20px 0 20px'}">任务主文件</h2>
           <h4 :style="{paddingBottom:'10px'}">文件格式</h4>
-          <Select :style="{width:'800px',paddingBottom:'20px'}" @on-change="getSelectId">
-            <Option v-for="(item,index) in formLeft.file" :value="index" :key="index">{{ item.file_format }}</Option>
-          </Select>
+          <AutoComplete v-model="fileType" icon="arrow-down-b" placeholder="选择主文件格式，可直接输入  如' JPG '" style="width:383px">
+            <Option v-for="item in accesData" :value="item.file_format" :key="item.file">{{ item.file_format }}</Option>
+          </AutoComplete>
           <h4 :style="{paddingBottom:'10px'}">文件属性</h4>
           <Row v-for="(item, index) in formDynamic.items" v-if="item.status" :prop="'items.' + index + '.value'" :key="index" :rules="{required: true, message: 'Item ' + item.index +' can not be empty', trigger: 'blur'}">
-            <Col span="4">
-            <Select :style="{padding:'0 20px 20px 0'}" v-model="reqArrt.value">
-              <Option v-for="(item,index) in reqeData.require" :value="item.value" :key="index">{{item.config_name}}</Option>
-            </Select>
+            <Col span="7">
+            <AutoComplete v-model="fileCate" icon="arrow-down-b" placeholder="大小" style="width:200px">
+              <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option>
+            </AutoComplete>
             </Col>
-            <Col span="4">
-            <Input :style="{padding:'0 20px 20px 0'}" v-model="reqArrt.value"></Input>
+            <Col span="5">
+            <AutoComplete v-model="fileText" placeholder="8000* 8000">
+              <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option>
+            </AutoComplete>
             </Col>
             <Col span="2" offset="1">
             <span :style='{cursor:"pointer",position:"relative",top:"5px"}' @click="removeFileat(index)">移除</span>
@@ -123,7 +118,7 @@
           </Row>
           <Row>
             <Col span="2">
-            <Button :style='{cursor:"pointer"}' type="dashed" long @click="addFileat" icon="">
+            <Button :style='{cursor:"pointer",margin:"20px 0"}' type="dashed" long @click="addFileat" icon="">
               <Icon type="plus-round"></Icon>
               增加
             </Button>
@@ -131,23 +126,18 @@
           </Row>
           <h2 :style="{padding:'40px 0 20px'}">任务附加文件</h2>
           <template>
-            <Table style="margin-bottom: 20px" :columns="acces" :data="accesData"></Table>
-            <div :class="{displayShow:junctShow,displayHide:junctHide}">
-              <Row>
-                <Col span="4">
-                <Input v-model="fileFormat" placeholder="输入格式，如“max”" clearable></Input>
-                </Col>
-                <Col span="12">
-                <Input placeholder="附加文件描述..." clearable style="margin-left:20px"></Input>
-                </Col>
-                <Col span="2">
-                <Button type="success" style="margin-left:30px" @click="fileSave">确定</Button>
-                </Col>
-                <Col span="2">
-                <Button @click="addJunctHide">取消</Button>
-                </Col>
-              </Row>
-            </div>
+            <!-- <Table style="margin-bottom: 20px" :columns="acces" :data="reqfData"></Table> -->
+            <Row v-for="(item,index) in otherfile" :key="item.config">
+              <Col span="4">
+              <Input v-model="item.config_name" placeholder="输入格式，如“max”" clearable></Input>
+              </Col>
+              <Col span="12">
+              <Input v-model="item.value" placeholder="附加文件描述..." clearable style="margin-left:20px"></Input>
+              </Col>
+              <Button :style='{margin:"0 50px"}' type="dashed" icon="">
+                删除
+              </Button>
+            </Row>
             <Row>
               <Col span="2">
               <Button :style='{cursor:"pointer",margin:"20px 0"}' type="dashed" @click="addJunctShow" icon="">
@@ -170,7 +160,7 @@
 </template>
 <script>
 var qs = require("querystring");
-import { typeInfo, cateList } from "../../../config/env.js";
+import { typeInfo } from "../../../config/env.js";
 import Icon from "iview/src/components/icon/icon";
 import Caspanel from "iview/src/components/cascader/caspanel";
 import typeList from "./typeList";
@@ -187,15 +177,17 @@ export default {
       reqeData: {},
       reqarn: {},
       reqArrt: {},
-      single: false,
-      junctShow: false,
-      junctHide: true,
-      stepCount: [0],
-      fileFormat: "",
-      stageName: "",
-      listN: "",
+      isInit: Boolean,
+      /*--------------------文件类型阶段属性开始------------------------*/
       formLeft: {},
-      index: 1,
+      listN: "",
+      fileType: "",
+      fileCate: "",
+      fileText: "",
+      stepCount: [],
+      accesData: [],
+      reqData: [],
+      reqfData: [],
       formDynamic: {
         items: [
           {
@@ -205,6 +197,10 @@ export default {
           }
         ]
       },
+      otherfile: [{ config_name: "", value: "" }],
+      /*----------------------文件类型阶段属性结束-----------------------*/
+      category_id: 0,
+      index: 1,
       acces: [
         {
           title: "文件格式",
@@ -238,13 +234,10 @@ export default {
             ]);
           }
         }
-      ],
-      accesData: []
+      ]
     };
   },
-  mounted() {
-    // this.ListEachId();
-  },
+  mounted() {},
   methods: {
     //hover阶段，删除图标
     dataDetails: function(e) {
@@ -255,46 +248,76 @@ export default {
       let el = event.currentTarget.children[0].children[0];
       el.style.display = "";
     },
+    //提交任务类别库表单
     taskClassubmit: function() {
       let csb = this;
       let csbObj = {};
-      csbObj.id = csb.formLeft.id;
-      csbObj.category_id = csb.formLeft.category_id;
-      csbObj.tasktype_name = csb.formLeft.tasktype_name;
-      // csbObj.stage = csb.formLeft.stage;
-      // csbObj.file = csb.formLeft.file;
+      //类型属性
+      csbObj.id = csb.clsId;
+      csbObj.category_id = csb.category_id ? csb.category_id : 0;
+      csbObj.name = csb.listN;
+      csbObj.stage = JSON.stringify(csb.stepCount);
+      //文件属性
+      let main_file = {};
+      main_file.file_name = csb.fileType;
+      main_file.file_format = csb.fileType;
+      main_file.is_main = 1;
+      main_file.require = [
+        {
+          config_id: 0,
+          config_name: csb.fileCate,
+          value: csb.fileText
+        }
+      ];
+      let files = [];
+      files.push(main_file);
+      let other_file = [];
+      for (let i = 0; i < this.otherfile.length; i++) {
+        let _otherfile = {
+          file_name: "",
+          file_format: this.otherfile[i].config_name,
+          is_main: 0,
+          require: [
+            {
+              config_id: 0,
+              config_name: this.otherfile[i].config_name,
+              value: this.otherfile[i].value
+            }
+          ]
+        };
+        files.push(_otherfile);
+      }
+      csbObj.file = JSON.stringify(files);
+      let address = "";
+      //判断类型是否为ture执行接口
+      if (this.isInit) {
+        address = "/task/task-type/add";
+      } else {
+        address = "/task/task-type/update";
+      }
       csb.$axios
-        .post("/task/task-type/update", qs.stringify(csbObj))
+        .post(address, qs.stringify(csbObj))
         .then(res => {
-          console.log(res.data.err_code);
           if (res.data.err_code === 0) {
             this.$Message.success("编辑类型成功！");
             this.taskClassforEach();
           } else {
-            this.$Message.error("编辑类型失败，请重试！");
+            this.$Message.error(res.data.err_message);
           }
         })
         .catch(error => {
-          this.$Message.error("编辑类型失败，请重试！");
+          this.$Message.error("加载失败，请重试！");
         });
-    },
-    fileSave: function() {
-      let fsv = this;
-      let fsvObj = {};
-      console.log(this.accesData);
-      fsvObj.category_id = fsv.formLeft.category_id;
-      fsvObj.name = fsv.fileFormat;
-      fsv.$axios.post("/task/task-type/add", qs.stringify(fsvObj)).then(fil => {
-        console.log(fil);
-      });
+      this.refreshPage();
     },
     addJunctShow() {
-      this.junctShow = !this.junctShow;
-      this.junctHide = !this.junctHide;
-      return;
-    },
-    addJunctHide() {
-      this.junctHide = !this.junctHide;
+      // this.junctShow = !this.junctShow;
+      // this.junctHide = !this.junctHide;
+      if (this.otherfile.length) {
+        this.otherfile.push({ config_name: "", value: "" });
+      } else {
+        this.otherfile.push(0);
+      }
     },
     //沟通确认阶段
     addSteps() {
@@ -304,8 +327,14 @@ export default {
         this.$Message.error("最多只能添加6个阶段");
         aSp.current = 6;
       } else {
-        aSp.stepCount.push(0);
+        // aSp.stepCount.push(0);
         aSp.current += 1;
+        this.stepCount.push({
+          id: this.stepCount.length + 1,
+          stage_name: "",
+          is_inside_audit: false,
+          tasktype_id: this.category_id
+        });
       }
     },
     /**
@@ -324,6 +353,9 @@ export default {
     removeFileat(index) {
       this.formDynamic.items[index].status = 0;
     },
+    remove(index) {
+      this.accesData.splice(index, 1);
+    },
     /**
      * get请求
      */
@@ -338,47 +370,114 @@ export default {
         }
       );
     },
-    // 任务类型分类
-    // ListEachId() {
-    //   let fiC = this;
-    //   this.get(
-    //     cateList,
-    //     {
-    //       company_id: 1
-    //     },
-    //     res => {
-    //       let listId = res.data.data;
-    //     }
-    //   );
-    // },
     //遍历任务类别详情数据
     taskClassforEach() {
       let cif = this;
       this.get(
         typeInfo,
         {
-          id: cif.listId
+          id: this.clsId
         },
         res => {
           cif.formLeft = res.data;
+          //任务附加文件列表
           cif.accesData = res.data.file;
-          let stage = res.body.stage;
-          stage.forEach(stN => {
-            cif.stageName = stN.stage_name;
-          });
+          if (cif.accesData != null) {
+            cif.accesData.forEach(reqr => {
+              cif.forSubmit = reqr.is_main;
+              if (reqr.is_main == 1) {
+                cif.reqData = reqr.require;
+                cif.fileType = reqr.file_format;
+                cif.reqData.forEach(reqFor => {
+                  cif.fileCate = reqFor.config_name;
+                  cif.fileText = reqFor.value;
+                });
+              } else if (reqr.is_main == 0) {
+                reqr.require.forEach(other => {
+                  this.otherfile = [
+                    {
+                      config_name: other.config_name,
+                      value: other.value
+                    }
+                  ];
+                });
+                cif.reqfData.push(reqr);
+              }
+            });
+          }
+          //沟通确认阶段
+          cif.stepCount = res.body.stage;
         }
       );
     },
     //从左边列表组件中获取id,name
-    change(id, liName) {
-      this.listN = liName;
-      this.listId = id;
-      this.taskClassforEach();
+    change(clicktype) {
+      this.isInit = clicktype.isInit;
+      this.category_id = clicktype.category_id;
+      this.listN = clicktype.liName;
+      this.clsId = clicktype.id;
+      if (clicktype.isInit) {
+        //新增文件類型-頁面
+        this.initPage();
+      } else {
+        this.taskClassforEach();
+      }
+    },
+    //初始化頁面數據
+    initPage() {
+      this.stepCount = [];
+      this.stepCount.push({
+        id: 1,
+        stage_name: "默认阶段",
+        is_inside_audit: false,
+        tasktype_id: this.category_id
+      });
+      //清空
+      this.formLeft = {};
+      this.listN = "";
+      this.fileType = "";
+      this.fileCate = "";
+      this.fileText = "";
+      this.accesData = [];
+      this.reqData = [];
+      this.reqfData = [];
+      this.formDynamic = {
+        items: [
+          {
+            value: "",
+            index: 1,
+            status: 1
+          }
+        ]
+      };
+      this.otherfile = [{ config_name: "", value: "" }];
+    },
+    //刷新当前页面
+    refreshPage() {
+      this.$Spin.show(
+        {
+          render: h => {
+            return h("div", [
+              h("Icon", {
+                class: "demo-spin-icon-load",
+                props: {
+                  type: "load-c",
+                  size: 18
+                }
+              }),
+              h("div", "Loading")
+            ]);
+          }
+        },
+        location.reload()
+      );
+      setTimeout(() => {
+        this.$Spin.hide();
+      }, 3000);
     },
     //或者select文件格式选择后id
     getSelectId(r) {
       let requ = this.formLeft.file[r]; //文件类型数据
-      console.log(requ);
       if (requ) {
         this.reqeData = requ;
       }
@@ -386,6 +485,9 @@ export default {
     //文件属性的value
     getselecArrt() {
       this.reqArrt = this.reqeData.require[0];
+    },
+    stepClick: function() {
+      console.log(step);
     }
   }
 };

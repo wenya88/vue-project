@@ -1,18 +1,58 @@
 <template>
     <div>
-        <h4>全任务状态分布</h4>
+        <h2>任务状态统计<span v-show="flag">{{NameData}}</span></h2>
         <div id="echartState"></div>
     </div>
 </template>
-<style>
-    #echartState{height:400px;margin-top:20px;}
-</style>
 <script>
   export default{
+    data(){
+      return{
+          projectID:0,
+          NameData:[],
+          EchData:[],
+          flag:false,
+      }
+    },
     mounted(){
-      this.myCharts()
+      this.projectID=sessionStorage.projectID;
+      this.aotuHeight();
+      this.getData();
+      this.myCharts();
+    },
+    updated(){
+      this.myCharts();
+    },
+    activated(){
+     this.myCharts();
     },
     methods:{
+      getData(labelOption){
+          let _this=this;
+          let url='/task/total/total-by-type&project_id='+this.projectID;
+          _this.$axios.get(url).then(msg=>{
+                let Mdata=msg.data
+                if(Mdata.err_code==0){
+                   let NameData=Mdata.data.map(val=>{
+                     return val.name
+                   });
+                   _this.NameData=NameData;
+                  let EchData=Mdata.data.map(val=>{
+                    return{
+                        "name": val.name,
+                        "type": 'bar',
+                        "label":labelOption,
+                        "data": val.data,
+                    }
+                  });
+                  _this.EchData=EchData;
+                }
+          })
+      },
+      aotuHeight(){
+        let getH=document.body.clientHeight-200;
+        document.getElementById("echartState").style.height=getH+"px";
+      },
       myCharts(){
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('echartState'));
@@ -56,11 +96,11 @@
         };
 
         app.config = {
-          rotate: 90,
-          align: 'left',
-          verticalAlign: 'middle',
-          position: 'insideBottom',
-          distance: 15,
+          rotate: 0,
+          align: 'center',
+          verticalAlign: 'bottom',
+          // position: 'insideBottom',
+          distance: 20,
           onChange: function () {
             var labelOption = {
               normal: {
@@ -94,7 +134,8 @@
             align: app.config.align,
             verticalAlign: app.config.verticalAlign,
             rotate: app.config.rotate,
-            formatter: '{c}  {name|{a}}',
+            formatter: '{c}',
+            //formatter: '{c}  {name|{a}}',
             rich: {
               name: {
 //		                textBorderColor: '#000',
@@ -108,18 +149,18 @@
           }
         };
 
-        myChart.setOption({
+        this.getData(labelOption)
 
-          color: ['#99cccc', '#f4e5ce', '#ffcccc'],
+        myChart.setOption({
+          color: ['#99cccc', '#f4e5ce', '#ffcccc','#e7bcf3','#ff9f7f','#fb7293','#67e0e3'],
           tooltip: {
             trigger: 'item',
             axisPointer: {
               type: 'shadow'
             },
-//		        formatter: '{b0}<br />{a} : {c}'
           },
           legend: {
-            data: ['原画', '3D原型', 'UI']
+            data: this.NameData
           },
           toolbox: {
             show: true,
@@ -134,55 +175,66 @@
               saveAsImage: {show: false}
             }
           },
+          grid: {
+            left: '22px',
+            right: '40px',
+            bottom: '50px',
+            top:'40px',
+            containLabel: true
+          },
           calculable: true,
-          xAxis: [
-            {
+          xAxis: {
               type: 'category',
               axisTick: {show: false},
-              data: ['等待开始', '进行中', '已完成', '暂时'],
-            }
-          ],
-          yAxis: [
-            {
+              data: ['等待开始', '进行中', '暂停', '已完成'],
+              splitLine:{
+              show:true,
+              lineStyle:{
+                color:'#ccc',
+                width: 1,
+                type:'dotted'
+              }
+            },
+            splitArea: {
+              show: true,
+              areaStyle: {
+                color:['rgba(234,244,237,0.2)']
+              }
+            },
+            axisLine:{
+              lineStyle:{
+                color:'#18bfa4'
+              }
+            },
+            
+          },
+          yAxis:{
               type: 'value',
-
-            }
-          ],
+               splitLine:{
+              show:true,
+              lineStyle:{
+                color:'#ccc',
+                width: 1,
+                type:'dotted',
+              }
+              },
+              axisLine:{
+                lineStyle:{
+                  color:'#18bfa4'
+                }
+              },
+            },
           dataZoom: [{
             show: true,
             realtime: true,
             start: 10,
             end: 90,
             fillerColor:"rgba(190,221,216,0.8)",
-            height: 20
+            height: 30
           }],
-          series: [
-            {
-              name: '原画',
-              type: 'bar',
-              barGap: 0,
-              label: labelOption,
-              data: [10, 332, 301, 334],
-
-            },
-            {
-              name: '3D原型',
-              type: 'bar',
-              label: labelOption,
-              data: [220, 182, 191, 234]
-            },
-            {
-              name: 'UI',
-              type: 'bar',
-              label: labelOption,
-              data: [150, 232, 201, 154]
-            }
-          ]
+          series:this.EchData
 
         })
-        if (option && typeof option === "object") {
-          myChart.setOption(option, true);
-        }
       }
     }
   }

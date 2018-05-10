@@ -59,14 +59,14 @@
                 silent: true,
                 barWidth: 40,
                 barGap: '-100%',
-                data: [60, 60, 60, 60,60,70]
+                data: [70, 60, 60, 60,60,70]
               },
               {
                 name:'已用工时',
                 type: 'bar',
                 barWidth: 40,
                 z: 10,
-                data: [45, 60, 13, 25,52,56],
+                data: [35, 60, 13, 25,52,56],
                 label: {
                   normal: {
                     show: true,

@@ -56,6 +56,9 @@
 .taskHead .taskInfo a {
   color: #666;
 }
+.btnStting {
+  margin-bottom: 10px;
+}
 </style>
 <template>
   <div class="layout">
@@ -106,7 +109,7 @@
                   </DropdownMenu>
                 </Dropdown>
                 <span class="borderNome">
-                  <Input v-model="addVal" placeholder="输入子项目名称" clearable style="width: 200px"></Input>
+                  <Input v-model="addVal" placeholder="输入子项目名称" style="width: 200px"></Input>
                 </span>
                 <Button type="success" @click="saveChild">保存</Button>
                 <Button @click="outHide">取消</Button>
@@ -142,7 +145,7 @@
                   </DropdownMenu>
                 </Dropdown>
                 <span class="borderNome">
-                  <Input v-model="editVal" placeholder="输入子项目名称" clearable style="width: 200px"></Input>
+                  <Input v-model="editVal" placeholder="输入子项目名称" style="width: 200px"></Input>
                 </span>
                 <Button type="success" @click="EditSave">保存</Button>
                 <Button @click="EditoutHide">取消</Button>
@@ -279,7 +282,7 @@ export default {
           title: "实施阶段",
           align: "center",
           ellipsis: true,
-          width: 400,
+          width: 340,
           render: function(h) {
             let current = this.progress;
             return h(

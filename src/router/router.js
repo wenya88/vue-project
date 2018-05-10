@@ -291,6 +291,13 @@ export const appRouter = [
                 name: 'awkHome',
                 title: '艺术WIKI',
                 component: resolve => { require(['@/views/artwiki/home.vue'], resolve); }
+            },
+            {
+                path: '/artwiki/excel',
+                icon: 'ios-paper-outline',
+                name: 'awkExcek',
+                title: 'excel解析',
+                component: resolve => { require(['@/views/artwiki/excel.vue'], resolve); }
             }
         ]
      },

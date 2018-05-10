@@ -1,18 +1,51 @@
 <template>
     <div>
-        <h4>成员任务统计</h4>
+        <h2>成员任务统计 <span v-show='flag'>{{eData}}</span></h2>
         <div id="echartTask"></div>
     </div>
 </template>
 <style>
-    #echartTask{height:400px;margin-top:20px;}
+    #echartTask{margin-top:10px;}
 </style>
 <script>
   export default{
+    data () {
+      return {
+        eData:[],
+        tData:[],
+        nData:[],
+        flag:false,
+        projectID:0
+      } 
+    },
     mounted(){
-      this.myCharts()
+      this.projectID=sessionStorage.projectID;
+      this.autoHeight();
+      this.dataGet();
+      this.myCharts();
+    },
+    updated(){  
+      this.myCharts();
+    },
+    activated(){
+     this.myCharts();
     },
     methods:{
+      autoHeight(){
+         let getH=document.body.clientHeight-200;
+         document.getElementById("echartTask").style.height=getH+"px";
+      },
+      dataGet(){
+        let _this=this;
+        let url='task/total/member-task-total&project_id='+this.projectID;
+        _this.$axios.get(url).then((msg)=>{
+            let Mdata=msg.data.data;
+            _this.eData=Mdata.data;
+            _this.tData=Mdata.series[0].data;
+            _this.nData=Mdata.series[1].data;
+            
+        })
+      },
       myCharts(){
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('echartTask'));
@@ -27,11 +60,11 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['UI','原型','动作','杨二车娜母','范海星','杨二郎','李寺寺','陈K歌','周星星','薛一般']
+            data: this.eData
           },
           series: [
             {
-              name:'访问来源',
+              name:'任务类型',
               type:'pie',
               selectedMode: 'single',
               radius: [0, '30%'],
@@ -46,11 +79,7 @@
                   show: false
                 }
               },
-              data:[
-                {value:335, name:'UI', selected:true},
-                {value:679, name:'原型'},
-                {value:1548, name:'动作'}
-              ]
+              data:this.tData
             },
             {
               name:'统计',
@@ -58,29 +87,18 @@
               radius: ['40%', '55%'],
               label: {
                 normal: {
+                  show:true,
                   formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                   backgroundColor: '#eee',
                   borderColor: '#aaa',
                   borderWidth: 1,
                   borderRadius: 4,
-                  // shadowBlur:3,
-                  // shadowOffsetX: 2,
-                  // shadowOffsetY: 2,
-                  // shadowColor: '#999',
-                  // padding: [0, 7],
                   rich: {
                     a: {
                       color: '#999',
                       lineHeight: 22,
                       align: 'center'
                     },
-                    // abg: {
-                    //     backgroundColor: '#333',
-                    //     width: '100%',
-                    //     align: 'right',
-                    //     height: 22,
-                    //     borderRadius: [4, 4, 0, 0]
-                    // },
                     hr: {
                       borderColor: '#aaa',
                       width: '100%',
@@ -100,15 +118,7 @@
                   }
                 }
               },
-              data:[
-                {value:335, name:'杨二车娜母'},
-                {value:310, name:'范海星'},
-                {value:234, name:'杨二郎'},
-                {value:135, name:'李寺寺'},
-                {value:1048, name:'陈K歌'},
-                {value:251, name:'周星星'},
-                {value:147, name:'薛一般'}
-              ]
+              data:this.nData
             }
           ]
 

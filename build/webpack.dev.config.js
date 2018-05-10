@@ -6,12 +6,10 @@ const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
-
 fs.open('./env.js', 'w', function (err, fd) {
     const buf = 'export default "development";';
     fs.write(fd, buf, 0, buf.length, 0, function (err, written, buffer) { });
 });
-
 module.exports = merge(webpackBaseConfig, {
     devtool: '#source-map',
     output: {
@@ -49,6 +47,8 @@ module.exports = merge(webpackBaseConfig, {
             '/task': {
                 // 目标服务器地址
                 target: 'http://192.168.2.19/index.php?r=task',
+                // target: 'http://59.111.95.148/index.php?r=task',
+                // target: 'http://plat.yhcgame.com/index.php?r=task',
                 //路径重写
                 pathRewrite: { '^/task': '' },
                 changeOrigin: true
@@ -56,14 +56,18 @@ module.exports = merge(webpackBaseConfig, {
             '/system': {
                 // 登录
                 target: 'http://192.168.2.19/index.php?r=system',
+                // target: 'http://59.111.95.148/index.php?r=system',
+                // target: 'http://plat.yhcgame.com/index.php?r=system',
                 //路径重写
                 pathRewrite: { '^/system': '' },
                 changeOrigin: true
             },
             '/file': {
-                // 登录
+                // 文件
                 target: 'http://192.168.2.19/index.php?r=file',
-                //路径重写
+                // target: 'http://59.111.95.148/index.php?r=file',
+                // target: 'http://plat.yhcgame.com/index.php?r=file',
+                // 路径重写
                 pathRewrite: { '^/file': '' },
                 changeOrigin: true
             }

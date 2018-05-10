@@ -122,7 +122,7 @@
                   </Upload>
                 </FormItem>
                 <FormItem label="参考附件">
-                  <Upload name="affix" multiple :show-upload-list="true":on-success="fileSuccess" :on-format-error="handleFormatError" :data="{'type':'image'}" action="http://192.168.2.19/index.php?r=file/file/file-upload">
+                  <Upload name="affix" multiple :show-upload-list="true" :on-success="fileSuccess" :on-format-error="handleFormatError" :data="{'type':'image'}" action="http://192.168.2.19/index.php?r=file/file/file-upload">
                     <Button type="ghost" icon="ios-cloud-upload-outline">上传
                     </Button>
                   </Upload>
