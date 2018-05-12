@@ -78,12 +78,12 @@
                     <br>
                     <Input style="width: 100px" size="small" v-model="step.stage_name"></Input>
                     <br>
-                    <Checkbox>内审后提交客户确认
+                    <Checkbox v-model="step.is_inside_audit">内审后提交客户确认
                     </Checkbox>
                     <!-- <div class="hideIconDel">
                       <button class="restdele">刪除</button>
                     </div> -->
-                    <Button>刪除</Button>
+                    <Button @click="delStep">刪除</Button>
                   </Step>
                 </Steps>
               </div>
@@ -96,19 +96,19 @@
             </Col>
           </Row>
           <h2 :style="{padding:'20px 0 20px'}">任务主文件</h2>
-          <h4 :style="{paddingBottom:'10px'}">文件格式</h4>
-          <AutoComplete v-model="fileType" icon="arrow-down-b" placeholder="选择主文件格式，可直接输入  如' JPG '" style="width:383px">
+          <h4 :style="{paddingBottom:'20px'}">文件格式</h4>
+          <AutoComplete v-model="fileType" icon="arrow-down-b" placeholder="选择主文件格式，可直接输入  如' JPG '" style="width:383px;margin:0px 0 20px">
             <Option v-for="item in accesData" :value="item.file_format" :key="item.file">{{ item.file_format }}</Option>
           </AutoComplete>
           <h4 :style="{paddingBottom:'10px'}">文件属性</h4>
-          <Row v-for="(item, index) in formDynamic.items" v-if="item.status" :prop="'items.' + index + '.value'" :key="index" :rules="{required: true, message: 'Item ' + item.index +' can not be empty', trigger: 'blur'}">
+          <Row v-for="(item,index) in attrFile" :key="item.config" :style='{margin:"10px 0"}'>
             <Col span="7">
-            <AutoComplete v-model="fileCate" icon="arrow-down-b" placeholder="大小" style="width:200px">
+            <AutoComplete v-model="item.config_name" icon="arrow-down-b" placeholder="大小" style="width:200px">
               <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option>
             </AutoComplete>
             </Col>
             <Col span="5">
-            <AutoComplete v-model="fileText" placeholder="8000* 8000">
+            <AutoComplete v-model="item.value" placeholder="8000* 8000">
               <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option>
             </AutoComplete>
             </Col>
@@ -118,7 +118,7 @@
           </Row>
           <Row>
             <Col span="2">
-            <Button :style='{cursor:"pointer",margin:"20px 0"}' type="dashed" long @click="addFileat" icon="">
+            <Button :style='{cursor:"pointer",margin:"20px 0"}' type="dashed" long @click="addFileat">
               <Icon type="plus-round"></Icon>
               增加
             </Button>
@@ -127,20 +127,20 @@
           <h2 :style="{padding:'40px 0 20px'}">任务附加文件</h2>
           <template>
             <!-- <Table style="margin-bottom: 20px" :columns="acces" :data="reqfData"></Table> -->
-            <Row v-for="(item,index) in otherfile" :key="item.config">
+            <Row v-for="(item,index) in otherfile" :key="item.config" :style='{margin:"20px 0"}'>
               <Col span="4">
               <Input v-model="item.config_name" placeholder="输入格式，如“max”" clearable></Input>
               </Col>
               <Col span="12">
               <Input v-model="item.value" placeholder="附加文件描述..." clearable style="margin-left:20px"></Input>
               </Col>
-              <Button :style='{margin:"0 50px"}' type="dashed" icon="">
+              <Button :style='{margin:"0 50px"}' type="dashed" icon="" @click="delOtherfile">
                 删除
               </Button>
             </Row>
             <Row>
               <Col span="2">
-              <Button :style='{cursor:"pointer",margin:"20px 0"}' type="dashed" @click="addJunctShow" icon="">
+              <Button :style='{margin:"20px 0"}' type="dashed" @click="addJunctShow" icon="">
                 <Icon type="plus-round"></Icon>
                 增加附件文件
               </Button>
@@ -176,27 +176,16 @@ export default {
       current: 0,
       reqeData: {},
       reqarn: {},
-      reqArrt: {},
       isInit: Boolean,
       /*--------------------文件类型阶段属性开始------------------------*/
       formLeft: {},
       listN: "",
       fileType: "",
-      fileCate: "",
-      fileText: "",
       stepCount: [],
       accesData: [],
       reqData: [],
       reqfData: [],
-      formDynamic: {
-        items: [
-          {
-            value: "",
-            index: 1,
-            status: 1
-          }
-        ]
-      },
+      attrFile: [{ config_name: "", value: "" }],
       otherfile: [{ config_name: "", value: "" }],
       /*----------------------文件类型阶段属性结束-----------------------*/
       category_id: 0,
@@ -258,24 +247,33 @@ export default {
       csbObj.name = csb.listN;
       csbObj.stage = JSON.stringify(csb.stepCount);
       //文件属性
-      let main_file = {};
-      main_file.file_name = csb.fileType;
-      main_file.file_format = csb.fileType;
-      main_file.is_main = 1;
-      main_file.require = [
-        {
-          config_id: 0,
-          config_name: csb.fileCate,
-          value: csb.fileText
-        }
-      ];
+      // let main_file = {};
+      // main_file.file_name = csb.fileType;
+      // main_file.file_format = csb.fileType;
       let files = [];
-      files.push(main_file);
-      let other_file = [];
+      // files.push(main_file);
+      //任务主文件
+      console.log(files);
+      for (let i = 0; i < this.attrFile.length; i++) {
+        let _attrFile = {
+          file_name: "",
+          file_format: csb.fileType,
+          is_main: 1,
+          require: [
+            {
+              config_id: 0,
+              config_name: this.attrFile[i].config_name,
+              value: this.attrFile[i].value
+            }
+          ]
+        };
+        files.push(_attrFile);
+      }
+      //任务附加文件
       for (let i = 0; i < this.otherfile.length; i++) {
         let _otherfile = {
           file_name: "",
-          file_format: this.otherfile[i].config_name,
+          file_format: csb.fileType,
           is_main: 0,
           require: [
             {
@@ -291,16 +289,18 @@ export default {
       let address = "";
       //判断类型是否为ture执行接口
       if (this.isInit) {
-        address = "/task/task-type/add";
+        address = "task/task-type/add";
       } else {
-        address = "/task/task-type/update";
+        address = "task/task-type/update";
       }
       csb.$axios
-        .post(address, qs.stringify(csbObj))
+        .post(this.GLOBAL.baseRouter + address, qs.stringify(csbObj))
         .then(res => {
           if (res.data.err_code === 0) {
             this.$Message.success("编辑类型成功！");
+            //this.initPage();
             this.taskClassforEach();
+            this.refreshPage();
           } else {
             this.$Message.error(res.data.err_message);
           }
@@ -308,26 +308,27 @@ export default {
         .catch(error => {
           this.$Message.error("加载失败，请重试！");
         });
-      this.refreshPage();
     },
-    addJunctShow() {
-      // this.junctShow = !this.junctShow;
-      // this.junctHide = !this.junctHide;
-      if (this.otherfile.length) {
-        this.otherfile.push({ config_name: "", value: "" });
-      } else {
-        this.otherfile.push(0);
-      }
+    //增加任务附加文件
+    addJunctShow(data) {
+      this.otherfile.push({ config_name: "", value: "" });
+    },
+    //移除任务附加文件
+    delOtherfile(event, ot) {
+      const index = this.otherfile.indexOf(ot);
+      this.otherfile.splice(index, 1);
+    },
+    //移除任务附加文件tabel
+    remove(index) {
+      this.accesData.splice(index, 1);
     },
     //沟通确认阶段
     addSteps() {
       let aSp = this;
       if (aSp.stepCount.length >= 6 || aSp.current >= 6) {
-        // aSp.stepCount.push(aSp.stepCount[aSp.stepCount.length - 1] + 1);
         this.$Message.error("最多只能添加6个阶段");
         aSp.current = 6;
       } else {
-        // aSp.stepCount.push(0);
         aSp.current += 1;
         this.stepCount.push({
           id: this.stepCount.length + 1,
@@ -340,21 +341,31 @@ export default {
     /**
      * 文件属性模块操作
      */
-    //增加
+    //增加文件属性
     addFileat() {
-      this.index++;
-      this.formDynamic.items.push({
-        value: "",
-        index: this.index,
-        status: 1
-      });
+      this.attrFile.push({ config_name: "", value: "" });
     },
-    //移除
-    removeFileat(index) {
-      this.formDynamic.items[index].status = 0;
+    //移除文件属性
+    removeFileat(event, at) {
+      const index = this.attrFile.indexOf(at);
+      this.attrFile.splice(index, 1);
     },
-    remove(index) {
-      this.accesData.splice(index, 1);
+    //移除沟通确认阶段
+    delStep(event, st) {
+      if (this.stepCount.length <= 1) {
+        this.stepCount = [
+          {
+            id: 1,
+            stage_name: "默认阶段",
+            is_inside_audit: false,
+            tasktype_id: this.category_id
+          }
+        ];
+        this.$Message.warning("默认阶段，不可刪除");
+      } else {
+        const index = this.stepCount.indexOf(st);
+        this.stepCount.splice(index, 1);
+      }
     },
     /**
      * get请求
@@ -372,6 +383,7 @@ export default {
     },
     //遍历任务类别详情数据
     taskClassforEach() {
+      this.clernPage();
       let cif = this;
       this.get(
         typeInfo,
@@ -380,6 +392,7 @@ export default {
         },
         res => {
           cif.formLeft = res.data;
+          this.listN = res.data.tasktype_name;
           //任务附加文件列表
           cif.accesData = res.data.file;
           if (cif.accesData != null) {
@@ -389,8 +402,12 @@ export default {
                 cif.reqData = reqr.require;
                 cif.fileType = reqr.file_format;
                 cif.reqData.forEach(reqFor => {
-                  cif.fileCate = reqFor.config_name;
-                  cif.fileText = reqFor.value;
+                  this.attrFile = [
+                    {
+                      config_name: reqFor.config_name,
+                      value: reqFor.value
+                    }
+                  ];
                 });
               } else if (reqr.is_main == 0) {
                 reqr.require.forEach(other => {
@@ -406,7 +423,12 @@ export default {
             });
           }
           //沟通确认阶段
-          cif.stepCount = res.body.stage;
+          if (cif.formLeft.stage != null) {
+            cif.formLeft.stage.forEach(sta => {
+              sta.is_inside_audit = sta.is_inside_audit == 1 ? true : false;
+              cif.stepCount.push(sta);
+            });
+          }
         }
       );
     },
@@ -425,7 +447,7 @@ export default {
     },
     //初始化頁面數據
     initPage() {
-      this.stepCount = [];
+      this.clernPage();
       this.stepCount.push({
         id: 1,
         stage_name: "默认阶段",
@@ -433,24 +455,19 @@ export default {
         tasktype_id: this.category_id
       });
       //清空
+      this.otherfile = [{ config_name: "", value: "" }];
+      this.attrFile = [{ config_name: "", value: "" }];
+    },
+    clernPage() {
+      this.stepCount = [];
       this.formLeft = {};
       this.listN = "";
       this.fileType = "";
-      this.fileCate = "";
-      this.fileText = "";
       this.accesData = [];
       this.reqData = [];
       this.reqfData = [];
-      this.formDynamic = {
-        items: [
-          {
-            value: "",
-            index: 1,
-            status: 1
-          }
-        ]
-      };
-      this.otherfile = [{ config_name: "", value: "" }];
+      this.otherfile = [];
+      this.attrFile = [];
     },
     //刷新当前页面
     refreshPage() {
@@ -481,13 +498,6 @@ export default {
       if (requ) {
         this.reqeData = requ;
       }
-    },
-    //文件属性的value
-    getselecArrt() {
-      this.reqArrt = this.reqeData.require[0];
-    },
-    stepClick: function() {
-      console.log(step);
     }
   }
 };

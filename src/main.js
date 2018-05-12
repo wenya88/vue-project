@@ -10,11 +10,14 @@ import './theme/dist/iview.css';
 import 'vue-event-calendar/dist/style.css';
 import vueEventCalendar from 'vue-event-calendar';
 import Bus from './config/bus.js'
+import config from './config/config.js' 
+import global from './components/Global'//引用全局变量文件
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.baseURL = 'http://192.168.2.19';
-// axios.defaults.baseURL = 'http://59.111.95.148'
+axios.defaults.baseURL = 'http://192.168.2.19';
+// axios.defaults.baseURL = 'http://plat.yhcgame.com:8080'
 axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
+Vue.prototype.GLOBAL = global
 var token = localStorage.token
 if(localStorage.token) {
   axios.defaults.headers.common['token'] = localStorage.token;

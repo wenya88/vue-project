@@ -13,7 +13,9 @@
                       item.client_audit_date,
                       item.inside_audit_uid,
                       item.client_audit_uid,
-                      index
+                      index,
+                      item.task_id,
+                      item.file.fid
                   )" :class="{showBg:index==liIndex}"> 
                   <span>{{index+1}}<br/>{{item.stage}}</span>
                   <em>
@@ -30,8 +32,27 @@
       <video id="my-video" class="video-js" controls preload="auto" width="880" height="600" data-setup="{}">
         <source :src="VideoURL" type="video/mp4">
       </video>
-      <div v-if="AllowEdit"><button class="actionPost">确认</button></div>
-      <div v-if="SataeInfo">反馈状态:{{StateFeedBack | filtStat}} 时间:{{insTime>cliTiem?insDate:cliDate}}审核人:{{insTime>cliTiem?insUid:cliUid}}</div>
+
+      <!-- 标注提交 -->
+      <div v-if="AllowEditRow" class="VideoAllowEdit">
+          <span class="EditInput">
+              <input type="text" placeholder="请输入你要反馈的内容" id="EditInput">
+          </span>
+          <span class="EditSub">
+              <button class="actionPost">确认</button>
+          </span>
+          <span class="EditSub">
+              <button class="subPass">通过</button>
+          </span>
+      </div>
+      
+      <!-- 反馈信息 -->
+      <div v-if="SataeInfo" class="VideofeedbackInfo">
+          <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
+          <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
+          <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+          <div class="clear"></div>
+        </div>
   	</div>
 </template>
 <script>
@@ -43,7 +64,8 @@ export default {
             data:[],
             TID:49,
             fileID:10,
-            AllowEdit:Boolean,
+            AllowEdit:String,
+            AllowEditRow:Boolean,
             SataeInfo:Boolean,
             StateFeedBack:0,
             IMGlist:[],
@@ -83,7 +105,7 @@ export default {
         this.VedioGet();
     },
     methods:{
-        changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index){
+        changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
          this.data=tag;
          this.StateFeedBack=status;
@@ -93,7 +115,10 @@ export default {
          this.cliDate=cliDate;
          this.insUid=insUid;
          this.cliUid=cliUid;
-         this.liIndex=index
+         this.liIndex=index;
+         let fileID=taskID;
+         let fID=fid;
+         this.Vdefault(fileID,fID);
          this.vedioLoad();
        },
         videoLoad(){
@@ -105,7 +130,7 @@ export default {
             script.classList.add("video_js")
             head.appendChild(script);
         },
-        Vdefault(fileID,SataeInfo){
+        Vdefault(fileID,fID){
                  var btiem
                  var myPlayer = videojs('my-video');
                     videojs("my-video").ready(function(){
@@ -156,7 +181,7 @@ export default {
                         e.preventDefault();
                     };
                     function defined(dom){
-                        if(SataeInfo==true||SataeInfo==undefined){
+                        if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){
                             return
                         }
                         $(document).on("mousedown",dom,function(e){
@@ -257,14 +282,14 @@ export default {
                     }
                     indexId=l;
                 }//载入数据
-                $(".actionPost").click(function(){
+                $(".actionPost").unbind("click").click(function(){
                     var url=baseUrl+'index.php?r=task/task/inside-audit';
                     var VedData={
-                        "stage_id":49,
+                        "stage_id":fileID,
                         "audit":2,
                         "feedback":"",
                         "file":[{
-                            "file_id":fileID,
+                            "file_id":fID,
                             "tag":Data
                            }]
                     };
@@ -320,19 +345,19 @@ export default {
              //  列表高度
              $(".stageListRow").height(600)
              //  控制图片是否可标注
-            if(sessionStorage.AllowEdit=='true'){
-                _this.AllowEdit=true;
+            if(sessionStorage.AllowEdit=="Allow"){ //允许标注
+                _this.AllowEditRow=true;
                 _this.SataeInfo=false;
-            }else if(sessionStorage.AllowEdit=='false'){
-                _this.AllowEdit=false
-                _this.SataeInfo=true;
-            }else if(sessionStorage.AllowEdit==undefined){
-                _this.AllowEdit=false;
+            }else if(sessionStorage.AllowEdit=="NotAllow"){ //不允许标注
+                _this.AllowEditRow=false
+                 _this.SataeInfo=true;
+            }else if(sessionStorage.AllowEdit=="Other"){ //不显示下面和不允许标注
+                _this.AllowEditRow=false;
                 _this.SataeInfo=false;
             }
             //  获取视频的标注信息
             let TaskID=sessionStorage.TaskID;
-            let url='/task/task/task-stage&task_id='+TaskID;
+            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
             _this.$axios.get(url).then(function(msg){
                 let Sdate=msg.data;
                 if(Sdate.err_code==0){
@@ -349,10 +374,11 @@ export default {
                 _this.insUid=_this.IMGlist[0].insUid;
                 _this.cliUid=_this.IMGlist[0].cliUid;
                 // 把StageID传到提交
-                let fileID = Sdate.stage_id;
-                let SataeInfo = _this.SataeInfo
+                 let fileID = Sdate.data[0].task_id;
+                 let fID=Sdate.data[0].file.fid;
                 // 加载Video控件
-                _this.Vdefault(fileID,SataeInfo);
+                _this.Vdefault(fileID,fID);
+                console.log(fileID+"/"+fID)
                 _this.vedioLoad();
                 }else{
                 return
@@ -360,7 +386,6 @@ export default {
             },()=>{
             alert("请求失败!")
             })
-            
         },
         showStageList(){
           document.getElementsByClassName('controlListRow')[0].style.display='none';
@@ -370,8 +395,6 @@ export default {
             document.getElementsByClassName('controlListRow')[0].style.display='block';
             document.getElementsByClassName('stageListRow')[0].style.display='none';
         }
-
-        
     }
 }
 </script>

@@ -1,6 +1,6 @@
-
+@import './common.less';
 .imgEditorCom{
-    width:100%;height:400px;
+    width:100%;height:600px;
     .controlListRow{
         position:absolute;z-index:11;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;
     }
@@ -24,7 +24,6 @@
     }
 }
 .imgFocus{
-    margin-bottom:5px;
     img{
         width:100%;
     }
@@ -71,4 +70,33 @@
 }
 .clear{
     clear:both;
+}
+.feedbackInfo{
+    width:100%;display:block;background:#e9e9e9;font-size:@fs14;padding:@padding;
+    span{
+        width:32%;display:inline-block;float:left;
+        p{
+            background:#22d7bb;color:@white;display:inline-block;margin-bottom:6px;
+        }
+    }
+}
+.AllowEdit{
+    background:@panelBg;width:100%;display:block;padding:@padding;
+    .EditInput{
+        width:74%;display:inline-block;
+        input{
+            border:0px;border-bottom:1px solid #ddd;padding:5px 10px;width:100%;background:none;line-height:30px;font-size:@fs14;
+        }
+    }
+    .EditSub{
+        width:10%;margin-left:3%;
+        button{
+            border-radius:100%;background:#ff9900;color:#fff;line-height:44px;padding:0px 10px;border:0px;font-size:@fs14;cursor:pointer;
+        }
+        .subPass{
+            &:extend(.AllowEdit .EditSub button);
+            background:#66cc00;
+        }
+    }
+    
 }

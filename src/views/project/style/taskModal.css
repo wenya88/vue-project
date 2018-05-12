@@ -35,14 +35,15 @@
 }
 
 .modal-header, .modal-footer {
-    padding: 15px;
-    display: flex;
+    /* padding: 2px; */
+    /* display: flex; */
 }
 
 .modal-header {
-    border-bottom: 1px solid #eee;
-    color: #4aae9b;
-    justify-content: space-between;
+    position: relative;
+    float: right;
+    width:120px;
+    padding: 0px 0px 0px 0px;
 }
 
 .modal-footer {
@@ -52,7 +53,7 @@
 
 .modal-body {
     position: relative;
-    padding: 20px 10px;
+    padding: 0px 0px;
 }
 
 .btn-close {

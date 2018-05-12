@@ -13,7 +13,9 @@
                       item.client_audit_date,
                       item.inside_audit_uid,
                       item.client_audit_uid,
-                      index
+                      index,
+                      item.task_id,
+                      item.file.fid
                   )" :class="{showBg:index==liIndex}"> 
                   <span>{{index+1}}<br/>{{item.stage}}</span>
                   <em>
@@ -23,11 +25,28 @@
                   <div class="clear"></div>
               </li>
             </ul>
-            
         </div>
         <div class="imgFocus" id="signx"><img :src="url" /></div>
-        <div v-if="AllowEdit"><button class="actionPost">确认</button></div>
-        <div v-if="SataeInfo">反馈状态:{{StateFeedBack | filtStat}} 时间:{{insTime>cliTiem?insDate:cliDate}}审核人:{{insTime>cliTiem?insUid:cliUid}}</div>
+        <!-- 标注提交 -->
+        <div v-if="AllowEditRow" class="AllowEdit">
+          <span class="EditInput">
+              <input type="text" placeholder="请输入你要反馈的内容" id="EditInput">
+          </span>
+          <span class="EditSub">
+              <button class="actionPost">确认</button>
+          </span>
+          <span class="EditSub">
+              <button class="subPass">通过</button>
+          </span>
+        </div>
+        
+        <!-- 反馈信息 -->
+        <div v-if="SataeInfo" class="feedbackInfo">
+          <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
+          <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
+          <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+          <div class="clear"></div>
+        </div>
     </div>
 </template>
 <script>
@@ -42,7 +61,8 @@
         TID:80,
         TaskID:0,
         IMGlist:[],
-        AllowEdit:Boolean,
+        AllowEdit:String,
+        AllowEditRow:Boolean,
         SataeInfo:Boolean,
         StateFeedBack:0,
         insTime:0,
@@ -51,7 +71,7 @@
         cliDate:0,
         insUid:0,
         cliUid:0,
-        liIndex:0
+        liIndex:0,
       }
     },
     filters:{
@@ -76,7 +96,7 @@
       this.get();
     },
     methods:{
-      changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index){
+      changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
          this.data=tag;
          this.StateFeedBack=status;
@@ -86,10 +106,13 @@
          this.cliDate=cliDate;
          this.insUid=insUid;
          this.cliUid=cliUid;
-         this.liIndex=index
+         this.liIndex=index;
+         let fileID=taskID;
+         let fID=fid;
+         this.defue(fileID,fID);
          this.imgdef();
       },
-      defue(fileID,SataeInfo){
+      defue(fileID,fID){
         (function($){
           var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
           var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
@@ -114,7 +137,7 @@
 
           function defined(dom){
             //是否显示标记
-            if(SataeInfo==true||SataeInfo==undefined){
+            if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){
                 return
             }
             //鼠标右键
@@ -208,34 +231,33 @@
             indexId=l;
           }//载入数据
 
-          $(".actionPost").click(function(){   
+          $(".actionPost").unbind('click').click(function(){
+            // var url='/task/task/inside-audit';
             var url=baseUrl+'index.php?r=task/task/inside-audit';
             var ImgData={
                   "stage_id": fileID,
                   "audit": 2,
                   "feedbac": "",
                   "file": [{
-                    "file_id": 49,
+                    "file_id": fID,
                     "tag": Data
                   }]
                 }
             $.ajax({
+              cache:false,
               type:'post',
               url:url,
               data:ImgData,
               async:true,
               dataType:"json",
               success:function(msg){
-               console.log(msg)
+                console.log(msg)
              },
              error:function(){
                alert('请求失败!')
              }
-             
             })
-              console.log(ImgData)
           })
-
         })(jQuery);
       },
       imgdef(){
@@ -245,22 +267,23 @@
       get(){
            let _this=this;
           //  控件图片和列表的高度
-           $('.imgFocus img,.stageListRow').height($(window).height()-320);
+           $('.imgFocus img,.stageListRow,.imgEditorCom').height($(window).height()-320);
           //  控制图片是否可标注
-           if(sessionStorage.AllowEdit=='true'){
-                _this.AllowEdit=true;
+           if(sessionStorage.AllowEdit=="Allow"){ //允许标注
+                _this.AllowEditRow=true;
                 _this.SataeInfo=false;
-            }else if(sessionStorage.AllowEdit=='false'){
-                _this.AllowEdit=false
+            }else if(sessionStorage.AllowEdit=="NotAllow"){ //不允许标注
+                _this.AllowEditRow=false
                  _this.SataeInfo=true;
-            }else if(sessionStorage.AllowEdit==undefined){
-                _this.AllowEdit=false;
+            }else if(sessionStorage.AllowEdit=="Other"){ //不显示下面和不允许标注
+                _this.AllowEditRow=false;
                 _this.SataeInfo=false;
             }
           //  获取图片的标注信息
            let TaskID=sessionStorage.TaskID;
-           let url='/task/task/task-stage&task_id='+TaskID;
+           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
           _this.$axios.get(url).then(function(msg){
+      
             let Sdate=msg.data;
             if(Sdate.err_code==0){
                 Sdate.data.forEach(element => {
@@ -276,11 +299,10 @@
             _this.insUid=_this.IMGlist[0].insUid;
             _this.cliUid=_this.IMGlist[0].cliUid;
             // 把StageID传到提交
-            let fileID = Sdate.stage_id;
-            let SataeInfo=_this.SataeInfo
-            _this.defue(fileID,SataeInfo);
+            let fileID = Sdate.data[0].task_id;
+            let fID=Sdate.data[0].file.fid;
+            _this.defue(fileID,fID);
             _this.imgdef();
-            document.oncontextmenu=new Function("event.returnValue=false;");
             }else{
               return
             }          

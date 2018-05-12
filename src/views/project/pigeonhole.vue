@@ -3,7 +3,7 @@
     <div class="handleBox">
       <Row type="flex" justify="space-between" class="code-row-bg">
         <Col span="16">
-        <Button type="primary">全部下载</Button>
+        <Button type="primary" @click="downloadFile('',1)">全部下载</Button>
         </Col>
         <Col span="2"> 类型:
         <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
@@ -31,7 +31,7 @@
     <Row type="flex" justify="start" class="code-row-bg">
       <Col span="8" v-for="(item,index) in fileData" :key="index">
       <div class="card">
-        <div class="card-box" @click="fetchFileData(item.id)">
+        <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file)">
           <!-- <Icon type="heart" color="red" v-if=""></Icon>
           <Icon type="pause" v-else-if=""></Icon> -->
           <img class="card-box-pic" :src="item.image[0]"/>
@@ -41,7 +41,7 @@
             <td class="w15"><span class="tag">{{item.tasktype_name}}</span></td>
             <td class="w55">{{item.name}}</td>
             <td class="w20"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
-            <td class="w10" @click="downloadFile(item.id,1)"><Icon type="ios-download"></Icon></td>
+            <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download"></Icon></td>
           </tr>
         </table>
       </div>
@@ -68,11 +68,11 @@
         </Select>
       </FormItem>
     </div>
-    <div class="edit" slot="two">
-      <div>
-        121212
-      </div>  
-    </div>
+    <div slot="three">
+      <ImgEditor v-if="imgConponent"></ImgEditor>
+      <VidEditor v-if="vidConponent"></VidEditor>
+      <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
+    </div> 
     </finish-model>
   </div>
 </template>
@@ -80,10 +80,14 @@
 <script>
 var qs = require('querystring');
 import finishModel from '../main-components/model/finishModel';
+import ImgEditor from '../project/components/imgEditor.vue';
+import VidEditor from '../project/components/vedioEditor.vue'
 import { mapGetters } from 'vuex'
 export default {
   components: {
-    finishModel
+    finishModel,
+    ImgEditor,
+    VidEditor
   },
   data() {
     return {
@@ -124,6 +128,9 @@ export default {
       model: '',
       searchInput: '',
       isTabModal: false,
+      imgConponent: false,
+      vidConponent: false,
+      NotType: false,
       formLeft: {}
     }
   },
@@ -147,7 +154,7 @@ export default {
         project_child_id: '',
         search: this.searchInput
       }
-      this.$axios.post('/task/task/page',qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         // console.log(res)
@@ -171,7 +178,7 @@ export default {
         task_id : tid,
         project_id: pid
       }
-      this.$axios.post('/task/task/download', qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/download', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         if(res.err_code == 0) {
@@ -179,7 +186,7 @@ export default {
           //   url_key: res.url_key
           // }
           window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank')
-          // this.$axios.post('/file/file/download', qs.stringify(key))
+          // this.$axios.post(this.GLOBAL.baseRouter+'file/file/download', qs.stringify(key))
           // .then(res => res.data)
           // .then(res => {
           //   window.open(urls, '_blank')
@@ -190,16 +197,36 @@ export default {
     },
     closeTabmodal() {
       this.isTabModal = false;
-      // this.taskType = '';
-      // this.fetchData();
     },
-    fetchFileData(taskId) {
+    fetchFileData(taskId,type,file) {
+      sessionStorage.TaskID=taskId;
+      sessionStorage.FileURl=file;
+      sessionStorage.AllowEdit=undefined;
+      // 判断文件类型进行组件显示
+      if(type=='image'){
+        this.imgConponent=true;
+        this.vidConponent=false;
+        this.NotType=false;
+      }else if(type=='video'){
+        this.vidConponent=true;
+        this.imgConponent=false;
+        this.NotType=false;
+      }else if(type==undefined){
+        this.vidConponent=false;
+        this.imgConponent=false;
+        this.NotType=false;
+      }else if(type=='NotType'){
+        this.vidConponent=false;
+        this.imgConponent=false;
+        this.NotType=true;
+      }
+
       this.$Loading.start();
       this.boxHeight = 0;
       let data = {
         id: taskId
       }
-      this.$axios.post('/task/task/info', qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/info', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
         console.log(res)

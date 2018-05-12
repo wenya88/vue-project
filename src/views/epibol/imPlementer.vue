@@ -75,9 +75,9 @@
                                                   </span>
                                                   <em class="ShowEm" >
                                                       <em class="ShowUpLoad">
-                                                          <Button @click.stop="ShowModel(item.name,item.id,item.progress,item.stage)" class="upload"><Icon type="upload" size="24"></Icon> 上传文件</Button>
+                                                          <Button @click.stop="ShowModel(item.name,item.id,item.progress,item.stage)" class="upload"><Icon type="ios-cloud-upload-outline" size="24"></Icon> 上传文件</Button>
                                                       </em>
-                                                      <b>{{item.progress}}</b> / {{item.stage | stageArr }}<br/>{{item.stage[item.progress].stage_name|DefName}}
+                                                      <u><b>{{item.progress}}</b> / {{item.stage | stageArr }}<br/>{{item.stage[item.progress==0?item.progress:item.progress-1].stage_name}}</u>
                                                   </em>
                                                   <div class="clear"></div>
                                               </li>
@@ -110,7 +110,7 @@
                                                     <ImgEditor v-if="imgConponent"></ImgEditor>
                                                     <VidEditor v-if="vidConponent"></VidEditor>
                                                     <div v-if="startStage"><button type="primary">开始任务</button></div>
-                                                    <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
+                                                    <div v-if="NotType" class="notIMG">暂未上传任务文件或无法预览文件类型</div>
                                                 </div>
                                           </FinishModel>
                                           <!-- 任务详情结束 -->
@@ -134,14 +134,13 @@
                                       </div>
                                       <div class="Completed">
                                           <h3>已完成({{dataAccom.length}})</h3>
-                                          <ul>
+                                          <ul id="CompletedUL">
                                               <li v-for="item in dataAccom"  @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
                                                   <span class="spanTop"><Icon type="android-checkbox" color="mediumseagreen" size="18"></Icon></span>
                                                   <span>{{item.name}}</span>
                                                   <em>{{item.end_date}}</em>
                                                   <div class="clear"></div>
                                               </li>
-                                              <button @click="loadAdd" v-show="accomMore">加载更多</button>
                                           </ul>
                                       </div>
                                       <div class="clear"></div>
@@ -248,7 +247,7 @@
         taskType:[],
         imgConponent:false,
         vidConponent:false,
-        AllowEdit:false,
+        AllowEdit:"NotAllow", //控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
         pageIndex:1,
         maxPage:0,
         accomMore:true,
@@ -282,6 +281,8 @@
       this.$bus.on('TaksID',(val)=>{
           this.TaksID=val
       });
+    //   任务完成滚动条加载
+      this.ScrollLoad();
     },
     filters:{
       fromatDate(value){
@@ -307,7 +308,7 @@
           let TimeD=(parseInt((ndtody-tTimeSt)/1000/60/60))/24
           
           if(TimeD<0){
-             return value= Math.abs(Math.ceil(TimeD)) +"天后实施";
+             return value= Math.abs(Math.floor(TimeD)) +"天后实施";
           }else if(TimeD<=1){
              return value="今天开始"
           }else if(TimeD>1){
@@ -355,26 +356,43 @@
           })
         }
     },
+
     methods:{
-        //加载更多
+        //  加载更多
         loadAdd(){
-            if(this.pageIndex<this.maxPage){
+            let PagIndex=this.pageIndex;
+            if(PagIndex<this.maxPage){
                 this.pageIndex+=1;
-                console.log(this.pageIndex)
                 this.taskAccom()
                 setTimeout(()=>{
                     if(this.pageIndex==this.maxPage){
                     this.accomMore=false;
                     }
                 },1000)
+            }else{
+                return
             }
         },
+        
+        ScrollLoad(){
+            let _this=this
+            let scr=document.getElementById("CompletedUL");
+            scr.onscroll=function(){
+                let scrollT = scr.scrollTop;
+                let scrollH = scr.scrollHeight;
+                let clientH = scr.clientHeight;
+                if(scrollT == scrollH - clientH){
+                    _this.loadAdd();
+                }
+            }
+        },
+  
     //  打开任务详情
     taskDetaInfo(id,type,file,TaskID){
         let _this=this;
         _this.modelTask=true;
         
-        let url='/task/task/info&id='+id;
+        let url=this.GLOBAL.baseRouter+'task/task/info&id='+id;
         // 本地缓存信息
         sessionStorage.TaskID=TaskID;
         sessionStorage.FileURl=file;
@@ -398,18 +416,19 @@
           _this.imgConponent=false;
           _this.startStage=true;
           _this.NotType=false;
-        }else if(type=='NotType'){
+        }else if(type=='NotType'|| type=='other'){
          _this.vidConponent=false;
          _this.imgConponent=false;
          _this.startStage=false;
          _this.NotType=true;
         }
         _this.$axios.get(url).then((val)=>{
+
             let TaskDeta=val.data
             _this.BaseObj.id=TaskDeta.id;
             _this.BaseObj.name=TaskDeta.name;
-            _this.BaseObj.start_date=TaskDeta.start_date;
-            _this.BaseObj.end_date=TaskDeta.end_date;
+            _this.BaseObj.start_date=TaskDeta.expect_start_date;
+            _this.BaseObj.end_date=TaskDeta.expect_end_date;
             _this.childList.push({"project_child_name":TaskDeta.project_child_name});
             _this.taskType.push({"tasktype_name":TaskDeta.tasktype_name});
             _this.subpId=TaskDeta.project_child_name;
@@ -419,7 +438,7 @@
         })
     },
     //   关闭Model
-    CloseModel(){
+      CloseModel(){
         this.modelTask=false;
     },
     //   初始化行高  
@@ -431,7 +450,7 @@
     //   反馈和待反馈数据请求
       get(){
         let _this=this;
-        let url='/task/task/stage-page';
+        let url=this.GLOBAL.baseRouter+'task/task/stage-page';
         _this.$axios.get(url).then((data)=>{
             let MsData=data.data.data;
             MsData.forEach((element)=>{
@@ -452,14 +471,14 @@
     //   正在实施数据请求
       taskGet(){
           let _this=this;
-          let url='/task/task/page&page='+_this.pageIndex;
+          let url=this.GLOBAL.baseRouter+'task/task/page&page='+_this.pageIndex;
           _this.$axios.get(url).then((msg)=>{
             // 获取总页数
               _this.maxPage=msg.data.page.count_page;
             // 获取数据
               let MsgData=msg.data.data;
               MsgData.forEach(function(element) {
-                  
+                
                   if(element.status==2){
                       //正在进行中数据
                       if(JSON.stringify(element.stage_file) == "{}"){
@@ -483,7 +502,7 @@
     //   已完成数据请求
       taskAccom(){
           let _this=this;
-          let url='/task/task/page&page='+_this.pageIndex;
+          let url=this.GLOBAL.baseRouter+'task/task/page&page='+_this.pageIndex;
           let params={};
           _this.$axios.get(url,params).then((msg)=>{
                let MsgData=msg.data.data;
@@ -498,26 +517,30 @@
       },
     //   任务开始
       instance(id){
-          this.$Modal.confirm({
+          let _this=this;
+          _this.$Modal.confirm({
                     title: '任务开始',
                     content: '<p>确认开始任务？</p>'+id,
                     onOk: () => {
-                        this.$Message.info('开始成功');
-                        this.dataUnderway=[];
-                        this.dataWait=[];
-                        this.taskGet();
-                        this.taskWaitGet()
+                        _this.$Message.info('开始成功');
+                        _this.dataUnderway=[];
+                        _this.dataWait=[];
+                        _this.taskGet();
                     }
          });
       },
     //   上传按钮
       ShowEm(e){
          let el = event.currentTarget.children[1].children[0];
+         let el2 = event.currentTarget.children[1].children[1];
          el.style.display='block';
+         el2.style.display='none';
       },
       HideEm(e){
         let el = event.currentTarget.children[1].children[0];
+        let el2 = event.currentTarget.children[1].children[1];
         el.style=''
+        el2.style=''
       },
     //   上传窗口
       ShowModel(name,id,progress,stage){
@@ -567,7 +590,7 @@
                     })
                 })
                 // console.log(Mainobj)
-                let url='/task/task/stage-upload';
+                let url=this.GLOBAL.baseRouter+'task/task/stage-upload';
                 
                 let Mparams={
                     task_id:TaksID,

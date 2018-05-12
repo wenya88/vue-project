@@ -37,7 +37,7 @@
       },
       dataGet(){
         let _this=this;
-        let url='task/total/member-task-total&project_id='+this.projectID;
+        let url=this.GLOBAL.baseRouter+'task/total/member-task-total&project_id='+this.projectID;
         _this.$axios.get(url).then((msg)=>{
             let Mdata=msg.data.data;
             _this.eData=Mdata.data;

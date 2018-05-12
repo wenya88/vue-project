@@ -1,7 +1,7 @@
 <template>
     <div>
         <div slot="header" style="height:30px;">
-            <b>{{data.name}}/{{data.id}}</b>
+            <b>{{data.name}}</b>
         </div>
         <div class="ProjectFile">
             <div class="MainFile">

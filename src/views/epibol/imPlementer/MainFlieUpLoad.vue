@@ -1,9 +1,9 @@
 <template>
     <div class="MainFile">
         <div v-if="Flag">
-            <p>格式：<span>JPG,JPEG,PNG</span></p>
-            <p>贴图数量：<span>2000</span></p>
-            <p>大小：<span>*4000</span></p>
+            <p>格式：<span><b style="color:#009f86;font-size:14px;">无限制</b></span></p>
+            <p>贴图数量：<span>无限制</span></p>
+            <p>大小：<span>无限制</span></p>
         </div>
         <div class="demo-upload-list" v-for="item in uploadList">
             <template v-if="item.status === 'finished'">
@@ -16,20 +16,23 @@
                 <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
             </template>
         </div>
+        <!-- :max-size="2048" 
+             :format="['jpg','jpeg','png','mp4','max']"
+        -->
         <Upload
             ref="upload"
             :show-upload-list="false"
             :on-success="handleSuccess"
-            :format="['jpg','jpeg','png']"
-            :max-size="2048"
+           
+            
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             type="drag"
-            action="/file/file/file-upload"
+            action='/file/file/file-upload'
             style="display:block;width:100%;">
             <div style="width:100%;padding:70px 0px;display:block;">
-                <Icon type="android-upload" size="30"></Icon> 文件上传（可拖入上传）
+                <Icon type="ios-cloud-upload-outline" size="30"></Icon>&nbsp;&nbsp;拖入/点击上传
              </div>
         </Upload>
     </div>
@@ -43,7 +46,7 @@
                 Flag:true,
                 //file:[],
                 defaultList: [],
-                url:[]
+                url:[],
             }
         },
         methods: {      

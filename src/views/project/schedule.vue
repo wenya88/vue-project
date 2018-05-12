@@ -6,9 +6,9 @@
             <Icon type="android-apps" size="20"></Icon> 子项目进度
           </div>
           <div class="rightRow">
-              <div class="line">
-                  <div class="title">原画</div>
-                  <div class="lineRow"><Progress :percent="25"><span>15/20</span></Progress></div>
+              <div class="line" v-for="item in ChildMsgData">
+                  <div class="title">{{item.name}}</div>
+                  <div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.total}}</span></Progress></div>
                   <div class="clear"></div>
               </div>
           </div>
@@ -16,13 +16,13 @@
             <Icon type="android-apps" size="20"></Icon> 成员进度
           </div>
           <div class="rightRow">
-                <div class="line">
+                <div class="line" v-for="item in memberMsgData">
                   <div class="title">
                     <div class="demo-avatar">
-                        <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="small"/> 张一山
+                        <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar" size="small"/>&nbsp;&nbsp;{{item.realname}}
                     </div>
                    </div>
-                  <div class="lineRow"><Progress :percent="25"><span>15/20</span></Progress></div>
+                  <div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.task_num}}</span></Progress></div>
                   <div class="clear"></div>
                 </div>
           </div>
@@ -34,26 +34,25 @@
                 <Col span="16">
                   <Row>
                     <Col span="6" class="listTitle">
-                      <i-circle :percent="80" :trail-width="12" :stroke-width="11" stroke-color="#44aa00">
-                          <span class="demo-Circle-inner" style="font-size:24px">80%</span>
-                           
+                      <i-circle :percent="proPanData" :trail-width="12" :stroke-width="11" stroke-color="#44aa00">
+                          <span class="demo-Circle-inner" style="font-size:24px">{{proPanData}}%</span>
                       </i-circle><br/>
                       <span>项目进度</span>
                     </Col>
                     <Col span="18" class="listLine">
                         <div class="line">
                             <div class="title">时间进度</div>
-                            <div class="lineRow"><Progress :percent="25" :stroke-width="16"></Progress></div>
+                            <div class="lineRow"><Progress :percent="ProTiemDate" :stroke-width="16"></Progress></div>
                             <div class="clear"></div>
                         </div>
                         <div class="line">
                             <div class="title">即将完成</div>
-                            <div class="lineRow"><Progress :percent="35" :stroke-width="16"></Progress></div>
+                            <div class="lineRow"><Progress :percent="ProFinhData" :stroke-width="16"></Progress></div>
                             <div class="clear"></div>
                         </div>
                         <div class="line">
                             <div class="title">剩余时间</div>
-                            <div class="lineRow"><Progress :percent="55" :stroke-width="16"><span>24天</span></Progress></div>
+                            <div class="lineRow"><Progress :percent="ProSytsData" :stroke-width="16"><span>{{ProSytsData}}天</span></Progress></div>
                             <div class="clear"></div>
                         </div>
                     </Col>
@@ -63,17 +62,16 @@
                 <Col span="8">
                       <Row>
                           <Col span="12" class="statis">
-                                <div class="statisTip">
-                                     <span>70%</span><br/>
-                                     <em>140/200</em>
+                                <div class="statisTip statisTip3">
+                                     <span>{{ProPauseNum}}</span><em>个</em>
                                 </div>
                                 <div class="statisTitle">
-                                  文件进度
+                                  暂停中任务
                                 </div>
                           </Col>
                           <Col span="12" class="statis">
                                 <div class="statisTip statisTip2">
-                                     <span>3</span><em>个</em>
+                                     <span>{{ProTaskData}}</span><em>个</em>
                                 </div>
                                 <div class="statisTitle">
                                   实施中任务
@@ -86,15 +84,61 @@
         
         <!-- Echart -->
         <div class="projectEchart">
-            Echart 表
+            <EchartLine :projectID="projectID"></EchartLine>
         </div>
 
       </div>
   </div>
 </template>
 <script>
+import EchartLine from './proStat/echartsLine.vue';
 export default {
+    data(){
+        return{
+            projectID:1,
+            proPanData:0,
+            ProTiemDate:0,
+            ProFinhData:0,
+            ProSytsData:0,
+            ProTaskData:0,
+            ProPauseNum:0,
+            ChildMsgData:[],
+            memberMsgData:[]
+        }
+    },
+    components:{EchartLine},
+    mounted(){
+        this.ProjectPlanGET();
+    },
+    methods:{
+        ProjectPlanGET(){
+            let _this=this;
+            _this.$bus.emit("projectID",_this.projectID)
+            sessionStorage.projectID=_this.projectID;
+            let ProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+_this.projectID);
+            let ChlidProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+_this.projectID);
+            let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+_this.projectID); 
+            _this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
 
+                    // 项目进度
+                    let MsData=msg.data.data;
+                    _this.proPanData=Math.round(MsData.project_progress);
+                    _this.ProTiemDate=Math.round(MsData.time_progress);
+                    _this.ProFinhData=Math.round(MsData.will_finish);
+                    _this.ProSytsData=Math.round(MsData.syts);
+                    _this.ProTaskData=MsData.tasking_num;
+                    _this.ProPauseNum=MsData.pause_num;
+                    
+                    // 子项目进度
+                    _this.ChildMsgData=childMsg.data.data;
+
+                    // 成员进度
+                    _this.memberMsgData=memberMsg.data.data;
+            },()=>{
+                console.log("请求失败")
+            })
+        }
+    }
 }
 </script>
 

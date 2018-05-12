@@ -92,8 +92,8 @@
         </div>
         <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
-            <Col span="8" v-for="(item,index) in secondData" :key="index">
-            <div class="card" @click="fetchFileData(item.stage_id)">
+            <Col span="8" v-for="(item,index) in thirdData" :key="index">
+            <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
               <div class="card-box">
                 <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
@@ -165,8 +165,8 @@
         </div>
         <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
-            <Col span="8" v-for="item in thirdData" :key="item.title">
-            <div class="card" @click="fetchFileData(item.stage_id)">
+            <Col span="8" v-for="item in secondData" :key="item.title">
+            <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
               <div class="card-box">
                 <img class="card-box-pic" :src="item.thumb" />
                 <div class="tips">
@@ -227,7 +227,7 @@
         <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
           <Row type="flex" justify="start" class="code-row-bg">
             <Col span="8" v-for="item in fourthData" :key="item.title">
-            <div class="card" @click="fetchFileData(item.stage_id)">
+            <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
               <div class="card-box">
                 <img class="card-box-pic" src="../../images/logo.png" />
                 <div class="tips">
@@ -291,15 +291,14 @@
       <div slot="three">
         <ImgEditor v-if="imgConponent"></ImgEditor>
         <VidEditor v-if="vidConponent"></VidEditor>
-        <!-- <div v-if="startStage"><button type="primary">开始任务</button></div>
-        <div v-if="NotType" class="notIMG">暂未上传任务文件</div> -->
+        <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
       </div>
-      <div class="edit" slot="two">
-        <div v-show="status == 1">
+       <div slot="two">
+        <!-- <div v-show="status == 1">
           <input class="message" type="text" v-model="feedback" placeholder="输入您要反馈的内容" />
           <div class="change">需修改</div>
           <div class="success">通过</div>
-        </div>
+        </div> -->
         <div v-show="status == 2" style="margin: 20px 0 0 20px;">
           <ul class="list">
             <li>反馈内容</li>
@@ -340,7 +339,7 @@
             <li>今天/3天前</li>
           </ul>
         </div>
-      </div>
+      </div> 
     </base-model>
   </div>
 </template>
@@ -348,14 +347,16 @@
 <script>
 var qs = require('querystring');
 import baseModel from '../main-components/model/baseModel';
-import mySort from '../main-components/sort'
+import mySort from '../main-components/sort';
 import ImgEditor from '../project/components/imgEditor.vue';
 import VidEditor from '../project/components/vedioEditor.vue'
 import { mapGetters } from 'vuex'
 export default {
   components: {
     mySort,
-    baseModel
+    baseModel,
+    ImgEditor,
+    VidEditor
   },
   data() {
     return {
@@ -380,8 +381,10 @@ export default {
       thirdData: [],
       fourthData: [],
       handleRender: false,
-      imgConponent:false,
-      vidConponent:false,
+      imgConponent: false,
+      vidConponent: false,
+      NotType: false,
+      orderBy: 'desc',
       cityList: [
         {
           value: 'New York',
@@ -430,6 +433,7 @@ export default {
     })
   },
   created() {
+    console.log(this.$children[0],this.$children[1]) 
     this.fetchData();
     this.fetchNum(1);
     this.fetchNum(2);
@@ -473,7 +477,8 @@ export default {
         this.sortStatus = 'inside_audit_time';
         this.page = 1;
       } else if (val == 2) {
-        this.sortStatus = 'client_audit_time';
+        this.sortStatus = 'expect_end_time';
+        this.orderBy = 'asc'
         this.page = 1;
       }
       this.fetchData()
@@ -527,7 +532,7 @@ export default {
       let data = {
         status: str + ''
       }
-      this.$axios.post('/task/task/stage-page', qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
         .then(res => res.data)
         .then(res => {
           if (res.err_code == 0) {
@@ -549,15 +554,24 @@ export default {
     fetchData() {
       this.searchInput = '';
       this.$Loading.start();
+      if(this.status == '1') {
+        this.sortStatus = 'create_time';
+      } else if(this.status == '2') {
+        this.sortStatus = 'inside_audit_time';
+      } else if(this.status == '3') {
+        this.sortStatus = 'inside_audit_time';
+      } else if(this.status == '4') {
+        this.sortStatus = 'client_audit_time';
+      }
       let data = {
         status: this.status,
         search: this.searchInput,
         order: this.sortStatus,
         tasktype_id: this.selTaskType,
-        page: this.page
-        // order_by: 'desc'
+        page: this.page,
+        order_by: this.orderBy
       }
-      this.$axios.post('/task/task/stage-page', qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
         .then(res => res.data)
         .then(res => {
           if (res.err_code == 0) {
@@ -569,11 +583,12 @@ export default {
               }
               this.searchInput = ''
             } else if (this.status == '2') {
-              res.data.forEach((item) => {
-                this.secondData.push(item)
-              });
+              // res.data.forEach((item) => {
+              //   this.secondData.push(item)
+              // });
               if(this.page == 1) {
                 this.secondData = res.data
+                // console.log(this.secondData)
               } else{
                 this.secondData.push.apply(this.secondData,res.data);
               }
@@ -631,7 +646,6 @@ export default {
     },
     closeTabmodal() {
       this.isTabModal = false;
-      localStorage.display = 'none'
       // this.taskType = '';
       // this.fetchData();
     },
@@ -641,12 +655,39 @@ export default {
      * 阶段  非必传
      */
     fetchFileData(stageId,type,file,taskId) {
+      sessionStorage.TaskID=taskId;
+      sessionStorage.FileURl=file;
+      if(this.status == '1') {
+        sessionStorage.AllowEdit='Allow';
+      } else {
+        sessionStorage.AllowEdit='Other';
+      }
+      // console.log(sessionStorage.FileURl)
+      // 判断文件类型进行组件显示
+      if(type=='image'){
+        this.imgConponent=true;
+        this.vidConponent=false;
+        this.NotType=false;
+      }else if(type=='video'){
+        this.vidConponent=true;
+        this.imgConponent=false;
+        this.NotType=false;
+      }else if(type==undefined){
+        this.vidConponent=false;
+        this.imgConponent=false;
+        this.NotType=false;
+      }else if(type=='NotType'){
+        this.vidConponent=false;
+        this.imgConponent=false;
+        this.NotType=true;
+      }
+
       this.$Loading.start();
       this.boxHeight = 0;
       let data = {
         id: stageId
       }
-      this.$axios.post('/task/task/stage-info', qs.stringify(data))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-info', qs.stringify(data))
         .then(res => res.data)
         .then(res => {
           this.isTabModal = true;
@@ -701,7 +742,7 @@ export default {
           tasktype_id: this.taskType,
           page: this.page++
         }
-        this.$axios.post('/task/task/stage-page', qs.stringify(data))
+        this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
           .then(res => res.data)
           .then(res => {
             if (res.err_code == 0) {
@@ -750,7 +791,7 @@ export default {
         //     tasktype_id: this.taskType,
         //     page: this.page++
         //   }
-        //   this.$axios.post('/task/task/stage-page', qs.stringify(data))
+        //   this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
         //     .then(res => res.data)
         //     .then(res => {
         //       if (res.err_code == 0) {

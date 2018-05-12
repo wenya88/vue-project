@@ -67,5 +67,5 @@ export default {
 };
 </script>
 <style scoped>
-@import "../../style/taskModal.css";
+@import "../style/taskModal.css";
 </style>

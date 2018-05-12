@@ -142,8 +142,8 @@
               <Col span="16">
               <!-- <three-dmodel></three-dmodel> -->
               <div class="edit">
-                <slot name="two"></slot>
                 <slot name="three"></slot>
+                <slot name="two"></slot>
               </div>
               </Col>
             </Row>

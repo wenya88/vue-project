@@ -1,8 +1,6 @@
 <template>
   <div>
-
     <Tree :data="kNodes" :render="renderContent"></Tree>
-    <!-- @on-select-change="onChange" -->
   </div>
 </template>
 <script>
@@ -22,7 +20,6 @@ export default {
         size: "small"
       },
       calssType: []
-      //category_ids : [],
     };
   },
   mounted() {
@@ -39,6 +36,7 @@ export default {
         }
       );
     },
+
     //遍历列表分类数据
     ListEach() {
       let fiC = this;
@@ -51,9 +49,6 @@ export default {
           let getData = res.data.data;
           let item = [];
           getData.forEach(req => {
-            // req.tasktype.forEach(catgor => {
-            //   console.log(catgor);
-            // });
             let obj = {
               expand: true,
               render: (h, { root, node, data }) => {
@@ -62,21 +57,35 @@ export default {
                   {
                     style: {
                       display: "inline-block",
-                      width: "100%"
+                      width: "100%",
+                      cursor: "pointer"
+                    },
+                    on: {
+                      click: () => {
+                        this.targriClass(root, node, data);
+                      }
                     }
                   },
                   [
-                    h("span", [
-                      h("Icon", {
-                        props: {
-                          type: "ios-folder-outline"
-                        },
+                    h(
+                      "span",
+                      {
                         style: {
-                          marginRight: "8px"
+                          background: data.actClass
                         }
-                      }),
-                      h("span", data.title)
-                    ]),
+                      },
+                      [
+                        h("Icon", {
+                          props: {
+                            type: "ios-folder-outline"
+                          },
+                          style: {
+                            marginRight: "8px"
+                          }
+                        }),
+                        h("span", data.title)
+                      ]
+                    ),
                     h(
                       "span",
                       {
@@ -110,19 +119,6 @@ export default {
                             }
                           }
                         })
-                        // h("Button", {
-                        //   props: Object.assign({}, this.buttonProps, {
-                        //     icon: "trash-b"
-                        //   }),
-                        //   style: {
-                        //     width: "40px"
-                        //   },
-                        //   on: {
-                        //     click: () => {
-                        //       this.addClassTask(data);
-                        //     }
-                        //   }
-                        // })
                       ]
                     )
                   ]
@@ -133,7 +129,6 @@ export default {
             obj.title = req.name;
             obj.pId = req.cate_id;
             obj.id = req.id;
-            //this.category_ids[obj.pId] = obj.pId;
             if (req.tasktype != undefined && req.tasktype.length > 0) {
               obj.id = req.id;
               obj.children = fiC.eachLxinfo(req.tasktype);
@@ -144,69 +139,41 @@ export default {
         }
       );
     },
-    //点击树节点时触发
-    onChange(data) {
-      console.log(data);
-      if (!data.id) {
-        let clicktype = {
-          isInit: true,
-          id: data.id,
-          category_id: data.category_id
-        };
-        this.$emit("getListId", clicktype);
-      } else {
-        let _this = this;
-        // this.calssType.forEach(tre => {
-        //   _this.treData = tre;
-        // });
-        let clicktype = {
-          isInit: false,
-          id: data.id,
-          category_id: data.category_id,
-          liName: data.title
-        };
-        //if ((id, liName)) {
-        _this.$emit("getListId", clicktype);
-        //}
-      }
-    },
     renderContent(h, { root, node, data }) {
       return h(
         "span",
         {
           style: {
             display: "inline-block",
-            width: "100%"
+            width: "100%",
+            cursor: "pointer"
+          },
+          on: {
+            click: () => {
+              this.targriClass(root, node, data);
+            }
           }
         },
         [
-          h("span", [
-            h("Icon", {
-              props: {
-                type: "ios-paper-outline"
-              },
+          h(
+            "span",
+            {
               style: {
-                marginRight: "8px"
+                background: data.actClass
               }
-            }),
-            h("span", data.title),
-            h("div", {
-              style: {
-                width: "200px",
-                border: "1px solid #fff",
-                display: "inline-block",
-                position: "absolute",
-                left: "0",
-                height: "20px",
-                cursor: "pointer"
-              },
-              on: {
-                click: () => {
-                  this.onChange(data);
+            },
+            [
+              h("Icon", {
+                props: {
+                  type: "ios-paper-outline"
+                },
+                style: {
+                  marginRight: "8px"
                 }
-              }
-            })
-          ]),
+              }),
+              h("span", data.title)
+            ]
+          ),
           h(
             "span",
             {
@@ -241,8 +208,6 @@ export default {
         obj.title = req.tasktype_name;
         obj.id = req.id;
         obj.category_id = req.category_id;
-        //console.log(obj.category_id);
-        //this.category_id = req.category_id;
         im.push(obj);
       });
       return im;
@@ -254,25 +219,21 @@ export default {
         title: "父节点",
         expand: true
       });
-      // let nodes = data.children;
-      // console.log(nodes.length - 1);
-      // if (nodes.length > 0) {
-      //   $(this).css("color", "red");
-      // }
-      // return false;
       this.$set(data, "children", children);
       let Clsobj = {};
       Clsobj.name = "父节点";
       Clsobj.company_id = 1;
       this.$axios
-        .post("/task/task-type/cate-add", qs.stringify(Clsobj))
+        .post(
+          this.GLOBAL.baseRouter + "task/task-type/cate-add",
+          qs.stringify(Clsobj)
+        )
         .then(r => {
           console.log(r);
         });
     },
     //增加子节点
     addClassTask(data) {
-      console.log(data);
       const children = data.children || [];
       children.push({
         title: "子节点",
@@ -280,15 +241,37 @@ export default {
         category_id: data.pId
       });
       this.$set(data, "children", children);
-      // let Clsobj = {};
-      // Clsobj.name = "子节点";
-      // Clsobj.company_id = 1;
-      // this.$axios
-      //   .post("/task/task-type/add", qs.stringify(Clsobj))
-      //   .then(r => {
-      //     console.log(r);
-      //   });
     },
+    //点击左边列表增加标识
+    targriClass(root, node, data) {
+      root.forEach(r => {
+        this.$set(r.node, "actClass", "#fff");
+      });
+      this.$set(data, "actClass", "#d5e8fc");
+      //向父组件传递数据
+      if (!data.id) {
+        let clicktype = {
+          isInit: true,
+          id: data.id,
+          category_id: data.category_id
+        };
+        this.$emit("getListId", clicktype);
+      } else {
+        let _this = this;
+        // this.calssType.forEach(tre => {
+        //   _this.treData = tre;
+        // });
+        let clicktype = {
+          isInit: false,
+          id: data.id,
+          category_id: data.category_id,
+          liName: data.title
+        };
+        _this.$emit("getListId", clicktype);
+      }
+    },
+
+    // onChange(data) {},
     removeClass(data) {
       let cIs = this;
       let removeData = data.pId;
@@ -320,6 +303,7 @@ export default {
   }
 };
 </script>
+
 
           
 

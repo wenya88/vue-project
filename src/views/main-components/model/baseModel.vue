@@ -85,6 +85,7 @@
                 </FormItem> -->
                 <FormItem label="文件要求">
                   <div>
+                    <div class="card-disable" :style="{ 'display': isDisabled ? 'block' : 'none' }"></div>
                     <Card :bordered="true" style="text-align: center">
                       <Row :gutter="16">
                         <Col span="8">
@@ -112,7 +113,7 @@
                   <div class="demo-upload-list" v-for="item in uploadList" :key="item.uploadList">
                     <template v-if="item.status === 'finished'">
                       <img :src="item.url">
-                      <div class="demo-upload-list-cover">
+                      <div class="demo-upload-list-cover" :style="{ 'display': isDisabled ? 'none' : 'block' }">
                         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                       </div>
                     </template>
@@ -120,7 +121,7 @@
                       <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                     </template>
                   </div>
-                  <Upload ref="upload" :show-upload-list="false" :default-file-list="defaultList" :on-success="handleSuccess" :format="['jpg','jpeg','png']" :max-size="2048" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="display: inline-block;width:80px;">
+                  <Upload ref="upload" :show-upload-list="false" :default-file-list="defaultList" :on-success="handleSuccess" :format="['jpg','jpeg','png']" :max-size="2048" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="display: inline-block;width:80px;" :style="{ 'display': isDisabled ? 'none' : 'block' }">
                     <div style="width: 80px;height:58px;line-height: 28px;">
                       <Icon type="camera" size="20"></Icon>
                       <p>可拖拽上传</p>
@@ -318,5 +319,12 @@ export default {
 @import "../../project/style/taskModal.css";
 .edit{
   margin-left: 20px;
+}
+.card-disable{
+    position: absolute;
+    width: 300px;
+    height: 150px;
+    background: rgba(243, 243, 243, .5);
+    z-index: 10;
 }
 </style>

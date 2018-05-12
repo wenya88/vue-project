@@ -2,6 +2,7 @@
 
 import Vue from 'vue'
 import Axios from '../request'
+import global from '../../components/Global'
 
 const state = {
   ndsSortList: [
@@ -86,7 +87,7 @@ const getters = {
 
 const actions = {
   fetchTaskList({commit, state}, data) {
-    Axios.post('/task/task-type/cate-list', data)
+    Axios.post(global.baseRouter+'task/task-type/cate-list', data)
       .then(response => response.data)
       .then(response => response.data)
       .then(response => {
@@ -94,7 +95,7 @@ const actions = {
       })
   },
   fetchSubProject({commit, state}, data) {
-    Axios.post('/task/project/child-list', data)
+    Axios.post(global.baseRouter+'task/project/child-list', data)
     .then(res => res.data)
     .then(res => res.data)
     .then(res => {

@@ -150,7 +150,7 @@
                 margin-left:8px;font-style:normal;
             }
             em{
-                float:right;font-style:normal;font-size:@fs14;
+                float:right;font-style:normal;font-size:@fs14;text-align:right;width:90px;display:inline-block;
             }
             b{
                 color:#e96900;  
@@ -158,12 +158,15 @@
             .beInI{
                 margin-left:2px;
             }
+            u{
+               text-decoration:none;
+            }
         }
         .upload{
-            background:@panelBg;padding:10px 6px;border-radius:4px;margin-top:8px;float:right;
+            background:@panelBg;padding:10px 2px;border-radius:4px;margin-top:8px;float:right;
         }
         .ShowUpLoad{
-            position:absolute;margin-left:-62px;margin-top:-5px;display:none;
+          display:none;margin-top:-5px;
         }
     }
     .theUpcom{
@@ -282,5 +285,5 @@
         clear:both;
     }
     .notIMG{
-        display:block;width:100%;text-align:center;font-size:@fs28;padding-top:35%;background:@panelBg;padding-bottom:50%;
+        display:block;width:100%;text-align:center;font-size:@fs28;padding-top:35%;background:@labelFontColor;padding-bottom:50%;color:@white;
     }

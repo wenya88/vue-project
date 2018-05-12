@@ -29,7 +29,7 @@
     methods:{
       getData(labelOption){
           let _this=this;
-          let url='/task/total/total-by-type&project_id='+this.projectID;
+          let url=this.GLOBAL.baseRouter+'/task/total/total-by-type&project_id='+this.projectID;
           _this.$axios.get(url).then(msg=>{
                 let Mdata=msg.data
                 if(Mdata.err_code==0){

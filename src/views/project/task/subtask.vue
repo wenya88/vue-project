@@ -26,8 +26,8 @@ import {
   deletetaskData,
   gettasklistData,
   gettasklistDetails
-} from "../../../config/env.js";
-import editSubmodal from "../components/task/modalTab/editSubmodal/editSubmodal";
+} from "@/config/env.js";
+import editSubmodal from "./editSubmodal";
 export default {
   components: { editSubmodal },
   props: {

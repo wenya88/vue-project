@@ -1,8 +1,8 @@
 <template>
     <div style="height:100%">
-        <h4>每日任务统计</h4>
-        <div class="taskTip"><span>任务数量：<b>120</b> </span><span>已完成：<b>120</b> </span><span>剩作：<b>0</b> </span><span>待审文件：<b>12</b></span></div>
+        <div class="taskTip"><span>任务数量：<b>{{data.all_task_num}}</b> </span><span>已完成：<b>{{data.complete_task_num}}</b> </span><span>剩作：<b>{{data.surplus_task_num}}</b> </span><span>待审文件：<b>{{data.wait_review}}</b></span></div>
         <div id="echartLine"></div>
+        <span v-show="flag">{{EcherDate}}</span>
     </div>
 </template>
 <style>
@@ -12,15 +12,56 @@
 </style>
 <script>
   export default{
+    data(){
+      return{
+         EchartData:[],
+         EcherName:[],
+         EcherDate:[],
+         flag:false,
+         data:[]
+      }
+    },
     mounted(){
+       this.getData();
        this.autoHeight(); 
        this.myCharts();
     },
     updated(){
+      this.myCharts();
     },
     methods:{
+      getData(){
+        let _this=this;
+        let projectID=sessionStorage.projectID
+        let url=this.GLOBAL.baseRouter+"/task/total/task-progress-chart&project_id="+projectID;
+        _this.$axios.get(url).then(msg=>{
+            let MsgData=msg.data.data;
+            _this.data=MsgData;
+            _this.EcherDate=MsgData.data;
+            let EchartData=MsgData.series.map(val=>{
+                  return{
+                      name:val.name,
+                      type:'line',
+                      data:val.data,
+                      itemStyle : {normal:{
+                                lineStyle:{
+                                  type:'dotted'
+                                },
+                                borderWidth:4
+                              }
+                      }
+                  }
+            })
+           _this.EchartData=EchartData;
+
+          MsgData.series.forEach(val => {
+              _this.EcherName.push({"name":val.name})
+          });
+
+        })
+      },
       autoHeight(){
-          let getH=document.body.clientHeight-200;
+          let getH=document.body.clientHeight-420;
           document.getElementById("echartLine").style.height=getH+"px";
       },
       myCharts(){
@@ -42,29 +83,12 @@
           color:['#828282','#18bfa4','#ff9900'],
           legend: {
             x:'right',
-            data:[
-              {	name:'预计线',
-                textStyle:{
-                  color:'#333'
-                }
-
-              },
-              {	name:'实际线',
-                textStyle:{
-                  color:'#18bfa4'
-                }
-              },
-              {	name:'质量沟通',
-                textStyle:{
-                  color:'#ff9900'
-                }
-              }
-            ],
+            data:this.EcherName,
 
           },
           grid: {
-            left: '0px',
-            right: '30px',
+            left: '20px',
+            right: '40px',
             bottom: '50px',
             top:'30px',
             containLabel: true
@@ -92,7 +116,7 @@
                 color:'#18bfa4'
               }
             },
-            data: ['2018-3-1','2018-3-2','2018-3-3','2018-3-4','2018-3-5','2018-3-6','2018-3-7','2018-3-8','2018-3-9','2018-3-10','2018-3-11']
+            data: this.EcherDate
           },
           yAxis: {
             type: 'value',
@@ -115,54 +139,12 @@
             height: 30,
             show: true,
             realtime: true,
-            start: 10,
-            end: 80,
+            start: 0,
+            end:100,
             fillerColor:"rgba(190,221,216,0.8)",
 
           }],
-          series: [
-            {
-              name:'预计线',
-              type:'line',
-              data:[100, 90, 80, 70, 60, 50, 40,30,20,10,0],
-              itemStyle : {normal:{
-                lineStyle:{
-                  color:'#828282',
-                  type:'dotted'
-                },
-                borderWidth:4
-              }
-
-              }
-            },
-            {
-              name:'实际线',
-              type:'line',
-              data:[100, 95, 86, 74, 65, 52, 42,32,25,12,0],
-              itemStyle : {normal:{
-                lineStyle:{
-                  color:'#18bfa4',
-                  type:'dotted'
-                },
-                borderWidth:4
-              }
-              }
-            },
-            {
-              name:'质量沟通',
-              type:'line',
-              data:[100, 91, 82, 70, 68, 55, 49,39,20,14,0],
-              itemStyle : {normal:{
-                lineStyle:{
-                  color:'#ff9900',
-                  type:'dotted'
-                },
-                borderWidth:4
-              }
-              }
-            },
-
-          ]
+          series:this.EchartData
         });
       }
     }

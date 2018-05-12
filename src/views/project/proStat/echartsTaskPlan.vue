@@ -30,7 +30,7 @@
     methods:{
       dataGet(){
           let _this=this;
-          let url="/task/total/total-status-by-all&project_id="+this.projectID;
+          let url=this.GLOBAL.baseRouter+"/task/total/total-status-by-all&project_id="+this.projectID;
           _this.$axios.get(url).then(msg=>{
               let msgData=msg.data;
               if(msgData.err_code==0){

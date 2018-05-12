@@ -1,34 +1,39 @@
-<!-- 新增任务modal-->
+<!-- 子任务列表“编辑”modal-->
 <template>
   <transition name="modal-fade">
     <div class="modal-backdrop">
-      <div class="modal smallModal">
+      <div class="modal">
         <div class="modal-header">
-          <slot name="header">
-            <div>
-              <h2 style="color: #2b85e4;">基本管理</h2>
+          <div class=""></div>
+          <Row :gutter="100">
+            <Col span="1">
+            <Icon type="ios-star-outline" style="color:#666;cursor: pointer;margin-left:20px;" size="23"></Icon>
+            </Col>
+            <Col span="1">
+            <div @click="delSubdeile">
+              <Icon type="trash-b" size="23" style="color:red;cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
             </div>
+            </Col>
+            <Col span="2">
             <button type="button" class="btn-close" @click="close">x</button>
-          </slot>
+            </Col>
+          </Row>
         </div>
         <div class="modal-body">
-          <div>
-            <Row>
-              <Col span="24">
+          <Tabs type="card">
+            <TabPane label="基本管理">
               <Form label-position="left" :label-width="80">
                 <FormItem label="任务名称">
-                  <Input v-model="addData.name"></Input>
+                  <Input v-model="editSubData.name"></Input>
                 </FormItem>
                 <FormItem label="开始时间">
-                  <DatePicker :value="addData.expect_start_time" @on-change="handleChange" format="yyyy-MM-dd" type="date" :options="disableTime" placeholder="选择时间" style="width: 100%"></DatePicker>
-
+                  <DatePicker :value="editSubData.expect_start_date" @on-change="handleChange" format="yyyy-MM-dd" type="date" :options="disableTime" placeholder="选择时间" style="width: 100%"></DatePicker>
                 </FormItem>
                 <FormItem label="结束时间">
-                  <DatePicker :value="addData.expect_end_time" @on-change="handleChange2" format="yyyy-MM-dd" type="date" :options="disableTime2" placeholder="选择时间" style="width: 100%"></DatePicker>
+                  <DatePicker :value="editSubData.expect_end_date" @on-change="handleChange2" format="yyyy-MM-dd" type="date" :options="disableTime2" placeholder="选择时间" style="width: 100%"></DatePicker>
                 </FormItem>
-
                 <FormItem label="子项目">
-                  <Select @on-change='setChild'>
+                  <Select @on-change='setChild' v-model="editSubData.project_child">
                     <Option v-for="(item,childName) in childList" :value="item.child_id" :key="item.child_id">{{item.name}}</Option>
                   </Select>
                 </FormItem>
@@ -56,7 +61,7 @@
                             <div v-for='(itemCon,index) in tabContents' :key="itemCon.tabContents" v-show="index == num">
                               <Card dis-hover>
                                 <CheckboxGroup v-model="fruit">
-                                  <Checkbox :label="i" v-for='(i,d) in itemCon' :key="i.itemCon"></Checkbox>
+                                  <Checkbox :label="i,d" v-for='(i,d) in itemCon' :key="i.itemCon"></Checkbox>
                                 </CheckboxGroup>
                               </Card>
                             </div>
@@ -68,8 +73,8 @@
                   </Dropdown>
                 </FormItem>
                 <FormItem label="任务类型">
-                  <Select @on-change="setClasst">
-                    <Option v-for="(item,typeClass) in setypeClass" :value="item.id" :key="item.id">{{item.tasktype_name}}</Option>
+                  <Select @on-change="setClasst" v-model="editSubData.tasktype_name">
+                    <Option v-for="(item,typeClass) in setypeClass" :value="item.tasktype_name" :key="item.tasktype_name">{{item.tasktype_name}}</Option>
                   </Select>
                 </FormItem>
                 <FormItem label="文件要求">
@@ -107,6 +112,8 @@
                     <template v-if="item.status === 'finished'">
                       <img :src="item.url">
                       <div class="demo-upload-list-cover">
+                        <!--<Icon type="ios-eye-outline"-->
+                        <!--@click.native="handleView(item.name)"></Icon>-->
                         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                       </div>
                     </template>
@@ -129,18 +136,18 @@
                   <div v-for="item in fileName" :key="item.url">{{item.url}}</div>
                 </FormItem>
                 <FormItem label="要求说明">
-                  <Input v-model="addData.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
+                  <Input v-model="editSubData.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="补充说明"></Input>
                 </FormItem>
               </Form>
-              </Col>
-            </Row>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <slot name="footer">
-            <Button @click="close" class="btn-green">取消</Button>
-            <Button type="primary" @click="addmodal" class="btn-green">新增</Button>
-          </slot>
+              <div class="modal-footer">
+                <slot name="footer">
+                  <Button @click="close" class="btn-green">取消</Button>
+                  <Button type="primary" @click="subEdit" class="btn-green">保存修改</Button>
+                </slot>
+              </div>
+            </TabPane>
+            <TabPane label="日志"></TabPane>
+          </Tabs>
         </div>
       </div>
     </div>
@@ -149,18 +156,20 @@
 
 <script>
 var qs = require("querystring");
-import { cateList, projectList, projDatali } from "../../../../config/env.js";
+import {
+  projectList,
+  projDatali,
+  cateList,
+  updatetaskData,
+  gettasklistData,
+  deletetaskData
+} from "@/config/env.js";
 export default {
-  props: ["addData"],
+  props: ["editSubData"],
   components: {},
+  // props: ['show'],
   data() {
     return {
-      handleUrl: [],
-      fileUrl: [],
-      fileName: [],
-      childList: [],
-      setypeClass: [],
-      valueTime: "",
       disableTime: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000;
@@ -185,9 +194,40 @@ export default {
       //上传图片
       defaultList: [],
       uploadList: [],
+      setypeClass: [],
+      fileName: [],
+      childList: [],
+      handleUrl: [],
+      fileUrl: [],
       formLeft: {},
+      project_child: "",
       dataList: []
     };
+  },
+  created() {
+    let str;
+    let arr = [];
+    let arr2 = [];
+    let image = this.editSubData.image;
+    let file = this.editSubData.file;
+    if (image) {
+      image.forEach(im => {
+        arr.push({
+          url: im
+        });
+      });
+      this.defaultList = arr;
+      this.handleUrl = image;
+    }
+    if (file) {
+      file.forEach(fl => {
+        arr2.push({
+          url: fl
+        });
+      });
+      this.fileName = arr2;
+      this.fileUrl = file;
+    }
   },
   mounted() {
     //调用图片上传功能
@@ -196,46 +236,64 @@ export default {
     this.getTaskClass();
   },
   methods: {
-    handleChange(date) {
-      this.addData.expect_start_time = date;
-    },
-    handleChange2(date) {
-      this.addData.expect_end_time = date;
-    },
-    close: function() {
-      this.$emit("close");
-    },
-    //新增任务数据
-    addmodal: function() {
+    subEdit: function() {
       let cIs = this;
       let dateForm = {};
-      dateForm.father = cIs.addData.father ? cIs.addData.father : 0;
-      dateForm.name = cIs.addData.name;
-      dateForm.project = cIs.addData.project_id;
-      dateForm.project_child = cIs.addData.project_child;
-      dateForm.tasktype_id = cIs.addData.tasktype_id
-        ? cIs.addData.tasktype_id
+      dateForm.id = cIs.editSubData.id;
+      dateForm.father = cIs.editSubData.father ? cIs.editSubData.father : 0;
+      dateForm.name = cIs.editSubData.name;
+      dateForm.project = cIs.editSubData.project_id;
+      dateForm.project_child = cIs.editSubData.project_child;
+      dateForm.tasktype_id = cIs.editSubData.tasktype_id
+        ? cIs.editSubData.tasktype_id
         : 0;
-      dateForm.expect_start_time = cIs.addData.expect_start_time;
-      dateForm.expect_end_time = cIs.addData.expect_end_time;
-      dateForm.description = cIs.addData.description;
+      dateForm.expect_start_time = cIs.editSubData.expect_start_time;
+      dateForm.expect_end_time = cIs.editSubData.expect_end_time;
+      dateForm.description = cIs.editSubData.description;
       dateForm.image = JSON.stringify(cIs.handleUrl);
       dateForm.file = JSON.stringify(cIs.fileUrl)
         ? JSON.stringify(cIs.fileName)
         : 0;
+      console.log(dateForm.file);
       cIs.$axios
-        .post("/task/task/add", qs.stringify(dateForm))
+        .post("/task/task/update", qs.stringify(dateForm))
         .then(res => {
           if (res.data.err_code === 0) {
             cIs.$emit("close");
-            this.$Message.success("成功新增一条任务！");
+            this.$Message.success("编辑任务成功！");
           } else {
-            this.$Message.error("新增任务失败，请重试！");
+            this.$Message.error("编辑任任务失败，请重试！");
           }
         })
         .catch(error => {
-          this.$Message.error("新增任务失败，请重试！");
+          this.$Message.error("编辑任务失败，请重试！");
         });
+    },
+    handleChange(date) {
+      this.editSubData.expect_start_time = date;
+      console.log(date);
+    },
+    handleChange2(date) {
+      this.editSubData.expect_end_time = date;
+      console.log(date);
+    },
+    close: function() {
+      this.$emit("close");
+    },
+    //刪除子任务
+    delSubdeile() {
+      let cIs = this;
+      let removeSubData = this.editSubData.id;
+      this.get(
+        deletetaskData,
+        {
+          id: removeSubData
+        },
+        () => {
+          this.$emit("close");
+          cIs.$Message.success("刪除子任务成功！");
+        }
+      );
     },
     //参与人滚动条
     handleReachBottom() {
@@ -266,12 +324,12 @@ export default {
       const fileList = this.$refs.upload.fileList;
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
-    // 上传图片成功返回数据
+    // 上传成功返回数据
     handleSuccess(res, file) {
       file.url = res.cert.url;
       this.handleUrl.push(file.url);
     },
-    //上传附件成功返回数据
+    // 上传附件成功后返回
     fileSuccess(res, file) {
       file.url = res.affix.url;
       file.name = res.affix.name;
@@ -289,7 +347,7 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: "文件大小超过限制",
-        desc: "文件  " + file.name + " 太大了，不能超过2兆。"
+        desc: "文件  " + file.name + " 太大了，不超过2M。"
       });
     },
     //判断图片最多上传张数
@@ -328,6 +386,7 @@ export default {
         cHd.getChildId();
       });
     },
+
     //获取子项目id
     getChildId() {
       let Hid = this;
@@ -339,15 +398,13 @@ export default {
         res => {
           //获取子项目列表
           Hid.childList = res.data.child;
-          //获取项目id
-          Hid.addData.project_id = res.data.id;
         }
       );
     },
     //获取任务类型
     getTaskClass() {
       let clT = this;
-      clT.get(
+      this.get(
         cateList,
         {
           company_id: 1
@@ -355,27 +412,27 @@ export default {
         res => {
           clT.formLeft = res.data.data;
           for (let i = 0; i < clT.formLeft.length; i++) {
-            clT.setypeClass = clT.formLeft[i].tasktype;
+            this.setypeClass = clT.formLeft[i].tasktype;
           }
         }
       );
     },
-    //赋值子项目
-    setChild(id) {
-      this.addData.project_child = id;
+    setChild(pName) {
+      this.editSubData.project_child = pName;
     },
-    //赋值任务类型
-    setClasst(id) {
-      this.addData.tasktype_id = id;
+    setClasst(TypeName) {
+      this.editSubData.tasktype_name = TypeName;
     }
   }
 };
 </script>
-
 <style scoped>
-@import "../../style/taskModal.css";
-
-.smallModal {
-  width: 700px;
+@import "../style/taskModal.css";
+.modal {
+  width: 800px;
+}
+.btn-close {
+  position: absolute;
+  margin-top: -15px !important;
 }
 </style>

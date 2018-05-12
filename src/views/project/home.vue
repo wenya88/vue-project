@@ -106,9 +106,8 @@
     methods:{
       get(){
         let _this=this  
-        let url = '/task/task/stage-page';
-        let params = {};
-        _this.$http.get(url, params).then(function (data) {
+        let url =this.GLOBAL.baseRouter + 'task/task/stage-page';
+        _this.$axios.get(url).then(function (data) {
           _this.dataList=data.data.data.slice(0,8);
         }, function (error) {
           console.log(error)

@@ -1,6 +1,7 @@
 @import './video-js.css';
+@import './common.less';
 .videoM{
-    width: 740px;height: 400px;margin-left: auto;margin-right: auto;position:absolute;
+   height: 400px;margin-left: auto;margin-right: auto;position:absolute;
     .controlListRow{
         position:absolute;z-index:999;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;
     }
@@ -86,4 +87,33 @@
 }
 .clear{
     clear:both;
+}
+.VideofeedbackInfo{
+    width:100%;display:block;background:#e9e9e9;font-size:@fs14;padding:@padding;
+    span{
+        width:32%;display:inline-block;float:left;
+        p{
+            background:#22d7bb;color:@white;display:inline-block;margin-bottom:6px;
+        }
+    }
+}
+.VideoAllowEdit{
+    background:@panelBg;padding:@padding;margin-top:5px;width:100%;display:block;
+    .EditInput{
+        width:74%;display:inline-block;
+        input{
+            border:0px;border-bottom:1px solid #ddd;padding:5px 10px;width:100%;background:none;line-height:30px;font-size:@fs14;
+        }
+    }
+    .EditSub{
+        width:10%;margin-left:3%;
+        button{
+            border-radius:100%;background:#ff9900;color:#fff;line-height:44px;padding:0px 10px;border:0px;font-size:@fs14;cursor:pointer;
+        }
+        .subPass{
+            &:extend(.VideoAllowEdit .EditSub button);
+            background:#66cc00;
+        }
+    }
+    
 }

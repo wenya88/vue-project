@@ -16,22 +16,23 @@
                 <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
             </template>
         </div>
+        <!-- :format="['jpg','jpeg','png','gif']"
+        :max-size="2048" -->
         <Upload
             ref="upload"
-            :show-upload-list="false"
+            :show-upload-list="true"
             :default-file-list="defaultList"
             :on-success="handleSuccess"
-            :format="['jpg','jpeg','png','gif']"
-            :max-size="2048"
+            
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             multiple
             type="drag"
             action="/file/file/file-upload"
-            style="display: inline-block;width:58px;">
-            <div style="width: 58px;padding:10px 0px">
-                <Icon type="android-upload" size="30"></Icon>
+            >
+            <div style="padding:10px 0px">
+                <Icon type="ios-cloud-upload-outline" size="30"></Icon>&nbsp;&nbsp;拖入/点击上传
             </div>
         </Upload>
     </div>
@@ -96,7 +97,7 @@
 </script>
 <style>
     .demo-upload-list{
-        display: inline-block;
+        display:none;
         width: 60px;
         height: 60px;
         text-align: center;
