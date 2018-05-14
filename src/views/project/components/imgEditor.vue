@@ -17,7 +17,7 @@
                       item.task_id,
                       item.file.fid
                   )" :class="{showBg:index==liIndex}"> 
-                  <span>{{index+1}}<br/>{{item.stage}}</span>
+                  <span>{{index+1}}<br/>{{item.stage_name}}</span>
                   <em>
                     {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
                     {{item.status | filtStat}}
@@ -26,7 +26,9 @@
               </li>
             </ul>
         </div>
-        <div class="imgFocus" id="signx"><img :src="url" /></div>
+        <!-- 加载动画 -->
+        <OnLoad id="onload"></OnLoad>
+        <div class="imgFocus" id="signx"><img :src="url" id="ImgOnlod"/></div>
         <!-- 标注提交 -->
         <div v-if="AllowEditRow" class="AllowEdit">
           <span class="EditInput">
@@ -50,9 +52,13 @@
     </div>
 </template>
 <script>
-  var qs = require('querystring')
+  var qs = require('querystring');
+  import OnLoad from './onLoad.vue';
   import {baseUrl} from '../../../config/env.js';
   export default {
+    components:{
+      OnLoad
+    },
     data () {
       return {
         data:[],
@@ -74,6 +80,7 @@
         liIndex:0,
       }
     },
+    
     filters:{
       filtStat(val){
             if(val==1){
@@ -91,11 +98,22 @@
             }
       }
     },
+    beforeMount(){
+     
+    },
     mounted(){
       this.url=sessionStorage.FileURl;
       this.get();
+      this.onLoad();
     },
     methods:{
+      onLoad(){
+          let el=document.getElementById("ImgOnlod")
+          el.onload=function(){
+              let el2=document.getElementById("onload");
+              el2.style.display="none"
+          }
+      },
       changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
          this.data=tag;

@@ -41,7 +41,7 @@
             <td class="w15"><span class="tag">{{item.tasktype_name}}</span></td>
             <td class="w55">{{item.name}}</td>
             <td class="w20"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
-            <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download"></Icon></td>
+            <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>
           </tr>
         </table>
       </div>
@@ -49,7 +49,7 @@
     </Row>
     <finish-model 
     :editData="formLeft" 
-    v-show="isTabModal" 
+    v-if="isTabModal" 
     @close="closeTabmodal" 
     :isDisabled="true"
     >

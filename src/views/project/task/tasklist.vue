@@ -22,8 +22,8 @@
 </template>
 <script>
 var qs = require("querystring");
-import sub from "./subtask.vue";
-import Icon from "iview/src/components/icon/icon";
+// import sub from "./subtask.vue";
+// import Icon from "iview/src/components/icon/icon";
 
 import excelModal from "./excelModal";
 import addformModal from "./addformModal";
@@ -39,8 +39,8 @@ export default {
   components: {
     excelModal,
     addformModal,
-    Icon,
-    "v-sub": sub
+    // Icon,
+    // "v-sub": sub
   },
   data() {
     return {

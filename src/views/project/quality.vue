@@ -272,7 +272,7 @@
         </div>
       </TabPane>
     </Tabs>
-    <base-model :editData="formLeft" v-show="isTabModal" @close="closeTabmodal" :isDisabled="true">
+    <base-model :editData="formLeft" v-if="isTabModal" @close="closeTabmodal" :isDisabled="true">
       <div slot="one">
         <FormItem label="子项目">
           <Select v-model="subpId" :disabled="true">
@@ -471,7 +471,7 @@ export default {
      */
     filterFTime(val) {
       if (val == 0) {
-        this.sortStatus = 'create_time';
+        this.sortStatus = 'stage_create_time';
         this.page = 1;
       } else if (val == 1) {
         this.sortStatus = 'inside_audit_time';
@@ -555,7 +555,7 @@ export default {
       this.searchInput = '';
       this.$Loading.start();
       if(this.status == '1') {
-        this.sortStatus = 'create_time';
+        this.sortStatus = 'stage_create_time';
       } else if(this.status == '2') {
         this.sortStatus = 'inside_audit_time';
       } else if(this.status == '3') {

@@ -264,6 +264,7 @@
       this.onLoad();
       this.get();
       this.taskGet();
+      this.awaitTaskGet();
       this.taskAccom();
     //   接收主文件
       this.$bus.on('MainFile',(val)=>{
@@ -471,11 +472,12 @@
     //   正在实施数据请求
       taskGet(){
           let _this=this;
-          let url=this.GLOBAL.baseRouter+'task/task/page&page='+_this.pageIndex;
+          let url=this.GLOBAL.baseRouter+'task/task/page';
           _this.$axios.get(url).then((msg)=>{
             // 获取总页数
               _this.maxPage=msg.data.page.count_page;
             // 获取数据
+              _this.dataUnderway=[];
               let MsgData=msg.data.data;
               MsgData.forEach(function(element) {
                 
@@ -488,12 +490,27 @@
                           element.stage_file.task_id=null
                       }
                       _this.dataUnderway.push(element);
-                  }else if(element.status==1){
+                  }
+              }, this);
+            _this.dataUnderway.sort((a,b)=>a.expect_end_time-b.expect_end_time);
+          },()=>{
+              alert("请求失败!")
+          })
+      },
+
+    //   等待开始任务
+      awaitTaskGet(){
+          let _this=this;
+          let url=this.GLOBAL.baseRouter+'task/task/page';
+          _this.$axios.get(url).then((msg)=>{
+            // 获取数据
+              let MsgData=msg.data.data;
+              MsgData.forEach(function(element) {
+                  if(element.status==1){
                       //待开始数据
                       _this.dataWait.push(element);
                   }
               }, this);
-            _this.dataUnderway.sort((a,b)=>a.expect_end_time-b.expect_end_time);
             _this.dataWait.sort((a,b)=>a.expect_start_time-b.expect_start_time)
           },()=>{
               alert("请求失败!")
@@ -599,8 +616,9 @@
                 };
                 _this.$axios.post(url,qs.stringify(Mparams)).then(function(data){
                 let CodeData=data.data;
-                console.log(CodeData)
+                // console.log(CodeData)
                 if(CodeData.err_code==0){
+                        _this.taskGet();
                         _this.$Message.info('提交成功');
                         _this.MainFlie=[];
                         _this.MinFile=[];

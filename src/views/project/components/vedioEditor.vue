@@ -17,7 +17,7 @@
                       item.task_id,
                       item.file.fid
                   )" :class="{showBg:index==liIndex}"> 
-                  <span>{{index+1}}<br/>{{item.stage}}</span>
+                  <span>{{index+1}}<br/>{{item.stage_name}}</span>
                   <em>
                     {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
                     {{item.status | filtStat}}

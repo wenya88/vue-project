@@ -202,12 +202,12 @@ export default {
             };
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.loginform.email);
                     // Cookies.set('password', this.form.password);
                     this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
+                            Cookies.set('user', this.loginform.email);
                             localStorage.token = res.token
                             axios.defaults.headers.common['token'] = res.token;
                             this.$router.push('/home/home')

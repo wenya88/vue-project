@@ -93,7 +93,9 @@ module.exports = {
             '@': resolve('../src'),
             'jquery': 'jquery',
             'jsencrypt': '@/js/jsencrypt.min.js',
-            'md5': '@/js/md5.min.js'
+            'md5': '@/js/md5.min.js',
+            'shim': '@/js/shim.min.js',
+            'xlsx': '@/js/xlsx.full.min.js',
         }
     }
 };

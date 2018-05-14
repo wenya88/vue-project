@@ -9,17 +9,42 @@ td.ivu-table-expanded-cell {
 .sub-header .ivu-table-header {
   display: none;
 }
+.subtask{
+  display:inline-block;
+  overflow:hidden;
+}
+.subtask-left{
+  width:262px;
+  float:left;
+  padding: 0 20px 0 0;
+}
+.subtask-right{
+  width:300px;
+  float:left;
+  padding: 0 0 0 20px;
+}
 </style>
 <template>
   <!-- 子任务列表父组件 -->
-  <div class="table_border">
-    <Content :style="{background: '#fff'}">
-      <edit-submodal :editSubData="subForm" v-if="isubListModal" @close="closeSubListmodal"></edit-submodal>
-      <div class="sub-header">
-        <Table :columns="subColumns" :data="row.child" size="small"></Table>
+    <div class="subtask">
+      <div class="subtask-left">
+        <Button type="text" @click="addSubTask" size="small">添加子任务</Button>
+        <Table 
+          :columns="subColumns" 
+          :data="subTaskListData" 
+          size="small" 
+          width='262'
+          highlight-row
+          ref="sublist"
+          @on-current-change="changeSubTask"
+        >
+        </Table>
       </div>
-    </Content>
-  </div>
+      <div class="subtask-right">
+        <Button type="text">删除子任务</Button>
+        <subtask ref="subtaskinfo"></subtask>
+      </div>
+    </div>
 </template>
 <script>
 import {
@@ -27,179 +52,88 @@ import {
   gettasklistData,
   gettasklistDetails
 } from "@/config/env.js";
+
 import editSubmodal from "./editSubmodal";
+import subtask from "./taskDetails"
+
 export default {
-  components: { editSubmodal },
+  components: { 
+    editSubmodal,
+    subtask
+    },
   props: {
-    row: Object
+    //subTaskList: Object
   },
   data() {
     return {
-      subForm: {},
-      //弹出层
-      isubListModal: false,
-      subColumns: [
+      fatherTaskData:{},
+      subTasks:[],//子任务内容
+      subTaskListData:[],//子任务列表
+      subColumns: [//子任务标题
         {
-          width: 25,
-          align: "center"
-        },
-        {
-          title: "任务",
+          title: "任务名",
           key: "name",
-          align: "center",
-          ellipsis: true
+          align: "left",
+          ellipsis: true,
+          width: 120
         },
         {
           title: "状态",
-          key: "status_text",
-          sortable: true,
-          align: "center",
-          ellipsis: true,
-          width: 100
-        },
-        {
-          title: "子项目",
-          key: "project_child_name",
-          align: "center",
-          ellipsis: true
-        },
-        {
-          title: "参与人",
-          align: "center",
-          key: "run_uname",
-          ellipsis: true
-        },
-        {
-          title: "类型",
-          key: "tasktype_name",
-          align: "center",
-          ellipsis: true,
-          width: 78
-        },
-        {
-          title: "实施阶段",
-          align: "center",
-          width: 400,
-          ellipsis: true,
-          render: function(h) {
-            return h(
-              "Steps",
-              {
-                props: {
-                  current: 0,
-                  status: "wait",
-                  size: "small",
-                  direction: "horizontal"
-                }
-              },
-              [
-                h("Step", {
-                  props: {
-                    title: "test1"
-                  }
-                }),
-                h("Step", {
-                  props: {
-                    title: "test2"
-                  }
-                }),
-                h("Step", {
-                  props: {
-                    title: "test3"
-                  }
-                }),
-                h("Step", {
-                  props: {
-                    title: "test4"
-                  }
-                }),
-                h("Step", {
-                  props: {
-                    title: "test5"
-                  }
-                })
-              ]
-            );
-          }
-        },
-        {
-          title: "任务文件",
-          align: "center",
-          ellipsis: true,
-          key: "file_id"
-        },
-        {
-          title: "更新时间",
-          align: "center",
-          key: "expect_end_date",
-          ellipsis: true
-        },
-        {
-          title: "已用时",
-          align: "center",
-          ellipsis: true
-        },
-        {
-          title: "剩余",
-          align: "center",
-          ellipsis: true
+          key: "status",
+          align: "right",
+          width: 80
         },
         {
           title: "操作",
-          align: "center",
-          width: 178,
-          ellipsis: true,
+          key: "add_subtask",
+          align: "right",
+          width: 60,
           render: (h, params) => {
             return h("div", [
               h(
                 "Button",
                 {
                   props: {
-                    type: "primary",
+                    type: "text",
                     size: "small"
                   },
                   style: {
-                    marginRight: "5px"
+                    marginLeft: "-8px"
                   },
                   on: {
                     click: () => {
-                      let cIs = this;
-                      cIs.showSubListmodal(params.row);
-                    }
-                  }
-                },
-                "编辑"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "error",
-                    size: "small",
-                    confirm: true,
-                    title: "您确定要删除这条数据吗?",
-                    transfer: true
-                  },
-                  on: {
-                    click: () => {
-                      let cIs = this;
-                      cIs.removetaskSub(params.row);
+                      this.delSubtask(params.index);
                     }
                   }
                 },
                 "删除"
-              )
+              ),
             ]);
           }
-        }
-      ]
+        },
+      ],
+      //
+      localLastSubList:{},
+      localLastSubTask:{},
+      init_new:false,//是否首次增加
     };
   },
   created() {
-    this.forEachSubData();
-    this.getforechDailt();
+    // this.forEachSubData();
+    // this.getforechDailt();
   },
   methods: {
+    //初始化
+    initSubTaskListData(Data)
+    {
+        this.fatherTaskData = Data;
+        this.subTaskListData = Data.child;
+        this.subTasks=[];
+        
+        this.subTaskListData=[];
+        this.localLastSubList={};
+        this.localLastSubTask={};
+    },
     //关闭modal
     closeSubListmodal() {
       this.isubListModal = false;
@@ -212,95 +146,176 @@ export default {
      * 请求数据
      */
     get(url, params, call) {
-      /*获取列表信息*/
-      this.$http.get(url, { params: params }).then(
-        function(res) {
-          call(res);
-        },
-        function(error) {}
-      );
+      // /*获取列表信息*/
+      // this.$http.get(url, { params: params }).then(
+      //   function(res) {
+      //     call(res);
+      //   },
+      //   function(error) {}
+      // );
+    },
+    //添加子任务
+    addSubTask()
+    {
+      if(this.init_new)
+      {
+          if(this.localLastSubTask.tasktype_id == 0 ||
+             this.localLastSubTask.expect_start_time =="" ||
+             this.localLastSubTask.expect_end_time ==""
+          )
+          {
+              return false;
+          }
+      }
+      //初始化子任务列表
+      let subListObj = {
+        subid:this.subTaskListData.length+1,
+        name:"子任务"+(this.subTaskListData.length+1).toString(),
+        status:"待开始",
+        _highlight:true
+      };
+      this.subTaskListData.push(subListObj);
+      
+      //初始化临时的子任务
+      let localLastSubTask = {
+        name:"子任务"+(this.subTaskListData.length).toString(),
+        project:this.fatherTaskData.project,
+        project_child:this.fatherTaskData.project_child,
+        subid:this.subTaskListData.length,
+      };
+      this.localLastSubTask = localLastSubTask;
+      this.subTasks.push(localLastSubTask);
+      
+      this.$refs.subtaskinfo.initTaskDetailFromData(this.localLastSubTask);
+      this.changeSubTask(subListObj,this.localLastSubList);
+
+      this.init_new = true;
+    },
+    //改变当前显示的子列表
+    changeSubTask(currentRow,oldRow)
+    {
+      if(oldRow && oldRow._highlight)
+      {
+        oldRow._highlight=false;
+      }
+      this.localLastSubList = currentRow;
+      //保存切换前修改的值
+      let old_taskdata = this.$refs.subtaskinfo.getTaskDetail();
+      if(this.subTasks.length > 0)
+      {
+        this.subTasks.forEach((datas)=>{
+            if(old_taskdata.subid)
+            {
+              if(old_taskdata.subid == datas.subid)
+              {
+                this.subTasks[old_taskdata.subid-1] = old_taskdata;
+              }
+            }
+            if(currentRow.subid)
+            {
+              if(currentRow.subid == datas.subid)
+              {
+                //显示新切换的子任务值
+                this.$refs.subtaskinfo.initTaskDetailFromData(this.subTasks[currentRow.subid-1]);
+              }
+            }
+          });
+      }
+      
+    },
+    //删除子任务
+    delSubtask(id)
+    {
+
+    },
+    //保存所有临时的子任务
+    saveSubTasks()
+    {
+        console.log(this.subTasks);
     },
     //删除子任务列表数据
     removetaskSub() {
       let cIs = this;
       let removeSubData = this.row.id;
-      this.get(
-        deletetaskData,
-        {
-          id: removeSubData
-        },
-        () => {
-          cIs.$Message.success("刪除子任务成功！");
-          cIs.forEachSubData();
-        }
-      );
+      // this.get(
+      //   deletetaskData,
+      //   {
+      //     id: removeSubData
+      //   },
+      //   () => {
+      //     cIs.$Message.success("刪除子任务成功！");
+      //     cIs.forEachSubData();
+      //   }
+      // );
     },
     //遍历子任务列表数据
     forEachSubData() {
-      let cIs = this;
-      this.get(
-        gettasklistData,
-        {
-          project_id: 1
-        },
-        res => {
-          //子任务数据渲染及状态上色
-          let dataColortd = res.data.data;
-          for (var i = 0; i < dataColortd.length; i++) {
-            dataColortd[i].status;
-            dataColortd[i].status_text;
-            let child = dataColortd[i].child;
-            if (child) {
-              for (var k = 0; k < child.length; k++) {
-                if (
-                  child[k].status === "1" ||
-                  child[k].status_text === "等待开始"
-                ) {
-                  child[k].cellClassName = {
-                    status_text: "demo-table-info-cell-start"
-                  };
-                } else if (
-                  child[k].status === "2" ||
-                  child[k].status_text === "执行中"
-                ) {
-                  child[k].cellClassName = {
-                    status_text: "demo-table-info-cell-execution"
-                  };
-                } else if (
-                  child[k].status === "3" ||
-                  child[k].status_text === "暂停"
-                ) {
-                  child[k].cellClassName = {
-                    status_text: "demo-table-info-cell-pause"
-                  };
-                } else if (
-                  child[k].status === "4" ||
-                  child[k].status_text === "完成"
-                ) {
-                  child[k].cellClassName = {
-                    status_text: "demo-table-info-cell-complete"
-                  };
-                }
-              }
-            }
-            cIs.row.child = child;
-          }
-        }
-      );
+      // let cIs = this;
+      // this.get(
+      //   gettasklistData,
+      //   {
+      //     project_id: 1
+      //   },
+      //   res => {
+      //     //子任务数据渲染及状态上色
+      //     //console.log(res);
+          
+      //     let dataColortd = res.data.data;
+      //     for (var i = 0; i < dataColortd.length; i++) {
+      //       dataColortd[i].status;
+      //       dataColortd[i].status_text;
+      //       let child = dataColortd[i].child;
+      //       if (child) {
+      //         for (var k = 0; k < child.length; k++) {
+      //           if (
+      //             child[k].status === "1" ||
+      //             child[k].status_text === "等待开始"
+      //           ) {
+      //             child[k].cellClassName = {
+      //               status_text: "demo-table-info-cell-start"
+      //             };
+      //           } else if (
+      //             child[k].status === "2" ||
+      //             child[k].status_text === "执行中"
+      //           ) {
+      //             child[k].cellClassName = {
+      //               status_text: "demo-table-info-cell-execution"
+      //             };
+      //           } else if (
+      //             child[k].status === "3" ||
+      //             child[k].status_text === "暂停"
+      //           ) {
+      //             child[k].cellClassName = {
+      //               status_text: "demo-table-info-cell-pause"
+      //             };
+      //           } else if (
+      //             child[k].status === "4" ||
+      //             child[k].status_text === "完成"
+      //           ) {
+      //             child[k].cellClassName = {
+      //               status_text: "demo-table-info-cell-complete"
+      //             };
+      //           }
+      //         }
+      //       }
+      //       //cIs.row.child = child;
+      //     }
+      //   }
+      // );
     },
     //获取任务列表详情
     getforechDailt(id) {
-      let fDi = this;
-      fDi.get(
-        gettasklistDetails,
-        {
-          id: id
-        },
-        res => {
-          fDi.subForm = res.body;
-          fDi.isTabModal = true;
-        }
-      );
+      // let fDi = this;
+      // fDi.get(
+      //   gettasklistDetails,
+      //   {
+      //     id: id
+      //   },
+      //   res => {
+      //     fDi.subForm = res.body;
+      //     fDi.isTabModal = true;
+      //   }
+      // );
     }
   }
 };

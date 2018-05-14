@@ -42,8 +42,15 @@
         <iframe id="show-iframe" frameborder=0 name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>
       </Tab-pane>
     </Tabs>
-    <Modal v-model="isShowTaskDetails" width="1200" :styles="{top: '20px'}">
-        <editlistmodal ref="details" v-bind:taskID="taskId"></editlistmodal>
+    <Modal 
+          v-model="isShowTaskDetails" 
+          width="1200" 
+          :styles="{top: '20px'}"
+          @on-ok="saveTaskInfoPop"
+          :loading = "isSaveLoading"
+          :closable="false"
+          >
+        <taskInfoPop ref="details" v-bind:taskID="taskId"></taskInfoPop>
     </Modal>
   </div>
   
@@ -52,17 +59,18 @@
 <script>
 import taskclasses from "./task/taskclasses";
 import tasklist from "./task/tasklist";
-import editlistmodal from "./task/editListModal";
+import taskInfoPop from "./task/taskInfoPop";
 
 export default {
   components: {
-    taskclasses:taskclasses,
-    tasklist: tasklist,
-    editlistmodal:editlistmodal
+    taskclasses,
+    tasklist,
+    taskInfoPop,
   },
   data() {
     return {
       isShowTaskDetails:false,
+      isSaveLoading:true,
       taskId:0,
     };
   },
@@ -84,14 +92,35 @@ export default {
       {
         //console.log(id);
         this.isShowTaskDetails = true;
+        this.isSaveLoading = true;
         this.taskId = id;
-        this.$refs.details.getTaskDetails(id);
-        //this.$bus.emit("getTaskDetails",id);
+        this.$refs.details.initTaskDetailFromID(id);
       },
       //编辑后关闭modal
       closeTaskDetails() {
         this.isShowTaskDetails = false;
       },
+      //保存任务信息弹窗
+      saveTaskInfoPop()
+      {
+        let result = this.$refs.details.saveTaskDetail();
+        result = false;
+        if(result)
+        {
+          //this.isSaveLoading = false;
+          this.isSaveLoading = false;
+          this.isShowTaskDetails = false;
+          this.$Message.success('保存任务成功');
+        }
+        else
+        {
+            setTimeout(() => {
+                this.isSaveLoading = false;
+                this.isShowTaskDetails = false;
+                this.$Message.success('保存任务成功');
+                }, 1000);
+        }
+      }
   }
 };
 </script>
