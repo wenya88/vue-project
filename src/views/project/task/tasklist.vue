@@ -1,34 +1,26 @@
+<!-- 任务列表组件 -->
 <template>
   <div>
-    <Header>
-        <Button type="success" size="large" @click="showaddFormodal">新增任务</Button>
-        <Button type="primary" size="large" @click="showExcelmodal">Excle导入</Button>
-    </Header>
-    <!-- 任务列表父组件 -->
-    <Table 
-      height='420' 
-      :columns="columnsTask" 
-      :data="dataList" 
-      :ellipsis="true"
-      ref="table" 
-      class="tableStyle">
-    </Table>
-    
-    <!-- excel解析modal组件 -->
-    <excel-modal v-if="isexcelModal" @close="closeModal"></excel-modal>
-    <!-- 新增任务modal组件 -->
-    <addform-modal v-if="isaddFormModal" :addData="addmodalData"  @close="closeAdd" @addmodal="addcloseModal"></addform-modal>
+      <Table 
+        height='660' 
+        :columns="columnsTask" 
+        :data="dataList" 
+        :ellipsis="true"
+        size="large"
+        highlight-row
+        ref="table" 
+        class="tableStyle"
+        @on-current-change="changeTaskListItem"
+        >
+      </Table>
     </div>
 </template>
 <script>
 var qs = require("querystring");
-// import sub from "./subtask.vue";
-// import Icon from "iview/src/components/icon/icon";
-
 import excelModal from "./excelModal";
 import addformModal from "./addformModal";
+
 import {
-  gettasklistData,
   deletetaskData,
 
   projectList,
@@ -39,40 +31,9 @@ export default {
   components: {
     excelModal,
     addformModal,
-    // Icon,
-    // "v-sub": sub
   },
   data() {
     return {
-      tabs: ["全部成员(33)", "3D模型(11)", "地编组(11)", "次世代(11)"],
-      tabContents: [
-        ["李霄霄", "王二帅"],
-        ["赵三娃", "陈无敌"],
-        ["哈哈", "嘻嘻洗洗"],
-        ["哇娃娃", "呜呜呜呜"]
-      ],
-      fruit: [],
-      list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      num: 1,
-      value1: "",
-      taskTag: [],
-      TagClass: false,
-      showText: false,
-      hideText: true,
-      showEditText: false,
-      hideEditText: true,
-      addVal: "",
-      editVal: "",
-      isexcelModal: false,
-      isaddFormModal: false,
-      addmodalData: {},
-      formLeft: {},
-      subData: {},
-     
-      //弹出层
-      handleRender: false,
-      excelModal: false,
-      addModal: false,
        /*-----*/
       dataList: [],
       columnsTask: [
@@ -150,14 +111,14 @@ export default {
           align: "center",
           ellipsis: true,
           key: "file_id",
-          width: 180
+          width: 120
         },
         {
-          title: "上次更新",
+          title: "文件最近更新",
           align: "right",
           key: "update_date",
           ellipsis: false,
-          width: 100
+          width: 140
         },
          {
           title: "到期时间",
@@ -172,24 +133,24 @@ export default {
           width: 84,
           render: (h, params) => {
             return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  style: {
-                    marginLeft: "12px"
-                  },
-                  on: {
-                    click: () => {
-                      this.showTabmodal(params.index);
-                    }
-                  }
-                },
-                "编辑"
-              ),
+                // h(
+                //   "Button",
+                //   {
+                //     props: {
+                //       type: "text",
+                //       size: "small"
+                //     },
+                //     style: {
+                //       marginLeft: "12px"
+                //     },
+                //     on: {
+                //       click: () => {
+                //         this.showTaskDetail(params.index);
+                //       }
+                //     }
+                //   },
+                //   "编辑"
+                // ),
               h(
                 "Button",
                 {
@@ -216,30 +177,26 @@ export default {
           }
         }
       ],
-      
     };
   },
   mounted() {
     this.forEachData();
   },
   methods: {
-    //开启
-    showExcelmodal: function() {
-      this.isexcelModal = true;
-    },
+    
     //打开任务详情
-    showTabmodal: function(index) {
+    showTaskDetail: function(index) {
       this.$emit('showTaskDetails',this.dataList[index].id);
     },
-    showaddFormodal: function(index) {
-      this.isaddFormModal = true;
-      this.addmodalData = {};
+    //点击切换任务项
+    changeTaskListItem(currentRow,oldRow)
+    { 
+      if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
+      {
+        this.$emit('showTaskDetails',currentRow.id); 
+        this.$refs.table.clearCurrentRow();
+      }
     },
-    //关闭excel model
-    closeModal: function() {
-      this.isexcelModal = false;
-    },
-    
     exportData(type) {
       if (type === 1) {
         this.$refs.table.exportCsv({
@@ -260,19 +217,15 @@ export default {
     },
     //参与人滚动条
     handleReachBottom() {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const last = this.list1[this.list1.length - 1];
-          for (let i = 1; i < 11; i++) {
-            this.list1.push(last + i);
-          }
-          resolve();
-        }, 2000);
-      });
-    },
-    //参与人选项卡
-    memberList(index) {
-      this.num = index;
+      // return new Promise(resolve => {
+      //   setTimeout(() => {
+      //     const last = this.list1[this.list1.length - 1];
+      //     for (let i = 1; i < 11; i++) {
+      //       this.list1.push(last + i);
+      //     }
+      //     resolve();
+      //   }, 2000);
+      // });
     },
     /**
      * get请求
@@ -288,14 +241,7 @@ export default {
         }
       );
     },
-    // 新增任务列表
-    closeAdd: function() {
-      this.isaddFormModal = false;
-      this.forEachData();
-    },
-    addcloseModal: function() {
-      this.isaddFormModal = false;
-    },
+    
     //删除数据
     removetasklistData(index) {
       let cIs = this;
@@ -312,19 +258,21 @@ export default {
       );
     },
     //遍历主任务列表数据
-    forEachData(pid) {
-      let data = {};
-      data.project_id = 1;
-      if (pid) {
-        delete data.project_id;
-        data.project_child_id = pid.id;
-      }
-      this.get(gettasklistData, data, res => {
-        this.dataList = res.data.data;
-        this.setTaskDetails(this.dataList);
-      });
+    forEachData(id) {
+      let company_id = id ? id:1;
+      this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify({project_id: company_id}))
+                .then( res => res.data)
+                .then( res => {
+                      this.dataList = res.data;
+                      this.formatTaskList(this.dataList);
+                    }
+                )
+                .catch(error => {
+                    this.$Message.error("获取任务列表失败，请重试！");
+                });
     },
-    setTaskDetails(taskData)
+    //格式化后端数据
+    formatTaskList(taskData)
     {
       for (var i = 0; i < taskData.length; i++) {
           this.setTaskStatus(taskData[i]);

@@ -208,7 +208,7 @@ export default {
         },
         handleClickUserDropdown(name) {
             if(name == 'loginout') {
-                this.$axios.get('/system/login/info')
+                this.$axios.get(this.GLOBAL.baseRouter+'/system/login/info')
                 .then( res => res.data)
                 .then( res => {
                     if(res.err_code == 0){
@@ -234,7 +234,7 @@ export default {
                 if (this.$route.name === item.name) {
                     this.subMenu = item.children
                     let menuArr = item.children
-                    console.log(this.$route.name,this.subMenu)
+                    // console.log(this.$route.name,this.subMenu)
                     this.$router.push(menuArr[0].path)
                 }
             })

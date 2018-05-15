@@ -1,19 +1,33 @@
 <template>
   <div id="membermanager">
-    <Layout>
-        <Sider>
-            <membertype @on-change="switchDataPage"></membertype>
-        </Sider>
-        <Layout>
-            <Header>
-                <Button type="primary" size="large" icon="plus-round" @click="clickInviteMember">添加成员</Button>
-            </Header>
-            <Content>
-                <memberlist ref="list"></memberlist>
-                <memberinvite ref="invite"></memberinvite>
-            </Content>
-        </Layout>
-    </Layout>      
+    <Button class="addBtn" type="primary" size="large" icon="plus-round" @click="clickInviteMember">添加成员</Button>
+    <Tabs size="small">
+        <TabPane label="成员管理">
+            <Layout>
+                <Sider>
+                    <membertype
+                    @on-change="switchDataPage"
+                    title="成都义美游艺术有限公司"
+                    number="41" 
+                    :deptList='deptList'
+                    :dutyList='dutyList'>
+                    </membertype>
+                </Sider>
+                <Layout>
+                    <!-- <Header>
+                        <Button type="primary" size="large" icon="plus-round" @click="clickInviteMember">添加成员</Button>
+                    </Header> -->
+                    <Content>
+                        <memberlist ref="list"></memberlist>
+                        <memberinvite ref="invite"></memberinvite>
+                    </Content>
+                </Layout>
+            </Layout>    
+        </TabPane>
+        <TabPane label="权限设置">
+            
+        </TabPane> 
+    </Tabs>
   </div>
 </template>
 
@@ -42,6 +56,51 @@ export default {
         newToDoItemValue: '',
         memberinfolist: [],
         interiormemberinfolist: [],
+        deptList: [
+            {
+                name: '网页游戏部',
+                number: 3
+            }, {
+                name: '手机游戏部',
+                number: 3
+            }, {
+                name: '市场推广',
+                number: 3
+            }, {
+                name: '商务合作',
+                number: 3
+            }, {
+                name: '财务部',
+                number: 3
+            }, {
+                name: '未分配部门',
+                number: 3
+            }
+        ],
+        dutyList: [
+            {
+                name: '经理',
+                number: 3
+            }, {
+                name: '项目管理人',
+                number: 3
+            }, {
+                name: '项目实施人员',
+                number: 3
+            }, {
+                name: '商务',
+                number: 3
+            }, {
+                name: '财务',
+                number: 3
+            }, {
+                name: '市场',
+                number: 3
+            }, {
+                name: '自定义角色',
+                number: 3
+            }
+        ]
       };
   },
   props: {
@@ -67,7 +126,7 @@ export default {
     updateDate(memberType)
     {
         this.$emit('init');
-        console.log("updateDate");
+        // console.log("updateDate");
     },
     /**
      * 切换成员类型数据页面消息
@@ -75,7 +134,7 @@ export default {
     switchDataPage(memberType)
     {
         this.$refs.list.initData();
-        console.log('switchDataPage');
+        // console.log('switchDataPage');
     },
     /**
      * 暂时，会移动到用户控制组件中
@@ -150,6 +209,12 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.ivu-layout-sider, .ivu-layout-header{
+    background: #fff;
+}
+.addBtn{
+    position: absolute;
+    right: 10px;
+}
 </style>

@@ -1,31 +1,5 @@
-<style>
-@import "../../../styles/task/task.css";
-td.ivu-table-expanded-cell {
-  padding: 0 !important;
-}
-.table_border .ivu-table-wrapper {
-  border: 0;
-}
-.sub-header .ivu-table-header {
-  display: none;
-}
-.subtask{
-  display:inline-block;
-  overflow:hidden;
-}
-.subtask-left{
-  width:262px;
-  float:left;
-  padding: 0 20px 0 0;
-}
-.subtask-right{
-  width:300px;
-  float:left;
-  padding: 0 0 0 20px;
-}
-</style>
+<!-- 子任务组件 -->
 <template>
-  <!-- 子任务列表父组件 -->
     <div class="subtask">
       <div class="subtask-left">
         <Button type="text" @click="addSubTask" size="small">添加子任务</Button>
@@ -49,10 +23,9 @@ td.ivu-table-expanded-cell {
 <script>
 import {
   deletetaskData,
-  gettasklistData,
   gettasklistDetails
 } from "@/config/env.js";
-
+var qs = require("querystring");
 import editSubmodal from "./editSubmodal";
 import subtask from "./taskDetails"
 
@@ -116,6 +89,7 @@ export default {
       localLastSubList:{},
       localLastSubTask:{},
       init_new:false,//是否首次增加
+      initAmount:0,
     };
   },
   created() {
@@ -129,8 +103,8 @@ export default {
         this.fatherTaskData = Data;
         this.subTaskListData = Data.child;
         this.subTasks=[];
-        
-        this.subTaskListData=[];
+        this.initAmount = this.subTaskListData.length;
+        //this.subTaskListData=[];
         this.localLastSubList={};
         this.localLastSubTask={};
     },
@@ -141,18 +115,6 @@ export default {
     showSubListmodal: function(rq) {
       this.isubListModal = true;
       this.getforechDailt(rq.id);
-    },
-    /**
-     * 请求数据
-     */
-    get(url, params, call) {
-      // /*获取列表信息*/
-      // this.$http.get(url, { params: params }).then(
-      //   function(res) {
-      //     call(res);
-      //   },
-      //   function(error) {}
-      // );
     },
     //添加子任务
     addSubTask()
@@ -182,6 +144,8 @@ export default {
         project:this.fatherTaskData.project,
         project_child:this.fatherTaskData.project_child,
         subid:this.subTaskListData.length,
+        is_new:true,//新任务
+        father:this.fatherTaskData.id,
       };
       this.localLastSubTask = localLastSubTask;
       this.subTasks.push(localLastSubTask);
@@ -232,6 +196,52 @@ export default {
     saveSubTasks()
     {
         console.log(this.subTasks);
+        //处理仅仅添加子任务后离开页面直接保存的情况
+        if(this.subTaskListData.length > this.initAmount)
+        {
+          this.localLastSubTask = this.$refs.subtaskinfo.getTaskDetail();
+          this.subTasks[this.subTaskListData.length-1] = this.localLastSubTask;
+        }
+        this.subTasks.forEach(
+          (res)=>{
+            res.expect_start_time = res.expect_start_date;
+            res.expect_end_time = res.expect_end_date;
+            if(res.is_new)
+            {
+                this.addTaskDetails(res);
+            }
+            else
+            {
+
+                this.updateTaskDetail(res);
+            }
+          }
+        );
+    },
+    //这里该封装一个统一的新增接口
+    addTaskDetails(dateForm)
+    {
+        this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dateForm))
+                    .then(res => {
+                        
+                    })
+                    .catch(error => {
+                        this.$Message.error("新建任务失败，请重试！");
+                        return false;
+                    });
+        return true;
+    },
+    updateTaskDetail(dateForm)
+    {
+        this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dateForm))
+                    .then(res => {
+                        
+                    })
+                    .catch(error => {
+                        this.$Message.error("编辑任务失败，请重试！");
+                        return false;
+                    });
+        return true;
     },
     //删除子任务列表数据
     removetaskSub() {
@@ -320,3 +330,29 @@ export default {
   }
 };
 </script>
+<style>
+@import "../../../styles/task/task.css";
+td.ivu-table-expanded-cell {
+  padding: 0 !important;
+}
+.table_border .ivu-table-wrapper {
+  border: 0;
+}
+.sub-header .ivu-table-header {
+  display: none;
+}
+.subtask{
+  display:inline-block;
+  overflow:hidden;
+}
+.subtask-left{
+  width:262px;
+  float:left;
+  padding: 0 20px 0 0;
+}
+.subtask-right{
+  width:300px;
+  float:left;
+  padding: 0 0 0 20px;
+}
+</style>

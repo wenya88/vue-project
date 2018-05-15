@@ -161,7 +161,6 @@ import {
   projDatali,
   cateList,
   updatetaskData,
-  gettasklistData,
   deletetaskData
 } from "@/config/env.js";
 export default {

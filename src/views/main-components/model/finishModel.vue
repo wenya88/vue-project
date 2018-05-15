@@ -4,19 +4,15 @@
       <div class="modal">
         <div class="modal-header">
           <div class=""></div>
-          <Row :gutter="100">
-            <Col span="1">
+          <!-- <Col span="1">
             <Icon type="ios-star-outline" style="color:#666;cursor: pointer;margin-left:20px;" size="23"></Icon>
             </Col>
             <Col span="1">
             <div>
               <Icon type="trash-b" size="23" style="color:red;cursor: pointer;position: absolute;z-index: 999999;display: inline-block;"></Icon>
             </div>
-            </Col>
-            <Col span="2">
-            <button type="button" class="btn-close" @click="close">x</button>
-            </Col>
-          </Row>
+            </Col> -->
+          <button type="button" class="btn-close" @click="close">x</button>
         </div>
         <div class="modal-body">
           <div>
@@ -315,5 +311,9 @@ export default {
 @import "../../project/style/taskModal.css";
 .edit {
   margin-left: 20px;
+}
+.btn-close {
+  margin-left: 1257px !important;
+  margin: 10px;
 }
 </style>

@@ -300,7 +300,6 @@ import {
   projDatali,
   cateList,
   updatetaskData,
-  gettasklistData
 } from "@/config/env.js";
 export default {
   props: ["editData"],

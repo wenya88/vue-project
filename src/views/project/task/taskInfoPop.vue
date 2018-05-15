@@ -1,4 +1,4 @@
-<!-- 任务列表“编辑”modal-->
+<!-- 任务信息弹窗-->
 <template>
   <!-- <transition name="modal-fade"> -->
     <!-- <div class="modal-backdrop"> -->
@@ -34,7 +34,7 @@
 <script>
 var qs = require("querystring");
 import maintask from "./taskDetails";
-import subtasklist from "./subtask";
+import subtasklist from "./subTask";
 import tasklog from "./taskLog";
 
 import {
@@ -174,7 +174,7 @@ export default {
     saveTaskDetail()
     {
       //保存父任务
-      
+      this.$refs.main.saveTaskDetails();
       //保存子任务
       this.$refs.sublist.saveSubTasks();
       return true;

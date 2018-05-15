@@ -27,7 +27,7 @@ export default {
             }
         },
         logout() {
-            this.$axios.get(this.base_router+'system/login/info')
+            this.$axios.get(this.GLOBAL.baseRouter+'system/login/info')
             .then( res => res.data)
             .then( res => {
                 if(res.err_code == 0){
