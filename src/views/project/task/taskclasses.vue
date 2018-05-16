@@ -2,11 +2,10 @@
     <div class="taskHead">
         <div class="taskHead">
             <div class="taskInfo">
-              <b>项目任务</b>
               <span v-for="(item,index) in childProjectList" :key='item.name'
                 v-on:mouseenter="dataDetails($event)" 
                 v-on:mouseleave="hiddenDetail($event)">
-                <a href="javascript:;" @click=sTag(item) >
+                <a href="javascript:;" @click=filterTask(item) >
                     {{item.name}}
                     ({{item.task_count}})
                     <Button type="text" size="small" icon="edit" class="hideIconDel"  @click="showModifySubProject('modify')"></Button>
@@ -37,8 +36,8 @@ export default {
     name:'taskclasses',
     data(){
         return {
-            projectId:0,
-            childProjectList:[],
+            projectId:0,//项目ID
+            childProjectList:[],//子项目列表
             isShowModifySubProject:false,
             modifyStatus:"",
             subProjectManager:"",
@@ -72,103 +71,114 @@ export default {
         //获得项目列表
         //这里逻辑还有问题，没有根据项目去取值
         getProjectInfo() {
-        //console.log("getProjectInfo");
-        this.get(projectList, {}, res => {
-            //遍历获取项目id
-            res.data.project.forEach(res => {
-                //console.log(res);
-                this.projectId = res.id;
-                });
-            this.getChildProjectInfo();
-            });
+            let project_id = 1;
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/project/info", qs.stringify({id:project_id}))
+                    .then(res => {
+                        this.projectId = res.data.id;
+                        this.$emit('setProjectInfo',res.data);
+                        this.getProjectChildInfo();
+                    })
+                    .catch(error => {
+                        this.$Message.error("获得项目信息失败，请重试！");
+                        return false;
+                    });
+            return true;
         },
-        //获取子项目id
-        getChildProjectInfo() {
-        this.get(
-            getChildList,
-            {
-                id: this.projectId
-            },
-            res => {
-                //console.log(res.data);
-                this.childProjectList = res.data.data;
-            }
-            );
+        getProjectChildInfo() {
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:this.projectId}))
+                    .then(res => {
+                        this.childProjectList = res.data.data;
+                        let max = 0;
+                        this.childProjectList.forEach(
+                            (res)=>{
+                                max += parseInt(res.task_count);
+                                res.project_child_id = res.id;
+                            });
+                        this.childProjectList.unshift(
+                            {
+                                name:"所有任务",
+                                task_count:max.toString(),
+                                project_id:this.projectId
+                            }
+                        );
+                    })
+                    .catch(error => {
+                        return false;
+                    });
+            return true;
         },
         //hover子“项目任务”编辑，删除图标
-    dataDetails: function(e) {
-      let el = event.currentTarget.children[0].children[0];
-      let el2 = event.currentTarget.children[0].children[1];
-      el.style.display = "inline-block";
-      el2.style.display = "inline-block";
-    },
-    hiddenDetail: function(e) {
-      let el = event.currentTarget.children[0].children[0];
-      let el2 = event.currentTarget.children[0].children[1];
-      el.style.display = "";
-      el2.style.display = "";
-    },
-    //子“项目任务”筛选切换样式
-    sTag(tem) {
-        $(".taskHead .taskInfo a").click(function() {
-            $(".taskHead .taskInfo a").removeClass("active");
-            $(this).addClass("active");
-        });
-        //this.forEachData(tem);
-        this.$emit('changeListData',tem);
-    },
-    //刪除，子“项目任务”筛选
-    childDel: function(id) {
-      let cdt = this;
-      let delObj = {};
-      delObj.id = id;
-      cdt.$axios
-        .post("/task/project/child-delete", qs.stringify(delObj))
-        .then(del => {
-          if (del.data.err_code === 0) {
-            cdt.getProjectInfo();
-            cdt.$Message.success("刪除成功！");
-          } else {
-            cdt.$Message.error(dis.data.err_message);
-          }
-        });
-    },
-
-    // 新增保存，子“项目任务”
-    saveModifySubproject: function() {
-      let info = {};
-      info.project_id = this.projectId;
-      info.name = this.subProjectName;
-      let add = "";
-      let result = "";
-      if(this.modifyStatus == 'creat')
-      {
-          add = "/task/project/child-add";
-          result = "新增子项目成功！";
-      }
-      else if(this.modifyStatus == 'modify')
-      {
-          add = "task/project/child-update";
-          result = "修改成功！";
-      }
-      else
-      {
-        return;
-      }
-      this.$axios
-        .post(add, qs.stringify(info))
-        .then(dis => {
-          if (dis.data.err_code === 0) {
-            this.$Message.success("新增子项目成功！");
-            this.getProjectInfo();
-          } else {
-            this.$Message.error(dis.data.err_message);
-          }
-        })
-        .catch(error => {
-          this.$Message.error("请求失败，请刷新重试！");
-        });
-    },
-    }
+        dataDetails: function(e) {
+            let el = event.currentTarget.children[0].children[0];
+            let el2 = event.currentTarget.children[0].children[1];
+            el.style.display = "inline-block";
+            el2.style.display = "inline-block";
+        },
+        hiddenDetail: function(e) {
+            let el = event.currentTarget.children[0].children[0];
+            let el2 = event.currentTarget.children[0].children[1];
+            el.style.display = "";
+            el2.style.display = "";
+        },
+        //子“项目任务”筛选切换样式
+        filterTask(tem) {
+            $(".taskHead .taskInfo a").click(function() {
+                $(".taskHead .taskInfo a").removeClass("active");
+                $(this).addClass("active");
+            });
+            this.$emit('changeTaskListData',tem);
+        },
+        //刪除，子“项目任务”筛选
+        childDel: function(id) {
+        let cdt = this;
+        let delObj = {};
+        delObj.id = id;
+        cdt.$axios
+            .post("/task/project/child-delete", qs.stringify(delObj))
+            .then(del => {
+            if (del.data.err_code === 0) {
+                cdt.getProjectInfo();
+                cdt.$Message.success("刪除成功！");
+            } else {
+                cdt.$Message.error(dis.data.err_message);
+            }
+            });
+        },
+        // 新增保存，子“项目任务”
+        saveModifySubproject: function() {
+        let info = {};
+        info.project_id = this.projectId;
+        info.name = this.subProjectName;
+        let add = "";
+        let result = "";
+        if(this.modifyStatus == 'creat')
+        {
+            add = "/task/project/child-add";
+            result = "新增子项目成功！";
+        }
+        else if(this.modifyStatus == 'modify')
+        {
+            add = "task/project/child-update";
+            result = "修改成功！";
+        }
+        else
+        {
+            return;
+        }
+        this.$axios
+            .post(add, qs.stringify(info))
+            .then(dis => {
+            if (dis.data.err_code === 0) {
+                this.$Message.success("新增子项目成功！");
+                this.getProjectInfo();
+            } else {
+                this.$Message.error(dis.data.err_message);
+            }
+            })
+            .catch(error => {
+            this.$Message.error("请求失败，请刷新重试！");
+            });
+        },
+        }
 }
 </script>

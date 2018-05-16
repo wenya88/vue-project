@@ -195,7 +195,6 @@ export default {
     //保存所有临时的子任务
     saveSubTasks()
     {
-        console.log(this.subTasks);
         //处理仅仅添加子任务后离开页面直接保存的情况
         if(this.subTaskListData.length > this.initAmount)
         {

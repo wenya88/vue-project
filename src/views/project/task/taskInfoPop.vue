@@ -38,7 +38,6 @@ import subtasklist from "./subTask";
 import tasklog from "./taskLog";
 
 import {
-  projectList,
   projDatali,
   cateList,
   deletetaskData,
@@ -160,6 +159,11 @@ export default {
       this.isInitTask = true;
       this.$refs.main.initTaskDetailFromID(id);
     },
+    //初始化项目信息
+    initTaskDetailProjecInfo(projectInfo)
+    {
+      this.$refs.main.initProjectInfo(projectInfo);
+    },
     //子任务子组件传参
     sendSubTaskList(data)
     {
@@ -275,34 +279,22 @@ export default {
         cdy.subData = child;
       }
     },
-    //获取項目列表
-    getProjectId() {
-      let cHd = this;
-      cHd.get(projectList, {}, res => {
-        cHd.projectId = res.data.project;
-        //遍历获取项目id
-        cHd.projectId.forEach(id => {
-          cHd.prId = id.id;
-        });
-        cHd.getChildId();
-      });
-    },
-    //获取子项目id
-    getChildId() {
-      let Hid = this;
-      Hid.get(
-        projDatali,
-        {
-          id: Hid.prId
-        },
-        res => {
-          //获取子项目列表
-          Hid.childList = res.data.child;
-          //获取项目id
-          Hid.pushSubData.project_id = res.data.id;
-        }
-      );
-    },
+    // //获取子项目id
+    // getChildId() {
+    //   let Hid = this;
+    //   Hid.get(
+    //     projDatali,
+    //     {
+    //       id: Hid.prId
+    //     },
+    //     res => {
+    //       //获取子项目列表
+    //       Hid.childList = res.data.child;
+    //       //获取项目id
+    //       Hid.pushSubData.project_id = res.data.id;
+    //     }
+    //   );
+    // },
     //获取任务类型
     getTaskClass() {
       let clT = this;

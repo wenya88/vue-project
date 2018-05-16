@@ -7,7 +7,6 @@
                     <Input v-model="editData.name">
                     </Input>
                 </FormItem>
-                <!--   -->
                 <FormItem label="计划时间">
                     <DatePicker 
                     :value="getTimeRange"
@@ -20,24 +19,15 @@
                     >
                     </DatePicker>
                 </FormItem>
-                <!--   -->
-                <!-- <FormItem label="计划截止">
-                    <DatePicker 
-                    :value="editData.expect_end_date"
-                    @on-change="setEndTime" 
-                    format="yyyy-MM-dd" 
-                    type="date" 
-                    :options="endTime" 
-                    placeholder="选择计划截止时间" 
-                    style="width: 100%">
-                    </DatePicker>
-                </FormItem> -->
                 <FormItem label="子项目">
-                    <Select @on-change='setChildProject' v-model="editData.project_child_name">
-                    <Option v-for="(item,childName) in childProjectsList" 
-                        :key="item.child_id">
-                        {{item.name}}
-                    </Option>
+                    <Select @on-change='setChildProject' v-model="editData.project_child_name" clearable>
+                        <Option 
+                            v-for="item in childProjectsList" 
+                            :key="item.child_id"
+                            :value="item.name"
+                            >
+                            {{item.name}}
+                        </Option>
                     </Select>
                 </FormItem>
                 <FormItem label="负责人">
@@ -108,25 +98,6 @@
                         </p>
                     </Card>
                 </FormItem>
-                <!-- <FormItem label="参考图片">
-                        <div class="demo-upload-list" v-for="item in referencePicList" :key="item.uploadList">
-                        <template v-if="item.status === 'finished'">
-                            <img :src="item.url">
-                            <div class="demo-upload-list-cover">
-                            <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                        </template>
-                        </div>
-                        <Upload name="cert" ref="c-upload" :show-upload-list="false" :default-file-list="referenceFileList" :on-success="referencePicHandle" :format="['jpg','jpeg','png']" :max-size="10240"  :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" :data="{'type':'image'}" action="http://192.168.2.19/index.php?r=file/file/file-upload" style="display: inline-block;width:80px;">
-                        <div style="width: 80px;height:58px;line-height: 28px;">
-                            <Icon type="camera" size="20"></Icon>
-                            <p>可拖拽上传</p>
-                        </div>
-                        </Upload>
-                </FormItem> -->
                 <FormItem label="参考附件">
                     <Upload name="affix" 
                     multiple
@@ -146,7 +117,6 @@
                 </FormItem>
             </Form>
         </div>
-
         <div class="taskdetail-right">
         </div>
     </div>
@@ -221,6 +191,18 @@ export default{
         initTaskDetailFromData(data)
         {
             this.editData = data; 
+        },
+        //新增任务初始化
+        initTaskDetailFromNew(projectInfo)
+        {
+            this.isNewTask = true;
+            this.initProjectInfo(projectInfo);
+        },
+        //初始化项目相关信息
+        initProjectInfo(projectInfo)
+        {
+            this.editData.project_id = projectInfo.id;
+            this.childProjectsList = projectInfo.child;
         },
         //外部获得任务数据-DONE
         getTaskDetail()
@@ -308,7 +290,7 @@ export default{
         {
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dateForm))
                         .then(res => {
-              
+                            this.$bus.emit('refreshCurrentTaskList');
                         })
                         .catch(error => {
                             this.$Message.error("新建任务失败，请重试！");
@@ -320,7 +302,7 @@ export default{
         {
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dateForm))
                         .then(res => {
-             
+                            this.$bus.emit('refreshCurrentTaskList');
                         })
                         .catch(error => {
                             this.$Message.error("编辑任务失败，请重试！");
@@ -340,7 +322,19 @@ export default{
         },
         //设置子项目
         setChildProject(pName) {
-            this.editData.project_child = pName;
+            this.editData.project_child_name = pName;
+            let result =false;
+            this.childProjectsList.forEach(
+                (res)=>{
+                    if(res.name == pName)
+                    {
+                        this.editData.project_child = res.child_id;
+                        result = true;
+                    }
+                }
+            );
+            if(result == false)
+                this.editData.project_child = null;
         },
         //选择任务类型自动改变类型要求-DONE
         selectTaskType(id_name)

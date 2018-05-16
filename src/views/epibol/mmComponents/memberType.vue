@@ -7,18 +7,53 @@
         </div>
         <Tabs type="card">
             <TabPane label="部门">
-                <Menu width=240 mode="vertical" @on-select="changeFMenu" active-name="1-1">
+                <ul class="fMenu">
+                    <li v-for="(item,index) in deptList" :key="index" @click="openTable(index)">
+                        {{item.name}}
+                        <span class="numStyle">{{item.number}}</span>
+                        <!-- <span class="more" @click.stop="editItem()">...</span> -->
+                        <Poptip class="more" placement="bottom-end">
+                            <span>...</span>
+                            <div class="api" slot="content">
+                                <!-- <slot name="fmore"></slot> -->
+                                <ul class="editItem">
+                                    <li @click="editDept(item.id,item.name)">编辑</li>
+                                    <li @click="delDept(item.id)">删除</li>
+                                </ul>
+                            </div> 
+                        </Poptip>
+                    </li>
+                </ul>
+                <slot name="addDept"></slot>
+                <!-- <Menu width=240 mode="vertical" @on-select="changeFMenu" active-name="1-1">
                     <MenuItem v-for="(item,index) in deptList" :key="index" :name="item.name">{{item.name}}
                         <span class="numStyle">{{item.number}}</span>
                     </MenuItem>
-                </Menu>
+                </Menu> -->
             </TabPane>
             <TabPane label="职能">
-                <Menu width=240 mode="vertical" @on-select="changeSMenu" active-name="2-1">
+                <ul class="fMenu">
+                    <li v-for="(item,index) in dutyList" :key="index" @click="open2Table(index)">
+                        {{item.name}}
+                        <span class="numStyle">{{item.number}}</span>
+                        <!-- <span class="more" @click.stop="editItem()">...</span> -->
+                        <Poptip class="more" placement="bottom-end">
+                            <span>...</span>
+                            <div class="api" slot="content">
+                                <!-- <slot name="fmore"></slot> -->
+                                <ul>
+                                    <li @click="editDuty(item.id,item.name)">编辑</li>
+                                </ul>
+                            </div> 
+                        </Poptip>
+                    </li>
+                </ul>
+                <slot name="addDuty"></slot>
+                <!-- <Menu width=240 mode="vertical" @on-select="changeSMenu" active-name="2-1">
                     <MenuItem v-for="(item,index) in dutyList" :key="index" :name="item.name">{{item.name}}
                         <span class="numStyle">{{item.number}}</span>
                     </MenuItem>
-                </Menu>
+                </Menu> -->
             </TabPane> 
         </Tabs>
         <!-- <Menu id='memberTypeMenu' width=240 mode="vertical" @on-select="changeMenu">
@@ -41,6 +76,12 @@
 <script>
 export default {
     name: 'memberTypeMenu',
+    data() {
+        return {
+            FMenuIndex: 0,
+            SMenuIndex: 0
+        }
+    },
     props: {
         title: {
             type: String,
@@ -94,6 +135,23 @@ export default {
             this.$emit('on-change', active);
             console.log(active);
         },
+        openTable(index) {
+            this.FMenuIndex = index
+            this.$emit('click', index);
+        },
+        editDept(id,name) {
+            this.$emit('deptEdit', id, name)
+        },
+        delDept(id) {
+            this.$emit('deptDel', id)
+        },
+        open2Table(index) {
+            this.SMenuIndex = index
+            this.$emit('click', index);
+        },
+        editDuty(id,name) {
+            this.$emit('dutyEdit', id, name)
+        },
         //名字多语言处理
         itemTitle(item) {
             if (typeof item.title === 'object') {
@@ -116,8 +174,26 @@ export default {
     text-align: center;
     background: rgba(34, 215, 187, 0.176470588235294);
 }
-.numStyle{
+.fMenu{
+    height: auto;
+    line-height: 50px;
+    padding: 0 20px;
+}
+.fMenu li{
+    cursor: pointer;
+}
+.fMenu li:hover .more{
+    display: block;
+}
+.editItem{
+    text-align: center;
+    line-height: 30px;
+}
+.numStyle, .more{
     float: right;
+}
+.more, .fMenu li:hover .numStyle{
+    display: none;
 }
 .ivu-menu-light{
     background: #fff !important;
@@ -128,7 +204,7 @@ export default {
 .ivu-tabs-bar{
     margin-bottom: 0 !important;
 }
-.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
+.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab, .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
     width: 100px !important;
     text-align: center !important;
 }

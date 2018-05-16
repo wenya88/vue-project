@@ -19,6 +19,7 @@
 var qs = require("querystring");
 import excelModal from "./excelModal";
 import addformModal from "./addformModal";
+import tasklistline from "./taskListLine";
 
 import {
   deletetaskData,
@@ -34,34 +35,36 @@ export default {
   },
   data() {
     return {
-       /*-----*/
+      currentMsg:{},
+      /*-----*/
       dataList: [],
       columnsTask: [
-        {
-          type: "expand",
-          width: 20,
-          render: (h, subdow) => {
-            return h(sub, {
-              //子任务下拉
-              props: {
-                row: subdow.row
-              }
-            });
-          }
-        },
+        // {
+        //   type: 'expand',
+        //   width: 20,
+        //   render: (h, params) => {
+        //     console.log(params);
+            
+        //     return h(tasklistline, {//子任务下拉
+        //       props: {
+        //         taskrow: params.child
+        //       }
+        //     });
+        //   }
+        // },
         {
           title: "任务名",
           key: "name",
           align: "left",
           ellipsis: true,
-          width: 380
+          width: 340
         },
         {
           title: "状态",
           key: "status_text",
           align: "right",
           ellipsis: true,
-          width: 100
+          width: 120
         },
         {
           title: "类型",
@@ -158,7 +161,7 @@ export default {
                     type: "text",
                     size: "small",
                     confirm: true,
-                    title: "您确定要删除这条数据吗?",
+                    title: "确认删除该任务?",
                     transfer: true
                   },
                   style: {
@@ -180,7 +183,7 @@ export default {
     };
   },
   mounted() {
-    this.forEachData();
+    this.initTaskListFromId();
   },
   methods: {
     
@@ -252,24 +255,47 @@ export default {
           id: removeData
         },
         () => {
-          cIs.forEachData();
+          cIs.initTaskListFromId();
           this.$Message.success("删除成功");
         }
       );
     },
     //遍历主任务列表数据
-    forEachData(id) {
-      let company_id = id ? id:1;
-      this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify({project_id: company_id}))
+    initTaskListFromId(data) {
+      if(data == null)
+        data={}
+      let msg = {}
+      if(!data.project_child_id)//主项目
+      {
+        msg.project_id = data.project_id?data.project_id:1;
+      }
+      else
+      {
+        msg.project_child_id = data.project_child_id;
+      }
+      this.currentMsg = msg;
+      this.getTaskList(msg);
+    },
+    //刷新当前列表
+    refreshTaskList()
+    {
+      this.getTaskList(this.currentMsg);
+    },
+    getTaskList(msg)
+    {
+        this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
                 .then( res => res.data)
                 .then( res => {
                       this.dataList = res.data;
-                      this.formatTaskList(this.dataList);
+                      this.formatTaskList(this.dataList.reverse());//颠倒顺序
                     }
                 )
                 .catch(error => {
+                    console.log(error);
+                    
                     this.$Message.error("获取任务列表失败，请重试！");
                 });
+        return true;
     },
     //格式化后端数据
     formatTaskList(taskData)
@@ -278,14 +304,10 @@ export default {
           this.setTaskStatus(taskData[i]);
           taskData[i].update_date = this.TimeFormatMinute(taskData[i].update_date);
           taskData[i].expect_end_date = this.TimeFormatDay(taskData[i].expect_end_date);
-          //console.log(taskData[i]);
-          
-          //判断主列表下是否含有子列表
-          if (taskData[i].child != undefined) {
-            taskData[i]._expanded = false;
-          } else {
-            taskData[i]._disableExpand = true;
-          }
+
+          // if (taskData[i].child != null) {
+          //   taskData[i]._expanded = true;
+          // }
         }
     },
     TimeFormatDay(str)
