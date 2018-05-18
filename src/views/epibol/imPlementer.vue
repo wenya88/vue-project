@@ -42,14 +42,7 @@
                                   </dl>
                               </div>
                           </div>
-                          <div class="jobCalend">
-                              <dl>
-                                  <dt><Icon type="calendar"></Icon> 工作日程</dt>
-                                  <dd>
-                                      <p><span>假</span><em>春节 2018-1-15 至 2018-2-1</em></p>
-                                  </dd>
-                              </dl>
-                          </div>
+                          <CalendInfo></CalendInfo>
                       </div>
                       <!--左侧Row-->
                       <div class="imPLeft">
@@ -61,13 +54,13 @@
                                       <div class="beInOper">
                                           <h3>实施中({{dataUnderway.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)" 
+                                              <li v-for="(item,index) in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)" 
                                               @click="taskDetaInfo(
                                                   item.id,
                                                   item.stage_file.type,
                                                   item.stage_file.file,
                                                   item.stage_file.task_id
-                                                  )">
+                                                  )" :key="index">
                                                   <span>
                                                       <s>{{item.name}}</s>
                                                       <br/><i class="projectRow">{{item.project_name | DefName }}</i>
@@ -105,7 +98,7 @@
                                                             <Option v-for="items in taskType" :value="items.tasktype_name" :key="items.tasktype_name">{{ items.tasktype_name }}</Option>
                                                         </Select>
                                                     </FormItem>
-                                                    </div>
+                                                </div>
                                                 <div slot="three">
                                                     <ImgEditor v-if="imgConponent"></ImgEditor>
                                                     <VidEditor v-if="vidConponent"></VidEditor>
@@ -119,7 +112,7 @@
                                       <div class="theUpcom">
                                           <h3>即将实施({{dataWait.length}})</h3>
                                           <ul>
-                                              <li v-for="item in dataWait"  @click="taskDetaInfo(item.id)">
+                                              <li v-for="(item,index) in dataWait"  @click="taskDetaInfo(item.id)" :key="index">
                                                   <span><s>{{item.name}}</s><br/>
                                                     <p v-if="item.expect_start_time<=Mdate?false:true">{{item.project_name}}</p>
                                                     <p v-if="item.expect_start_time<=Mdate?true:false">
@@ -135,7 +128,7 @@
                                       <div class="Completed">
                                           <h3>已完成({{dataAccom.length}})</h3>
                                           <ul id="CompletedUL">
-                                              <li v-for="item in dataAccom"  @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
+                                              <li v-for="(item,index) in dataAccom" :key="index"  @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
                                                   <span class="spanTop"><Icon type="android-checkbox" color="mediumseagreen" size="18"></Icon></span>
                                                   <span>{{item.name}}</span>
                                                   <em>{{item.end_date}}</em>
@@ -157,7 +150,7 @@
                                           <Timeline>
                                               <div v-if="ListFeedBack==''" class="notData">暂无数据</div>
                                               <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
-                                              <Timeline-item color='lightgray' v-for="Litem in ListFeedBack">
+                                              <Timeline-item color='lightgray' v-for="(Litem,index) in ListFeedBack" :key="index">
                                                   <Icon type="record" slot="dot"></Icon>
                                                   <span><em>{{Litem.inside_audit_time|fromatDate}}</em> 上传</span>
                                                   <span>{{Litem.task_name}}</span>
@@ -181,7 +174,7 @@
                                       <dd>
                                           <Timeline>
                                               <div v-if="AlrFeedBack==''" class="notData">暂无数据</div>
-                                              <Timeline-item color="lightgray" v-for="Aitem in AlrFeedBack">
+                                              <Timeline-item color="lightgray" v-for="(Aitem,index) in AlrFeedBack" :key="index">
                                              <!-- <Timeline-item :color="[Aitem.stage_id==AlrFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Aitem in AlrFeedBack"> -->
                                                   <Icon type="record" slot="dot"></Icon>
                                                   <span><em>{{Aitem.client_audit_time|fromatDate}}</em> 上传</span>
@@ -220,7 +213,8 @@
   import UploadM from './imPlementer/UpLoadModal.vue';
   import FinishModel from '../main-components/model/finishModel.vue';
   import ImgEditor from '../project/components/imgEditor.vue';
-  import VidEditor from '../project/components/vedioEditor.vue'
+  import VidEditor from '../project/components/vedioEditor.vue';
+  import CalendInfo from '../main-components/calend/calendrinfo.vue';
   export default {
     data(){
       return{
@@ -258,7 +252,7 @@
         NotType:false
       }
     },
-    components:{Calend,UploadM,FinishModel,ImgEditor,VidEditor},
+    components:{Calend,UploadM,FinishModel,ImgEditor,VidEditor,CalendInfo},
     
     mounted(){
       this.onLoad();
@@ -269,10 +263,11 @@
     //   接收主文件
       this.$bus.on('MainFile',(val)=>{
             this.MainFlie=val
+            console.log(val)
       });
     //   接收阶段
       this.$bus.on('UpCurrent',(val)=>{
-            this.Current=val
+            this.Current=val;
       });
     //   接收附文件
       this.$bus.on('MinFile',(val)=>{
@@ -439,7 +434,7 @@
         })
     },
     //   关闭Model
-      CloseModel(){
+    CloseModel(){
         this.modelTask=false;
     },
     //   初始化行高  
@@ -547,13 +542,13 @@
          });
       },
     //   上传按钮
-      ShowEm(e){
+      ShowEm(event){
          let el = event.currentTarget.children[1].children[0];
          let el2 = event.currentTarget.children[1].children[1];
          el.style.display='block';
          el2.style.display='none';
       },
-      HideEm(e){
+      HideEm(event){
         let el = event.currentTarget.children[1].children[0];
         let el2 = event.currentTarget.children[1].children[1];
         el.style=''
@@ -611,7 +606,7 @@
                 
                 let Mparams={
                     task_id:TaksID,
-                    stage:Current,
+                    stage:Current+1,
                     file:JSON.stringify(Mainobj)
                 };
                 _this.$axios.post(url,qs.stringify(Mparams)).then(function(data){

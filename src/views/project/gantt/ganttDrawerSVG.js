@@ -615,7 +615,7 @@ Ganttalendar.prototype.drawTask = function (task) {
     // if (dimensions.width > 15){
     //console.log(dimensions)
     
-       function ganttPost(){
+      //  function ganttPost(){
           // var taskID=task.id;
           // var taskName=task.name;  
           // var taskName=task.name;
@@ -633,7 +633,7 @@ Ganttalendar.prototype.drawTask = function (task) {
           //     console.log(msg)
           //   }
           // })
-      }
+      // }
             
         // $(".taskBoxSVG").mousedown(function(){
           // var taskStart=new Date(((task.start)/1000)*1000);

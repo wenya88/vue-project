@@ -433,7 +433,7 @@ export default {
     })
   },
   created() {
-    console.log(this.$children[0],this.$children[1]) 
+    // console.log(this.$children[0],this.$children[1]) 
     this.fetchData();
     this.fetchNum(1);
     this.fetchNum(2);

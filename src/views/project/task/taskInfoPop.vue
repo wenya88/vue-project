@@ -3,12 +3,12 @@
   <!-- <transition name="modal-fade"> -->
     <!-- <div class="modal-backdrop"> -->
       <!-- <div class="modal"> -->
-    <div>
-        <div class="modal-header">
-            <Button type="text" icon="ios-star-outline" size="large"></Button>
-            <Button type="text" @click="delTaskdeile" icon="trash-b" size="large"></Button>
+    <div class="taskinfopop">
+        <div class="task-option">
+            <!-- <Button type="text" icon="ios-star-outline" size="large"></Button> -->
+            <Button type="text" @click="delTask" icon="trash-b" size="large"></Button>
         </div>
-        <div class="modal-body">
+        <div class="task-body">
           <Tabs type="card" style="height: 600px;">
             <TabPane label="基本管理">
                 <div v-show="isInitTask">
@@ -187,6 +187,11 @@ export default {
     clickLine: function(index) {
       this.pushSubData = index;
     },
+    //刪除任务
+    delTask() {
+      this.$refs.main.delTaskDetail();
+      this.$emit("delTask");
+    },
     //增加编辑Modal子任务模版
     addChildTask: function() {
       this.subData.push({
@@ -228,31 +233,7 @@ export default {
         });
     },
     
-    subChange(date) {
-      this.pushSubData.expect_start_time = date;
-    },
-    subChange2(date) {
-      this.pushSubData.expect_end_time = date;
-    },
-    close: function() {
-      this.$emit("close");
-    },
-    //刪除任务
-    delTaskdeile(index) {
-      let cIs = this;
-      let removeData = this.editData.id;
-      this.get(
-        deletetaskData,
-        {
-          id: removeData
-        },
-        () => {
-          cIs.forEachData();
-          cIs.$emit("close");
-          cIs.$Message.success("删除成功");
-        }
-      );
-    },
+    
     //参与人选项卡
     memberList(index) {
       this.num = index;
@@ -311,8 +292,6 @@ export default {
         }
       );
     },
-    
-    
     subChild(pName) {
       this.pushSubData.project_child = pName;
     },
@@ -340,8 +319,18 @@ export default {
 </script>
 <style scoped>
 @import "../style/taskModal.css";
-.btn-close {
-  position: absolute;
-  margin-top: -15px !important;
+.taskinfopop{
+  display:inline-block;
+  overflow:hidden;
+}
+.task-body {
+  width:1100px;
+  float:left;
+  padding: 0 0 0 0px;
+}
+.task-option {
+  width:60px;
+  float:right;
+  padding: 0 0 0 20px;
 }
 </style>

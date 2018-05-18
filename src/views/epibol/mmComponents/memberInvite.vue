@@ -1,7 +1,7 @@
 <template>
     <Modal v-model="showAddNew" width=720>
-        <Tabs value="memberInviteTabs">
-                <TabPane label="添加研发成员" name="name1">
+        <Tabs>
+                <TabPane label="添加研发成员">
                     <transition-group name="memberinfo">
                         <table border=0 style="table-layout:fixed;border-collapse:separate;border-spacing:0px 20px;" key="list">
                             <tr>
@@ -25,7 +25,7 @@
                     <Button size="small" type="ghost" align="right" @click="addInviteMember">+</Button>
                 </TabPane>
 
-                <TabPane label="添加非研发成员" name="name2">
+                <TabPane label="添加非研发成员" >
                     <transition-group name="memberinfo">
                     <table border=0 style="table-layout:fixed;border-collapse:separate;border-spacing:0px 20px;" key="list">
                         <tr>

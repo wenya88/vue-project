@@ -82,6 +82,96 @@
         }
     }
 }
+
+// 项目管理
+.projectMenu{
+    display:block;
+    dt{
+        float:left;
+    }
+    dd{
+        float:right;
+        span{
+            float:left;line-height:32px;
+        }
+        .MLeft{
+            margin-left:40px;
+        }
+        .MLeft10{
+            margin-left:10px;
+        }
+        .descIcon{
+            background:url('../images/desc.png') 0px 8px no-repeat;width:20px;display:inline-block;background-size:15px;height:20px;float:left;
+        }
+        a{
+            float:left;margin-right:10px;font-style:normal;color:#657180;
+            &:hover{color:#3399ff;}
+        }
+        .show{
+            color:#3399ff;
+        }
+    }
+}
+.projectManageContent{
+    // overflow:auto;
+    margin-top:20px;
+    .ContentRow{
+        width:49%;float:left;margin-bottom:30px;border:1px solid #ddd;border-radius:@borderRadius12;box-shadow:@boxShadow;
+        &:nth-child(even){margin-left:2%;}
+    }
+    .RowTitle{
+        background:#eefaf8;border-radius:5px 5px 0px 0px;padding:10px;
+        .MLeft20{
+            margin-left:20px;margin-right:10px;
+        }
+        span{
+            float:left;
+            .tips{
+                position:absolute;margin-left:40px;margin-top:20px;
+            }
+            img{
+                width:100px;height:70px;border:0px;
+            }
+            .font16{
+                font-size:@fs14;font-weight:normal;color:#23a590;
+            }
+            i{
+                background:#e4e4e4;border-radius:4px;padding:2px 4px;color:#aeaeae;font-style:normal;margin-right:5px;
+            }
+            p{
+                display:block;line-height:35px;
+                img{
+                    width:20px;height:20px;border-radius:100%;margin-left:5px;margin-right:5px;
+                }
+            }
+        }
+        .edit{
+            float:right;margin-top:10px;
+        }
+    }
+    .content{
+        border-top:1px solid #ddd;padding:20px;
+        .listTitle{
+            display:block;text-align: center;
+            span{
+                padding-top:10px;display:inline-block;font-size:@fs118;
+            }
+        }
+        .listLine{
+            .line{
+                margin:24px 0px;
+                .title{
+                    float:left;width:100px;display:inline-block;text-align:right;padding-right:15px;font-size:@fs14;
+                }
+                .lineRow{
+                    margin-left:100px;display:block;margin-right:10px;
+                }
+            }
+        }
+        .ivu-progress-show-info .ivu-progress-outer{padding-right:80px;margin-right:-80px;}
+    }
+}
+
 .clear{
     clear:both;
 }

@@ -384,7 +384,7 @@ export default {
                 return
                 }          
             },()=>{
-            alert("请求失败!")
+                _this.$Message.error('请求失败')
             })
         },
         showStageList(){

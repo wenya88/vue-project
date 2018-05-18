@@ -32,7 +32,7 @@
                     <dd class="border padding">
                         <Timeline>
                             <!-- <Timeline-item :color="[Kitem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Kitem in dataList"> -->
-                                <Timeline-item color="lightgray" v-for="Kitem in dataList">
+                                <Timeline-item color="lightgray" v-for="(Kitem,index) in dataList" :key="index">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Kitem.client_audit_time|fromatDate}}</span>
                                 <span>{{Kitem.task_name}}</span>
@@ -49,7 +49,7 @@
                     <dd class="border padding inside">
                         <Timeline>
                             <!-- <Timeline-item :color="[Litem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Litem in dataList"> -->
-                            <Timeline-item color="lightgray" v-for="Litem in dataList">
+                            <Timeline-item color="lightgray" v-for="(Litem,index) in dataList" :key="index">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Litem.inside_audit_time|fromatDate}} <em>上传</em></span>
                                 <span>{{Litem.task_name}}</span>

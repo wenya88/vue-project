@@ -13,7 +13,7 @@
     <!-- 主视图:列表/甘特图 -->
     <Tabs style="height: 720px;" class="task-tab">
       <Tab-pane label="列表模式" icon="ios-list-outline">
-        <tasklist ref="list" v-on:showTaskDetails = 'showTaskDetails'></tasklist>
+        <tasklist ref="list" v-on:showTaskDetails = 'showTaskDetails' v-on:delTask="closeTaskDetails"></tasklist>
       </Tab-pane>
       <Tab-pane label="甘特图模式" icon="podium">
         <iframe id="show-iframe" frameborder=0 name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>
@@ -33,6 +33,7 @@
         <taskinfopop ref="details" 
                      v-bind:taskID="taskId"
                      v-on:refreshCurrentTaskList = 'refreshCurrentTaskList'
+                     v-on:delTask="closeTaskDetails"
                      >
         </taskinfopop>
     </Modal>
@@ -82,7 +83,7 @@ export default {
     };
   },
   mounted() {
-    // this.autoH();
+    this.autoH();
     this.$bus.on('refreshCurrentTaskList',()=>{
         this.refreshCurrentTaskList();
     });
@@ -101,8 +102,6 @@ export default {
       //刷新当前任务列表
       refreshCurrentTaskList()
       {
-        console.log("refreshCurrentTaskList");
-        
         this.$refs.list.refreshTaskList();
       },
       //显示任务详情

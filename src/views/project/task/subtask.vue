@@ -21,17 +21,11 @@
     </div>
 </template>
 <script>
-import {
-  deletetaskData,
-  gettasklistDetails
-} from "@/config/env.js";
 var qs = require("querystring");
-import editSubmodal from "./editSubmodal";
 import subtask from "./taskDetails"
 
 export default {
   components: { 
-    editSubmodal,
     subtask
     },
   props: {
@@ -242,21 +236,6 @@ export default {
                     });
         return true;
     },
-    //删除子任务列表数据
-    removetaskSub() {
-      let cIs = this;
-      let removeSubData = this.row.id;
-      // this.get(
-      //   deletetaskData,
-      //   {
-      //     id: removeSubData
-      //   },
-      //   () => {
-      //     cIs.$Message.success("刪除子任务成功！");
-      //     cIs.forEachSubData();
-      //   }
-      // );
-    },
     //遍历子任务列表数据
     forEachSubData() {
       // let cIs = this;
@@ -312,20 +291,6 @@ export default {
       //   }
       // );
     },
-    //获取任务列表详情
-    getforechDailt(id) {
-      // let fDi = this;
-      // fDi.get(
-      //   gettasklistDetails,
-      //   {
-      //     id: id
-      //   },
-      //   res => {
-      //     fDi.subForm = res.body;
-      //     fDi.isTabModal = true;
-      //   }
-      // );
-    }
   }
 };
 </script>

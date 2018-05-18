@@ -1,0 +1,296 @@
+<template>
+    <div>
+        <div slot="header" style="height:30px;">
+            <b class="font16">新建/编辑项目</b>
+        </div>
+        
+        <div class="addRow">
+            <dl>
+                <dt>项目合同</dt>
+                <dd>
+                    <Select v-model="proCont" filterable  style="width: 400px">
+                        <Option v-for="item in ContList" :value="item.contract_id" :key="item.contract_id">{{ item.company_name }}   合同编号:{{item.contract_id}}</Option>
+                    </Select>
+                </dd>
+                <dt>项目名称</dt>
+                <dd>
+                    <Input v-model="proName" placeholder="输入项目名称" style="width: 400px"></Input>
+                </dd>
+                <dt>开始时间</dt>
+                <dd>
+                    <DatePicker type="date" placeholder="开始时间" style="width: 180px" @on-change="HstartDate" :value="startDate"></DatePicker>
+                    <span class="span">至</span>
+                    <DatePicker type="date" placeholder="结束时间" style="width: 180px" @on-change="HendDate" :value="endDate"></DatePicker>
+                </dd>
+                <dt>项目图片 <span>[说明：图片小于1M，限JPG，PNG格式，建议大小100*70]</span></dt>
+                <dd>
+                    <div class="ImaUpload">
+                        <div class="demo-upload-list" v-for="item in uploadList">
+                            <template v-if="item.status === 'finished'">
+                                <img :src="item.url">
+                                <div class="demo-upload-list-cover">
+                                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)" size="30"></Icon>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                            </template>
+                        </div>
+
+                        <Upload
+                            ref="upload"
+                            :show-upload-list="false"
+                            :on-success="handleSuccess"
+                            :max-size="2048" 
+                            :format="['jpg','jpeg','png']"
+                            :on-format-error="handleFormatError"
+                            :on-exceeded-size="handleMaxSize"
+                            :before-upload="handleBeforeUpload"
+                            type="drag"
+                            action='/file/file/file-upload'
+                            style="display:block;width:100%;">
+                            <div style="width:100%;display:block;padding:33px 10px 33px 10px;">
+                                <p style="font-size:16px;"><Icon type="plus"></Icon> 上传图片</p>
+                                
+                            </div>
+                        </Upload>
+                    </div>
+                </dd>
+                <dt>项目标签</dt>
+                <dd>
+                    <Tag v-for="item in count" :key="item" :name="item" closable @on-close="Closelabel">{{ item }}</Tag>
+                    <Button icon="ios-plus-empty" type="dashed" size="small" @click.stop="Addlabel">
+                        添加标签
+                        <div class="addLabel" v-show="addLabDIV">
+                            <Input v-model="LabelVal" placeholder="请输入标签" style="width: 100px;"></Input>
+                            <Button type="primary" size="small" @click.stop="submitLabel">添加</Button>&nbsp;
+                            <Button size="small" @click.stop="closeAddDIV">取消</Button>
+                        </div>
+                    </Button>
+                    
+                </dd>
+                <dt>项目经理</dt>
+                <dd>
+                    <Tag v-for="item in manageCount" :key="item" :name="item" closable @on-close="CloseManage">{{ item }}</Tag>
+                    <Button icon="ios-plus-empty" type="dashed" size="small" @click="AddManage">
+                        添加项目经理
+                        <div class="addLabel" v-show="addManageDIV">
+                            <Input v-model="MangageVal" placeholder="请输入经理" style="width: 100px;"></Input>
+                            <Button type="primary" size="small" @click.stop="submitManage">添加</Button>&nbsp;
+                            <Button size="small" @click.stop="closeManageDIV">取消</Button>
+                        </div>
+                    </Button>
+                </dd>
+                <dt>状态</dt>
+                <dd>
+                    <i-switch size="large" v-model="state" @on-chanage="chanState">
+                        <span slot="open">开启</span>
+                        <span slot="close">暂停</span>
+                    </i-switch>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    data(){
+        return{
+            Pid:0,
+            proCont:'',
+            ContList:[],
+            proName:'',
+            startDate:'',
+            endDate:'',
+            count: [],
+            manageCount:['1223'],
+            state:true,
+            uploadList:[],
+            uploadurl:'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3429908815,845996252&fm=27&gp=0.jpg',
+            url:[],
+            LabelVal:'',
+            MangageVal:'',
+            addLabDIV:false,
+            addManageDIV:false,
+           
+        }
+    },
+    methods:{
+        // 开始时间
+        HstartDate(date){
+            this.startDate=date;
+            this.EmitData();
+        },
+        // 结束时间
+        HendDate(date){
+            this.endDate=date;
+            this.EmitData()
+        },
+        // 添加标签
+        Addlabel () {
+            this.addLabDIV=true;
+            this.LabelVal=''
+        },
+        submitLabel(){
+            this.count.push(this.LabelVal);
+            this.addLabDIV=false;
+        },
+        closeAddDIV(){
+            this.addLabDIV=false;
+        },
+        // 删除标签
+        Closelabel (event, name) {
+                const index = this.count.indexOf(name);
+                this.count.splice(index, 1);
+        },
+        // 添加经理
+        AddManage () {
+            this.addManageDIV=true;
+            this.MangageVal=''
+        },
+        submitManage(){
+            this.manageCount.push(this.MangageVal);
+            this.addManageDIV=false;
+        },
+        closeManageDIV(){
+            this.addManageDIV=false;
+        },
+        // 删除经理
+        CloseManage (event, name) {
+                const index = this.manageCount.indexOf(name);
+                this.manageCount.splice(index, 1);
+        },
+        // 状态改变
+        chanState(){
+            this.state=!this.state
+        },
+        // 图片上传
+        handleRemove (file) {
+            const fileList = this.$refs.upload.fileList;
+            this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+        },
+        handleSuccess (res, file) {
+            file.url = this.url;
+            this.uploadurl=this.uploadList[0].response.file.url;
+            // this.$bus.emit('MainFile',this.uploadList)
+        },
+        handleFormatError (file) {
+            this.$Notice.warning({
+                title: '文件格式是不正确的',
+                desc: '文件格式 ' + file.name + ' 不正确，请选择jpg或png格式.'
+            });
+        },
+        handleMaxSize (file) {
+            this.$Notice.warning({
+                title: '文件大小超过限制',
+                desc: '文件  ' + file.name + ' 太大了，不超过 2M.'
+            });
+        },
+        handleBeforeUpload (file) {
+            this.url=window.URL.createObjectURL(file);
+        },
+        // 获取公司合同
+        getCont(){
+            let _this=this;
+            let url=_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1;
+            _this.$axios.get(url).then(msg=>{
+                if(msg.data.err_code==0){
+                    _this.ContList=msg.data.data
+                }
+            })
+        },
+        // 发送数据
+        EmitData(){
+            let obj={}
+            obj.proCont=this.proCont,
+            obj.proName=this.proName,
+            obj.startDate=this.startDate,
+            obj.endDate=this.endDate,
+            obj.count=this.count,
+            obj.manageCount=this.manageCount[0],
+            obj.state=Number(this.state)==1?1:2,
+            obj.uploadurl=this.uploadurl,
+            obj.Pid=this.Pid
+            this.$bus.emit("AddProInfo",obj);
+        }
+    },
+    mounted(){
+        this.uploadList = this.$refs.upload.fileList;
+        this.getCont();
+        this.$bus.on("submitOk",()=>{
+            if(this.$refs.upload.fileList.length>0){
+                this.$refs.upload.fileList.splice(0);
+            }
+            this.proCont="",
+            this.proName="",
+            this.startDate="",
+            this.endDate="",
+            this.count=[],
+            this.state=true
+        });
+        this.$bus.on("EditProData",(val)=>{
+           this.Pid=val.EPid;
+           this.proCont=val.EPcontract;
+           this.proName=val.EPname;
+           this.startDate=val.EPstartTime;
+           this.endDate=val.EPendTime;
+           this.count=val.EPtag;
+           this.uploadurl=val.EPpicture;
+        })
+    },
+    updated(){
+       this.EmitData()
+    }
+  
+}
+</script>
+<style>
+    .font18{font-size:16px;font-weight:normal;}
+    .addRow dt{line-height:30px;height:30px;font-weight:bold;font-size:12px;margin-bottom:5px;}
+    .addRow dt span{font-weight:normal;margin-left:5px;color:#888;}
+    .addRow dd{margin-bottom:5px;}
+    .addRow dd .addLabel{position:absolute;border-radius:4px;padding:5px;background:#fff;width:200px;border:1px dashed #ddd;margin-top:-28px;margin-left:-10px;text-align:left;}
+    .addRow dd .addLabel .ivu-input{height:24px;line-height:24px;}
+    .addRow dd .addLabel p{margin-top:5px;text-align:right;}
+    .addRow dd .span{width:33px;display:inline-block;text-align:center;}
+    .addRow .ImaUpload{width:220px;height:90px;display:block;}
+    .addRow .ImaUpload .demo-upload-list{
+        height:90px;
+        width:218px;
+        display: block;
+        text-align: center;
+        line-height: 45px;
+        /* border: 1px solid transparent; */
+        border-radius: 0px;
+        overflow: hidden;
+        background: #fff;
+        position:absolute;
+        margin:1px;
+        z-index:11;
+        box-shadow: 0 1px 1px rgba(0,0,0,0);
+        border-radius:4px;
+    }
+    .MainFile .demo-upload-list img{
+        width: 100%;
+        height: 90px;
+    }
+    .demo-upload-list-cover{
+        padding-top:13%;
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.6);
+    }
+    .demo-upload-list:hover .demo-upload-list-cover{
+        display: block;
+    }
+    .demo-upload-list-cover i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+</style>

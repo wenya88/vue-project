@@ -58,7 +58,7 @@
             handleSuccess (res, file) {
                 file.url = this.url;
                 // console.log(this.file)
-                 this.$bus.emit('MainFile',this.uploadList)
+                this.$bus.emit('MainFile',this.uploadList)
             },
             handleFormatError (file) {
                 this.$Notice.warning({

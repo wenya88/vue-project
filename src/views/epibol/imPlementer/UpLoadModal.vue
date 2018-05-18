@@ -26,7 +26,7 @@
              <h5>选择文件上传阶段</h5>
              <div class="stageRow">
                   <Steps :current="current">
-                      <span v-for="(item,index) in ComStage" @click="current=index"><Step :title="item.stage_name"></Step></span> 
+                      <Step :title="item.stage_name" v-for="(item,index) in ComStage" @click.native="current=index" :key="index"></Step>
                   </Steps>
              </div>
          </div>
@@ -65,7 +65,6 @@ export default {
             this.stage=val.stage;
             this.current=val.progress;
         });
-        
     },
     components:{
             MainFileUpLoad,

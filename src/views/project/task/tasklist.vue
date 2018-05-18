@@ -1,6 +1,6 @@
 <!-- 任务列表组件 -->
 <template>
-  <div>
+  <div >
       <Table 
         height='660' 
         :columns="columnsTask" 
@@ -8,36 +8,40 @@
         :ellipsis="true"
         size="large"
         highlight-row
+        :loading="loading"
         ref="table" 
-        class="tableStyle"
         @on-current-change="changeTaskListItem"
         >
       </Table>
+      <!-- <Table 
+        height='660' 
+        :columns="columnsTask_del" 
+        :data="dataList_del" 
+        size="large"
+        :loading="loading"
+        disabled-hover="dellisthighlight"
+        ref="del"
+        class="tasklistdel"
+        @on-current-change="changeTaskListDel"
+        >
+      </Table> -->
     </div>
 </template>
 <script>
 var qs = require("querystring");
-import excelModal from "./excelModal";
-import addformModal from "./addformModal";
 import tasklistline from "./taskListLine";
-
-import {
-  deletetaskData,
-
-  projectList,
-  getChildList
-} from "@/config/env.js";
 
 export default {
   components: {
-    excelModal,
-    addformModal,
   },
   data() {
     return {
       currentMsg:{},
+      loading:true,
+      dellisthighlight:false,
       /*-----*/
       dataList: [],
+      dataList_del:[],
       columnsTask: [
         // {
         //   type: 'expand',
@@ -78,7 +82,7 @@ export default {
           key: "run_uname",
           align: "right",
           ellipsis: true,
-          width: 120
+          width: 154
         },
         {
           title: "实施阶段",
@@ -114,21 +118,21 @@ export default {
           align: "center",
           ellipsis: true,
           key: "file_id",
-          width: 120
+          width: 160
         },
         {
           title: "文件最近更新",
           align: "right",
           key: "update_date",
           ellipsis: false,
-          width: 140
+          width: 120
         },
          {
           title: "到期时间",
           align: "right",
           key: "expect_end_date",
           ellipsis: false,
-          width: 100
+          width: 120
         },
         {
           title: "操作",
@@ -164,13 +168,10 @@ export default {
                     title: "确认删除该任务?",
                     transfer: true
                   },
-                  style: {
-                    marginLeft: "12px"
-                  },
+                  style: "dellisttask",
                   on: {
-                    click: () => {
-                      let cIs = this;
-                      cIs.removetasklistData(params.index);
+                    click: ($event) => {
+                      this.removetasklistData(params.index,$event);
                     }
                   }
                 },
@@ -180,6 +181,37 @@ export default {
           }
         }
       ],
+      columnsTask_del:[
+        {
+          title: "删除",
+          key: "name",
+          align: "center",
+          width: 80,
+          render: (h, params) => {
+            return h("div", [
+                    h(
+                      "Button",
+                      {
+                        props: {
+                          type: "text",
+                          size: "small",
+                          confirm: true,
+                          title: "确认删除该任务?",
+                          transfer: true
+                        },
+                        style: "dellisttask",
+                        on: {
+                          click: ($event) => {//render不支持.
+                            this.removetasklistData(params.index,$event);
+                          }
+                        }
+                      },
+                      "删除"
+                    )
+            ]);
+          }
+        },
+      ]
     };
   },
   mounted() {
@@ -198,6 +230,14 @@ export default {
       {
         this.$emit('showTaskDetails',currentRow.id); 
         this.$refs.table.clearCurrentRow();
+      }
+    },
+    //删除
+    changeTaskListDel(currentRow,oldRow)
+    {
+      if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
+      {
+        console.log("changeTaskListDel");
       }
     },
     exportData(type) {
@@ -246,19 +286,18 @@ export default {
     },
     
     //删除数据
-    removetasklistData(index) {
-      let cIs = this;
-      let removeData = this.dataList[index].id;
-      this.get(
-        deletetaskData,
-        {
-          id: removeData
-        },
-        () => {
-          cIs.initTaskListFromId();
-          this.$Message.success("删除成功");
-        }
-      );
+    removetasklistData(index,$event) {
+      $event.cancelBubble = true;
+      this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.dataList[index].id}))
+                  .then(res => {
+                      this.$bus.emit('refreshCurrentTaskList');
+                      this.refreshTaskList();
+                  })
+                  .catch(error => {
+                      this.$Message.error("删除任务失败，请重试！");
+                      return false;
+                  });
+      return true;
     },
     //遍历主任务列表数据
     initTaskListFromId(data) {
@@ -279,6 +318,7 @@ export default {
     //刷新当前列表
     refreshTaskList()
     {
+      this.loading = true;
       this.getTaskList(this.currentMsg);
     },
     getTaskList(msg)
@@ -288,6 +328,15 @@ export default {
                 .then( res => {
                       this.dataList = res.data;
                       this.formatTaskList(this.dataList.reverse());//颠倒顺序
+                      this.loading = false;
+                      this.dataList_del=[];
+                      this.dataList.forEach(
+                        (element) => {
+                          this.dataList_del.push({
+                            name:"删除",
+                            id:element.id
+                          });
+                      });
                     }
                 )
                 .catch(error => {
@@ -401,6 +450,29 @@ export default {
 }
 .btnStting {
   margin-bottom: 10px;
+}
+.tasklistfather{
+  display:inline-block;
+  overflow:hidden;
+}
+.tasklist{
+    width:1400px;
+    z-index: 1;
+    float:left;
+    padding: 0 0px 0 0;
+}
+.tasklistdel{
+    width:82px;
+    z-index: 1;
+    float:left;
+    padding: 0 0 0 -2px;
+}
+.dellisttask{
+  width:80px;
+  position:absolute;
+  z-index: 2;
+  marginLeft: 12px;
+  display:block;
 }
 </style>
 

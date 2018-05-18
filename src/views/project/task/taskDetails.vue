@@ -2,33 +2,10 @@
 <template>
     <div class="taskdetail">
         <div class="taskdetail-left">
-            <Form label-position="left" :label-width="60">
+            <Form label-position="left" :label-width="60" >
                 <FormItem label="任务名称">
-                    <Input v-model="editData.name">
+                    <Input v-model="editData.name" :disabled="canEdit">
                     </Input>
-                </FormItem>
-                <FormItem label="计划时间">
-                    <DatePicker 
-                    :value="getTimeRange"
-                    @on-change="setTimeRange" 
-                    format="yyyy-MM-dd" 
-                    type="daterange" 
-                    :options="startTime" 
-                    split-panels
-                    placeholder="选择计划时间范围" 
-                    >
-                    </DatePicker>
-                </FormItem>
-                <FormItem label="子项目">
-                    <Select @on-change='setChildProject' v-model="editData.project_child_name" clearable>
-                        <Option 
-                            v-for="item in childProjectsList" 
-                            :key="item.child_id"
-                            :value="item.name"
-                            >
-                            {{item.name}}
-                        </Option>
-                    </Select>
                 </FormItem>
                 <FormItem label="负责人">
                     <Tag v-for="item in principal" 
@@ -78,6 +55,30 @@
                             </Row>
                         </DropdownMenu>
                     </Dropdown>
+                </FormItem>
+                <FormItem label="计划时间">
+                    <DatePicker 
+                    :value="getTimeRange"
+                    @on-change="setTimeRange" 
+                    format="yyyy-MM-dd" 
+                    type="daterange" 
+                    :options="startTime" 
+                    split-panels
+                    placeholder="选择计划时间范围" 
+                    style="width: 320px"
+                    >
+                    </DatePicker>
+                </FormItem>
+                <FormItem label="子项目">
+                    <Select @on-change='setChildProject' v-model="editData.project_child_name" clearable>
+                        <Option 
+                            v-for="item in childProjectsList" 
+                            :key="item.child_id"
+                            :value="item.name"
+                            >
+                            {{item.name}}
+                        </Option>
+                    </Select>
                 </FormItem>
                 <FormItem label="任务类型">
                     <AutoComplete  v-model="editData.tasktype_name" 
@@ -131,16 +132,16 @@ export default{
             taskID:0,
             editData:{},
             //*任务属性选项*//
-            isNewTask:false,
+            canEdit:false,//能否编辑
+            isNewTask:false,//是否为新任务
             principal: [],//负责人数组
             principalName: "",//搜索框负责人名字
             principalNum: 1,
-            referencePicList: [],//附件图片列表
-            referenceFileList: [],//附件文件猎豹
-            childProjectsList: [],//供选择的子项目列表
             principalType: [],//供选择的负责人类型
+            referenceFileList: [],//附件文件列表
+            childProjectsList: [],//供选择的子项目列表
             taskTypesList:[],//供选择的任务类型
-            taskTypeInfo:{},
+            taskTypeInfo:{},//任务类型信息
             // referenceFileName: [],//附件文件名称
             referenceFileUrl:[],//附件文件地址
             dateRange:"",
@@ -286,6 +287,7 @@ export default{
                 dateForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
             return this.isNewTask ?this.addTaskDetails(dateForm) : this.updateTaskDetail(dateForm);
         },
+        //新增任务
         addTaskDetails(dateForm)
         {
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dateForm))
@@ -298,6 +300,7 @@ export default{
                         });
             return true;
         },
+        //更新任务
         updateTaskDetail(dateForm)
         {
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dateForm))
@@ -306,6 +309,21 @@ export default{
                         })
                         .catch(error => {
                             this.$Message.error("编辑任务失败，请重试！");
+                            return false;
+                        });
+            return true;
+        },
+        //删除任务
+        delTaskDetail()
+        {
+            console.log(this.editData.id);
+            
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.editData.id}))
+                        .then(res => {
+                            this.$bus.emit('refreshCurrentTaskList');
+                        })
+                        .catch(error => {
+                            this.$Message.error("删除任务失败，请重试！");
                             return false;
                         });
             return true;

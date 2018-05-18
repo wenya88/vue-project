@@ -19,12 +19,7 @@
 .ivu-tabs-ink-bar{
     z-index: 0 !important;
 }
-/* .tableStyle{
-    position: relative !important; 
-    top: 45px !important;
-    right: 0;
-    left: 0;
-} */
+
 .modal {
     background-color: #fff;
     box-shadow: 2px 2px 20px 1px;

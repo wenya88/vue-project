@@ -129,6 +129,7 @@
          let fID=fid;
          this.defue(fileID,fID);
          this.imgdef();
+        
       },
       defue(fileID,fID){
         (function($){
@@ -272,7 +273,7 @@
                 console.log(msg)
              },
              error:function(){
-               alert('请求失败!')
+               alert(' 提交失败!')
              }
             })
           })
@@ -316,6 +317,7 @@
             _this.cliDate=_this.IMGlist[0].cliDate;
             _this.insUid=_this.IMGlist[0].insUid;
             _this.cliUid=_this.IMGlist[0].cliUid;
+            
             // 把StageID传到提交
             let fileID = Sdate.data[0].task_id;
             let fID=Sdate.data[0].file.fid;
@@ -325,7 +327,7 @@
               return
             }          
         },()=>{
-          alert("请求失败!")
+           _this.$Message.error('请求失败')
         })
       },
       showStageList(){

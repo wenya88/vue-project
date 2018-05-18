@@ -181,12 +181,19 @@ export const appRouter = [
                 component: resolve => { require(['@/views/epibol/summary.vue'], resolve); }
             },
             {
-                path: '/epibol/3D',
+                path: '/epibol/ProjectWork',
                 icon: 'ios-paper-outline',
-                name: '3D',
-                title: '3D',
-                component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
-            }
+                name: 'workbench',
+                title: '工作台',
+                component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
+            },
+            // {
+            //     path: '/epibol/3D',
+            //     icon: 'ios-paper-outline',
+            //     name: '3D',
+            //     title: '3D',
+            //     component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
+            // }
         ]
     }, {
         path: '/customer',

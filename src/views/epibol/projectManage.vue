@@ -1,8 +1,7 @@
 <template>
   <div>
-    <!-- @click="linkTo('/system/authority/authorityAdd',{level: menuItem.level,type: menuItem.type,parentPrivNo: menuItem.privNo})" -->
-    <Button type="primary" @click="linkTo('/project')">普通项目</Button>
-    <Button type="primary" @click="linkTo('/project')">分包项目</Button>
+      <Button type="primary" @click="linkTo('/project')">普通项目</Button>
+      <Button type="primary" @click="linkTo('/project')">分包项目</Button>
   </div>
 </template>
 
@@ -22,6 +21,7 @@ export default {
         this.$router.push(url)
       }
     }
+
   }
 }
 </script>

@@ -1,0 +1,156 @@
+@import './common.less';
+.projectWorkInfo{
+    .myProject{
+        margin-right:310px;box-shadow:@boxShadow;border-radius:@borderRadius12;
+        dt{
+            height:30px;line-height:30px;background:#f7f7f7;border-radius:12px 12px 0px 0px;padding-left:10px;font-size:@fs14;font-weight:bold;
+        }
+        dd{
+            padding:24px;height:215px;overflow:auto;
+            .demo-Circle-inner{
+                p{
+                    font-size:14px;margin-top:8px;color:#888;
+                }
+            }
+            .circle{
+                text-align:center;
+            }
+            .title{
+                background:#ff6600;color:#fff;border-radius:4px;padding:0px 5px;line-height:18px;height:18px;margin-bottom:8px;display:inline-block;
+            }
+            .content{
+                margin-top:10px;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;
+                .tips{
+                    background:#990000;color:#fff;padding:1px 2px;margin-left:2px;font-size:12px;
+                }
+                .chlidPro{
+                    color:#888;font-size:12px;
+                }
+            }
+            .PressLine{
+                margin-top:15px;display:block;
+                .gressTile{
+                    text-align:right;padding-right:10px;float:left;width:90px;padding-right:10px;
+                }
+                .gressLine{
+                    margin-left:100px;
+                }
+            }
+            .ivu-progress-show-info{ 
+                .ivu-progress-outer{
+                    padding-right:90px;margin-right:-90px;
+                }
+            }
+            
+        }
+    }
+    .myCalend{
+        float:right;width:290px;
+        .jobCalend{
+            margin-top:0px;
+            dd{
+                height:213px;
+            }
+        }
+    }
+}
+.projectWorkContent{
+    margin-top:20px;
+    .contentRow{
+        float:left;box-shadow:0px 1px 10px #b5b5b5;border-radius:@borderRadius12;margin-left:2%;background:#fff;width:32%;
+        dt{
+            &:extend(.projectWorkInfo .myProject dt);
+        }
+        dd{
+            padding:0px 15px 15px 15px;overflow:auto;
+        }
+    }
+    .emphkeep{
+        margin-left:0%;
+        .ivu-progress-bg{
+            background:#00cc00;
+        }
+        .ivu-progress-inner{
+            background:#e4e4e4;
+        }
+        li{
+            margin-top:15px;margin-bottom:-12px;
+        }
+        .row{
+            background:#f8f8f8;margin-bottom:-10px;padding:10px;line-height:28px;
+            span{
+                width:25%;display:inline-block;text-align:right;
+                &:nth-child(1){
+                    width:48%;text-align:left;
+                }
+            }
+            i{
+                font-style:normal;color:#fff;background:#ff9900;padding:0px 2px;
+            }
+            s{
+                color:#ff6600;text-decoration:none;font-weight:bold;
+            }
+            img{
+                width:20px;height:20px;border-radius:100%;float:left;margin-right:5px;
+            }
+            u{
+                text-decoration:none;color:#969696;
+            }
+        }
+    }
+    .awaiaudit{
+        span{
+            width:18%;display:inline-block;text-align:right;
+            &:nth-child(1){
+                text-align:left;width:43%;
+            }
+        }
+        img{
+            &:extend(.projectWorkContent .emphkeep .row img);
+            width:70px;height:46px;border-radius:0px;margin-top:4px;
+        }
+        li{
+            &:extend(.projectWorkContent .emphkeep li);
+            &:extend(.projectWorkContent .emphkeep .row);
+            i{
+                &:extend(.projectWorkContent .emphkeep .row i);
+            }
+        }
+        
+        s{
+            &:extend(.projectWorkContent .emphkeep .row s);
+        }
+        u{
+            &:extend(.projectWorkContent .emphkeep .row u);
+        }
+    }
+    .fbackdisp{
+        li{
+            margin-top:12px;width:48.5%;float:left;margin-left:3%;background:#f8f8f8;padding:4px;
+            img{
+                width:100%;height:92px;margin-top:-17px;
+            }
+            &:nth-child(odd){
+                margin-left:0;
+            }
+        }
+        .tip{
+            background:rgba(223, 140, 10, 0.8);color:#fff;padding:1px 4px;position:relative;
+        }
+        .stop{
+            background:rgba(151, 61, 6, 0.8);
+            &:extend(.projectWorkContent .fbackdisp .tip);
+        }
+        .fbackinfo{
+            line-height:24px;margin-top:3px;
+            span{
+                width:49%;color:#969696;display:inline-block;
+                
+            }
+            img{
+                width:20px;height:20px;border-radius:100%;float:left;margin-right:5px;margin-top:0px;
+            }
+        }
+
+    }
+}

@@ -5,20 +5,39 @@
     </div>
 </template>
 <style>
-    #echartTypeTask{height:400px;}
 </style>
 <script>
   export default{
+    data(){
+      return{
+
+      }
+    },
     mounted(){
-      this.myCharts()
+      this.autoHeight();
+      this.getData();
+      this.myCharts();
     },
     updated(){
-      this.myCharts()
+      this.myCharts();
     },
     activated(){
-      this.myCharts()
+      this.myCharts();
     },
     methods:{
+      getData(){
+          let _this=this;
+          let projectID=sessionStorage.projectID
+          let url=this.GLOBAL.baseRouter+'task/total/task-type-work-time-total&project_id='+projectID
+          _this.$axios.get(url).then(msg=>{
+                let MsgData=msg.data.data;
+                console.log(MsgData)
+          })
+      },
+      autoHeight(){
+          let getH=document.body.clientHeight-200;
+          document.getElementById("echartTypeTask").style.height=getH+"px";
+      },
       myCharts(){
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('echartTypeTask'));
@@ -85,6 +104,7 @@
             splitLine: {
               lineStyle: {
                 color: '#A7BAFA',
+                type:'dotted'
               },
             }
 
@@ -163,9 +183,9 @@
               formatter: function(param) {
                 return [
                   ' ' + param.name + ': ',
-                  '最高工时: ' + param.data[0],
-                  '最低工时: ' + param.data[1],
-                  '平均工时: ' + param.data[2]
+                  '最高工时: ' + param.data[1],
+                  '最低工时: ' + param.data[2],
+                  '平均工时: ' + param.data[3]
                 ].join('<br/>')
               }
             }
