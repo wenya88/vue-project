@@ -10,9 +10,9 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
                         {{item.name}}
-                        <span class="numStyle">{{item.number}}</span>
+                        <span class="numStyle">{{item.member_count}}</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end">
+                        <Poptip class="more" placement="bottom-end" v-if="index+1 < deptList.length">
                             <span>...</span>
                             <div class="api" slot="content">
                                 <!-- <slot name="fmore"></slot> -->
@@ -30,14 +30,15 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in dutyList" :key="index" :class="{'actived': SMenuIndex == index}" @click="open2Table(index,item.company_id,item.id)">
                         {{item.name}}
-                        <span class="numStyle">{{item.number}}</span>
+                        <span class="numStyle">{{item.member_count}}</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end">
+                        <Poptip class="more" placement="bottom-end" v-if="index+1 < dutyList.length">
                             <span>...</span>
                             <div class="api" slot="content">
                                 <!-- <slot name="fmore"></slot> -->
                                 <ul>
                                     <li @click="editDuty(item.id,item.name)">编辑</li>
+                                    <li @click="delDuty(item.id)">删除</li>
                                 </ul>
                             </div> 
                         </Poptip>

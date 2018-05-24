@@ -1,6 +1,6 @@
 @import './common.less';
 .imgEditorCom{
-    width:100%;height:600px;
+    position:absolute;
     .controlListRow{
         position:absolute;z-index:11;background:#bb5717;color:#fff;width:18px;text-align:center;padding:5px 0px;line-height:16px;margin-top:25%;
     }
@@ -32,12 +32,12 @@
     }
 }
 .chooseBox{
-    height:auto;position:absolute;z-index:100;background:#fff;box-shadow:#000 0 0 2px;-webkit-box-shadow:#000 0 0 2px;
+    height:auto;position:absolute;z-index:9999;background:#ff0000;
     ul{
         width:100%;height:auto;cursor:pointer;list-style:none;
         li{
-            width:100%;height:20px;color:#000;font-size:12px;text-align:center;line-height:20px;padding:0px 4px;
-            &:hover{background:#3498db;color:#fff;}
+            width:100%;height:16px;color:#fff;font-size:12px;text-align:center;line-height:16px;padding:0px 4px;
+            &:hover{background:#ff8000;color:#fff;}
         }
     }
 }
@@ -57,19 +57,19 @@
     width:100%;height:29px;border-top:#d9d6d6 1px solid;line-height:29px;text-align:center;cursor:pointer;font-weight:bold;font-size:14px;color:#fff;background:#3498db;
 }
 .signIndex{
-    width:15px;height:15px;border:rgba(251,251,251,0.4) 3px solid;position:absolute;z-index:99;border-radius:100%;text-align:center;line-height:25px;
+    width:15px;height:15px;border:rgba(255,128,0,1) 0px solid;background:#ff8000;position:absolute;z-index:99;border-radius:100%;text-align:center;line-height:25px;
     .hintBox{
-        top:-28px;left:-45px;width:100px;padding-left:5px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;border-radius:4px;
+        top:-25px;left:-50px;width:110px;padding-left:2px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;border-radius:2px;
     }
     .triangle-down{
-        left:-5px;top:-8px;
+        left:-3px;top:-5px;
     }
 }
 .hintBox{
-    margin:0;position:absolute;min-width:50px;max-width:240px;max-height:100px;min-height:20px;z-index:101;background:rgba(0,0,0,0.5);color:#fff;line-height:20px;font-size:12px;text-align:center;
+    margin:0;position:absolute;min-width:50px;max-width:240px;max-height:100px;min-height:20px;z-index:101;background:rgba(0,0,0,0.4);color:#fff;line-height:20px;font-size:12px;text-align:left;
 }
 .triangle-down{
-    position:absolute;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:5px solid rgba(0,0,0,0.5);z-index:101;
+    position:absolute;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:5px solid rgba(0,0,0,0.4);z-index:101;
 }
 .clear{
     clear:both;
@@ -94,7 +94,7 @@
     .EditSub{
         width:10%;margin-left:3%;
         button{
-            border-radius:100%;background:#ff9900;color:#fff;line-height:44px;padding:0px 10px;border:0px;font-size:@fs14;cursor:pointer;
+            border-radius:2px;background:#ff9900;color:#fff;line-height:44px;padding:0px 10px;border:0px;font-size:@fs14;cursor:pointer;
         }
         .subPass{
             &:extend(.AllowEdit .EditSub button);

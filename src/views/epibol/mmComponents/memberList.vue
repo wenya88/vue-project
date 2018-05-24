@@ -1,6 +1,13 @@
 <template>
     <div>
-        <Table highlight-row :columns="membercolumns" :data="memberdata" @on-current-change="changeRow"></Table>
+        <!-- @on-current-change="changeRow" -->
+        <Table 
+        highlight-row 
+        :columns="membercolumns" 
+        :data="memberdata" 
+        @on-row-click="clickRow"
+        :loading="loadingStatus">
+        </Table>
         <Page 
         :total="count"
         :page-size="pageSize"
@@ -18,7 +25,7 @@ import { mapGetters } from 'vuex'
         return {
             membercolumns:[
                 {
-                    title:'备注名',
+                    title:'备注名/用户名',
                     key:'remark_name'
                 }, {
                     title:'昵称',
@@ -40,7 +47,8 @@ import { mapGetters } from 'vuex'
             memberdata:[],
             allData: [],
             count: 0,
-            pageSize: 20
+            pageSize: 20,
+            loadingStatus: false
         }
     },
     mounted() {
@@ -124,7 +132,8 @@ import { mapGetters } from 'vuex'
          * 切换数据
          */
         deptData(comId,deptId){
-            this.$Loading.start();
+            // this.$Loading.start();
+            this.loadingStatus = true;
             let data = {
                 company_id: comId,
                 department_id: deptId
@@ -141,7 +150,8 @@ import { mapGetters } from 'vuex'
                         this.memberdata = this.allData.slice(0,this.pageSize);
                     }
                     this.count = parseInt(res.page.count);
-                    this.$Loading.finish();
+                    // this.$Loading.finish();
+                    this.loadingStatus = false;
                 } else {
                     this.$Message.error('数据请求发生错误！');
                 }
@@ -150,7 +160,7 @@ import { mapGetters } from 'vuex'
             // this.memberdata = [this.initAMemberData(comId,deptId)];
         },
         dutyData(comId,dutyId){
-            this.$Loading.start();
+            this.loadingStatus = true;
             let data = {
                 company_id: comId,
                 post_id: dutyId
@@ -167,7 +177,7 @@ import { mapGetters } from 'vuex'
                         this.memberdata = this.allData.slice(0,this.pageSize);
                     }
                     this.count = parseInt(res.page.count);
-                    this.$Loading.finish();
+                    this.loadingStatus = false;
                 } else {
                     this.$Message.error('数据请求发生错误！');
                 }
@@ -182,6 +192,10 @@ import { mapGetters } from 'vuex'
         changeRow(currentRow) {
             this.$emit('choiseRow', currentRow)
             // console.log(currentRow)
+        },
+        clickRow(index) {
+            this.$emit('choiseRow', index)
+            // console.log(index)
         }
     }
 }

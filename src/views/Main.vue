@@ -167,17 +167,18 @@ export default {
         /**
          * 刷新当前页面路由设置
          */
-        let currentRoute = location.hash
-        let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
-        this.menuList.forEach((item) => {
-            if(routeName === item.name) {
-                this.subMenu = item.children
-                let menuArr = item.children
-                // console.log(routeName,this.subMenu)
-                this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
-            }
-        })
-        this.activePath = this.$route.path
+        this.refresh();
+        // let currentRoute = location.hash
+        // let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
+        // this.menuList.forEach((item) => {
+        //     if(routeName === item.name) {
+        //         this.subMenu = item.children
+        //         let menuArr = item.children
+        //         // console.log(routeName,this.subMenu)
+        //         this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
+        //     }
+        // })
+        // this.activePath = this.$route.path
         // console.log(this.activePath)
     },
     computed: {
@@ -192,6 +193,22 @@ export default {
         // }
     },
     methods: {
+        /**
+         * 刷新当前页面
+         */
+        refresh() {
+            let currentRoute = location.hash
+            let routeName = (location.href).match(/\/#\/(.*?)\//)[1]
+            this.menuList.forEach((item) => {
+                if(routeName === item.name) {
+                    this.subMenu = item.children
+                    let menuArr = item.children
+                    // console.log(routeName,this.subMenu)
+                    this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
+                }
+            })
+            this.activePath = this.$route.path
+        },
         init() {
             this.userName = Cookies.get('user');
         },
@@ -218,7 +235,6 @@ export default {
                     }
                 })
             }
-            // this.$router.push('/login');
         },
         collapsedSider() {
             if (this.showMenu == false) {
@@ -230,13 +246,15 @@ export default {
         updateMenu() {
             this.menuList.forEach((item) => {
                 // let routeName = this.$route.name
-                // console.log(this.$route.name)
-                if (this.$route.name === item.name) {
-                    this.subMenu = item.children
-                    let menuArr = item.children
-                    // console.log(this.$route.name,this.subMenu)
-                    this.$router.push(menuArr[0].path)
-                }
+                // console.log(this.$route.name, typeof this.$route.name)
+                // if(this.$route.name === item.name) {
+                //     this.subMenu = item.children
+                //     let menuArr = item.children
+                //     console.log(this.$route.name,this.subMenu)
+                //     this.$router.push(menuArr[0].path)
+                // } else {
+                     this.refresh();
+                // }
             })
             this.activePath = this.$route.path
             // console.log(this.activePath)

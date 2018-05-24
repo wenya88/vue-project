@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="filetype === 'NULL'">
+        <div v-if="filetype === 'NULL'" class="notIMG">
             暂未上传任务文件
         </div>
         <div v-if="filetype === 'IMG'">
@@ -35,21 +35,39 @@ export default {
         }
     },
     methods: {
-        initFileBrowse(taskid)
+        initFileBrowse(taskid,type)
         {
-            this.getFileDetails(taskid);
+            //显示不同的组件
+            switch(type)
+            {
+                case 'image':
+                    // console.log("file type is "+type);
+                    this.filetype = 'IMG';
+                    this.getFileDetails(taskid);
+                    break;
+                case 'video':
+                    this.filetype = 'VIDEO';
+                    // console.log("file type is "+type);
+                    break;
+                case 'model':
+                    this.filetype = 'MODEL';
+                    // console.log("file type is "+type);
+                    break;
+                default:
+                    this.filetype = 'NULL';
+                    break;
+            }
         },
         getFileDetails(taskid)
         {
-            console.log(taskid);
             if(taskid!=0)
             {
                 this.taskID = taskid;
-                console.log(this.taskID);
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/task-stage',qs.stringify({task_id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-                        console.log(res);
+                        sessionStorage.TaskID = taskid;
+                        this.$refs.imgeditor.initImgEditor();
                     }
                 )
                 .catch(error => {

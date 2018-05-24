@@ -19,13 +19,17 @@
                     <Layout>
                         <Content>
                             <memberlist ref="list" @choiseRow="selectMember"></memberlist>
-                            <memberinvite ref="invite"></memberinvite>
+                            <memberinvite 
+                            ref="invite"
+                            >
+                            </memberinvite>
                             <membermessage 
                             ref="message" 
                             :param="param"
                             @cancel='close()'
                             @revised='editMember(param.id,param.remark_name,param.department_id,param.post_id)'
-                            @removed='delMember(param.id)'></membermessage>
+                            @removed='delMember(param.id)'
+                            :editStatus="true"></membermessage>
                         </Content>
                     </Layout>
                 </Layout>
@@ -83,7 +87,23 @@ export default {
             dutyStatus: 'add',
             dutyId: 0,
             dutyName: '',
-            param: {}
+            param: {},
+            // inviteData: {
+            //     company_id: 1,
+            //     email: '',
+            //     remark_name: '',
+            //     department_id: '',
+            //     post_id: ''
+            // },
+            // addData: {
+            //     company_id: 1,
+            //     remark_name: '',
+            //     password: '',
+            //     email: '',
+            //     phone: '',
+            //     department_id: '',
+            //     post_id: ''
+            // }
         };
     },
     mounted() {
@@ -123,12 +143,18 @@ export default {
          */
         deptData(index, comId, deptId) {
             this.$refs.list.deptData(comId, deptId);
+            sessionStorage.memberStyle = 'dept';
+            sessionStorage.comId = comId;
+            sessionStorage.deptId = deptId;
         },
         /**
          * 切换成员类型数据页面消息
          */
         dutyData(index, comId, dutyId) {
             this.$refs.list.dutyData(comId, dutyId);
+            sessionStorage.memberStyle = 'duty';
+            sessionStorage.comId = comId;
+            sessionStorage.dutyId = dutyId;
         },
         addDept() {
             this.deptStatus = 'add';
@@ -150,7 +176,8 @@ export default {
                     .then(res => res.data)
                     .then(res => {
                         if (res.err_code == 0) {
-                            this.fetchDeptList();
+                            this.deptListData();
+                            this.deptName = '';
                             this.$Message.success('创建部门成功');
                         } else {
                             this.$Message.error('创建部门失败');
@@ -165,7 +192,8 @@ export default {
                     .then(res => res.data)
                     .then(res => {
                         if (res.err_code == 0) {
-                            this.fetchDeptList();
+                            this.deptListData();
+                            this.deptName = '';
                             this.$Message.success('修改部门名称成功');
                         } else {
                             this.$Message.error('修改部门名称失败');
@@ -192,7 +220,7 @@ export default {
                 .then(res => res.data)
                 .then(res => {
                     if (res.err_code == 0) {
-                        this.fetchDeptList();
+                        this.deptListData();
                         this.$Message.success('删除部门成功');
                     } else {
                         this.$Message.error('删除部门失败');
@@ -219,7 +247,7 @@ export default {
                     .then(res => res.data)
                     .then(res => {
                         if (res.err_code == 0) {
-                            this.fetchDutyList();
+                            this.dutyListData();
                             this.$Message.success('创建职能成功');
                         } else {
                             this.$Message.error('创建职能失败');
@@ -234,7 +262,7 @@ export default {
                     .then(res => res.data)
                     .then(res => {
                         if (res.err_code == 0) {
-                            this.fetchDutyList();
+                            this.dutyListData();
                             this.$Message.success('修改职能名称成功');
                         } else {
                             this.$Message.error('修改职能名称失败');
@@ -250,10 +278,9 @@ export default {
             //this.showAddNewTodo = true;
             this.$refs.invite.isShowPage(true);
         },
-        selectMember(currentRow) {
-            // console.log(currentRow)
+        selectMember(index) {
             let data = {
-                id: currentRow.id
+                id: index.id
             }
             this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-info', qs.stringify(data))
                 .then(res => res.data)
@@ -282,7 +309,17 @@ export default {
             this.$axios.post(this.GLOBAL.baseRouter+'task/company/member-update', qs.stringify(data))
             .then(res => res.data)
             .then(res => {
-                console.log(res)
+                if(res.err_code == 0) {
+                    this.$Message.success('成功修改该成员信息');
+                    //刷新当前表格
+                    if(sessionStorage.memberStyle == 'dept') {
+                        this.$refs.list.deptData(sessionStorage.comId, sessionStorage.deptId);
+                    } else if(sessionStorage.memberStyle == 'duty') {
+                        this.$refs.list.dutyData(sessionStorage.comId, sessionStorage.dutyId);
+                    }
+                    //关闭弹窗
+                    this.$refs.message.isShowPage(false);
+                }
             })
         },
         /**
@@ -304,7 +341,11 @@ export default {
                         if(res.err_code == 0) {
                             this.$Message.success('成功移除该成员');
                             //刷新当前表格
-                            this.$refs.list.deptData(comId, deptId);
+                            if(sessionStorage.memberStyle == 'dept') {
+                                this.$refs.list.deptData(sessionStorage.comId, sessionStorage.deptId);
+                            } else if(sessionStorage.memberStyle == 'duty') {
+                                this.$refs.list.dutyData(sessionStorage.comId, sessionStorage.dutyId);
+                            }
                             //关闭弹窗
                             this.$refs.message.isShowPage(false);
                         }

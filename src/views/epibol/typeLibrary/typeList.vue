@@ -100,9 +100,10 @@ export default {
                           props: Object.assign({}, this.buttonProps, {
                             icon: "ios-plus-empty"
                           }),
+                          id:"addbtn",
                           on: {
-                            click: () => {
-                              this.addClassTask(data); //
+                            click : ($event) => {
+                              this.addClassTask(root, node, data,$event); //
                             }
                           }
                         }),
@@ -110,12 +111,13 @@ export default {
                           props: Object.assign({}, this.buttonProps, {
                             icon: "trash-b"
                           }),
+                          type:"ghost",
                           style: {
                             marginLeft: "10px"
                           },
                           on: {
-                            click: () => {
-                              this.removeClass(data);
+                            click: ($event) => {
+                              this.removeClass(data,$event);
                             }
                           }
                         })
@@ -189,8 +191,8 @@ export default {
                   icon: "trash-b"
                 }),
                 on: {
-                  click: () => {
-                    this.remove(data);
+                  click: ($event) => {
+                    this.remove(data,$event);
                   }
                 }
               })
@@ -214,7 +216,7 @@ export default {
     },
     //增加父节点
     appendClass(data) {
-      const children = data.children || [];
+      let children = data.children || [];
       children.push({
         title: "父节点",
         expand: true
@@ -233,17 +235,24 @@ export default {
         });
     },
     //增加子节点
-    addClassTask(data) {
-      const children = data.children || [];
-      children.push({
-        title: "子节点",
+    addClassTask(root, node,data,$event) {
+      $event.cancelBubble = true;
+      // let children = data.children || [];
+      let newType = {
+        title: "新建任务类型",
         expand: true,
-        category_id: data.pId
-      });
-      this.$set(data, "children", children);
+        selected: true,
+        category_id: data.pId,
+      };
+      this.kNodes[data.nodeKey].children.push(newType);
+      
+      // document.getElementById("addClassTaskBtn").click();
+      // this.$set(data, "children", children);
+      // this.targriClass(this.kNodes[data.nodeKey].children, newType, newType);
     },
     //点击左边列表增加标识
     targriClass(root, node, data) {
+      console.log(root,node,data);
       root.forEach(r => {
         this.$set(r.node, "actClass", "#fff");
       });
@@ -272,7 +281,8 @@ export default {
     },
 
     // onChange(data) {},
-    removeClass(data) {
+    removeClass(data,$event) {
+      $event.cancelBubble = true;
       let cIs = this;
       let removeData = data.pId;
       cIs.get(
@@ -286,7 +296,8 @@ export default {
         }
       );
     },
-    remove(data) {
+    remove(data,$event) {
+      $event.cancelBubble = true;
       let cIs = this;
       let removeCad = data.id;
       this.get(

@@ -8,8 +8,14 @@
 </style>
 <script>
   export default{
+    data(){
+        return{
+          EchartData:[]
+        }
+    },
+    props:['EannData'],
     mounted(){
-      this.echarts2()
+      this.echarts2();
     },
     methods:{
       echarts2(){
@@ -27,7 +33,7 @@
             x: 'center',
             y:'top',
             icon: 'circle',
-            data:['动作','特效','模型'],
+           // data:['动作','特效','模型'],
             itemWidth: 10,
             itemHeight: 10,
           },
@@ -55,11 +61,7 @@
                   show: false
                 }
               },
-              data:[
-                {value:335, name:'动作'},
-                {value:310, name:'特效'},
-                {value:234, name:'模型'}
-              ]
+              data:this.EannData
             }
           ]
 

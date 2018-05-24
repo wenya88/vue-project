@@ -5,14 +5,18 @@
   width=720
   :closable="false">
     <table border=0 style="table-layout:fixed;border-collapse:separate;border-spacing:0px 20px;" key="list">
-      <tr>
+      <!-- <tr>
         <td width=300px>登录用户名</td>
         <td width=120px colspan='2'>登录密码</td>
       </tr>
       <tr>
-        <td width=320><Input v-model="param.userName" placeholder="登录用户名" style="width: 300px"/></td>
-        <td width=320 colspan='2'><Input v-model="param.password" placeholder="登录密码" style="width: 300px"/></td>
-      </tr>
+        <td width=320>
+          <Input v-model="param.userName" placeholder="登录用户名" style="width: 300px" :disabled="editStatus"/>
+        </td>
+        <td width=320 colspan='2'>
+          <Input v-model="param.password" placeholder="登录密码" style="width: 300px" :disabled="editStatus"/>
+        </td>
+      </tr> -->
       <tr>
         <td width=300px>备注名</td>
         <td width=120px>所属部门</td>
@@ -31,19 +35,23 @@
           </Select>
         </td>
       </tr>
-      <tr>
+      <!-- <tr>
         <td width=300px>手机</td>
         <td width=120px colspan='2'>邮箱</td>
       </tr>
       <tr>
-        <td width=320><Input v-model="param.phone" placeholder="手机" style="width: 300px"/></td>
-        <td width=320 colspan='2'><Input v-model="param.email" placeholder="邮箱" style="width: 300px"/></td>
-      </tr>
+        <td width=320>
+          <Input v-model="param.phone" placeholder="手机" style="width: 300px" :disabled="editStatus"/>
+        </td>
+        <td width=320 colspan='2'>
+          <Input v-model="param.email" placeholder="邮箱" style="width: 300px" :disabled="editStatus"/>
+        </td>
+      </tr> -->
     </table>
     <div slot="footer">
       <Button type="error" style="float:left;" @click="remove(param.id)">移除</Button>
       <Button type="ghost" @click="cancel">取消</Button>
-      <Button type="primary" @click="revise(id,rname,did,pid)">修改</Button>
+      <Button type="primary" @click="revise(param.id,param.remark_name,param.department_id,param.post_id)">修改</Button>
     </div>
   </Modal>
 </template>
@@ -56,6 +64,10 @@ export default {
     param: {
       type: Object,
       default: ''
+    },
+    editStatus: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

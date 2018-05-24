@@ -47,47 +47,37 @@
       </div>
       </Col>
     </Row>
-    <finish-model 
-    :editData="formLeft" 
-    v-if="isTabModal" 
-    @close="closeTabmodal" 
-    :isDisabled="true"
-    >
-    <div slot="one">
-      <FormItem label="子项目">
-        <Select v-model="subpId" :disabled="true">
-          <Option v-for="(item,index) in subProjectList" :value="item.id" :key="index">{{item.name}}</Option>
-        </Select>
-      </FormItem>
-      <FormItem label="任务类型">
-        <Select v-model="taskType" :disabled="true">
-          <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
-            <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-          </OptionGroup>
-          <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
-        </Select>
-      </FormItem>
-    </div>
-    <div slot="three">
-      <ImgEditor v-if="imgConponent"></ImgEditor>
-      <VidEditor v-if="vidConponent"></VidEditor>
-      <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
-    </div> 
-    </finish-model>
+      <!-- <div slot="three">
+        <ImgEditor v-if="imgConponent"></ImgEditor>
+        <VidEditor v-if="vidConponent"></VidEditor>
+        <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
+      </div>  -->
+    <Modal 
+           v-model="isTabModal"
+           width="1200" 
+           :styles="{top: '150px'}"
+           :closable="false"
+           okText= '保存'
+           cancelText='取消'
+           @on-cancle="closeTabmodal"
+      >
+      <browsetask ref="pigeonholetask" 
+                    v-on:opentabmodal = 'openTabmodal'
+                    >
+      </browsetask>
+      <div slot="footer">
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 var qs = require('querystring');
-import finishModel from '../main-components/model/finishModel';
-import ImgEditor from '../project/components/imgEditor.vue';
-import VidEditor from '../project/components/vedioEditor.vue'
+import browsetask from './task/browseTaskPop'
 import { mapGetters } from 'vuex'
 export default {
   components: {
-    finishModel,
-    ImgEditor,
-    VidEditor
+    browsetask,
   },
   data() {
     return {
@@ -159,6 +149,8 @@ export default {
       .then(res => {
         // console.log(res)
         if(res.err_code == 0) {
+          console.log(res.data);
+          
           this.fileData = res.data
           // console.log(this.fileData)
         }
@@ -198,45 +190,32 @@ export default {
     closeTabmodal() {
       this.isTabModal = false;
     },
+    openTabmodal() {
+      this.isTabModal = true;
+    },
     fetchFileData(taskId,type,file) {
+      this.isTabModal = true;
       sessionStorage.TaskID=taskId;
       sessionStorage.FileURl=file;
       sessionStorage.AllowEdit=undefined;
-      // 判断文件类型进行组件显示
-      if(type=='image'){
-        this.imgConponent=true;
-        this.vidConponent=false;
-        this.NotType=false;
-      }else if(type=='video'){
-        this.vidConponent=true;
-        this.imgConponent=false;
-        this.NotType=false;
-      }else if(type==undefined){
-        this.vidConponent=false;
-        this.imgConponent=false;
-        this.NotType=false;
-      }else if(type=='NotType'){
-        this.vidConponent=false;
-        this.imgConponent=false;
-        this.NotType=true;
-      }
+      console.log(taskId,type);
+      
+      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
+      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
 
       this.$Loading.start();
       this.boxHeight = 0;
-      let data = {
-        id: taskId
-      }
-      this.$axios.post(this.GLOBAL.baseRouter+'task/task/info', qs.stringify(data))
-      .then(res => res.data)
-      .then(res => {
-        console.log(res)
-        this.isTabModal = true;
-        this.formLeft = res;
-        // this.$Loading.finish();
-        // this.getSubProject(res.project_id)
-        this.taskType = res.tasktype_id+''
-        this.subpId = res.project_child
-      })
+      // this.$axios.post(this.GLOBAL.baseRouter+'task/task/info', qs.stringify(data))
+      // .then(res => res.data)
+      // .then(res => {
+      //   console.log(res)
+      //   
+      //   this.formLeft = res;
+      //   // this.$Loading.finish();
+      //   // this.getSubProject(res.project_id)
+      //   this.taskType = res.tasktype_id+''
+      //   this.subpId = res.project_child
+      // })
     }
   }
 }

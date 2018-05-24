@@ -19,7 +19,7 @@
             </Col>
             <Col span="4"> 关注:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="12">
@@ -53,7 +53,8 @@
                   <td class="w25">
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
+                    <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
+                    <span class="orange-span">{{item.stage_name}}</span></td>
                   <td class="w25">
                     <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>/天</td>
                 </tr>
@@ -82,7 +83,7 @@
             </Col>
             <Col span="4"> 关注:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="12">
@@ -114,7 +115,8 @@
                   <td class="w25">
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
+                    <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
+                    <span class="orange-span">{{item.stage_name}}</span></td>
                   <td class="w25">
                     <span class="orange-span">{{item.surplusTime}}</span>/天</td>
                 </tr>
@@ -155,7 +157,7 @@
             </Col>
             <Col span="4"> 关注:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="12">
@@ -187,7 +189,8 @@
                   <td class="w25">
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td>
+                    <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
+                    <span class="orange-span">{{item.stage_name}}</span></td>
                   <td class="w25">
                     <span class="orange-span">{{item.surplusTime}}</span>/天</td>
                 </tr>
@@ -216,7 +219,7 @@
             </Col>
             <Col span="4"> 关注:
             <Select v-model="model" style="width:80px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             </Col>
             <Col span="12">
@@ -248,7 +251,8 @@
                   <td class="w25">
                     <span class="orange-span">{{item.examineTime}}</span>/天</td>
                   <td class="w25">
-                    <span class="orange-span">{{item.stage}}</span>/5</td>
+                    <!-- <span class="orange-span">{{item.stage}}</span>/5</td> -->
+                    <span class="orange-span">{{item.stage_name}}</span></td>
                   <td class="w25">
                     <span class="orange-span">{{item.surplusTime}}</span>/天</td>
                 </tr>
@@ -272,91 +276,33 @@
         </div>
       </TabPane>
     </Tabs>
-    <base-model :editData="formLeft" v-if="isTabModal" @close="closeTabmodal" :isDisabled="true">
-      <div slot="one">
-        <FormItem label="子项目">
-          <Select v-model="subpId" :disabled="true">
-            <Option v-for="(item,index) in subProjectList" :value="item.id" :key="index">{{item.name}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="任务类型">
-          <Select v-model="taskType" :disabled="true">
-            <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
-              <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
-            </OptionGroup>
-            <!-- <Option v-for="item in taskList" :value="item.tasktype_name" :key="item.tasktype_name"></Option> -->
-          </Select>
-        </FormItem>
-      </div>
-      <div slot="three">
-        <ImgEditor v-if="imgConponent"></ImgEditor>
-        <VidEditor v-if="vidConponent"></VidEditor>
-        <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
-      </div>
-       <div slot="two">
-        <!-- <div v-show="status == 1">
-          <input class="message" type="text" v-model="feedback" placeholder="输入您要反馈的内容" />
-          <div class="change">需修改</div>
-          <div class="success">通过</div>
-        </div> -->
-        <div v-show="status == 2" style="margin: 20px 0 0 20px;">
-          <ul class="list">
-            <li>反馈内容</li>
-            <li>反馈结果</li>
-            <li>反馈人</li>
-            <li>反馈时间</li>
-          </ul>
-          <ul class="list">
-            <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
-            <li>需修改</li>
-            <li>刘德华</li>
-            <li>今天/3天前</li>
-          </ul>
+    <!-- 浏览任务弹窗 -->
+    <Modal 
+          v-model="isTabModal" 
+          width="1200" 
+          :styles="{top: '100px'}"
+          :closable="false"
+          okText= '保存'
+          cancelText='取消'
+          @on-cancel="closeTabmodal"
+          >
+        <browsetask ref="browsetask"></browsetask>
+        <div slot="footer">
         </div>
-        <div v-show="status == 3" style="margin: 20px 0 0 100px;">
-          <ul class="list">
-            <li>反馈状态</li>
-            <li>反馈人</li>
-            <li>等待时间</li>
-          </ul>
-          <ul class="list">
-            <li>客户待审</li>
-            <li>四川义美游有限公司</li>
-            <li>今天提交/3天前</li>
-          </ul>
-        </div>
-        <div v-show="status == 4" style="margin: 20px 0 0 20px;">
-          <ul class="list">
-            <li>反馈内容</li>
-            <li>反馈结果</li>
-            <li>反馈人</li>
-            <li>反馈时间</li>
-          </ul>
-          <ul class="list">
-            <li>把以上标注修改即可，把以上标注修改即可把以上标注修改即可</li>
-            <li>需修改</li>
-            <li>刘德华</li>
-            <li>今天/3天前</li>
-          </ul>
-        </div>
-      </div> 
-    </base-model>
+    </Modal>
   </div>
 </template>
 
 <script>
 var qs = require('querystring');
-import baseModel from '../main-components/model/baseModel';
+
+import browsetask from './task/browseTaskPop'
 import mySort from '../main-components/sort';
-import ImgEditor from '../project/components/imgEditor.vue';
-import VidEditor from '../project/components/vedioEditor.vue'
 import { mapGetters } from 'vuex'
 export default {
   components: {
     mySort,
-    baseModel,
-    ImgEditor,
-    VidEditor
+    browsetask,
   },
   data() {
     return {
@@ -385,30 +331,13 @@ export default {
       vidConponent: false,
       NotType: false,
       orderBy: 'desc',
-      cityList: [
+      followList: [
         {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: 0,
+          label: '不限'
+        }, {
+          value: 1,
+          label: '是'
         }
       ],
       model: '',
@@ -434,14 +363,36 @@ export default {
   },
   created() {
     // console.log(this.$children[0],this.$children[1]) 
-    this.fetchData();
     this.fetchNum(1);
     this.fetchNum(2);
     this.fetchNum(3);
     this.fetchNum(4);
     this.getTaskList();
+    if(this.status == '1') {
+      this.sortStatus = 'stage_create_time';
+      this.fetchData();
+    } else {
+      this.fetchData();
+    } 
   },
   mounted() {
+  },
+  watch: {
+    status() {
+      if(this.status === '1') {
+        this.sortStatus = 'stage_create_time';
+        this.fetchData();
+      } else if(this.status === '2') {
+        this.sortStatus = 'inside_audit_time';
+        this.fetchData();
+      } else if(this.status === '3') {
+        this.sortStatus = 'inside_audit_time';
+        this.fetchData();
+      } else if(this.status === '4') {
+        this.sortStatus = 'client_audit_time';
+        this.fetchData();
+      }
+    }
   },
   directives: {
     /**
@@ -474,7 +425,8 @@ export default {
         this.sortStatus = 'stage_create_time';
         this.page = 1;
       } else if (val == 1) {
-        this.sortStatus = 'inside_audit_time';
+        this.sortStatus = 'stage_create_time';
+        this.orderBy = 'asc'
         this.page = 1;
       } else if (val == 2) {
         this.sortStatus = 'expect_end_time';
@@ -554,15 +506,6 @@ export default {
     fetchData() {
       this.searchInput = '';
       this.$Loading.start();
-      if(this.status == '1') {
-        this.sortStatus = 'stage_create_time';
-      } else if(this.status == '2') {
-        this.sortStatus = 'inside_audit_time';
-      } else if(this.status == '3') {
-        this.sortStatus = 'inside_audit_time';
-      } else if(this.status == '4') {
-        this.sortStatus = 'client_audit_time';
-      }
       let data = {
         status: this.status,
         search: this.searchInput,
@@ -620,8 +563,10 @@ export default {
               this.searchInput = ''
             }
             // console.log(typeof parseInt(this.page))
-            if(parseInt(this.page) == res.page.count_page) {
+            if(parseInt(this.page) == res.page.count_page && parseInt(this.page)!=1) {
               this.moreText = '没有更多内容'
+            } else if(parseInt(this.page)==1) {
+              this.moreText = ''
             }
             this.$Loading.finish();
           } else {
@@ -655,50 +600,34 @@ export default {
      * 阶段  非必传
      */
     fetchFileData(stageId,type,file,taskId) {
-      sessionStorage.TaskID=taskId;
+      this.isTabModal = true;
       sessionStorage.FileURl=file;
+      sessionStorage.TaskID=taskId;
+      this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
+      this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
+
       if(this.status == '1') {
         sessionStorage.AllowEdit='Allow';
       } else {
         sessionStorage.AllowEdit='Other';
       }
-      // console.log(sessionStorage.FileURl)
-      // 判断文件类型进行组件显示
-      if(type=='image'){
-        this.imgConponent=true;
-        this.vidConponent=false;
-        this.NotType=false;
-      }else if(type=='video'){
-        this.vidConponent=true;
-        this.imgConponent=false;
-        this.NotType=false;
-      }else if(type==undefined){
-        this.vidConponent=false;
-        this.imgConponent=false;
-        this.NotType=false;
-      }else if(type=='NotType'){
-        this.vidConponent=false;
-        this.imgConponent=false;
-        this.NotType=true;
-      }
-
-      this.$Loading.start();
-      this.boxHeight = 0;
-      let data = {
-        id: stageId
-      }
-      this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-info', qs.stringify(data))
-        .then(res => res.data)
-        .then(res => {
-          this.isTabModal = true;
-          this.formLeft = res;
-          // console.log('formLeft',this.formLeft)
-          localStorage.display = 'block'
-          this.$Loading.finish();
-          this.getSubProject(res.project_id)
-          this.taskType = res.tasktype_id
-          this.subpId = parseInt(res.project_child_id)
-        })
+      // this.$Loading.start();
+      // this.boxHeight = 0;
+      // let data = {
+      //   id: stageId
+      // }
+      // this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-info', qs.stringify(data))
+      //   .then(res => res.data)
+      //   .then(res => {
+      //     this.isTabModal = true;
+      //     this.formLeft = res;
+      //     // console.log('formLeft',this.formLeft)
+      //     localStorage.display = 'block'
+      //     this.$Loading.finish();
+      //     this.getSubProject(res.project_id)
+      //     this.taskType = res.tasktype_id
+      //     this.subpId = parseInt(res.project_child_id)
+      //   })
     },
     /**
      * 获取滚动条当前的位置

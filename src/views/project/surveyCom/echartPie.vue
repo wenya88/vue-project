@@ -8,10 +8,47 @@
 </style>
 <script>
   export default{
+    data(){
+      return{
+          Edate:[],
+          EchData:[]
+      }
+    },
+    props:["EpieData"],
     mounted(){
-      this.echarts2()
+      this.echarts2();
     },
     methods:{
+      EchaData(){
+        this.Edate=this.EpieData.data;
+        if(this.EpieData.series==undefined){
+          return 
+        }else{
+          let EchData=this.EpieData.series.map(val=>{
+                return{
+                  name:val.name,
+                  type: 'line',
+                  symbol: 'circle',
+                  itemStyle: {
+                    emphasis: {
+                      symbol: 'circle',
+                    }
+                  },
+                  symbolSize: [8, 8],
+                  data: val.data,
+            }
+          })
+          this.EchData=EchData;
+          this.EchData.push({
+              type: 'bar',
+              barWidth: '1',
+              data: this.EpieData.bar,
+              color: '#48b',
+          })
+          console.log(this.EchData)
+        }
+        
+      },
       echarts2(){
         var echarts = require('echarts');
         var echartHours =echarts.init(document.getElementById('EPie'));
@@ -38,9 +75,9 @@
           color: ['#0580f2', '#faa732', '#e1575d'],
           grid: {
             left: '0%',
-            right: '0%',
+            right: '10%',
             top: '12%',
-            bottom: '10%',
+            bottom: '12%',
             containLabel: true
           },
           legend: {
@@ -50,7 +87,7 @@
             y:'top',
             itemWidth: 10,
             itemHeight: 10,
-            data: ['制作进度', '内部审核', '客户审核']
+           // data: ['制作进度', '内部审核', '客户审核']
           },
           xAxis: {
             show: true,
@@ -70,7 +107,7 @@
                 color: '#999999'
               }
             },
-            data: ['3/1', '3/8', '3/15', '3/22', '3/29', '4/6']
+            data:this.Edate
           },
           yAxis: {
             show: false,
@@ -94,47 +131,7 @@
               }
             }
           },
-          series: [{
-            name: '制作进度',
-            type: 'line',
-            symbol: 'circle',
-            itemStyle: {
-              emphasis: {
-                symbol: 'circle',
-              }
-            },
-            symbolSize: [8, 8],
-            data: [1, 0, 1, 4, 10],
-//            label: {normal: {
-//              show: true
-//            }},
-          }, {
-            name: '内部审核',
-            type: 'line',
-            symbol: 'circle',
-            symbolSize: [8, 8],
-            data: [2, 1, 3, 3, 5],
-//            label: {normal: {
-//              show: true
-//            }},
-          }, {
-            name: '客户审核',
-            type: 'line',
-            symbol: 'circle',
-            symbolSize: [8, 8],
-            data: [4, 4, 4, 10, 15],
-//            label: {normal: {
-//              show: true
-//            }},
-          },
-            {
-              type: 'bar',
-              barWidth: '1',
-              data: [0, 0, 0, 0,20],
-              color: '#48b',
-
-
-            }]
+          series:this.EchData
         });
 
       }

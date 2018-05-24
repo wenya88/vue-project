@@ -92,7 +92,7 @@
     dd{
         float:right;
         span{
-            float:left;line-height:32px;
+            float:left;line-height:32px;height:32px;display:inline-block;
         }
         .MLeft{
             margin-left:40px;
@@ -103,8 +103,17 @@
         .descIcon{
             background:url('../images/desc.png') 0px 8px no-repeat;width:20px;display:inline-block;background-size:15px;height:20px;float:left;
         }
+        .remIcon{
+            background:url('../images/icon-sort.png') 6px 11px no-repeat;width:20px;height:32px;display:inline-block;float:left;
+        }
+        .remIconUp{
+            background:url('../images/icon-sort-up.png') 6px 11px no-repeat;width:20px;height:32px;display:inline-block;float:left;
+        }
+        .remIconDown{
+            background:url('../images/icon-sort-down.png') 6px 11px no-repeat;width:20px;height:32px;display:inline-block;float:left;
+        }
         a{
-            float:left;margin-right:10px;font-style:normal;color:#657180;
+            float:left;margin-right:10px;font-style:normal;color:#657180;height:32px;line-height:32px;
             &:hover{color:#3399ff;}
         }
         .show{
@@ -113,7 +122,7 @@
     }
 }
 .projectManageContent{
-    // overflow:auto;
+    overflow:auto;
     margin-top:20px;
     .ContentRow{
         width:49%;float:left;margin-bottom:30px;border:1px solid #ddd;border-radius:@borderRadius12;box-shadow:@boxShadow;
@@ -127,13 +136,15 @@
         span{
             float:left;
             .tips{
-                position:absolute;margin-left:40px;margin-top:20px;
+               position:relative;left:-60px;top:-30px;
             }
             img{
                 width:100px;height:70px;border:0px;
+                &:hover{cursor:pointer;}
             }
             .font16{
                 font-size:@fs14;font-weight:normal;color:#23a590;
+                &:hover{cursor: pointer;text-decoration:underline;}
             }
             i{
                 background:#e4e4e4;border-radius:4px;padding:2px 4px;color:#aeaeae;font-style:normal;margin-right:5px;
@@ -153,6 +164,7 @@
         border-top:1px solid #ddd;padding:20px;
         .listTitle{
             display:block;text-align: center;
+            &:hover{cursor:pointer;}
             span{
                 padding-top:10px;display:inline-block;font-size:@fs118;
             }
@@ -170,8 +182,4 @@
         }
         .ivu-progress-show-info .ivu-progress-outer{padding-right:80px;margin-right:-80px;}
     }
-}
-
-.clear{
-    clear:both;
 }

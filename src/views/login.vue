@@ -10,7 +10,7 @@
         <div class="login-con">
             <div class="title" v-if="isRegister">注册<span @click="changeMode('register')">登录</span></div>
             <div class="title" v-else>登录<span @click="changeMode('login')"><Icon type="person-add"></Icon> 注册</span></div>
-            <div class="form-con" v-if="isRegister" @keydown.enter="onRegister('register')">
+            <div class="form-con" v-if="isRegister" @keydown.enter="onRegister()">
                 <Form ref="register" :model="register" :rules="ruleCustom">
                     <FormItem prop="userName">
                         <div class="itemname">邮箱账号</div>
@@ -27,11 +27,11 @@
                         <img :src="pwpic2.src" @click="changeType2()"/>
                     </FormItem>
                     <FormItem>
-                        <Button @click="onRegister('register')" type="primary" long>注 册</Button>
+                        <Button @click="onRegister()" type="primary" long>注 册</Button>
                     </FormItem> 
                 </Form>
             </div>
-            <div class="form-con" v-else @keydown.enter="onSubmit('login')">
+            <div class="form-con" v-else @keydown.enter="onSubmit()">
                 <Form ref="login" :model="loginform" :rules="rules">
                     <FormItem prop="email">
                         <div class="itemname">邮箱账号</div>
@@ -43,7 +43,7 @@
                         <img :src="pwpic3.src" @click="changeType3()"/>
                     </FormItem>
                     <FormItem>
-                        <Button @click="onSubmit('login')" type="primary" long>登 录</Button>
+                        <Button @click="onSubmit()" type="primary" long>登 录</Button>
                     </FormItem>
                 </Form>
             </div>
@@ -62,26 +62,26 @@ import src from '../images/close_eyes.png'
 import src2 from '../images/open_eyes.png'
 export default {
     data () {
-        const validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入密码'));
-            } else {
-                if (this.register.passwdCheck !== '') {
-                    // 对第二个密码框单独验证
-                    this.$refs.register.validateField('passwdCheck');
-                }
-                callback();
-            }
-        };
-        const validatePassCheck = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.register.passwd) {
-                callback(new Error('两次密码不一致!'));
-            } else {
-                callback();
-            }
-        };
+        // const validatePass = (rule, value, callback) => {
+        //     if (value === '') {
+        //         callback(new Error('请输入密码'));
+        //     } else {
+        //         if (this.register.passwd !== '') {
+        //             // 对第二个密码框单独验证
+        //             this.$refs.register.validateField('passwdCheck');
+        //         }
+        //         callback();
+        //     }
+        // };
+        // const validatePassCheck = (rule, value, callback) => {
+        //     if (value === '') {
+        //         callback(new Error('请再次输入密码'));
+        //     } else if (value !== this.register.passwd) {
+        //         callback(new Error('两次密码不一致!'));
+        //     } else {
+        //         callback();
+        //     }
+        // };
         return {
             isRegister: false,
             bodyHight: 500,
@@ -126,11 +126,17 @@ export default {
                     { required: true, message: '账号不能为空', trigger: 'blur' }
                 ],
                 passwd: [
-                    { validator: validatePass, trigger: 'blur' }
+                    { required: true, message: '密码不能为空', trigger: 'blur' }
                 ],
                 passwdCheck: [
-                    { validator: validatePassCheck, trigger: 'blur' }
+                    { required: true, message: '请确认密码', trigger: 'blur' }
                 ]
+                // passwd: [
+                //     { validator: validatePass, trigger: 'blur' }
+                // ],
+                // passwdCheck: [
+                //     { validator: validatePassCheck, trigger: 'blur' }
+                // ]
             }
         };
     },
@@ -139,12 +145,18 @@ export default {
      * */
     created() {
         this.bodyHight = document.documentElement.clientHeight;
+        let inviteCode = this.$route.query.invate_code;
+        // console.log(this.$route.query.invate_code)
+        if(inviteCode) {
+            Cookies.set('invate_code', inviteCode)
+        } else {
+            Cookies.set('invate_code', null)
+        }
     },
     mounted() {
         this.fetchKey();
     },
-    methods: {
-        changeMode(mode) {
+    methods: {geMode(mode) {
             if(mode == 'login') {
                 this.isRegister = true;
                 this.loginform.userName = '';
@@ -166,7 +178,7 @@ export default {
                 }
             })
         },
-        onRegister(name) {
+        onRegister() {
             let encrypt = new JSEncrypt();
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.register.passwd)));
@@ -174,7 +186,7 @@ export default {
                 account: this.register.userName,
                 password: password
             };
-            this.$refs[name].validate((valid) => {
+            this.$refs.register.validate((valid) => {
                 if (valid) {
                     this.$axios.post(this.GLOBAL.baseRouter+'system/login/register', qs.stringify(data))
                     .then(res => res.data)
@@ -182,7 +194,7 @@ export default {
                         if(res.err_code == 0) {
                             this.loginform.userName = this.register.userName;
                             this.loginform.password = this.register.passwd;
-                            this.onSubmit(login);
+                            this.onSubmit();
                         } else {
                             this.$Message.warning(res.err_message);
                         }
@@ -192,7 +204,7 @@ export default {
                 }
             });
         },
-        onSubmit(name) {
+        onSubmit() {
             let encrypt = new JSEncrypt();
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.loginform.password)));
@@ -200,7 +212,7 @@ export default {
                 account: this.loginform.email,
                 password: password
             };
-            this.$refs[name].validate((valid) => {
+            this.$refs.login.validate((valid) => {
                 if (valid) {
                     // Cookies.set('password', this.form.password);
                     this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))

@@ -1,21 +1,18 @@
 <!-- 任务信息弹窗-->
 <template>
-  <!-- <transition name="modal-fade"> -->
-    <!-- <div class="modal-backdrop"> -->
-      <!-- <div class="modal"> -->
     <div class="taskinfopop">
-        <div class="task-option">
-            <!-- <Button type="text" icon="ios-star-outline" size="large"></Button> -->
-            <Button type="text" @click="delTask" icon="trash-b" size="large"></Button>
-        </div>
-        <div class="task-body">
-          <Tabs type="card" style="height: 600px;">
+          <Tabs type="card" style="height: 680px;">
             <TabPane label="基本管理">
-                <div v-show="isInitTask">
-                  <maintask ref="main" 
-                            v-on:sendSubTaskList="sendSubTaskList"
-                            v-on:sendLogData="sendLogData"
-                  ></maintask>
+                <div v-show="isInitTask" class="browsetaskpop">
+                  <div class="taskbrowse">
+                    <maintask ref="main" 
+                              v-on:sendSubTaskList="sendSubTaskList"
+                              v-on:sendLogData="sendLogData"
+                    ></maintask>
+                  </div>
+                  <div class="filebrowse">
+                    <filebrowse ref="filebrowse"></filebrowse>
+                  </div>
                 </div>
             </TabPane>
             <TabPane label="子任务">
@@ -25,7 +22,7 @@
                 <tasklog ref="log"></tasklog>
             </TabPane>
           </Tabs>
-        </div>
+        <!-- </div> -->
     </div>
       <!-- </div> -->
     <!-- </div> -->
@@ -36,23 +33,22 @@ var qs = require("querystring");
 import maintask from "./taskDetails";
 import subtasklist from "./subTask";
 import tasklog from "./taskLog";
+import filebrowse from "../components/fileBrowseManager";
 
 import {
-  projDatali,
   cateList,
   deletetaskData,
-  gettasklistDetails,
 } from "@/config/env.js";
 
 export default {
   props: [
-    // "editData"
     "taskID"
     ],
   components:{
     maintask,
     subtasklist,
-    tasklog
+    tasklog,
+    filebrowse
   },
   data() {
     return {
@@ -154,10 +150,11 @@ export default {
   },
   methods: {
     //根据任务ID初始化属性
-    initTaskDetailFromID(id) {
-      //console.log(id);
+    initTaskDetail(taskData) {      
       this.isInitTask = true;
-      this.$refs.main.initTaskDetailFromID(id);
+      this.$refs.main.initTaskDetailFromID(taskData.id);
+      let filetype = taskData.stage_file ? taskData.stage_file.type:"NULL";
+      this.$refs.filebrowse.initFileBrowse(taskData.id,filetype);
     },
     //初始化项目信息
     initTaskDetailProjecInfo(projectInfo)
@@ -260,22 +257,6 @@ export default {
         cdy.subData = child;
       }
     },
-    // //获取子项目id
-    // getChildId() {
-    //   let Hid = this;
-    //   Hid.get(
-    //     projDatali,
-    //     {
-    //       id: Hid.prId
-    //     },
-    //     res => {
-    //       //获取子项目列表
-    //       Hid.childList = res.data.child;
-    //       //获取项目id
-    //       Hid.pushSubData.project_id = res.data.id;
-    //     }
-    //   );
-    // },
     //获取任务类型
     getTaskClass() {
       let clT = this;
@@ -325,12 +306,22 @@ export default {
 }
 .task-body {
   width:1100px;
-  float:left;
   padding: 0 0 0 0px;
 }
 .task-option {
   width:60px;
-  float:right;
   padding: 0 0 0 20px;
+}
+.browsetaskpop {
+
+}
+.taskbrowse{
+    float:left;
+    width:340px;
+    margin:0 12px 0 0;
+}
+.filebrowse{
+    float:left;
+    width:800px;
 }
 </style>

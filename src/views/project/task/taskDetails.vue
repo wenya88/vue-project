@@ -1,125 +1,136 @@
 <!-- 任务详情组件 -->
 <template>
-    <div class="taskdetail">
-        <div class="taskdetail-left">
-            <Form label-position="left" :label-width="60" >
-                <FormItem label="任务名称">
-                    <Input v-model="editData.name" :disabled="canEdit">
-                    </Input>
-                </FormItem>
-                <FormItem label="负责人">
-                    <Tag v-for="item in principal" 
-                    :key="item" 
-                    :name="item" 
-                    closable 
-                    @on-close="removePartici" 
-                    type="border">{{item}}
-                    </Tag>
-                    <Dropdown trigger="click" class="dropBig">
-                        <a href="javascript:void(0)">
-                            <Button icon="ios-plus-empty" type="dashed" size="small">
-                            添加
-                            </Button>
-                        </a> 
-                        <DropdownMenu slot="list">
-                            <Input v-model="principalName" placeholder="参与人姓名/名字首字母" clearable style="width: 100%"></Input>
-                            <Row :gutter="16">
-                            <Col span="10" class="demo-tabs-style2 memberList">
-                            <ul class="meberli">
-                                <li v-for="(item,index) in principalType" 
-                                :key="item.tabs" 
-                                :class="{active:index == principalNum}" 
-                                @click="memberList(index)">
-                                {{item}}
-                                </li>
-                            </ul>
-                            </Col>
-                            <Col span="12" align="center" class="scrollBorder">
-                            <Scroll :on-reach-bottom="principalHandleReachBottom">
-                                <div class="tabCon">
-                                <div v-for='(itemCon,index) in principalList' 
-                                :key="itemCon.tabContents" 
-                                v-show="index == principalNum">
-                                    <!-- <Card dis-hover>
-                                    <CheckboxGroup v-model="principalName">
-                                        <Checkbox :label="i,d" 
-                                        v-for='(i,d) in itemCon' 
-                                        :key="i.itemCon">
-                                        </Checkbox>
-                                    </CheckboxGroup>
-                                    </Card> -->
-                                </div>
-                                </div>
-                            </Scroll>
-                            </Col>
-                            </Row>
-                        </DropdownMenu>
-                    </Dropdown>
-                </FormItem>
-                <FormItem label="计划时间">
-                    <DatePicker 
-                    :value="getTimeRange"
-                    @on-change="setTimeRange" 
-                    format="yyyy-MM-dd" 
-                    type="daterange" 
-                    :options="startTime" 
-                    split-panels
-                    placeholder="选择计划时间范围" 
-                    style="width: 320px"
-                    >
-                    </DatePicker>
-                </FormItem>
-                <FormItem label="子项目">
-                    <Select @on-change='setChildProject' v-model="editData.project_child_name" clearable>
-                        <Option 
-                            v-for="item in childProjectsList" 
-                            :key="item.child_id"
-                            :value="item.name"
-                            >
-                            {{item.name}}
-                        </Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="任务类型">
-                    <AutoComplete  v-model="editData.tasktype_name" 
-                                placeholder="选择任务类型"
-                                @on-select="selectTaskType">
-                        <Option v-for="item in taskTypesList" 
-                        :key="item.tasktype_name"
-                        :value="item.tasktype_name"
+    <div>
+        <Form label-position="left" :label-width="60" >
+            <FormItem label="任务名称">
+                <Input v-model="editData.name" :disabled="editDisabled">
+                </Input>
+            </FormItem>
+            <FormItem label="负责人">
+                <Tag v-for="item in principal" 
+                :key="item" 
+                :name="item" 
+                closable 
+                @on-close="removePartici" 
+                type="border">{{item}}
+                </Tag>
+                <Dropdown trigger="click" class="dropBig">
+                    <a href="javascript:void(0)">
+                        <Button icon="ios-plus-empty" type="dashed" size="small">
+                        添加
+                        </Button>
+                    </a> 
+                    <DropdownMenu slot="list">
+                        <Input v-model="principalName" placeholder="参与人姓名/名字首字母" clearable style="width: 100%"></Input>
+                        <Row :gutter="16">
+                        <Col span="10" class="demo-tabs-style2 memberList">
+                        <ul class="meberli">
+                            <li v-for="(item,index) in principalType" 
+                            :key="item.tabs" 
+                            :class="{active:index == principalNum}" 
+                            @click="memberList(index)">
+                            {{item}}
+                            </li>
+                        </ul>
+                        </Col>
+                        <Col span="12" align="center" class="scrollBorder">
+                        <Scroll :on-reach-bottom="principalHandleReachBottom">
+                            <div class="tabCon">
+                            <div v-for='(itemCon,index) in principalList' 
+                            :key="itemCon.tabContents" 
+                            v-show="index == principalNum">
+                                <!-- <Card dis-hover>
+                                <CheckboxGroup v-model="principalName">
+                                    <Checkbox :label="i,d" 
+                                    v-for='(i,d) in itemCon' 
+                                    :key="i.itemCon">
+                                    </Checkbox>
+                                </CheckboxGroup>
+                                </Card> -->
+                            </div>
+                            </div>
+                        </Scroll>
+                        </Col>
+                        </Row>
+                    </DropdownMenu>
+                </Dropdown>
+            </FormItem>
+            <FormItem label="计划时间">
+                <DatePicker 
+                :value="getTimeRange"
+                @on-change="setTimeRange" 
+                format="yyyy-MM-dd" 
+                type="daterange" 
+                :options="startTime" 
+                split-panels
+                placeholder="选择计划时间范围" 
+                :disabled="editDisabled"
+                >
+                </DatePicker>
+            </FormItem>
+            <FormItem label="子项目">
+                <Select 
+                @on-change='setChildProject' 
+                v-model="editData.project_child_name" 
+                clearable
+                :disabled="editDisabled"
+                >
+                    <Option 
+                        v-for="item in childProjectsList" 
+                        :key="item.child_id"
+                        :value="item.name"
                         >
-                        <span> {{item.tasktype_name}}</span>
-                        </Option>
-                    </AutoComplete>
-                </FormItem>
-                <FormItem label="文件要求">
-                    <Card :bordered="true" style="text-align: center">
-                        <p v-for="item in taskTypeInfo" :key="item.id">
-                            {{item.file_format}}{{item.require.value}}
-                        </p>
-                    </Card>
-                </FormItem>
-                <FormItem label="参考附件">
-                    <Upload name="affix" 
-                    multiple
-                    type="drag"
-                    :show-upload-list="true" 
-                    :on-success="referenceFileSuccess"
-                    :on-remove ="referenceFileRemove"
-                    action="http://192.168.2.19/index.php?r=file/file/file-upload"
+                        {{item.name}}
+                    </Option>
+                </Select>
+            </FormItem>
+            <FormItem label="任务类型">
+                <AutoComplete  v-model="editData.tasktype_name" 
+                            placeholder="选择任务类型"
+                            @on-select="selectTaskType"
+                            :disabled="editDisabled"
+                            >
+                    <Option v-for="item in taskTypesList" 
+                    :key="item.tasktype_name"
+                    :value="item.tasktype_name"
                     >
-                    <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
-                    <p>点击或拖入上传</p>
-                    </Upload>
-                    <!-- <div v-for="item in referenceFileName" :key="item.url">{{item.url}}</div> -->
-                </FormItem>
-                <FormItem label="要求说明">
-                    <Input v-model="editData.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
-                </FormItem>
-            </Form>
-        </div>
-        <div class="taskdetail-right">
-        </div>
+                    <span> {{item.tasktype_name}}</span>
+                    </Option>
+                </AutoComplete>
+            </FormItem>
+            <FormItem label="文件要求">
+                <Card :bordered="true" style="text-align: center">
+                    <p v-for="item in taskTypeInfo" :key="item.id">
+                        {{item.file_format}}&#160&#160{{item.require[0].value}}
+                    </p>
+                </Card>
+            </FormItem>
+            <FormItem label="参考附件">
+                <div>
+                <Upload
+                multiple
+                type="drag"
+                :show-upload-list="true" 
+                :on-success="referenceFileSuccess"
+                :on-remove ="referenceFileRemove"
+                action="http://192.168.2.19/index.php?r=file/file/file-upload"
+                :default-file-list="referenceFileName"
+                >
+                <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
+                <p>点击或拖入上传</p>
+                </Upload>
+                </div>
+                <!-- <div v-for="item in editData.file" :key="item.url">{{item.url}}</div> -->
+            </FormItem>
+            <FormItem label="要求说明">
+                <Input 
+                v-model="editData.description" 
+                type="textarea" 
+                :autosize="{minRows: 2,maxRows: 5}"
+                :disabled="editDisabled"
+                ></Input>
+            </FormItem>
+        </Form>
     </div>
 </template>
 
@@ -132,7 +143,7 @@ export default{
             taskID:0,
             editData:{},
             //*任务属性选项*//
-            canEdit:false,//能否编辑
+            editDisabled:false,//能否编辑
             isNewTask:false,//是否为新任务
             principal: [],//负责人数组
             principalName: "",//搜索框负责人名字
@@ -142,11 +153,11 @@ export default{
             childProjectsList: [],//供选择的子项目列表
             taskTypesList:[],//供选择的任务类型
             taskTypeInfo:{},//任务类型信息
-            // referenceFileName: [],//附件文件名称
+            referenceFileName: [],//附件文件名称
             referenceFileUrl:[],//附件文件地址
             dateRange:"",
             principalList: [[]],
-            
+            //*时间属性选项*//
             startTime: {
             disabledDate(date) {
                 return date && date.valueOf() < Date.now() - 86400000;
@@ -169,21 +180,21 @@ export default{
     },
     methods:{
         //获取任务详情
-        initTaskDetailFromID(id) {
-            //console.log(this.taskID);
-            // this.taskId = id;
+        initTaskDetailFromID(id,fatherFunctions) {
             if(id!=0)
             {
                 this.taskID = id;
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-                        this.editData = res;
+                        this.initTaskDetailFromData(res)
                         this.getTaskTypeRequire(res.tasktype_id);
-                        this.callFatherFunction();
+                        this.callFatherFunction(fatherFunctions);
                     }
                 )
                 .catch(error => {
+                    console.log(error);
+                    
                     this.$Message.error("获取任务信息失败，请重试！");
                 });
             }
@@ -192,6 +203,12 @@ export default{
         initTaskDetailFromData(data)
         {
             this.editData = data; 
+            this.formatLocalData();
+        },
+        //设置能否编辑
+        setEditDisabled(forbidEdit)
+        {
+            this.editDisabled = forbidEdit;
         },
         //新增任务初始化
         initTaskDetailFromNew(projectInfo)
@@ -264,13 +281,37 @@ export default{
                     //this.$Message.error("获取任务信息失败，请重试！");
                 });
         },
+        //格式化本地数据
+        formatLocalData()
+        {
+            this.referenceFileName = [];
+            if(this.editData.file)
+            {
+                this.editData.file.forEach(
+                    (res)=>{
+                        this.referenceFileName.push({
+                            name:"",
+                            url:res
+                        });
+                    }
+                );
+            }
+        },
         //用于父组件通信-DONE
-        callFatherFunction()
+        callFatherFunction(fatherfunctions)
         {
             if(this.editData.child)
                 this.$emit('sendSubTaskList', this.editData);//这里子任务需要父任务的一些属性
             if(this.editData.log)
                 this.$emit('sendLogData', this.editData.log);
+            if(fatherfunctions)
+            {
+                fatherfunctions.forEach(
+                    (res)=>{
+                        this.$emit(res.functionName);
+                    }
+                );
+            }
         },
         //主任务保存编辑数据
         saveTaskDetails() {
@@ -316,8 +357,6 @@ export default{
         //删除任务
         delTaskDetail()
         {
-            console.log(this.editData.id);
-            
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.editData.id}))
                         .then(res => {
                             this.$bus.emit('refreshCurrentTaskList');
@@ -365,7 +404,6 @@ export default{
                         if(res.tasktype_name == id_name)
                         {
                             this.editData.tasktype_id = parseInt(res.id);
-                            console.log(this.editData);
                             this.getTaskTypeRequire(res.id);  
                         }
                     }
@@ -395,7 +433,7 @@ export default{
         //----------上传文件-------------//
         // 上传附件成功后返回
         referenceFileSuccess(response, file ,fileList) {
-            this.referenceFileUrl.push(response.affix.url);
+            this.referenceFileUrl.push(response.file.url);
         },
         //移除附件
         referenceFileRemove(file,fileList)

@@ -1,28 +1,35 @@
 <!-- 任务项目组分类 -->
 <template>
-    <div class="taskHead">
+    <div>
         <div class="taskHead">
             <div class="taskInfo">
-              <span v-for="(item,index) in childProjectList" :key='item.name'
-                v-on:mouseenter="dataDetails($event)" 
-                v-on:mouseleave="hiddenDetail($event)">
+              <span v-for="item in childProjectList" :key='item.name'>
+                <!-- v-on:mouseenter="dataDetails($event)" 
+                v-on:mouseleave="hiddenDetail($event)"> -->
                 <a href="javascript:;" @click=filterTask(item) >
-                    {{item.name}}
-                    ({{item.task_count}})
-                    <Button type="text" size="small" icon="edit" class="hideIconDel"  @click="showModifySubProject('modify')"></Button>
-                    <Button type="text" size="small" icon="trash-b" class="hideIconDel" @click="childDel(item.id)"></Button>
+                    {{item.name}} ({{item.task_count}})
+                    <div v-if="isShowModify" class="opration">
+                        <div v-if="!item.isAll" >
+                            <Button type="text" size="small" icon="edit" class="hideIconDel"  @click="showModifySubProject('modify')"></Button>
+                            <Button type="text" size="small" icon="trash-b" class="hideIconDel" @click="childDel(item.id)"></Button>
+                        </div>
+                    </div>
                 </a>
               </span>
             </div>
+            <div class="op">
+                <Button type="text" size="small" icon="edit" @click="showModify" style="width =40px"></Button>
+                <Button type="text" size="small" icon="plus-round" @click="showModifySubProject('creat')" style="width =40px"></Button>
+            </div>
             <span v-if="isShowModifySubProject">
-                <div>
+                <div class="taskclassedit">
                     <Input v-model="subProjectManager" placeholder="负责人" icon="ios-plus-empty" style="width:100px"></Input>
                     <Input v-model="subProjectName" placeholder="子项目名称" style="width: 200px"></Input>
                     <Button type="primary" size="small" @click="saveModifySubproject">保存</Button>
                     <Button type="ghost" size="small" @click="showModifySubProject">取消</Button>
                 </div>
               </span>
-            <Button type="text" size="small" icon="plus-round" @click="showModifySubProject('creat')" style="float:right"></Button>
+            
         </div>
     </div>
 </template>
@@ -40,6 +47,7 @@ export default {
             projectId:0,//项目ID
             childProjectList:[],//子项目列表
             isShowModifySubProject:false,
+            isShowModify:false,
             modifyStatus:"",
             subProjectManager:"",
             subProjectName:"",
@@ -62,6 +70,10 @@ export default {
             this.$Message.error("数据加载出错了！请刷新浏览器");
             }
         );
+        },
+        showModify()
+        {
+            this.isShowModify = !this.isShowModify;
         },
         // 显示编辑子项目组件
         showModifySubProject(Status) {
@@ -99,7 +111,8 @@ export default {
                             {
                                 name:"所有任务",
                                 task_count:max.toString(),
-                                project_id:this.projectId
+                                project_id:this.projectId,
+                                isAll : true
                             }
                         );
                     })
@@ -154,12 +167,12 @@ export default {
         let result = "";
         if(this.modifyStatus == 'creat')
         {
-            add = "/task/project/child-add";
+            add = this.GLOBAL.baseRouter + "/task/project/child-add";
             result = "新增子项目成功！";
         }
         else if(this.modifyStatus == 'modify')
         {
-            add = "task/project/child-update";
+            add = this.GLOBAL.baseRouter + "task/project/child-update";
             result = "修改成功！";
         }
         else
@@ -183,3 +196,58 @@ export default {
         }
 }
 </script>
+
+<style>
+.taskHead {
+  /* border: 1px solid #ddd; */
+  /* background: #f7f7f7; */
+  margin: -10px 0px 0px 0px;
+  font-size: 14px;
+  height: 40px;
+}
+
+.taskHead .taskInfo {
+  display:inline-block;
+  overflow:hidden;
+}
+.taskHead .taskInfo a {
+  width:120px;
+  float: left;
+  color: #666;
+  margin : 0px 6px 0px 0px;
+}
+.taskHead .taskInfo .opration
+{
+    width: 60px;
+    /* float: left; */
+}
+.taskHead .taskInfo b {
+  color: #555;
+}
+.taskHead .taskInfo span {
+  margin-right: 12px;
+}
+.taskHead .taskInfo .active {
+  /* padding: 4px 8px; */
+  /* border-radius: 4px; */
+  background: #3399ff;
+  color: #fff;
+}
+.taskHead .taskInfo .active:hover {
+  color: #fff;
+}
+.taskHead .taskclassedit {
+  float: right;
+  margin : -4px 60px 0px 0px;
+}
+.taskHead .op {
+  float: right;
+  /* margin : 0px 0px 0px 0px; */
+}
+.taskHead .taskInfo .hideIconDel {
+  font-size: 10px;
+  /* color: #5c6b77; */
+}
+
+
+</style>

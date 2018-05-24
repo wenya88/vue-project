@@ -59,7 +59,7 @@ export const appRouter = [
         component: Main,
         children: [
             {
-                path: '/project/home.vue',
+                path: '/project/home/:taskID',
                 icon: 'ios-paper-outline',
                 name: 'custom',
                 title: '概况',
@@ -107,7 +107,7 @@ export const appRouter = [
             {
                 path: '/project/ImgRoll',
                 icon: 'ios-paper-outline',
-                name: 'statistics',
+                name: 'ImgRoll',
                 title: '文件标注',
                 component: resolve => { require(['@/views/project/components/ImgRoll.vue'], resolve); }
             }
@@ -131,7 +131,7 @@ export const appRouter = [
             {
                 path: '/epibol/home',
                 icon: 'ios-paper-outline',
-                name: 'home',
+                name: 'eHome',
                 title: '概况页',
                 component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
             },
@@ -170,15 +170,9 @@ export const appRouter = [
             }, {
                 path: '/epibol/imPlementer',
                 icon: 'ios-paper-outline',
-                name: 'setting',
+                name: 'imPlementer',
                 title: '实施人员',
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
-            }, {
-                path: '/epibol/summary',
-                icon: 'ios-paper-outline',
-                name: 'summary',
-                title: '项目汇总',
-                component: resolve => { require(['@/views/epibol/summary.vue'], resolve); }
             },
             {
                 path: '/epibol/ProjectWork',
@@ -198,14 +192,14 @@ export const appRouter = [
     }, {
         path: '/customer',
         icon: 'ios-folder',
-        name: 'cHome',
+        name: 'customer',
         title: '客户公司管理',
         component: Main,
         children: [
             {
                 path: '/customer/home',
                 icon: 'ios-paper-outline',
-                name: 'home',
+                name: 'cHome',
                 title: '概况页',
                 component: resolve => { require(['@/views/customer/home.vue'], resolve); }
             }, {
@@ -217,7 +211,7 @@ export const appRouter = [
             }, {
                 path: '/epibol/contractManage',
                 icon: 'ios-paper-outline',
-                name: 'contractManage',
+                name: 'cContractManage',
                 title: '合同管理',
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
             }, {
@@ -229,7 +223,7 @@ export const appRouter = [
             }, {
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
-                name: 'projectManage',
+                name: 'cProjectManage',
                 title: '项目管理',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             }

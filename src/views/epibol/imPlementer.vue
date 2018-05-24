@@ -81,38 +81,32 @@
                                           </Modal>
                                           <!-- 文件上传结束 -->
                                           <!-- 任务详情 -->
-                                          <FinishModel 
-                                            v-if="modelTask" 
-                                            :editData="BaseObj" 
-                                            @close="CloseModel"
-                                            :isDisabled="true"
-                                          >
-                                                <div slot="one">
-                                                    <FormItem label="子项目">
-                                                        <Select v-model="subpId" :disabled="true">
-                                                            <Option v-for="item in childList" :value="item.project_child_name" :key="item.project_child_name">{{item.project_child_name}}</Option>
-                                                        </Select>
-                                                    </FormItem>
-                                                    <FormItem label="任务类型">
-                                                        <Select v-model="tType" :disabled="true">
-                                                            <Option v-for="items in taskType" :value="items.tasktype_name" :key="items.tasktype_name">{{ items.tasktype_name }}</Option>
-                                                        </Select>
-                                                    </FormItem>
+                                          <Modal 
+                                                v-model="isTabModal" 
+                                                width="1200" 
+                                                :styles="{top: '100px'}"
+                                                :closable="false"
+                                                okText= '保存'
+                                                cancelText='取消'
+                                                @on-cancel="closeTabmodal"
+                                                >
+                                                <browsetask ref="browsetask" 
+                                                            >
+                                                </browsetask>
+                                                <div slot="footer">
                                                 </div>
-                                                <div slot="three">
-                                                    <ImgEditor v-if="imgConponent"></ImgEditor>
-                                                    <VidEditor v-if="vidConponent"></VidEditor>
-                                                    <div v-if="startStage"><button type="primary">开始任务</button></div>
-                                                    <div v-if="NotType" class="notIMG">暂未上传任务文件或无法预览文件类型</div>
-                                                </div>
-                                          </FinishModel>
+                                          </Modal>
                                           <!-- 任务详情结束 -->
                                       </div>
-                                  
                                       <div class="theUpcom">
                                           <h3>即将实施({{dataWait.length}})</h3>
                                           <ul>
-                                              <li v-for="(item,index) in dataWait"  @click="taskDetaInfo(item.id)" :key="index">
+                                              <li v-for="(item,index) in dataWait"  @click="taskDetaInfo(
+                                                  item.id,
+                                                  item.stage_file.type,
+                                                  item.stage_file.file,
+                                                  item.id
+                                                  )" :key="index">
                                                   <span><s>{{item.name}}</s><br/>
                                                     <p v-if="item.expect_start_time<=Mdate?false:true">{{item.project_name}}</p>
                                                     <p v-if="item.expect_start_time<=Mdate?true:false">
@@ -128,7 +122,13 @@
                                       <div class="Completed">
                                           <h3>已完成({{dataAccom.length}})</h3>
                                           <ul id="CompletedUL">
-                                              <li v-for="(item,index) in dataAccom" :key="index"  @click="taskDetaInfo(item.id,item.stage_file.type,item.stage_file.file,item.stage_file.task_id)">
+                                              <li v-for="(item,index) in dataAccom" :key="index"  
+                                              @click="taskDetaInfo(
+                                                  item.id,
+                                                  item.stage_file.type,
+                                                  item.stage_file.file,
+                                                  item.id
+                                                  )">
                                                   <span class="spanTop"><Icon type="android-checkbox" color="mediumseagreen" size="18"></Icon></span>
                                                   <span>{{item.name}}</span>
                                                   <em>{{item.end_date}}</em>
@@ -211,21 +211,18 @@
   var qs = require('querystring')
   import Calend from '../main-components/calend/calend.vue';
   import UploadM from './imPlementer/UpLoadModal.vue';
-  import FinishModel from '../main-components/model/finishModel.vue';
-  import ImgEditor from '../project/components/imgEditor.vue';
-  import VidEditor from '../project/components/vedioEditor.vue';
+  import browsetask from '../project/task/browseTaskPop.vue'
   import CalendInfo from '../main-components/calend/calendrinfo.vue';
   export default {
     data(){
       return{
         iflag:false,
-        // MsgData:[],
         dataFeedBack:[],
         dataUnderway:[],
         dataWait:[],
         dataAccom:[],
         modal: false,
-        modelTask:false,
+        isTabModal:false,
         value:'',
         projectNmae:true,
         Mdate:Math.round(new Date().getTime()/1000),
@@ -234,25 +231,15 @@
         Current:0,
         TaksID:0,
         AddMinFile:[],
-        BaseObj:{},
-        subpId:'',
-        tType:'',
-        childList:[],
-        taskType:[],
-        imgConponent:false,
-        vidConponent:false,
         AllowEdit:"NotAllow", //控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
         pageIndex:1,
         maxPage:0,
         accomMore:true,
-        startStage:false,
-        StageDefType:null,
         ile:null,
-        StageDefTaskID:null,
-        NotType:false
+        UpLoadValue:''
       }
     },
-    components:{Calend,UploadM,FinishModel,ImgEditor,VidEditor,CalendInfo},
+    components:{Calend,UploadM,CalendInfo,browsetask},
     
     mounted(){
       this.onLoad();
@@ -263,7 +250,6 @@
     //   接收主文件
       this.$bus.on('MainFile',(val)=>{
             this.MainFlie=val
-            console.log(val)
       });
     //   接收阶段
       this.$bus.on('UpCurrent',(val)=>{
@@ -277,6 +263,10 @@
       this.$bus.on('TaksID',(val)=>{
           this.TaksID=val
       });
+    //   接收备注
+    this.$bus.on("UpValue",(val)=>{
+        this.UpLoadValue=val
+    })
     //   任务完成滚动条加载
       this.ScrollLoad();
     },
@@ -385,57 +375,21 @@
   
     //  打开任务详情
     taskDetaInfo(id,type,file,TaskID){
+        console.log(TaskID)
         let _this=this;
-        _this.modelTask=true;
-        
-        let url=this.GLOBAL.baseRouter+'task/task/info&id='+id;
+        _this.isTabModal=true;        
+        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
+        this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
         // 本地缓存信息
         sessionStorage.TaskID=TaskID;
         sessionStorage.FileURl=file;
 
         // 是否显示编辑信息
         sessionStorage.AllowEdit=_this.AllowEdit;
-
-        // 判断是什么类型，显示什么组件
-        if(type=='image'){
-          _this.imgConponent=true;
-          _this.vidConponent=false;
-          _this.startStage=false;
-          _this.NotType=false;
-        }else if(type=='video'){
-          _this.vidConponent=true;
-          _this.imgConponent=false;
-          _this.startStage=false;
-          _this.NotType=false;
-        }else if(type==undefined){
-          _this.vidConponent=false;
-          _this.imgConponent=false;
-          _this.startStage=true;
-          _this.NotType=false;
-        }else if(type=='NotType'|| type=='other'){
-         _this.vidConponent=false;
-         _this.imgConponent=false;
-         _this.startStage=false;
-         _this.NotType=true;
-        }
-        _this.$axios.get(url).then((val)=>{
-
-            let TaskDeta=val.data
-            _this.BaseObj.id=TaskDeta.id;
-            _this.BaseObj.name=TaskDeta.name;
-            _this.BaseObj.start_date=TaskDeta.expect_start_date;
-            _this.BaseObj.end_date=TaskDeta.expect_end_date;
-            _this.childList.push({"project_child_name":TaskDeta.project_child_name});
-            _this.taskType.push({"tasktype_name":TaskDeta.tasktype_name});
-            _this.subpId=TaskDeta.project_child_name;
-            _this.tType=TaskDeta.tasktype_name;       
-        },()=>{
-            alert("请求失败!!")
-        })
     },
     //   关闭Model
-    CloseModel(){
-        this.modelTask=false;
+    closeTabmodal(){
+        this.isTabModal=false;
     },
     //   初始化行高  
       onLoad(){
@@ -602,11 +556,12 @@
                     })
                 })
                 // console.log(Mainobj)
-                let url=this.GLOBAL.baseRouter+'task/task/stage-upload';
+                let url=_this.GLOBAL.baseRouter+'task/task/stage-upload';
                 
                 let Mparams={
                     task_id:TaksID,
                     stage:Current+1,
+                    describe:_this.UpLoadValue,
                     file:JSON.stringify(Mainobj)
                 };
                 _this.$axios.post(url,qs.stringify(Mparams)).then(function(data){

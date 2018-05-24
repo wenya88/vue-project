@@ -1,55 +1,60 @@
 <template>
-    <div class="imgEditorCom">
-        <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
-        <div class="stageListRow" @mouseleave="hideStageList">
-            <ul>
-              <li v-for="(item,index) in IMGlist" @click="changCont(
-                      item.file.file,
-                      item.file.tag,
-                      item.status,
-                      item.inside_audit_time,
-                      item.client_audit_time,
-                      item.inside_audit_date,
-                      item.client_audit_date,
-                      item.inside_audit_uid,
-                      item.client_audit_uid,
-                      index,
-                      item.task_id,
-                      item.file.fid
-                  )" :class="{showBg:index==liIndex}"> 
-                  <span>{{index+1}}<br/>{{item.stage_name}}</span>
-                  <em>
-                    {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
-                    {{item.status | filtStat}}
-                  </em>
-                  <div class="clear"></div>
-              </li>
-            </ul>
-        </div>
-        <!-- 加载动画 -->
-        <OnLoad id="onload"></OnLoad>
-        <div class="imgFocus" id="signx"><img :src="url" id="ImgOnlod"/></div>
-        <!-- 标注提交 -->
-        <div v-if="AllowEditRow" class="AllowEdit">
-          <span class="EditInput">
-              <input type="text" placeholder="请输入你要反馈的内容" id="EditInput">
-          </span>
-          <span class="EditSub">
-              <button class="actionPost">确认</button>
-          </span>
-          <span class="EditSub">
-              <button class="subPass">通过</button>
-          </span>
-        </div>
-        
-        <!-- 反馈信息 -->
-        <div v-if="SataeInfo" class="feedbackInfo">
-          <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
-          <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
-          <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
-          <div class="clear"></div>
-        </div>
+  <div class="defaultH">
+      <div class="imgEditorCom">
+          <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
+          <div class="stageListRow" @mouseleave="hideStageList">
+              <ul>
+                <li v-for="(item,index) in IMGlist" @click="changCont(
+                        item.file.file,
+                        item.file.tag,
+                        item.status,
+                        item.inside_audit_time,
+                        item.client_audit_time,
+                        item.inside_audit_date,
+                        item.client_audit_date,
+                        item.inside_audit_uid,
+                        item.client_audit_uid,
+                        index,
+                        item.file.stage_id,
+                        item.file.fid
+                    )" :class="{showBg:index==liIndex}"> 
+                    <span>{{index+1}}<br/>{{item.stage_name}}</span>
+                    <em>
+                      {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
+                      {{item.status | filtStat}}
+                    </em>
+                    <div class="clear"></div>
+                </li>
+              </ul>
+          </div>
+          <!-- 加载动画 -->
+          <OnLoad id="onload"></OnLoad>
+          <div class="imgFocus" id="signx">
+              <img :src="url" id="ImgOnlod"/>
+          </div>
+          <!-- 标注提交 -->
+          <div v-if="AllowEditRow" class="AllowEdit">
+            <span class="EditInput">
+                <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
+            </span>
+            <span class="EditSub">
+                <button class="actionPost">需修改</button>
+            </span>
+            <span class="EditSub">
+                <button class="subPass">通过</button>
+            </span>
+          </div>
+          
+          <!-- 反馈信息 -->
+          <div v-if="SataeInfo" class="feedbackInfo">
+            <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
+            <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
+            <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+            <div class="clear"></div>
+          </div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
   var qs = require('querystring');
@@ -63,13 +68,13 @@
       return {
         data:[],
         IMGdata:[],
-        url:'',
+        url:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977865243&di=9bfb3c4611ef0ebfe80a67aa478d6b21&imgtype=0&src=http%3A%2F%2Fwww.xingda-fs.com%2Fcomdata%2F6480613%2Fproduct%2F20170518164212591d5e64f3fe2_b.jpg',
         TID:80,
         TaskID:0,
         IMGlist:[],
         AllowEdit:String,
-        AllowEditRow:Boolean,
-        SataeInfo:Boolean,
+        AllowEditRow:false,
+        SataeInfo:false,
         StateFeedBack:0,
         insTime:0,
         cliTiem:0,
@@ -78,6 +83,7 @@
         insUid:0,
         cliUid:0,
         liIndex:0,
+        FeedbackValue:''
       }
     },
     
@@ -102,17 +108,28 @@
      
     },
     mounted(){
-      this.url=sessionStorage.FileURl;
-      this.get();
-      this.onLoad();
+      // this.initImgEditor();
+      this.loadWH()
     },
     methods:{
+      initImgEditor()
+      {
+        this.url=sessionStorage.FileURl;
+        this.get();
+        this.onLoad();
+      },
       onLoad(){
           let el=document.getElementById("ImgOnlod")
           el.onload=function(){
               let el2=document.getElementById("onload");
               el2.style.display="none"
           }
+      },
+      loadWH(){
+          $('.stageListRow,.imgEditorCom').height($(window).height()-500);
+          $(".imgEditorCom").width($(".filebrowse").width());
+          $('.imgFocus img').height($(window).height()-500);
+          $(".defaultH").height($(window).height()-400);
       },
       changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
@@ -129,7 +146,6 @@
          let fID=fid;
          this.defue(fileID,fID);
          this.imgdef();
-        
       },
       defue(fileID,fID){
         (function($){
@@ -194,7 +210,7 @@
                 var text=$.trim($('.signbox').text());
                 $('.inputSignBox').remove();
                 $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
-                $('#Ts'+indexId).css({"left":cX-15,"top":cY-15});
+                $('#Ts'+indexId).css({"left":cX-8,"top":cY-5});
                 if(changeSignColor){
                   $('#Ts'+indexId).css("border",signColor+" 3px solid");
                 }//改变了颜色
@@ -202,18 +218,18 @@
                 Data[Data.length]=mes;
               }
             });//确认编辑
-            $(document).on('mousedown','[id*=Ts]',function(e){
+            $(document).on('mouseenter','[id*=Ts]',function(e){
               var m=$(this).attr('id').replace(/[^0-9]/ig, "");
-              if(e.which==3){
+              // if(e.which==3){
                 e.stopPropagation();
                 removeId=m;
                 $('.chooseBox').remove();
                 Rleft=$(this).css("left").replace(/[^0-9]/ig, "");
                 Rtop=$(this).css("top").replace(/[^0-9]/ig, "");
                 var l=e.clientX-$(dom).offset().left,t=e.clientY-$(dom).offset().top;
-                $(dom).append("<div class='chooseBox'><ul><li id='deleteSign'>删除</li></ul></div>");
-                $('.chooseBox').css({"left":l,"top":t});
-              }
+                $(this).append("<div class='chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
+                $('.chooseBox').css({"left":41,"top":-23});
+              // }
             });//弹出取消标记
             $(document).on('click','#deleteSign',function(){
               deleteData(Rleft,Rtop);
@@ -238,6 +254,8 @@
           function loading(data){
             $(".signIndex").remove()
             var l=Data.length;
+            if(!l)
+              return;
             for(var i=0;i<data.length;i++){
               indexId++
               $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
@@ -271,6 +289,11 @@
               dataType:"json",
               success:function(msg){
                 console.log(msg)
+                if(msg.err_code>0){
+                  alert(msg.err_message)
+                }else{
+                  alert("提交成功！")
+                }
              },
              error:function(){
                alert(' 提交失败!')
@@ -284,9 +307,13 @@
         $.sign.loadingSign(this.data);
       },
       get(){
+          //  获取图片的标注信息
+           let TaskID=sessionStorage.TaskID;
+           if(TaskID == 0)
+           {
+              return false;
+           }
            let _this=this;
-          //  控件图片和列表的高度
-           $('.imgFocus img,.stageListRow,.imgEditorCom').height($(window).height()-320);
           //  控制图片是否可标注
            if(sessionStorage.AllowEdit=="Allow"){ //允许标注
                 _this.AllowEditRow=true;
@@ -298,37 +325,40 @@
                 _this.AllowEditRow=false;
                 _this.SataeInfo=false;
             }
-          //  获取图片的标注信息
-           let TaskID=sessionStorage.TaskID;
            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
           _this.$axios.get(url).then(function(msg){
-      
             let Sdate=msg.data;
+            console.log(Sdate);
             if(Sdate.err_code==0){
-                Sdate.data.forEach(element => {
-                    _this.IMGlist.push(element)
-                });
-            // 设置初始化值
-            _this.data=_this.IMGlist[0].tag;
-            _this.StateFeedBack=_this.IMGlist[0].status;
-            _this.insTime=_this.IMGlist[0].insTime;
-            _this.cliTiem=_this.IMGlist[0].cliTiem;
-            _this.insDate=_this.IMGlist[0].insDate;
-            _this.cliDate=_this.IMGlist[0].cliDate;
-            _this.insUid=_this.IMGlist[0].insUid;
-            _this.cliUid=_this.IMGlist[0].cliUid;
-            
-            // 把StageID传到提交
-            let fileID = Sdate.data[0].task_id;
-            let fID=Sdate.data[0].file.fid;
-            _this.defue(fileID,fID);
-            _this.imgdef();
-            }else{
-              return
-            }          
-        },()=>{
-           _this.$Message.error('请求失败')
-        })
+                _this.IMGlist = [];
+                _this.IMGlist = Sdate.data;
+                if(_this.IMGlist.length>0)
+                  sessionStorage.FileURl=_this.IMGlist[0].file.file;
+                // Sdate.data.forEach(element => {
+                //     _this.IMGlist.push(element)
+                // });
+              
+              // 设置初始化值
+              _this.data=_this.IMGlist[0].tag;
+              _this.StateFeedBack=_this.IMGlist[0].status;
+              _this.insTime=_this.IMGlist[0].insTime;
+              _this.cliTiem=_this.IMGlist[0].cliTiem;
+              _this.insDate=_this.IMGlist[0].insDate;
+              _this.cliDate=_this.IMGlist[0].cliDate;
+              _this.insUid=_this.IMGlist[0].insUid;
+              _this.cliUid=_this.IMGlist[0].cliUid;
+              
+              // 把StageID传到提交
+              let fileID = Sdate.data[0].file.stage_id;
+              let fID=Sdate.data[0].file.fid;
+              _this.defue(fileID,fID);
+              _this.imgdef();
+              }else{
+                return
+              }          
+          },()=>{
+            _this.$Message.error('请求失败')
+          })
       },
       showStageList(){
           document.getElementsByClassName('controlListRow')[0].style.display='none';

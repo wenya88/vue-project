@@ -97,7 +97,7 @@ export default {
             for(let i=0;i<params.row.stage.length;i++)
             {
               let str="";
-              if(present == i)
+              if((present-1) == i)
                 str = params.row.stage[i].stage_name;
               steplist.push(
                 h("Step",{
@@ -108,7 +108,7 @@ export default {
               );
             }
             return h("Steps",
-                  {props: {current: present,size: "small"}},
+                  {props: {current: present-1,size: "small"}},
                   steplist
             );
           }
@@ -118,7 +118,7 @@ export default {
           align: "center",
           ellipsis: true,
           key: "file_id",
-          width: 160
+          width: 140
         },
         {
           title: "文件最近更新",
@@ -221,14 +221,14 @@ export default {
     
     //打开任务详情
     showTaskDetail: function(index) {
-      this.$emit('showTaskDetails',this.dataList[index].id);
+      this.$emit('showTaskDetails',this.dataList[index]);
     },
     //点击切换任务项
     changeTaskListItem(currentRow,oldRow)
     { 
       if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
       {
-        this.$emit('showTaskDetails',currentRow.id); 
+        this.$emit('showTaskDetails',currentRow); 
         this.$refs.table.clearCurrentRow();
       }
     },
@@ -326,6 +326,7 @@ export default {
         this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
                 .then( res => res.data)
                 .then( res => {
+                    // console.log(res.data);
                       this.dataList = res.data;
                       this.formatTaskList(this.dataList.reverse());//颠倒顺序
                       this.loading = false;
@@ -432,22 +433,7 @@ export default {
   right: 20px;
   position: relative;
 }
-.hideIconDel {
-  display: none;
-}
-.taskHead .taskInfo .hideIconDel {
-  margin-left: 5px;
-  font-size: 10px;
-  /* color: #5c6b77; */
-}
-.taskHead .taskInfo .active {
-  padding: 0 !important;
-  height: 32px;
-  line-height: 32px;
-}
-.taskHead .taskInfo a {
-  color: #666;
-}
+
 .btnStting {
   margin-bottom: 10px;
 }

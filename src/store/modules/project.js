@@ -7,7 +7,7 @@ import global from '../../components/Global'
 const state = {
   ndsSortList: [
     {
-      label: '上传时间',
+      label: '最新上传',
       icon: 'ios-arrow-thin-down',
       value: 0
     }, {

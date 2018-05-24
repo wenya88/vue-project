@@ -25,7 +25,7 @@
         <div class="stageSelect">
              <h5>选择文件上传阶段</h5>
              <div class="stageRow">
-                  <Steps :current="current">
+                  <Steps :current="current" status="finish">
                       <Step :title="item.stage_name" v-for="(item,index) in ComStage" @click.native="current=index" :key="index"></Step>
                   </Steps>
              </div>
@@ -58,6 +58,7 @@ export default {
             }
         }
     },
+    
     created(){
         this.$bus.on('EMname',(val)=>{
             this.data=val;
@@ -65,6 +66,9 @@ export default {
             this.stage=val.stage;
             this.current=val.progress;
         });
+        this.$bus.on("RemoveFile",()=>{
+            this.value='';
+        })
     },
     components:{
             MainFileUpLoad,
@@ -76,6 +80,9 @@ export default {
         },
         taskID(val){
             this.$bus.emit("TaksID",val)
+        },
+        value(val){
+            this.$bus.emit("UpValue",val)
         }
     }
 }

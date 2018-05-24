@@ -125,7 +125,7 @@ export default {
                     _this.proPanData=Math.round(MsData.project_progress);
                     _this.ProTiemDate=Math.round(MsData.time_progress);
                     _this.ProFinhData=Math.round(MsData.will_finish);
-                    _this.ProSytsData=Math.round(MsData.syts);
+                    _this.ProSytsData=Math.ceil(MsData.syts);
                     _this.ProTaskData=MsData.tasking_num;
                     _this.ProPauseNum=MsData.pause_num;
                     

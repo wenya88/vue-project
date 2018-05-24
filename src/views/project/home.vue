@@ -5,8 +5,8 @@
     <div class="SuvCont">
         <Row class="headerTitle">
             <i-col span="22">
-                    <h2>新双无战意外包项目 <span>负责人：李哥</span></h2>
-                    <h5>2018-3-24  至  2018-4-25</h5>
+                    <h2>{{proData.name}} <span>负责人：{{proData.realname==" "?proData.nickname:proData.realname}}</span></h2>
+                    <h5>{{proData.start_time}}  至  {{proData.end_time}}</h5>
             </i-col>
         </Row>
         <div class="rowColumn">
@@ -14,8 +14,12 @@
                 <dl>
                     <dt><Icon type="podium"></Icon><span>项目进度</span></dt>
                     <dd class="border">
-                        <div class="div"><Eann></Eann></div>
-                        <div class="div"><Epie></Epie></div>
+                        <div class="div">
+                                <Eann :EannData="EannData" ref="EannEchart"></Eann>
+                        </div>
+                        <div class="div">
+                                <Epie :EpieData="EpieData" ref="EpieEchart"></Epie>
+                        </div>
                         <div class="clear"></div>
                     </dd>
                 </dl>
@@ -31,8 +35,8 @@
                     <dt><Icon type="compose"></Icon><span>客户已反馈</span><em class="more"><router-link to="">查看全部</router-link></em></dt>
                     <dd class="border padding">
                         <Timeline>
-                            <!-- <Timeline-item :color="[Kitem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Kitem in dataList"> -->
-                                <Timeline-item color="lightgray" v-for="(Kitem,index) in dataList" :key="index">
+                                <div v-if="statusFBack==''" class="notData">暂无数据</div>
+                                <Timeline-item color="lightgray" v-for="(Kitem,index) in statusFBack" :key="index">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Kitem.client_audit_time|fromatDate}}</span>
                                 <span>{{Kitem.task_name}}</span>
@@ -48,8 +52,8 @@
                     <dt><Icon type="android-clipboard"></Icon><span>内部待审</span><em class="more"><router-link to="">查看全部</router-link></em></dt>
                     <dd class="border padding inside">
                         <Timeline>
-                            <!-- <Timeline-item :color="[Litem.stage_id==dataList[0].stage_id?dark:gray]" v-for="Litem in dataList"> -->
-                            <Timeline-item color="lightgray" v-for="(Litem,index) in dataList" :key="index">
+                            <div v-if="statusTrial==''" class="notData">暂无数据</div>
+                            <Timeline-item color="lightgray" v-for="(Litem,index) in statusTrial" :key="index">
                                 <Icon type="record" slot="dot"></Icon>
                                 <span class="time">{{Litem.inside_audit_time|fromatDate}} <em>上传</em></span>
                                 <span>{{Litem.task_name}}</span>
@@ -73,16 +77,39 @@
   import Calend from "../main-components/calend/calend.vue"
   import {surveyListData} from '../../../src/config/env.js'
   export default {
-    components: {ICol, Row,Epie,Eann,Calend},
-    mounted(){
-      this.get();
-    },
     data(){
       return{
         dataList:[],
         dark:'#ff8c00',
-        gray:'#d3d3d3'
+        gray:'#d3d3d3',
+        taskId:0,
+        proData:[],
+        EannData:[],
+        EpieData:[]
       }
+    },
+    components: {ICol, Row,Epie,Eann,Calend},
+    mounted(){
+      this.taskId=this.$route.params.taskID;  
+      this.get();
+    },
+    updated(){
+        this.$refs.EannEchart.echarts2();
+        this.$refs.EpieEchart.EchaData();
+        this.$refs.EpieEchart.echarts2();
+       
+    },
+    computed:{
+        statusTrial(){
+           return this.dataList.filter(val=>{
+                return val.status==1
+            })
+        },
+        statusFBack(){
+            return this.dataList.filter(val=>{
+                return val.status==4
+            })
+        }
     },
     filters:{
       fromatDate(value){
@@ -106,10 +133,18 @@
     methods:{
       get(){
         let _this=this  
-        let url =this.GLOBAL.baseRouter + 'task/task/stage-page';
-        _this.$axios.get(url).then(function (data) {
-          _this.dataList=data.data.data.slice(0,8);
-        }, function (error) {
+        let url =_this.$axios.get(_this.GLOBAL.baseRouter+'task/task/stage-page&task_ids='+_this.taskId);
+        let proUrl=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/project-info-progress&project_id='+_this.taskId);
+        _this.$axios.all([url,proUrl]).then(([Urldata,ProData])=>{
+
+        //   项目信息
+          _this.proData=ProData.data.data.project_info;
+          _this.EannData=ProData.data.data.data1;
+          _this.EpieData=ProData.data.data.data2;
+                    
+        //   反馈和内部审核
+          _this.dataList=Urldata.data.data;
+        }, (error)=>{
           console.log(error)
         });
       },

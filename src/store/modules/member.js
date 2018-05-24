@@ -26,22 +26,37 @@ const actions = {
   fetchDeptList({commit, state}, data) {
     Axios.post(global.baseRouter+'task/department/list', data)
       .then(res => res.data)
-      .then(res => res.data)
+      // .then(res => res.data)
       .then(res => {
         // console.log('进入store',res,res[0].company_id)
-        commit('updateDeptList', res);
-        commit('updateDeptLFComId', res[0].company_id);
-        commit('updateDeptLFdeptId', res[0].id);
+        let fetchList = res.data;
+        fetchList.push({
+          company_id: res.data[0].company_id,
+          id: 0,
+          member_count: res.free_member,
+          name: '未分配部门'
+        })
+        // console.log('获取部门列表',fetchList,res.free_member)
+        commit('updateDeptList', fetchList);
+        commit('updateDeptLFComId', res.data[0].company_id);
+        commit('updateDeptLFdeptId', res.data[0].id);
       })
   },
   fetchDutyList({commit, state}, data) {
   Axios.post(global.baseRouter+'task/post/list', data)
     .then(res => res.data)
-    .then(res => res.data)
+    // .then(res => res.data)
     .then(res => {
-      commit('updateDutyList', res);
-      commit('updateDutyLFComId', res[0].company_id);
-      commit('updateDutyLFpostId', res[0].id);
+      let fetchList = res.data;
+      fetchList.push({
+        company_id: res.data[0].company_id,
+        id: 0,
+        member_count: res.free_member,
+        name: '自定义角色'
+      })
+      commit('updateDutyList', fetchList);
+      commit('updateDutyLFComId', res.data[0].company_id);
+      commit('updateDutyLFpostId', res.data[0].id);
     })
 }
 }

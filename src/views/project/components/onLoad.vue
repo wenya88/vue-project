@@ -15,7 +15,7 @@
 </script>
 <style>
     .onLoad{
-        left:50%;top:40%;position:absolute
+        left:50%;top:45%;position:absolute
     }
     .demo-spin-icon-load{
         animation: ani-demo-spin 1s linear infinite;

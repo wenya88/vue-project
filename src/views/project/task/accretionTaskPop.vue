@@ -41,6 +41,6 @@ export default {
 </script>
 <style scoped>
 .addtask {
-  padding: 0px 0px 0px 60px;
+  padding: 0px 0px 0px -20px;
 }
 </style>

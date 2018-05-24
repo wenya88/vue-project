@@ -23,7 +23,7 @@
     <Modal 
           v-model="isShowTaskDetails" 
           width="1200" 
-          :styles="{top: '150px'}"
+          :styles="{top: '100px'}"
           :loading = "isSaveLoading"
           :closable="false"
           okText= '保存'
@@ -84,6 +84,7 @@ export default {
   },
   mounted() {
     this.autoH();
+    this.initTaskMain();
     this.$bus.on('refreshCurrentTaskList',()=>{
         this.refreshCurrentTaskList();
     });
@@ -95,6 +96,11 @@ export default {
         oIframe.style.width = 100 + "%";
         oIframe.style.height = deviceHeight + "px";
       },
+      //初始化任务相关参数
+      initTaskMain()
+      {
+        sessionStorage.TaskID = 0;
+      },
       //改变任务列表
       changeTaskListData(subType){
         this.$refs.list.initTaskListFromId(subType);
@@ -103,15 +109,16 @@ export default {
       refreshCurrentTaskList()
       {
         this.$refs.list.refreshTaskList();
+        this.$refs.classes.getProjectChildInfo();
       },
       //显示任务详情
-      showTaskDetails(id)
+      showTaskDetails(data)
       {
         this.isShowTaskDetails = true;
         this.isSaveLoading = true;
-        this.taskId = id;
+        this.taskId = parseInt(data.task_id);
         this.$refs.details.initTaskDetailProjecInfo(this.projectInfo);
-        this.$refs.details.initTaskDetailFromID(id);
+        this.$refs.details.initTaskDetail(data);
       },
       //编辑后关闭modal
       closeTaskDetails() {
@@ -173,36 +180,6 @@ export default {
 };
 </script>
 <style>
-.taskHead {
-  /* border: 1px solid #ddd; */
-  /* background: #f7f7f7; */
-  padding: 0px 0px 10px 0px;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.taskHead .taskInfo {
-  float: left;
-}
-
-.taskHead .taskInfo b {
-  color: #555;
-}
-
-.taskHead .taskInfo span {
-  margin-right: 12px;
-}
-
-.taskHead .taskInfo .active {
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #3399ff;
-  color: #fff;
-}
-
-.taskHead .taskInfo .active:hover {
-  color: #fff;
-}
 .task{
   position:relative;
   margin:20px auto;
