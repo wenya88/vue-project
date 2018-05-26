@@ -82,7 +82,7 @@
         dataList:[],
         dark:'#ff8c00',
         gray:'#d3d3d3',
-        taskId:0,
+        projectID:0,
         proData:[],
         EannData:[],
         EpieData:[]
@@ -90,7 +90,7 @@
     },
     components: {ICol, Row,Epie,Eann,Calend},
     mounted(){
-      this.taskId=this.$route.params.taskID;  
+      this.projectID=sessionStorage.projectID;
       this.get();
     },
     updated(){
@@ -133,8 +133,8 @@
     methods:{
       get(){
         let _this=this  
-        let url =_this.$axios.get(_this.GLOBAL.baseRouter+'task/task/stage-page&task_ids='+_this.taskId);
-        let proUrl=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/project-info-progress&project_id='+_this.taskId);
+        let url =_this.$axios.get(_this.GLOBAL.baseRouter+'task/task/stage-page&task_ids='+_this.projectID);
+        let proUrl=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/project-info-progress&project_id='+_this.projectID);
         _this.$axios.all([url,proUrl]).then(([Urldata,ProData])=>{
 
         //   项目信息

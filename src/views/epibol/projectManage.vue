@@ -1,10 +1,5 @@
 <template>
     <div>
-        <!-- 路由切换 -->
-        <!-- <div style="margin-bottom:5px;border-bottom:1px solid #ddd;padding-bottom:5px;">
-            <Button type="primary" @click="linkTo('/project')">普通项目</Button>
-            <Button type="primary" @click="linkTo('/project')">分包项目</Button>
-        </div> -->
         <!-- 项目管理头部 -->
         <div class="projectMenu">
             <dl>
@@ -68,10 +63,10 @@
                     </span>
                     <span class="MLeft20">
                         <p>{{item.start_date}} 至 {{item.end_date}}</p>
-                        <p><i>{{item.company}}</i></p>
+                        <p><i>{{item.company==null?'暂无':item.company}}</i></p>
                     </span>
                     <span class="MLeft20">
-                        <p>负责人：李帅虎</p>
+                        <p>负责人：{{item.realname}}</p>
                     </span>
                     <span class="edit">
                         <Dropdown>
@@ -79,7 +74,18 @@
                                 <Icon type="ios-more">操作</Icon>
                             </a>
                             <DropdownMenu slot="list">
-                                <DropdownItem @click.native.stop="editPro(item.id,item.name,item.leader,item.contract,item.tag,item.start_date,item.end_date,item.status,item.picture)">编辑</DropdownItem>
+                                <DropdownItem @click.native.stop="editPro(
+                                    item.id,
+                                    item.name,
+                                    item.leader,
+                                    item.contract,
+                                    item.tag,
+                                    item.start_date,
+                                    item.end_date,
+                                    item.status,
+                                    item.picture,
+                                    item.realname
+                                )">编辑</DropdownItem>
                                 <DropdownItem @click.native.stop="deletePro(item.id,index,item.name)">删除</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -218,15 +224,6 @@ export default {
       this.statFilte(this.MSelect);
   },
   methods:{
-    //   路由切换
-    linkTo(url, params) {
-      if (params) {
-        this.$router.push({ path: url, query: params });
-      }
-      else {
-        this.$router.push(url)
-      }
-    },
     // 初始化高度
     AutoH(){
         $(".projectManageContent").height($(window).height()-220)
@@ -273,7 +270,7 @@ export default {
         this.Prostatus="NewAdd"
     },
     // 编辑项目
-    editPro(id,name,leader,contract,tag,startTime,endTime,status,picture){
+    editPro(id,name,leader,contract,tag,startTime,endTime,status,picture,Mname){
         this.modal=true;
         this.Prostatus="editPro";
         let EditProObj={
@@ -285,7 +282,8 @@ export default {
             EPstartTime:startTime,
             EPendTime:endTime,
             EPstatus:status,
-            EPpicture:picture
+            EPpicture:picture,
+            EpmanangeName:Mname==null||Mname==" "?{"name":"NotName"}:{"name":Mname}
         };
         this.$bus.emit("EditProData",EditProObj);
     },
@@ -342,7 +340,6 @@ export default {
             picture:_this.AddPorData.uploadurl, //图片地址
             status:_this.AddPorData.state //状态 1正常,2暂停
         }
-        console.log(obj)
         if(this.Prostatus=="NewAdd"){
             delete obj.id;
             _this.$axios.post(url,qs.stringify(obj)).then(()=>{
@@ -376,7 +373,7 @@ export default {
             let MsgData=msg.data;
             if(MsgData.err_code==0){
             _this.MsgData=MsgData.project;
-            _this.MsgData.sort((a,b)=>Date.parse(b.start_date)-Date.parse(a.start_date))
+            _this.MsgData.sort((a,b)=>Date.parse(b.create_time)-Date.parse(a.create_time))
             //    缓存数据
                _this.sessMsgData=MsgData.project;
             }
@@ -404,7 +401,8 @@ export default {
     },
     // 跳转到Home页
     homePage(id){
-        this.$router.push('/project/home/'+id)
+        sessionStorage.projectID=id;
+        this.$router.push('/project/home')
     }
 
   }

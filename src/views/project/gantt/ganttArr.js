@@ -50,15 +50,16 @@ window.onload=function(){
 
           var proChild;
           var projectID=Parr[0].project;
-          $.ajax({
-            type:"get",
-            async:false,
-            url:"http://192.168.2.19/index.php?r=task/project/child-list&id="+projectID,
-            dataType:"json",
-            success:function(data){
-              proChild=data.data
-            }
-          });
+            $.ajax({
+              type:"get",
+              async:false,
+              url:"http://192.168.2.19/index.php?r=task/project/child-list&id="+projectID,
+              dataType:"json",
+              success:function(data){
+                proChild=data.data
+              }
+            });
+          
 
           proChild.forEach(function(pitem){
               arr.forEach(function(patime){

@@ -32,7 +32,7 @@
                         {{item.name}}
                         <span class="numStyle">{{item.member_count}}</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end" v-if="index+1 < dutyList.length">
+                        <Poptip class="more" placement="bottom-end">
                             <span>...</span>
                             <div class="api" slot="content">
                                 <!-- <slot name="fmore"></slot> -->

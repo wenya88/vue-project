@@ -79,7 +79,7 @@ export default {
         },
         {
           title: "负责人",
-          key: "run_uname",
+          key: "remark_name",
           align: "right",
           ellipsis: true,
           width: 154
@@ -270,21 +270,6 @@ export default {
       //   }, 2000);
       // });
     },
-    /**
-     * get请求
-     */
-    get(url, params, call) {
-      /*获取列表信息*/
-      this.$http.get(url, { params: params }).then(
-        function(res) {
-          call(res);
-        },
-        function(error) {
-          this.$Message.error("数据加载出错了！请刷新浏览器");
-        }
-      );
-    },
-    
     //删除数据
     removetasklistData(index,$event) {
       $event.cancelBubble = true;
@@ -306,7 +291,7 @@ export default {
       let msg = {}
       if(!data.project_child_id)//主项目
       {
-        msg.project_id = data.project_id?data.project_id:1;
+        msg.project_id = data.project_id?data.project_id:sessionStorage.projectID;
       }
       else
       {
@@ -326,7 +311,6 @@ export default {
         this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
                 .then( res => res.data)
                 .then( res => {
-                    // console.log(res.data);
                       this.dataList = res.data;
                       this.formatTaskList(this.dataList.reverse());//颠倒顺序
                       this.loading = false;
@@ -342,7 +326,7 @@ export default {
                 )
                 .catch(error => {
                     console.log(error);
-                    
+                    return true;
                     this.$Message.error("获取任务列表失败，请重试！");
                 });
         return true;
@@ -362,11 +346,11 @@ export default {
     },
     TimeFormatDay(str)
     {  
-      return str.substr(0,str.search(/ /));
+      return str ? str.substr(0,str.search(/ /)) : "";
     },
     TimeFormatMinute(str)
     {  
-      return str.substr(0,str.lastIndexOf(":"));
+      return str ? str.substr(0,str.lastIndexOf(":")) : "";
     },
     //任务状态
     setTaskStatus(taskDatastatus)

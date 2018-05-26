@@ -84,7 +84,7 @@ export default {
         //获得项目列表
         //这里逻辑还有问题，没有根据项目去取值
         getProjectInfo() {
-            let project_id = 1;
+            let project_id = sessionStorage.projectID;
             this.$axios.post(this.GLOBAL.baseRouter + "/task/project/info", qs.stringify({id:project_id}))
                     .then(res => {
                         this.projectId = res.data.id;

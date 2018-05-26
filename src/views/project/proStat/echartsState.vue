@@ -33,19 +33,19 @@
           _this.$axios.get(url).then(msg=>{
                 let Mdata=msg.data
                 if(Mdata.err_code==0){
-                   let NameData=Mdata.data.map(val=>{
-                     return val.name
-                   });
-                   _this.NameData=NameData;
-                  let EchData=Mdata.data.map(val=>{
-                    return{
-                        "name": val.name,
-                        "type": 'bar',
-                        "label":labelOption,
-                        "data": val.data,
-                    }
-                  });
-                  _this.EchData=EchData;
+                    let NameData=Mdata.data.map(val=>{
+                      return val.name
+                    });
+                    _this.NameData=NameData;
+                    let EchData=Mdata.data.map(val=>{
+                      return{
+                          "name": val.name,
+                          "type": 'bar',
+                          "label":labelOption,
+                          "data": val.data,
+                      }
+                    });
+                    _this.EchData=EchData;
                 }
           })
       },

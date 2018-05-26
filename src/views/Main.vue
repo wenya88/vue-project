@@ -245,16 +245,16 @@ export default {
         },
         updateMenu() {
             this.menuList.forEach((item) => {
-                // let routeName = this.$route.name
+                let routeName = this.$route.name
                 // console.log(this.$route.name, typeof this.$route.name)
-                // if(this.$route.name === item.name) {
-                //     this.subMenu = item.children
-                //     let menuArr = item.children
-                //     console.log(this.$route.name,this.subMenu)
-                //     this.$router.push(menuArr[0].path)
-                // } else {
+                if(this.$route.name === item.name) {
+                    this.subMenu = item.children
+                    let menuArr = item.children
+                    console.log(this.$route.name,this.subMenu)
+                    this.$router.push(menuArr[0].path)
+                } else {
                      this.refresh();
-                // }
+                }
             })
             this.activePath = this.$route.path
             // console.log(this.activePath)

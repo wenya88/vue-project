@@ -14,7 +14,7 @@
         </Col>
         <Col span="2"> 关注:
         <Select v-model="model" style="width:80px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         </Col>
         <Col span="4">
@@ -89,30 +89,13 @@ export default {
       taskType: '',
       subpId: null,
       status: '4',
-      cityList: [
+      followList: [
         {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: 0,
+          label: '不限'
+        }, {
+          value: 1,
+          label: '是'
         }
       ],
       model: '',

@@ -59,7 +59,7 @@ export const appRouter = [
         component: Main,
         children: [
             {
-                path: '/project/home/:taskID',
+                path: '/project/home',
                 icon: 'ios-paper-outline',
                 name: 'custom',
                 title: '概况',
@@ -103,22 +103,7 @@ export const appRouter = [
                 name: 'file',
                 title: '设置',
                 component: resolve => { require(['@/views/project/setting.vue'], resolve); }
-            },
-            {
-                path: '/project/ImgRoll',
-                icon: 'ios-paper-outline',
-                name: 'ImgRoll',
-                title: '文件标注',
-                component: resolve => { require(['@/views/project/components/ImgRoll.vue'], resolve); }
             }
-            // {
-            // {
-            //   path: '/project/vedioEditor',
-            //   icon: 'ios-paper-outline',
-            //   name: 'statistics',
-            //   title: '视频标注组件',
-            //   component: resolve => { require(['@/views/project/components/vedioEditor.vue'], resolve); }
-            // }
         ]
     },
     {
@@ -181,13 +166,13 @@ export const appRouter = [
                 title: '工作台',
                 component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
             },
-            // {
-            //     path: '/epibol/3D',
-            //     icon: 'ios-paper-outline',
-            //     name: '3D',
-            //     title: '3D',
-            //     component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
-            // }
+            {
+                path: '/epibol/3D',
+                icon: 'ios-paper-outline',
+                name: '3D',
+                title: '3D',
+                component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
+            }
         ]
     }, {
         path: '/customer',

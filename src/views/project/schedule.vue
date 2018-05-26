@@ -84,7 +84,7 @@
         
         <!-- Echart -->
         <div class="projectEchart">
-            <EchartLine :projectID="projectID"></EchartLine>
+            <EchartLine></EchartLine>
         </div>
 
       </div>
@@ -95,7 +95,6 @@ import EchartLine from './proStat/echartsLine.vue';
 export default {
     data(){
         return{
-            projectID:1,
             proPanData:0,
             ProTiemDate:0,
             ProFinhData:0,
@@ -113,11 +112,10 @@ export default {
     methods:{
         ProjectPlanGET(){
             let _this=this;
-            _this.$bus.emit("projectID",_this.projectID)
-            sessionStorage.projectID=_this.projectID;
-            let ProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+_this.projectID);
-            let ChlidProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+_this.projectID);
-            let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+_this.projectID); 
+            let projectID=sessionStorage.projectID;
+            let ProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
+            let ChlidProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
+            let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID); 
             _this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
 
                     // 项目进度

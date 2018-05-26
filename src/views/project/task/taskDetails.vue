@@ -7,53 +7,9 @@
                 </Input>
             </FormItem>
             <FormItem label="负责人">
-                <Tag v-for="item in principal" 
-                :key="item" 
-                :name="item" 
-                closable 
-                @on-close="removePartici" 
-                type="border">{{item}}
-                </Tag>
-                <Dropdown trigger="click" class="dropBig">
-                    <a href="javascript:void(0)">
-                        <Button icon="ios-plus-empty" type="dashed" size="small">
-                        添加
-                        </Button>
-                    </a> 
-                    <DropdownMenu slot="list">
-                        <Input v-model="principalName" placeholder="参与人姓名/名字首字母" clearable style="width: 100%"></Input>
-                        <Row :gutter="16">
-                        <Col span="10" class="demo-tabs-style2 memberList">
-                        <ul class="meberli">
-                            <li v-for="(item,index) in principalType" 
-                            :key="item.tabs" 
-                            :class="{active:index == principalNum}" 
-                            @click="memberList(index)">
-                            {{item}}
-                            </li>
-                        </ul>
-                        </Col>
-                        <Col span="12" align="center" class="scrollBorder">
-                        <Scroll :on-reach-bottom="principalHandleReachBottom">
-                            <div class="tabCon">
-                            <div v-for='(itemCon,index) in principalList' 
-                            :key="itemCon.tabContents" 
-                            v-show="index == principalNum">
-                                <!-- <Card dis-hover>
-                                <CheckboxGroup v-model="principalName">
-                                    <Checkbox :label="i,d" 
-                                    v-for='(i,d) in itemCon' 
-                                    :key="i.itemCon">
-                                    </Checkbox>
-                                </CheckboxGroup>
-                                </Card> -->
-                            </div>
-                            </div>
-                        </Scroll>
-                        </Col>
-                        </Row>
-                    </DropdownMenu>
-                </Dropdown>
+                <Select v-model="principalName" >
+                    <Option v-for="item in principal" :value="item.remark_name" :key="item.value">{{ item.remark_name }}</Option>
+                </Select>
             </FormItem>
             <FormItem label="计划时间">
                 <DatePicker 
@@ -145,7 +101,7 @@ export default{
             //*任务属性选项*//
             editDisabled:false,//能否编辑
             isNewTask:false,//是否为新任务
-            principal: [],//负责人数组
+            principal: [],//负责人列表
             principalName: "",//搜索框负责人名字
             principalNum: 1,
             principalType: [],//供选择的负责人类型
@@ -156,7 +112,7 @@ export default{
             referenceFileName: [],//附件文件名称
             referenceFileUrl:[],//附件文件地址
             dateRange:"",
-            principalList: [[]],
+            principalList: [],
             //*时间属性选项*//
             startTime: {
             disabledDate(date) {
@@ -189,7 +145,10 @@ export default{
                 .then( res => {
                         this.initTaskDetailFromData(res)
                         this.getTaskTypeRequire(res.tasktype_id);
+                        this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
+                        console.log(res);
+                        
                     }
                 )
                 .catch(error => {
@@ -205,18 +164,18 @@ export default{
             this.editData = data; 
             this.formatLocalData();
         },
-        //设置能否编辑
+        //设置能否编辑-DONE
         setEditDisabled(forbidEdit)
         {
             this.editDisabled = forbidEdit;
         },
-        //新增任务初始化
+        //新增任务初始化-DONE
         initTaskDetailFromNew(projectInfo)
         {
             this.isNewTask = true;
             this.initProjectInfo(projectInfo);
         },
-        //初始化项目相关信息
+        //初始化项目相关信息-DONE
         initProjectInfo(projectInfo)
         {
             this.editData.project_id = projectInfo.id;
@@ -315,23 +274,65 @@ export default{
         },
         //主任务保存编辑数据
         saveTaskDetails() {
-            let dateForm = {};
-                dateForm.id = this.editData.id;
-                dateForm.father = this.editData.father ? this.editData.father : 0;
-                dateForm.name = this.editData.name;
-                dateForm.project = this.editData.project_id;
-                dateForm.project_child = this.editData.project_child;
-                dateForm.tasktype_id = this.editData.tasktype_id ? this.editData.tasktype_id: 0;
-                dateForm.expect_start_time = this.editData.expect_start_date;
-                dateForm.expect_end_time = this.editData.expect_end_date;
-                dateForm.description = this.editData.description;
-                dateForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
-            return this.isNewTask ?this.addTaskDetails(dateForm) : this.updateTaskDetail(dateForm);
+            let dataForm = {};
+                dataForm.id = this.editData.id;
+                dataForm.father = this.editData.father ? this.editData.father : 0;
+                dataForm.name = this.editData.name;
+                dataForm.project = this.editData.project_id;
+                dataForm.project_child = this.editData.project_child;
+                dataForm.tasktype_id = this.editData.tasktype_id ? this.editData.tasktype_id: 0;
+                dataForm.expect_start_time = this.editData.expect_start_date;
+                dataForm.expect_end_time = this.editData.expect_end_date;
+                dataForm.description = this.editData.description;
+                dataForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
+                dataForm.run_member_id = this.getUserId(this.principalName);
+                dataForm.remark_name = this.principalName;
+                console.log(dataForm.run_member_id);
+                
+            return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm);
+        },
+        //获得参与人ID
+        getUserId(namesData)
+        {
+            if(this.principal.length > 0)
+            {
+                for(let i=0;i<this.principal.length;i++)
+                {
+                    if(namesData == this.principal[i].remark_name)
+                     {
+                         console.log(this.principal[i].id);
+                         
+                        return this.principal[i].id;
+                    }
+                }          
+            }
+            else
+                return null;
+        },
+        //获得参与人ID
+        getUserName(namesId)
+        {
+            console.log(namesId);
+            
+            if(this.principal.length > 0)
+            {
+                for(let i=0;i<this.principal.length;i++)
+                {
+                    if(namesId == this.principal[i].id)
+                     {
+                         console.log(this.principal[i].remark_name);
+                         
+                        return this.principal[i].remark_name;
+                    }
+                }          
+            }
+            else
+                return "";
         },
         //新增任务
-        addTaskDetails(dateForm)
+        addTaskDetails(dataForm)
         {
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dateForm))
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dataForm))
                         .then(res => {
                             this.$bus.emit('refreshCurrentTaskList');
                         })
@@ -342,9 +343,9 @@ export default{
             return true;
         },
         //更新任务
-        updateTaskDetail(dateForm)
+        updateTaskDetail(dataForm)
         {
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dateForm))
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dataForm))
                         .then(res => {
                             this.$bus.emit('refreshCurrentTaskList');
                         })
@@ -409,6 +410,25 @@ export default{
                     }
                 );
             }
+        },
+        //----------参与人-------------//
+        //点击参与人下拉
+        clickMenberDropdown()
+        {
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-page',qs.stringify({company_id: 1}))
+                .then( res => res.data)
+                .then( res => {
+                        this.principal=[];
+                        this.principalName="";
+                        this.principal = res.data;
+                        this.principalName = this.getUserName(this.editData.member_id);
+                    }
+                )
+                .catch(error => {
+                    console.log(error);
+                    
+                    this.$Message.error("获取公司成员失败，请重试！");
+                });
         },
         //参与人滚动条
         principalHandleReachBottom() {

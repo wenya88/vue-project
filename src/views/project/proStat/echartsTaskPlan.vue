@@ -35,28 +35,29 @@
               let msgData=msg.data;
               if(msgData.err_code==0){
                   _this.date=msgData.data.data;
-                  let dateName=msgData.data.series.map(val=>{
-                    return {
-                        "name":val.name
-                        }
-                  })
-                  _this.dateName=dateName;
-
-                  let EchData=msgData.data.series.map(val=>{
-                     return {
-                        name:val.name,
-                        type:'line',
-                        data:val.data,
-                        itemStyle : {normal:{
-                            lineStyle:{
-                              type:'dotted'
-                            },
-                            borderWidth:4
+                  if(msgData.data.series!=undefined){
+                    let dateName=msgData.data.series.map(val=>{
+                      return {
+                          "name":val.name
                           }
-                        }
-                     }
-                  })
-                  _this.EchData=EchData
+                    })
+                    _this.dateName=dateName;
+                    let EchData=msgData.data.series.map(val=>{
+                      return {
+                          name:val.name,
+                          type:'line',
+                          data:val.data,
+                          itemStyle : {normal:{
+                              lineStyle:{
+                                type:'dotted'
+                              },
+                              borderWidth:4
+                            }
+                          }
+                      }
+                    })
+                    _this.EchData=EchData
+                  }
               }
           })
           

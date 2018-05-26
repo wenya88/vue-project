@@ -15,7 +15,7 @@
                       item.client_audit_uid,
                       index,
                       item.task_id,
-                      item.file.fid
+                      item.file.id
                   )" :class="{showBg:index==liIndex}"> 
                   <span>{{index+1}}<br/>{{item.stage_name}}</span>
                   <em>
@@ -306,7 +306,6 @@ export default {
                             alert("请求错误!")
                         }
                     })
-
                 })
 
                 $(document).on('click','.V_signIndex',function(){
@@ -375,10 +374,9 @@ export default {
                 _this.cliUid=_this.IMGlist[0].cliUid;
                 // 把StageID传到提交
                  let fileID = Sdate.data[0].task_id;
-                 let fID=Sdate.data[0].file.fid;
+                 let fID=Sdate.data[0].file.id;
                 // 加载Video控件
                 _this.Vdefault(fileID,fID);
-                console.log(fileID+"/"+fID)
                 _this.vedioLoad();
                 }else{
                 return

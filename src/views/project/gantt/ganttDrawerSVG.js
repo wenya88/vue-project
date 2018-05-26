@@ -1022,9 +1022,9 @@ Ganttalendar.prototype.redrawTasks = function () {
           var taskEnd_D=taskEnd.getDate();
           var taskEndDate=taskEnd_Y+"-"+taskEnd_M+"-"+taskEnd_D;
           console.log(taskStartDate+"--"+taskEndDate);
-          $.post(taskURL,{"id":taskID,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate}).then(function(msg){
-            console.log(msg)
-          })
+          // $.post(taskURL,{"id":taskID,"expect_start_time":taskStartDate,"expect_end_time":taskEndDate}).then(function(msg){
+          //   console.log(msg)
+          // })
     }
           
   }

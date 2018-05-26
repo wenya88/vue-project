@@ -59,7 +59,7 @@
                                                   item.id,
                                                   item.stage_file.type,
                                                   item.stage_file.file,
-                                                  item.stage_file.task_id
+                                                  item.id
                                                   )" :key="index">
                                                   <span>
                                                       <s>{{item.name}}</s>
@@ -375,7 +375,6 @@
   
     //  打开任务详情
     taskDetaInfo(id,type,file,TaskID){
-        console.log(TaskID)
         let _this=this;
         _this.isTabModal=true;        
         this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗

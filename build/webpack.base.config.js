@@ -96,6 +96,7 @@ module.exports = {
             'md5': '@/js/md5.min.js',
             'shim': '@/js/shim.min.js',
             'xlsx': '@/js/xlsx.full.min.js',
+            'lab': '@/js/labjs.min.js'
         }
     }
 };

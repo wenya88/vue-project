@@ -16,7 +16,7 @@
                         item.client_audit_uid,
                         index,
                         item.file.stage_id,
-                        item.file.fid
+                        item.file.id
                     )" :class="{showBg:index==liIndex}"> 
                     <span>{{index+1}}<br/>{{item.stage_name}}</span>
                     <em>
@@ -57,6 +57,7 @@
   </div>
 </template>
 <script>
+  var Data=[];
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
   import {baseUrl} from '../../../config/env.js';
@@ -83,10 +84,16 @@
         insUid:0,
         cliUid:0,
         liIndex:0,
-        FeedbackValue:''
+        FeedbackValue:'',
+        onload:true,
+        IMGID:0
       }
     },
-    
+    watch:{
+      FeedbackValue(val){
+        sessionStorage.FeedbackValue=val;
+      }
+    },
     filters:{
       filtStat(val){
             if(val==1){
@@ -104,9 +111,7 @@
             }
       }
     },
-    beforeMount(){
-     
-    },
+    
     mounted(){
       // this.initImgEditor();
       this.loadWH()
@@ -117,12 +122,14 @@
         this.url=sessionStorage.FileURl;
         this.get();
         this.onLoad();
+        sessionStorage.removeItem("FeedbackValue");
       },
       onLoad(){
-          let el=document.getElementById("ImgOnlod")
+          let el=document.getElementById("ImgOnlod");
+          let el2=document.getElementById("onload");
+          // el2.style.display="block";
           el.onload=function(){
-              let el2=document.getElementById("onload");
-              el2.style.display="none"
+              el2.style.display="none";
           }
       },
       loadWH(){
@@ -146,10 +153,12 @@
          let fID=fid;
          this.defue(fileID,fID);
          this.imgdef();
+         Data=[];
+         this.onLoad();
       },
       defue(fileID,fID){
         (function($){
-          var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
+          var cX,cY,indexId=0,removeId,DOM,changeSignColor=false,signColor;
           var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
           var Rleft,Rtop;//需要删除的坐标
           jQuery.sign={
@@ -243,29 +252,31 @@
           }
           function deleteData(left,top){
             for(var i=0;i<Data.length;i++){
-              if(Data[i].left==left&&Data[i].top==top){
+              if(Data[i].left==left-7&&Data[i].top==top-10){
                 Data.splice(i,1);
                 break;
               }else{
                 continue;
               }
+             
             }
           }//删除数据
           function loading(data){
-            $(".signIndex").remove()
-            var l=Data.length;
-            if(!l)
-              return;
-            for(var i=0;i<data.length;i++){
-              indexId++
-              $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
-              $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
-              if(changeSignColor){
-                $('#Ts'+l).css("border",signColor+" 3px solid");
-              }//改变了颜色
-              l++;
-            }
-            indexId=l;
+             $(".signIndex").remove();
+               if(data!=null){
+                 var l=Data.length;
+                  for(var i=0;i<data.length;i++){
+                    indexId++
+                    $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
+                    $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
+                    if(changeSignColor){
+                      $('#Ts'+l).css("border",signColor+" 3px solid");
+                    }//改变了颜色
+                    l++;
+                  }
+                indexId=l;
+               }
+           
           }//载入数据
 
           $(".actionPost").unbind('click').click(function(){
@@ -274,12 +285,13 @@
             var ImgData={
                   "stage_id": fileID,
                   "audit": 2,
-                  "feedbac": "",
+                  "feedback": sessionStorage.FeedbackValue,
                   "file": [{
                     "file_id": fID,
-                    "tag": Data
+                    "tag":Data
                   }]
                 }
+            //console.log(ImgData)
             $.ajax({
               cache:false,
               type:'post',
@@ -290,8 +302,9 @@
               success:function(msg){
                 console.log(msg)
                 if(msg.err_code>0){
-                  alert(msg.err_message)
+                  alert(msg.err_message);
                 }else{
+                  sessionStorage.removeItem("FeedbackValue");
                   alert("提交成功！")
                 }
              },
@@ -300,6 +313,7 @@
              }
             })
           })
+
         })(jQuery);
       },
       imgdef(){
@@ -328,29 +342,30 @@
            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
           _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
-            console.log(Sdate);
             if(Sdate.err_code==0){
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
-                if(_this.IMGlist.length>0)
-                  sessionStorage.FileURl=_this.IMGlist[0].file.file;
-                // Sdate.data.forEach(element => {
-                //     _this.IMGlist.push(element)
-                // });
-              
-              // 设置初始化值
-              _this.data=_this.IMGlist[0].tag;
-              _this.StateFeedBack=_this.IMGlist[0].status;
-              _this.insTime=_this.IMGlist[0].insTime;
-              _this.cliTiem=_this.IMGlist[0].cliTiem;
-              _this.insDate=_this.IMGlist[0].insDate;
-              _this.cliDate=_this.IMGlist[0].cliDate;
-              _this.insUid=_this.IMGlist[0].insUid;
-              _this.cliUid=_this.IMGlist[0].cliUid;
+
+                _this.IMGlist.forEach((val,index)=>{
+                   if(val.file.file==sessionStorage.FileURl){
+                    // 设置初始化值
+                    console.log(val.status)
+                     _this.data=val.file.tag;
+                     _this.StateFeedBack=val.status;
+                     _this.insTime=val.insTime;
+                     _this.cliTiem=val.cliTiem;
+                     _this.insDate=val.insDate;
+                     _this.cliDate=val.cliDate;
+                     _this.insUid=val.insUid;
+                     _this.cliUid=val.cliUid;
+                     _this.liIndex=index;
+                     _this.IMGID=val.file.id;
+                   }
+                })
               
               // 把StageID传到提交
               let fileID = Sdate.data[0].file.stage_id;
-              let fID=Sdate.data[0].file.fid;
+              let fID=_this.IMGID;
               _this.defue(fileID,fID);
               _this.imgdef();
               }else{

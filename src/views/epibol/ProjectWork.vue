@@ -43,8 +43,8 @@
                                                     <div class="PressLine">
                                                         <div class="gressTile">时间进度</div>
                                                         <div class="gressLine">
-                                                            <Progress :percent="Number(item.time_progress)>101?101:item.time_progress">
-                                                                <span>{{item.time_progress>101?item.last_day:Math.round(item.time_progress)+'%'}}</span>
+                                                            <Progress :percent="item.time_progress|progressLine">
+                                                                <span>{{item.time_progress>101?item.last_day:Math.round(item.time_progress)|progresTime}}</span>
                                                             </Progress>
                                                         </div>
                                                         <div class="clear"></div>
@@ -120,7 +120,7 @@
                             <dd>
                                 <ul>
                                     <li v-for="(item,index) in AuditData" :key="index"  @click="taskDetaInfo(
-                                        item.id,
+                                        item.task_id,
                                         item.stage_file.type,
                                         item.stage_file.file,
                                         item.stage_file.task_id
@@ -209,6 +209,24 @@ export default {
     },
     components:{CalendInfo,browsetask},
     filters:{
+        progresTime(val){
+           if(val<0){
+               return 0+"%"
+           }else if(val<=100){
+               return val+"%"
+           }else{
+               return val
+           }
+        },
+        progressLine(val){
+            if(val>101){
+                return 101
+            }else if(val<0){
+                return 0
+            }else{
+                return val
+            }
+        },
         FilteTime(val){
             let TiemVal=val;
             if(TiemVal<0){
@@ -228,12 +246,12 @@ export default {
     methods:{
         // 跳转到概况页
         homepage(id){
-            this.$router.push('/project/home/'+id)
+            sessionStorage.projectID=id;
+            this.$router.push('/project/home');
         },
         // 文件详情
         taskDetaInfo(id,type,file,TaskID){
             let _this=this;
-            let url=_this.GLOBAL.baseRouter+'task/task/info&id='+id;
              _this.isTabModal=true
             this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
             this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
@@ -244,7 +262,6 @@ export default {
 
             // 是否显示编辑信息
             sessionStorage.AllowEdit=_this.AllowEdit;
-
         },
         closeTabmodal(){
             this.isTabModal=false;

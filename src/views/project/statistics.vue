@@ -65,12 +65,10 @@
             compName:null,
             Lindex:0,
             Mindex:null,
-            projectID:1
           }
       },
       mounted(){
           this.compName=this.Porject[0].key;
-          sessionStorage.projectID=this.projectID;
       },
       computed:{
           ActionCom(){

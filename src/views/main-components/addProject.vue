@@ -54,6 +54,13 @@
                         </Upload>
                     </div>
                 </dd>
+                <dt>状态</dt>
+                <dd>
+                    <i-switch size="large" v-model="state" @on-chanage="chanState">
+                        <span slot="open">开启</span>
+                        <span slot="close">暂停</span>
+                    </i-switch>
+                </dd>
                 <dt>项目标签</dt>
                 <dd>
                     <Tag v-for="item in count" :key="item" :name="item" closable @on-close="Closelabel">{{ item }}</Tag>
@@ -68,25 +75,19 @@
                 </dd>
                 <dt>项目经理</dt>
                 <dd>
-                    <Tag v-for="item in manageCount" :key="item" :name="item" closable @on-close="CloseManage" @click.native="editTtag(item)">{{ item }}</Tag>
+                    <Tag v-for="(item,index) in manageCount" :key="item.name" :name="item.name" closable @on-close="CloseManage" @click.native="editTtag(index)">{{ item.name }}</Tag>
                     <Button icon="ios-plus-empty" type="dashed" size="small" @click.native="AddManage" v-if="manageCount.length>0?false:true">
                         添加项目经理    
                         <div class="addLabel" v-show="addManageDIV" style="width:245px;">
                             <Select v-model="MangageVal" filterable  style="width: 140px;" class="MangaSelect">
-                                <Option v-for="item in ContList" :value="item.company_name" :key="item.id">{{ item.company_name }}</Option>
+                                <Option v-for="item in manageData" :value="item.id" :key="item.id">{{ item.realname }}</Option>
                             </Select>
                             <Button type="primary" size="small" @click.native.stop="submitManage">添加</Button>&nbsp;
                             <Button size="small" @click.native.stop="closeManageDIV">取消</Button>
                         </div>
                     </Button>
                 </dd>
-                <dt>状态</dt>
-                <dd>
-                    <i-switch size="large" v-model="state" @on-chanage="chanState">
-                        <span slot="open">开启</span>
-                        <span slot="close">暂停</span>
-                    </i-switch>
-                </dd>
+                
             </dl>
         </div>
     </div>
@@ -102,7 +103,7 @@ export default {
             startDate:'',
             endDate:'',
             count: [],
-            manageCount:['地美工作室'],
+            manageCount:[],
             state:true,
             uploadList:[],
             uploadurl:'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3429908815,845996252&fm=27&gp=0.jpg',
@@ -111,9 +112,7 @@ export default {
             MangageVal:'',
             addLabDIV:false,
             addManageDIV:false,
-            defaultList:[
-                {url:''}
-            ]
+            manageData:[],
         }
     },
     methods:{
@@ -160,7 +159,13 @@ export default {
                  this.$Message.error('不能为空！');
                 return
             }else{
-                this.manageCount.push(this.MangageVal);
+                let MListObj={}
+                this.manageData.forEach(val=>{
+                    if(val.id==this.MangageVal){
+                        MListObj.name=val.realname;
+                    }
+                })
+                this.manageCount.push(MListObj);
                 this.addManageDIV=false;
             }
             
@@ -202,14 +207,14 @@ export default {
         handleBeforeUpload (file) {
             this.url=window.URL.createObjectURL(file);
         },
-        // 获取公司合同
+        // 获取公司合同和管理人员列表
         getCont(){
             let _this=this;
-            let url=_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1;
-            _this.$axios.get(url).then(msg=>{
-                if(msg.data.err_code==0){
-                    _this.ContList=msg.data.data;
-                }
+            let url=_this.$axios.get(_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1);
+            let manageURL=_this.$axios.get(_this.GLOBAL.baseRouter+'task/project/get-company-member');
+            _this.$axios.all([url,manageURL]).then(([msgData,ManageData])=>{
+                _this.ContList=msgData.data.data;
+                _this.manageData=ManageData.data.data;
             })
         },
         // 发送数据
@@ -220,7 +225,7 @@ export default {
             obj.startDate=this.startDate,
             obj.endDate=this.endDate,
             obj.count=this.count,
-            obj.manageCount=this.manageCount[0],
+            obj.manageCount=this.MangageVal,
             obj.state=Number(this.state)==1?1:2,
             obj.uploadurl=this.uploadurl,
             obj.Pid=this.Pid
@@ -233,24 +238,35 @@ export default {
         this.getCont();
         this.$bus.on("submitOk",()=>{
             if(this.$refs.upload.fileList.length>0){
-                this.$refs.upload.fileList.splice(0);
-            }
-            this.proCont="",
-            this.proName="",
-            this.startDate="",
-            this.endDate="",
-            this.count=[],
-            this.state=true
+                this.$refs.upload.fileList.splice(0)
+            };
+            this.proCont="";
+            this.proName="";
+            this.startDate="";
+            this.endDate="";
+            this.count=[];
+            this.state=true;
+            this.manageCount=[];
         });
         this.$bus.on("EditProData",(val)=>{
            this.Pid=val.EPid;
            this.proCont=val.EPcontract;
+        //    this.ContList.forEach((item,index)=>{ //获取合同的索引
+        //        if(item.id==val.EPcontract){
+        //           this.proCont=index+1;
+        //        }
+        //    })
            this.proName=val.EPname;
            this.startDate=val.EPstartTime;
            this.endDate=val.EPendTime;
            this.count=val.EPtag==''?[]:val.EPtag;
            this.uploadurl=val.EPpicture;
            this.state=val.EPstatus==2?false:true;
+           this.MangageVal=val.EPleader;
+
+           if(val.EpmanangeName.name!="NotName"){//管理人员姓名
+               this.manageCount.push(val.EpmanangeName);
+           }
            //显示图片
            this.uploadList.push({
                 url: val.EPpicture,
