@@ -1,63 +1,65 @@
 <template>
+    <div>
     <div class="videoM">
-      <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
-      <div class="stageListRow" @mouseleave="hideStageList">
-            <ul>
-              <li v-for="(item,index) in IMGlist" @click="changCont(
-                      item.file.file,
-                      item.file.tag,
-                      item.status,
-                      item.inside_audit_time,
-                      item.client_audit_time,
-                      item.inside_audit_date,
-                      item.client_audit_date,
-                      item.inside_audit_uid,
-                      item.client_audit_uid,
-                      index,
-                      item.task_id,
-                      item.file.id
-                  )" :class="{showBg:index==liIndex}"> 
-                  <span>{{index+1}}<br/>{{item.stage_name}}</span>
-                  <em>
-                    {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
-                    {{item.status | filtStat}}
-                  </em>
-                  <div class="clear"></div>
-              </li>
-            </ul>
-            
-      </div>
-      <div class='V_markVjs' style="display:none;top:0px;left:0px;"></div>
-      <div class="V_progressBar" style="top:0px;left:0px;"></div>
-      <video id="my-video" class="video-js" controls preload="auto" width="880" height="600" data-setup="{}">
-        <source :src="VideoURL" type="video/mp4">
-      </video>
-
-      <!-- 标注提交 -->
-      <div v-if="AllowEditRow" class="VideoAllowEdit">
-          <span class="EditInput">
-              <input type="text" placeholder="请输入你要反馈的内容" id="EditInput">
-          </span>
-          <span class="EditSub">
-              <button class="actionPost">确认</button>
-          </span>
-          <span class="EditSub">
-              <button class="subPass">通过</button>
-          </span>
-      </div>
-      
-      <!-- 反馈信息 -->
-      <div v-if="SataeInfo" class="VideofeedbackInfo">
-          <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
-          <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
-          <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
-          <div class="clear"></div>
+        <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
+        <div class="stageListRow" @mouseleave="hideStageList">
+                <ul>
+                    <li v-for="(item,index) in IMGlist" @click="changCont(
+                            item.file.file,
+                            item.file.tag,
+                            item.status,
+                            item.inside_audit_time,
+                            item.client_audit_time,
+                            item.inside_audit_date,
+                            item.client_audit_date,
+                            item.inside_audit_uid,
+                            item.client_audit_uid,
+                            index,
+                            item.file.stage_id,
+                            item.file.id
+                        )" :class="{showBg:index==liIndex}"> 
+                        <span>{{index+1}}<br/>{{item.stage_name}}</span>
+                        <em>
+                            {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
+                            {{item.status | filtStat}}
+                        </em>
+                        <div class="clear"></div>
+                    </li>
+                </ul>
         </div>
-  	</div>
+        <div class='V_markVjs' style="display:none;top:0px;left:0px;"></div>
+        <div class="V_progressBar" style="top:0px;left:0px;"></div>
+        <video id="my-video" class="video-js" controls preload="auto" width="810" height="480" data-setup="{}">
+            <source :src="VideoURL" type="video/mp4">
+        </video>
+
+        <!-- 标注提交 -->
+        <div v-if="AllowEditRow" class="VideoAllowEdit">
+            <span class="EditInput">
+                <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
+            </span>
+            <span class="EditSub">
+                <button class="actionPost">需修改</button>
+            </span>
+            <span class="EditSub" v-if="data==null?true:false">
+                <button class="subPass">通过</button>
+                <em @click="InfoRefresh" id="InfoRefresh"></em>
+            </span>
+        </div>
+        
+        <!-- 反馈信息 -->
+        <div v-if="SataeInfo" class="VideofeedbackInfo">
+            <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
+            <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
+            <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+            <div class="clear"></div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
-// import videojs from 'video.js';
-import {baseUrl} from '../../../config/env.js';
+var Data=[];
+import {baseUrl, deletetaskData} from '../../../config/env.js';
 export default {
     data(){
         return{
@@ -76,7 +78,10 @@ export default {
             insUid:0,
             cliUid:0,
             liIndex:0,
-            VideoURL:'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4'
+            VideoURL:'',
+            IMGID:0,
+            fileID:0,
+            FeedbackValue:''
         }
     },
      filters:{
@@ -97,16 +102,17 @@ export default {
       }
     },
     created(){
-        this.videoLoad();
+        this.AddVedioJS();
     },
     mounted(){
-        // 设初始视频地址
-        // this.url=sessionStorage.FileURl;
         this.VedioGet();
     },
     methods:{
+        InfoRefresh(){
+         this.$bus.emit('InfoRefresh')
+        },
         changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
-         this.url=file;
+         this.VideoURL=file;
          this.data=tag;
          this.StateFeedBack=status;
          this.insTime=insTime;
@@ -120,8 +126,12 @@ export default {
          let fID=fid;
          this.Vdefault(fileID,fID);
          this.vedioLoad();
+        //  切换视频初始化播放器
+         let myPlayer = videojs('my-video');
+         myPlayer.load(this.VideoURL);
+         myPlayer.play();
        },
-        videoLoad(){
+        AddVedioJS(){
             $(".video_js").remove();
             let head = document.getElementsByTagName('head')[0];  
             let script = document.createElement('script');  
@@ -148,21 +158,26 @@ export default {
                         var domWidth=document.getElementsByClassName("vjs-play-progress")[0].style.width;
                         var Ftiem=myPlayer.currentTime();
                             btiem=Number(Ftiem).toFixed(2);
-                        // console.log(btiem);
                         return domWidth
                     }
 
                     myPlayer.on('pause',function(){
-                        // console.log(myPlayer.currentTime());
+                        myPlayer.on('timeupdate',function(){
+                            if($('.V_signIndex')==undefined){
+                                console.loe("无")
+                            }else{
+                                console.log("有")
+                            }
+                        })
                         PauPlay();
                     });
+                    
                     myPlayer.on('play',function(){
-                        $(".V_markVjs,.V_signIndex").hide();
+                       $(".V_markVjs,.V_signIndex").hide();
                     });
 
                     // -----------------图片标识-----------------
-                    var cX,cY,indexId=0,removeId,Data=[],DOM,changeSignColor=false,signColor;
-                    var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
+                    var cX,cY,indexId=0,removeId,DOM
                     var Rleft,Rtop;//需要删除的坐标
                     jQuery.sign={
                         bindSign:function(dom){
@@ -195,7 +210,7 @@ export default {
                             $(dom).append("<div class='V_inputSignBox'></div>");
                             $('.V_inputSignBox').append("<div class='V_outSignbox'>X</div>");
                             $('.V_inputSignBox').append("<div class='V_signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>");
-                            $('.V_inputSignBox').append("<div class='V_sureSign'>确定</div>");
+                            $('.V_inputSignBox').append("<div class='V_sureSign'>标注</div>");
                             $('.V_inputSignBox').css({"left":cX,"top":cY});
                             e.stopPropagation();
                         }
@@ -222,101 +237,128 @@ export default {
                                 $('.V_inputSignBox').remove();
                                 var Dtiem="'"+btiem+"'";
                                 var Rtiem=Dtiem.replace('.','_');
-                                $(dom).append("<div class='V_signIndex bBs"+Rtiem.replace("'",'')+"' id=Ts"+indexId+" theSign="+text+" data-btiem="+btiem+">"+"<div class='V_hintBox'"+"title="+text+">"+text+"</div>"+"<div class='V_triangle-down'></div></div>");
+                                $(dom).append("<div class='V_signIndex bBs"+Rtiem.replace("'",'')+"' id=Ts"+indexId+" theSign="+text+" data-btiem="+btiem+">"+"<div class='V_hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
                                 $(".V_progressBar").append("<span class='V_barSpan'"+'id=bBs'+indexId+' style=left:'+domWidth+">"+btiem+"</span>")
-                                $('#Ts'+indexId).css({"left":cX-15,"top":cY-15,"display":"block"});
-                                if(changeSignColor){
-                                $('#Ts'+indexId).css("border",signColor+" 3px solid");
-                                }//改变了颜色
-                                var mes={left:cX-15,top:cY-15,message:text,btiem:btiem,leftX:domWidth};
+                                $('#Ts'+indexId).css({"left":cX-11,"top":cY-29,"display":"block"});
+                                var mes={left:cX-11,top:cY-29,message:text,btiem:btiem,leftX:domWidth};
                                 Data[Data.length]=mes;
                         }
                         });//确认编辑
-                        $(document).on('mousedown','[id*=Ts]',function(e){
+                        $(document).on('mouseenter','[id*=Ts]',function(e){
                         var m=$(this).attr('id').replace(/[^0-9]/ig, "");
-                        if(e.which==3){
+                        // if(e.which==3){
                             e.stopPropagation();
                             removeId=m;
                             $('.V_chooseBox').remove();
                             Rleft=$(this).css("left").replace(/[^0-9]/ig, "");
                             Rtop=$(this).css("top").replace(/[^0-9]/ig, "");
                             var l=e.clientX-$(dom).offset().left,t=e.clientY-$(dom).offset().top;
-                            $(dom).append("<div class='V_chooseBox'><ul><li id='deleteSign'>删除</li></ul></div>");
-                            $('.V_chooseBox').css({"left":l,"top":t});
-                        }
+                            $(this).append("<div class='V_chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
+                            $('.V_chooseBox').css({"left":45,"top":-20});
+                        // }
                         });//弹出取消标记
                         $(document).on('click','#deleteSign',function(){
-                        deleteData(Rleft,Rtop);
-                        $('#Ts'+removeId).remove();
-                        $('#bBs'+removeId).remove();
+                            deleteData(Rleft,Rtop);
+                            $('#Ts'+removeId).remove();
+                            $('#bBs'+removeId).remove();
                         });
+
                         $(document).click(function(){
-                        $('.V_chooseBox').remove();
+                            $('.V_chooseBox').remove();
                         });
                         //点击消失
                     }
                     function deleteData(left,top){
                         for(var i=0;i<Data.length;i++){
-                        if(Data[i].left==left&&Data[i].top==top){
-                            Data.splice(i,1);
-                            break;
-                        }else{
-                            continue;
+                            if(Data[i].left==left&&Data[i].top==top){
+                                Data.splice(i,1);
+                                break;
+                            }else{
+                                continue;
+                            }
                         }
-                        }
-                    }
+                    }//删除
                     function loading(data){
-                    var l=Data.length;
-                    for(var i=0;i<data.length;i++){
-                    indexId++
-                    var Dtiem="'"+Number(data[i].btiem)+"'";
-                    var Rtiem=Dtiem.replace('.','_');
-                    $('.V_signIndex').remove();
-                    $(DOM).append("<div class='V_signIndex bBs"+Rtiem.replace("'",'')+" id=Ts"+l+" theSign="+data[i].message+" data-btiem="+Number(data[i].btiem)+">"+"<div class='V_triangle-down'></div><div class='V_hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
-                    $(".V_progressBar").append("<span class='V_barSpan'"+'id=bBs'+l+' style=left:'+data[i].leftX+">"+Number(data[i].btiem)+"</span>");
-                    $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
-                    if(changeSignColor){
-                        $('#Ts'+l).css("border",signColor+" 3px solid");
-                    }//改变了颜色
-                    l++;
-                    }
+                    $('.V_signIndex,.V_barSpan').remove()
+                    if(data!=null){
+                        var l=Data.length;
+                        for(var i=0;i<data.length;i++){
+                            indexId++
+                            var Dtiem="'"+Number(data[i].btiem)+"'";
+                            var Rtiem=Dtiem.replace('.','_');
+                            $(DOM).append("<div class='V_signIndex bBs"+Rtiem.replace("'",'')+" id=Ts"+l+" theSign="+data[i].message+" data-btiem="+Number(data[i].btiem)+">"+"<div class='V_hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
+                            $(".V_progressBar").append("<span class='V_barSpan'"+'id=bBs'+l+' style=left:'+data[i].leftX+">"+Number(data[i].btiem)+"</span>");
+                            $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
+                            l++;
+                        }
                     indexId=l;
+                    }
                 }//载入数据
-                $(".actionPost").unbind("click").click(function(){
-                    var url=baseUrl+'index.php?r=task/task/inside-audit';
-                    var VedData={
-                        "stage_id":fileID,
-                        "audit":2,
-                        "feedback":"",
-                        "file":[{
-                            "file_id":fID,
-                            "tag":Data
-                           }]
-                    };
+
+                function AjaxFun(url,VedData){
                     $.ajax({
+                        cache:false,
                         type:'post',
                         url:url,
                         data:VedData,
                         async:true,
-                        dataType:'json',    
+                        dataType:"json",
                         success:function(msg){
-                            console.log(msg)
-                        },
-                        error:function(){
-                            alert("请求错误!")
+                        if(msg.err_code>0){
+                            alert(msg.err_message);
+                        }else{
+                            sessionStorage.removeItem("FeedbackValue");
+                            document.getElementById('InfoRefresh').dispatchEvent(new Event('click'));
+                            alert("提交成功！")
                         }
+                    },
+                    error:function(){
+                        alert(' 提交失败!')
+                    }
                     })
-                })
+                };
+
+                // 标注
+                $(".actionPost").unbind('click').click(function(){
+                    // var url='/task/task/inside-audit';
+                    var url=baseUrl+'index.php?r=task/task/inside-audit';
+                    var VedData={
+                        "stage_id": fileID,
+                        "audit": 2,
+                        "feedback": sessionStorage.FeedbackValue,
+                        "file": [{
+                            "file_id": fID,
+                            "tag":Data
+                        }]
+                        }
+                        AjaxFun(url,VedData)
+                });
+
+                // 审核通过
+                $(".subPass").unbind('click').click(function(){
+                    var url=baseUrl+'index.php?r=task/task/inside-audit';
+                    var VedData={
+                        "stage_id": fileID,
+                        "audit": 1,
+                        "feedback":'',
+                        "file": [{
+                            "file_id": fID,
+                            "tag":[]
+                        }]
+                        }
+                    AjaxFun(url,VedData)
+                });
+
 
                 $(document).on('click','.V_signIndex',function(){
                     var thisTiem=$.trim($(this).attr('data-btiem'));
                     myFun(thisTiem);
-                    // console.log(thisTiem);
                 });
 
                 $(document).on('click','.V_progressBar .V_barSpan',function(){
+                    myPlayer.pause();
+                    $(".V_signIndex").hide();
                     var thisTiem=$.trim($(this).text());
-                    $(".V_signIndex").hide()
                     var DthisTiem=thisTiem;
                     var RthisTiem=DthisTiem.replace('.','_');
                     $(".bBs"+RthisTiem).show();
@@ -327,9 +369,8 @@ export default {
                 $(document).on('click','.V_markVjs',function(){
                         $(".V_inputSignBox").hide();
                 })
-
                 function myFun(thisTiem){
-                        myPlayer.currentTime(thisTiem)
+                    myPlayer.currentTime(thisTiem);
                 }
         },
         vedioLoad(){
@@ -341,8 +382,9 @@ export default {
         },
         VedioGet(){
              let _this=this;
+             _this.VideoURL=sessionStorage.FileURl;
              //  列表高度
-             $(".stageListRow").height(600)
+             $(".stageListRow").height(480)
              //  控制图片是否可标注
             if(sessionStorage.AllowEdit=="Allow"){ //允许标注
                 _this.AllowEditRow=true;
@@ -360,24 +402,30 @@ export default {
             _this.$axios.get(url).then(function(msg){
                 let Sdate=msg.data;
                 if(Sdate.err_code==0){
-                    Sdate.data.forEach(element => {
-                        _this.IMGlist.push(element)
-                    });
-                // 设置初始化值
-                _this.data=_this.IMGlist[0].tag;
-                _this.StateFeedBack=_this.IMGlist[0].status;
-                _this.insTime=_this.IMGlist[0].insTime;
-                _this.cliTiem=_this.IMGlist[0].cliTiem;
-                _this.insDate=_this.IMGlist[0].insDate;
-                _this.cliDate=_this.IMGlist[0].cliDate;
-                _this.insUid=_this.IMGlist[0].insUid;
-                _this.cliUid=_this.IMGlist[0].cliUid;
+                    _this.IMGlist = [];
+                    _this.IMGlist = Sdate.data;
+                    _this.IMGlist.forEach((val,index)=>{
+                   if(val.file.file==sessionStorage.FileURl){
+                        // 设置初始化值
+                        _this.data=val.file.tag;
+                        _this.StateFeedBack=val.status;
+                        _this.insTime=val.insTime;
+                        _this.cliTiem=val.cliTiem;
+                        _this.insDate=val.insDate;
+                        _this.cliDate=val.cliDate;
+                        _this.insUid=val.insUid;
+                        _this.cliUid=val.cliUid;
+                        _this.liIndex=index;
+                        _this.IMGID=val.file.id;
+                        _this.fileID=val.file.stage_id;
+                    }
+                })
                 // 把StageID传到提交
-                 let fileID = Sdate.data[0].task_id;
-                 let fID=Sdate.data[0].file.id;
-                // 加载Video控件
-                _this.Vdefault(fileID,fID);
-                _this.vedioLoad();
+                let fileID = _this.fileID;
+                let fID=_this.IMGID;
+                    // 加载Video控件
+                    _this.Vdefault(fileID,fID);
+                    _this.vedioLoad();
                 }else{
                 return
                 }          
@@ -390,8 +438,8 @@ export default {
           document.getElementsByClassName('stageListRow')[0].style.display='block';
         },
         hideStageList(){
-            document.getElementsByClassName('controlListRow')[0].style.display='block';
-            document.getElementsByClassName('stageListRow')[0].style.display='none';
+          document.getElementsByClassName('controlListRow')[0].style.display='block';
+          document.getElementsByClassName('stageListRow')[0].style.display='none';
         }
     }
 }

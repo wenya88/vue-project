@@ -56,7 +56,7 @@
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
                     <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
                   <td class="w25">
-                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
               </table>
             </div>
@@ -118,7 +118,7 @@
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
                     <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
                   <td class="w25">
-                    <span class="orange-span">{{item.surplusTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
                 <tr>
                   <td colspan="4" class="b-border"></td>
@@ -192,7 +192,7 @@
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
                     <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
                   <td class="w25">
-                    <span class="orange-span">{{item.surplusTime}}</span>/天</td>
+                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
               </table>
             </div>
@@ -254,7 +254,8 @@
                     <!-- <span class="orange-span">{{item.stage}}</span>/5</td> -->
                     <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
                   <td class="w25">
-                    <span class="orange-span">{{item.surplusTime}}</span>/天</td>
+                    <!-- <span class="orange-span" v-if="item.surplusTime<0">延期{{item.surplusTime}}</span>天 -->
+                    <span class="orange-span">{{item.surplusTime}}</span>天</td>
                 </tr>
                 <tr>
                   <td colspan="4" class="b-border"></td>
@@ -483,7 +484,7 @@ export default {
     fetchNum(str) {
       let data = {
         status: str + '',
-        task_ids: sessionStorage.projectID
+        project_id: sessionStorage.projectID
       }
       this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
         .then(res => res.data)
@@ -514,7 +515,7 @@ export default {
         tasktype_id: this.selTaskType,
         page: this.page,
         order_by: this.orderBy,
-        task_ids: sessionStorage.projectID
+        project_id: sessionStorage.projectID
       }
       this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-page', qs.stringify(data))
         .then(res => res.data)
@@ -567,8 +568,10 @@ export default {
             // console.log(typeof parseInt(this.page))
             if(parseInt(this.page) == res.page.count_page && parseInt(this.page)!=1) {
               this.moreText = '没有更多内容'
-            } else if(parseInt(this.page)==1) {
+            } else if(parseInt(this.page)==1 && res.data.length > 0) {
               this.moreText = ''
+            } else {
+              this.moreText = '暂无内容'
             }
             this.$Loading.finish();
           } else {

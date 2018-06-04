@@ -38,6 +38,16 @@ Vue.directive('scroll', {
     }
 })
 
+// 导航守卫
+router.beforeEach((to, from, next) => {
+//   console.log(to.path, from.path);
+//   if(to.name == 'Preview' && from.name) {
+//     window.location.href = `/cdn/show/preview?id=${to.query.id}`;
+//     return;
+//   }
+  next();
+})
+
 new Vue({
     el: '#app',
     router: router,

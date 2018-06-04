@@ -40,8 +40,9 @@
             <span class="EditSub">
                 <button class="actionPost">需修改</button>
             </span>
-            <span class="EditSub">
+            <span class="EditSub" v-if="data==null?true:false">
                 <button class="subPass">通过</button>
+                <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
           </div>
           
@@ -86,7 +87,8 @@
         liIndex:0,
         FeedbackValue:'',
         onload:true,
-        IMGID:0
+        IMGID:0,
+        fileID:0
       }
     },
     watch:{
@@ -114,9 +116,12 @@
     
     mounted(){
       // this.initImgEditor();
-      this.loadWH()
+      this.loadWH();
     },
     methods:{
+      InfoRefresh(){
+         this.$bus.emit('InfoRefresh')
+      },
       initImgEditor()
       {
         this.url=sessionStorage.FileURl;
@@ -151,6 +156,7 @@
          this.liIndex=index;
          let fileID=taskID;
          let fID=fid;
+        
          this.defue(fileID,fID);
          this.imgdef();
          Data=[];
@@ -158,8 +164,7 @@
       },
       defue(fileID,fID){
         (function($){
-          var cX,cY,indexId=0,removeId,DOM,changeSignColor=false,signColor;
-          var changeBodyColor=false,bodyColor,changeFontColor=false,fontColor;
+          var cX,cY,indexId=0,removeId,DOM;
           var Rleft,Rtop;//需要删除的坐标
           jQuery.sign={
             bindSign:function(dom){
@@ -196,7 +201,7 @@
                 $(dom).append("<div class='inputSignBox'></div>");
                 $('.inputSignBox').append("<div class='outSignbox'>X</div>");
                 $('.inputSignBox').append("<div class='signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>");
-                $('.inputSignBox').append("<div class='sureSign'>确定</div>");
+                $('.inputSignBox').append("<div class='sureSign'>标注</div>");
                 $('.inputSignBox').css({"left":cX,"top":cY});
                 e.stopPropagation();
               }
@@ -218,12 +223,9 @@
                 indexId++;
                 var text=$.trim($('.signbox').text());
                 $('.inputSignBox').remove();
-                $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
-                $('#Ts'+indexId).css({"left":cX-8,"top":cY-5});
-                if(changeSignColor){
-                  $('#Ts'+indexId).css("border",signColor+" 3px solid");
-                }//改变了颜色
-                var mes={left:cX-15,top:cY-15,message:text};
+                $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"'>"+"<div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
+                $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
+                var mes={left:cX-11,top:cY-29,message:text};
                 Data[Data.length]=mes;
               }
             });//确认编辑
@@ -237,7 +239,7 @@
                 Rtop=$(this).css("top").replace(/[^0-9]/ig, "");
                 var l=e.clientX-$(dom).offset().left,t=e.clientY-$(dom).offset().top;
                 $(this).append("<div class='chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
-                $('.chooseBox').css({"left":41,"top":-23});
+                $('.chooseBox').css({"left":45,"top":-20});
               // }
             });//弹出取消标记
             $(document).on('click','#deleteSign',function(){
@@ -252,7 +254,7 @@
           }
           function deleteData(left,top){
             for(var i=0;i<Data.length;i++){
-              if(Data[i].left==left-7&&Data[i].top==top-10){
+              if(Data[i].left==left&&Data[i].top==top){
                 Data.splice(i,1);
                 break;
               }else{
@@ -267,11 +269,8 @@
                  var l=Data.length;
                   for(var i=0;i<data.length;i++){
                     indexId++
-                    $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='triangle-down'></div><div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
+                    $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
                     $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
-                    if(changeSignColor){
-                      $('#Ts'+l).css("border",signColor+" 3px solid");
-                    }//改变了颜色
                     l++;
                   }
                 indexId=l;
@@ -279,6 +278,30 @@
            
           }//载入数据
 
+          function AjaxFun(url,ImgData){
+              $.ajax({
+                cache:false,
+                type:'post',
+                url:url,
+                data:ImgData,
+                async:true,
+                dataType:"json",
+                success:function(msg){
+                  if(msg.err_code>0){
+                    alert(msg.err_message);
+                  }else{
+                    sessionStorage.removeItem("FeedbackValue");
+                    document.getElementById('InfoRefresh').dispatchEvent(new Event('click'));
+                    alert("提交成功！");
+                  }
+              },
+              error:function(){
+                alert(' 提交失败!')
+              }
+              })
+          };
+
+          // 标注
           $(".actionPost").unbind('click').click(function(){
             // var url='/task/task/inside-audit';
             var url=baseUrl+'index.php?r=task/task/inside-audit';
@@ -291,31 +314,26 @@
                     "tag":Data
                   }]
                 }
-            //console.log(ImgData)
-            $.ajax({
-              cache:false,
-              type:'post',
-              url:url,
-              data:ImgData,
-              async:true,
-              dataType:"json",
-              success:function(msg){
-                console.log(msg)
-                if(msg.err_code>0){
-                  alert(msg.err_message);
-                }else{
-                  sessionStorage.removeItem("FeedbackValue");
-                  alert("提交成功！")
+                AjaxFun(url,ImgData)
+          });
+
+          // 审核通过
+          $(".subPass").unbind('click').click(function(){
+               var url=baseUrl+'index.php?r=task/task/inside-audit';
+               var ImgData={
+                  "stage_id": fileID,
+                  "audit": 1,
+                  "feedback":'',
+                  "file": [{
+                    "file_id": fID,
+                    "tag":[]
+                  }]
                 }
-             },
-             error:function(){
-               alert(' 提交失败!')
-             }
-            })
-          })
+               AjaxFun(url,ImgData)
+          });
 
         })(jQuery);
-      },
+      },     
       imgdef(){
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
@@ -360,11 +378,12 @@
                      _this.cliUid=val.cliUid;
                      _this.liIndex=index;
                      _this.IMGID=val.file.id;
+                     _this.fileID=val.file.stage_id
                    }
                 })
               
               // 把StageID传到提交
-              let fileID = Sdate.data[0].file.stage_id;
+              let fileID = _this.fileID;
               let fID=_this.IMGID;
               _this.defue(fileID,fID);
               _this.imgdef();

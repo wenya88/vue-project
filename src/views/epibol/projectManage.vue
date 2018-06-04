@@ -63,7 +63,7 @@
                     </span>
                     <span class="MLeft20">
                         <p>{{item.start_date}} 至 {{item.end_date}}</p>
-                        <p><i>{{item.company==null?'暂无':item.company}}</i></p>
+                        <p><i v-if="item.company!=null?true:false">{{item.company}}</i></p>
                     </span>
                     <span class="MLeft20">
                         <p>负责人：{{item.realname}}</p>
@@ -368,12 +368,11 @@ export default {
     // 获取列表数据
     getData(){
         let _this=this;
-        let url=this.GLOBAL.baseRouter+'task/project/page&page='+_this.pageIndex;//
+        let url=this.GLOBAL.baseRouter+'task/project/page&order=create_time&order_by=desc&page='+_this.pageIndex;//
         _this.$axios.get(url).then(msg=>{
             let MsgData=msg.data;
             if(MsgData.err_code==0){
             _this.MsgData=MsgData.project;
-            _this.MsgData.sort((a,b)=>Date.parse(b.create_time)-Date.parse(a.create_time))
             //    缓存数据
                _this.sessMsgData=MsgData.project;
             }

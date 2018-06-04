@@ -126,8 +126,8 @@
                                         item.stage_file.task_id
                                         )">
                                         <span>
-                                            <img :src="item.thumb"/>{{item.name}}<br/><u>{{item.project_name}}</u>
-                                        </span>
+                                            <img :src="item.thumb"/>{{item.name}}<br/><u class="chlidProject" :title="item.project_name">{{item.project_name}}</u>
+                                        </span> 
                                         <span>
                                             {{item.upload_day==0?"今天":(Math.abs(item.upload_day)+"天前")}} <br/><u>上传</u>
                                         </span>
@@ -204,7 +204,7 @@ export default {
             taskType:[],
             subpId:'',
             tType:'',
-            AllowEdit:"Allow",//控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
+            AllowEdit:"Allow"//控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
         }
     },
     components:{CalendInfo,browsetask},
@@ -242,8 +242,16 @@ export default {
         this.UserID=sessionStorage.userId;
         this.AutoHeight();
         this.getData();
+        this.InfoRefresh();
     },
     methods:{
+        //关闭窗口
+        InfoRefresh(){
+            this.$bus.on('InfoRefresh',()=>{
+                 this.isTabModal=false;
+                 this.getData();
+            })
+        },
         // 跳转到概况页
         homepage(id){
             sessionStorage.projectID=id;
@@ -265,6 +273,7 @@ export default {
         },
         closeTabmodal(){
             this.isTabModal=false;
+            this.$bus.emit('closeModel')
         },
         // 初始化高
         AutoHeight(){

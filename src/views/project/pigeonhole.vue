@@ -3,7 +3,7 @@
     <div class="handleBox">
       <Row type="flex" justify="space-between" class="code-row-bg">
         <Col span="16">
-        <Button type="primary" @click="downloadFile('',1)">全部下载</Button>
+        <Button type="primary" @click="downloadFile('',projectID)">全部下载</Button>
         </Col>
         <Col span="2"> 类型:
         <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
@@ -89,6 +89,7 @@ export default {
       taskType: '',
       subpId: null,
       status: '4',
+      projectID: sessionStorage.projectID,
       followList: [
         {
           value: 0,
@@ -123,7 +124,7 @@ export default {
       let data = {
         status: this.status,
         tasktype: this.selTaskType,
-        project_id: localStorage.pid,
+        project_id: sessionStorage.projectID,
         project_child_id: '',
         search: this.searchInput
       }

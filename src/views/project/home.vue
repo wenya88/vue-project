@@ -133,7 +133,7 @@
     methods:{
       get(){
         let _this=this  
-        let url =_this.$axios.get(_this.GLOBAL.baseRouter+'task/task/stage-page&task_ids='+_this.projectID);
+        let url =_this.$axios.get(_this.GLOBAL.baseRouter+'task/task/stage-page&status=4&status=1&project_id='+_this.projectID);
         let proUrl=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/project-info-progress&project_id='+_this.projectID);
         _this.$axios.all([url,proUrl]).then(([Urldata,ProData])=>{
 

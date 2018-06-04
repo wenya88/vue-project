@@ -47,7 +47,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div class="cover"></div>
+        <div class="backIcon" v-if="havaBack" @click="goBack()"><Icon type="chevron-left" size='20'></Icon></div>
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
@@ -139,6 +139,7 @@ export default {
             subMenu: [],
             activePath: '',
             centerHight: 0,
+            havaBack: false,
             avatorPath: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg'
         };
     },
@@ -205,9 +206,17 @@ export default {
                     let menuArr = item.children
                     // console.log(routeName,this.subMenu)
                     this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
+                    if(routeName == 'project') {
+                        this.havaBack = true
+                    } else {
+                        this.havaBack = false
+                    }
                 }
             })
             this.activePath = this.$route.path
+        },
+        goBack() {
+            this.$router.push('/epibol/projectManage');
         },
         init() {
             this.userName = Cookies.get('user');

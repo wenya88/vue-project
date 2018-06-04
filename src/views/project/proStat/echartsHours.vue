@@ -1,20 +1,57 @@
 <template>
     <div>
-        <h4>成员工时统计</h4>
+        <h2>成员工时统计<span v-show="flag">{{xAxis}}</span></h2>
         <div id="EHours"></div>
     </div>
 </template>
-<style>
-    #EHours{height:400px;}
-</style>
 <script>
 
   // 基于准备好的dom，初始化echarts实例
     export default{
+      data(){
+        return{
+          flag:false,
+          projectID:0,
+          date:[],
+          xAxis:[],
+          legend:[],
+          seriesData:[],
+          seriesDataTwo:[]
+        }
+      },
       mounted(){
-        this.echarts2()
+        this.projectID=sessionStorage.projectID;
+        this.autoHeight();
+        this.dataGet();
+        this.echarts2();
+      },
+      updated(){
+        this.echarts2();
+      },
+      activated(){
+        this.echarts2();
       },
       methods:{
+        dataGet(){
+           let _this=this;
+           let url=_this.GLOBAL.baseRouter+"/task/total/total-member-work-time&project_id="+this.projectID;
+           _this.$axios.get(url).then(msg=>{
+              let MsgData=msg.data.data;
+              _this.xAxis=MsgData.xAxis.data;
+              _this.legend=MsgData.xAxis.legend;
+
+              _this.seriesData=MsgData.series[0].data;
+              _this.seriesDataTwo=MsgData.series[1].data;
+              console.log(MsgData)
+
+           },()=>{
+              console.log("请求失败！")
+           })
+        },
+        autoHeight(){
+          let getH=document.body.clientHeight-200;
+          document.getElementById("EHours").style.height=getH+"px";
+        },
         echarts2(){
           var echarts = require('echarts');
           var echartHours =echarts.init(document.getElementById('EHours'));
@@ -30,25 +67,40 @@
                 color: '#000'
               },
             },
+            grid: {
+              left: '0px',
+              right: '0px',
+              bottom: '55px',
+              top:'30px',
+              containLabel: true
+            },
             color:['#d7d7d7','#00cc00'],
             xAxis: {
-              data: ['李小小', '李大大', '张小风', '张小风','李大大','李小小'],
+              data: this.xAxis,
               axisTick: {show: false},
+              axisLine:{
+                lineStyle:{
+                  color:'#18bfa4'
+                }
+              },
             },
-            legend: {
-              data: ['预定工时', '已用工时']
-            },
+            legend:this.legend,
             yAxis: {
-              splitLine: {show: false}
+              splitLine: {show: false},
+              axisLine:{
+              lineStyle:{
+                color:'#18bfa4'
+              }
+            },
             },
             animationDurationUpdate: 100,
             dataZoom: [{
               show: true,
               realtime: true,
               start: 0,
-              end: 90,
+              end: 100,
               fillerColor:"rgba(190,221,216,0.8)",
-              height: 20
+              height: 30
             }],
 
             series: [
@@ -59,14 +111,20 @@
                 silent: true,
                 barWidth: 40,
                 barGap: '-100%',
-                data: [70, 60, 60, 60,60,70]
+                //data: this.seriesData
+                data:[
+                  1050,2510,3215,1203,4210,4567,5234,3234,5643
+                ]
               },
               {
                 name:'已用工时',
                 type: 'bar',
                 barWidth: 40,
                 z: 10,
-                data: [35, 60, 13, 25,52,56],
+               // data: this.seriesDataTwo,
+               data:[
+                  453,1343,2332,675,3321,2313,4321,1212,2143
+               ],
                 label: {
                   normal: {
                     show: true,

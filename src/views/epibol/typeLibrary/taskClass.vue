@@ -1,92 +1,89 @@
 <template>
-  <Content :style="{padding: '24px 0', minHeight: '280px', background: '#fff'}">
-    <Row>
+  <Content :style="{minHeight: '280px', background: '#fff'}">
+    <!-- <Row> -->
       <Col span="4">
-      <type-list :listData="formLeft" @getListId="change"></type-list>
+          <type-list :listData="formLeft" @getListId="change"></type-list>
       </Col>
-      <Col span="19">
-      <Content :style="{padding: '26px 0 100px', minHeight: '280px', background: '#fff'}">
-        <Row>
-          <Col span="22">
-          <h2 class="spaceTb">基础管理</h2>
-          </Col>
-        </Row>
-        <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
-          <h4 :style="{paddingBottom:'10px'}">类型名称</h4>
-          <Input :style="{width:'800px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="listN"></Input>
-          <h4 :style="{paddingBottom:'10px'}">沟通确认阶段</h4>
+      <Col span="18">
+        <Content :style="{padding: '0 0 60px', minHeight: '280px', background: '#fff'}">
           <Row>
-            <Col span="22">
-            <h2 class="spaceTb">
-              <div v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
-                <Steps :style="{width:'800px'}" :current="current" size="small">
-                  <Step v-for="step in stepCount" :key="step.sage" :name="step" :title="step.stage_name" :content="step.stage_name">
-                    <br>
-                    <Input style="width: 100px" size="small" v-model="step.stage_name"></Input>
-                    <br>
-                    <Checkbox v-model="step.is_inside_audit">内审后提交客户确认</Checkbox>
-                    <!-- <div class="hideIconDel">
-                      <button class="restdele">刪除</button>
-                    </div> -->
-                    <Button type="text" size="small" @click="delStep">刪除</Button>
-                  </Step>
-                </Steps>
+            <Col span="12">
+              <h2 class="spaceTb">基础管理</h2>
+            </Col>
+          </Row>
+          <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
+            <h4 :style="{paddingBottom:'10px'}">类型名称</h4>
+                <Input :style="{width:'800px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="listN"></Input>
+            <h4 :style="{paddingBottom:'10px'}">沟通确认阶段</h4>
+            <Row>
+              <Col span="22">
+              <h2 class="spaceTb">
+                <div v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                  <Steps :style="{width:'800px'}" :current="current" size="small">
+                    <Step v-for="step in stepCount" :key="step.sage" :name="step" :title="step.stage_name" :content="step.stage_name">
+                      <br>
+                      <Input style="width: 100px" size="small" v-model="step.stage_name"></Input>
+                      <br>
+                      <Checkbox v-model="step.is_inside_audit">内审后提交客户确认</Checkbox>
+                      <!-- <div class="hideIconDel">
+                        <button class="restdele">刪除</button>
+                      </div> -->
+                      <Button type="text" size="small" @click="delStep">刪除</Button>
+                    </Step>
+                  </Steps>
+                </div>
+              </h2>
+              </Col>
+              <Col span="2">
+              <div @click="addSteps">
+                <Icon :style="{fontSize:'36px',color:'#39f'}" type="plus-circled"></Icon>
               </div>
-            </h2>
-            </Col>
-            <Col span="2">
-            <div @click="addSteps">
-              <Icon :style="{fontSize:'36px',color:'#39f'}" type="plus-circled"></Icon>
-            </div>
-            </Col>
-          </Row>
-          <h2 :style="{padding:'20px 0 20px'}">任务主文件</h2>
-          <h4 :style="{paddingBottom:'20px'}">文件格式</h4>
-          <AutoComplete v-model="fileType" icon="arrow-down-b" placeholder="选择主文件格式，可直接输入  如' JPG '" style="width:383px;margin:0px 0 20px">
-            <Option v-for="item in accesData" :value="item.file_format" :key="item.file">{{ item.file_format }}</Option>
-          </AutoComplete>
-          <h4 :style="{paddingBottom:'10px'}">文件属性</h4>
-          <Row v-for="(item,index) in attrFile" :key="item.config" :style='{margin:"10px 0"}'>
-            <Col span="5">
-              <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
-                <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-              </AutoComplete>
-            </Col>
-            <Col span="10">
-              <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
-                <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-              </AutoComplete>
-            </Col>
-            <Button type="text" @click="removeFileat(index)">移除</Button>
-          </Row>
-          <Row>
-            <Button icon="plus-round" type="dashed" long @click="addFileat" style="width:718px">
-              增加文件属性
-            </Button>
-          </Row>
-          <h2 :style="{padding:'40px 0 20px'}">任务附加文件</h2>
-
-            <Row v-for="(item,index) in otherfile" :key="item.config" :style='{margin:"20px 0"}'>
-                <Col span="5">
-                  <AutoComplete v-model="item.file_format" placeholder="输入格式，如“max”" clearable></AutoComplete>
-                </Col>
-                <Col span="10">
-                  <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable style="margin-left:20px"></AutoComplete>
-                </Col>
-                <Button type="text" @click="delOtherfile">移除</Button>
+              </Col>
             </Row>
-              <Button  style="width:718px" icon="plus-round" type="dashed" @click="addJunctShow">
-                增加附件文件
+            <h3 :style="{padding:'20px 0 20px'}">任务主文件</h3>
+            <h4 :style="{paddingBottom:'20px'}">文件格式</h4>
+            <AutoComplete v-model="fileType" icon="arrow-down-b" placeholder="选择主文件格式，可直接输入  如' JPG '" style="width:383px;margin:0px 0 20px">
+              <Option v-for="item in accesData" :value="item.file_format" :key="item.file">{{ item.file_format }}</Option>
+            </AutoComplete>
+            <h4 :style="{paddingBottom:'10px'}">文件属性</h4>
+            <Row v-for="(item,index) in attrFile" :key="item.config" :style='{margin:"10px 0"}'>
+              <Col span="5">
+                <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
+                  <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                </AutoComplete>
+              </Col>
+              <Col span="10">
+                <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                  <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                </AutoComplete>
+              </Col>
+              <Button type="text" @click="removeFileat(index)">移除</Button>
+            </Row>
+            <Row>
+              <Button icon="plus-round" type="dashed" long @click="addFileat" style="width:718px">
+                增加文件属性
               </Button>
-        </Form>
-      </Content>
+            </Row>
+            <h3 :style="{padding:'20px 0 0px'}">任务附加文件</h3>
+              <Row v-for="(item,index) in otherfile" :key="item.config" :style='{margin:"20px 0"}'>
+                  <Col span="5">
+                    <AutoComplete v-model="item.file_format" placeholder="输入格式，如“max”" clearable></AutoComplete>
+                  </Col>
+                  <Col span="10">
+                    <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable style="margin-left:20px"></AutoComplete>
+                  </Col>
+                  <Button type="text" @click="delOtherfile">移除</Button>
+              </Row>
+              <Button  style="width:718px" icon="plus-round" type="dashed" @click="addJunctShow">
+                  增加附件文件
+              </Button>
+          </Form>
+          <Col span="10">
+            <Button type="primary" style="float: right;width: 200px" @click="taskClassubmit">提交</Button>
+          </Col>
+        </Content>
       </Col>
-    </Row>
-    <Row>
-      <Col span="7">
-      <Button type="primary" style="float: right;width: 200px" @click="taskClassubmit">提交</Button>
-      </Col>
-    </Row>
+    <!-- </Row> -->
   </Content>
 </template>
 <script>

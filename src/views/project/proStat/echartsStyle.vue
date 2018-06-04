@@ -1,18 +1,46 @@
 <template>
     <div>
-        <h4>任务工时统计</h4>
+        <h2>任务工时统计<span v-show='flag'>{{series}}</span></h2>
         <div id="echartStyle"></div>
     </div>
 </template>
-<style>
-    #echartStyle{height:400px;margin-top:20px;}
-</style>
 <script>
   export default{
+    data(){
+      return{
+        projectID:0,
+        series:[],
+        data:[],
+        flag:false,
+      }
+    },
     mounted(){
-      this.myCharts()
+      this.projectID=sessionStorage.projectID;
+      this.autoHeight();
+      this.dataGet();
+      this.myCharts();
+    },
+    updated(){  
+      this.myCharts();
+    },
+    activated(){
+     this.myCharts();
     },
     methods:{
+       dataGet(){
+        let _this=this;
+        let url=this.GLOBAL.baseRouter+'/task/total/member-work-time-rate&project_id='+this.projectID;
+        _this.$axios.get(url).then((msg)=>{
+            let Mdata=msg.data.data;
+            _this.series=Mdata.series;
+            _this.data=Mdata.data;
+            
+        })
+      },
+      autoHeight(){
+         let getH=document.body.clientHeight-200;
+         document.getElementById("echartStyle").style.height=getH+"px";
+      },
       myCharts(){
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('echartStyle'));
@@ -29,17 +57,49 @@
           },
           series : [
             {
-              name: '访问来源',
+              name: this.series.name,
               type: 'pie',
               radius : '66%',
               center: ['50%', '60%'],
+              //data:this.data,
               data:[
-                {value:35, name:'李大胖'},
-                {value:310, name:'张二小'},
-                {value:234, name:'赵四小姐'},
-                {value:135, name:'张子强'},
-                {value:1548, name:'赛金花'}
-              ],
+            {
+                "value": 123,
+                "name": "吴帮麟"
+            },
+            {
+                "value": 311,
+                "name": "罗龙伟"
+            },
+            {
+                "value": 10,
+                "name": "罗渝嘉"
+            },
+            {
+                "value": 40,
+                "name": "杨俊飞"
+            },
+            {
+                "value": 43,
+                "name": "潘军辉"
+            },
+            {
+                "value": 89,
+                "name": "石梦婷"
+            },
+            {
+                "value": 25,
+                "name": "孙翎夏"
+            },
+            {
+                "value": 76,
+                "name": "吴杰"
+            },
+            {
+                "value": 120,
+                "name": "何晓芳"
+            }
+        ],
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,

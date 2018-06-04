@@ -60,6 +60,7 @@ import Cookies from 'js-cookie';
 import {authLogin} from "../config/env.js";
 import src from '../images/close_eyes.png'
 import src2 from '../images/open_eyes.png'
+// import { getPublicKey } from '../server/index'
 export default {
     data () {
         // const validatePass = (rule, value, callback) => {
@@ -156,7 +157,8 @@ export default {
     mounted() {
         this.fetchKey();
     },
-    methods: {geMode(mode) {
+    methods: {
+        geMode(mode) {
             if(mode == 'login') {
                 this.isRegister = true;
                 this.loginform.userName = '';
@@ -169,7 +171,6 @@ export default {
             }
         },
         fetchKey() {
-            // this.$axios.get(authLogin+'/get-public-secret-key')
             this.$axios.get(this.GLOBAL.baseRouter+'system/login/get-public-secret-key')
             .then(res => res.data)
             .then(res => {
@@ -177,6 +178,9 @@ export default {
                     this.publicKey = res.public_key
                 }
             })
+            // getPublicKey().then(res => {
+            //     console.log(res)
+            // })
         },
         onRegister() {
             let encrypt = new JSEncrypt();

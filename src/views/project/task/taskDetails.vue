@@ -418,6 +418,7 @@ export default{
             this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-page',qs.stringify({company_id: 1}))
                 .then( res => res.data)
                 .then( res => {
+                    console.log(1)
                         this.principal=[];
                         this.principalName="";
                         this.principal = res.data;

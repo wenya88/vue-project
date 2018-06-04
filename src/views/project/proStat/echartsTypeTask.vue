@@ -77,7 +77,7 @@
             },
             axisLine: {
               lineStyle: {
-                color: '#3259B8',
+                color: '#18bfa4',
               }
             },
             splitLine: {
@@ -99,11 +99,11 @@
             },
             axisLine: {
               lineStyle: {
-                color: '#3259B8',
+                color: '#18bfa4',
               }},
             splitLine: {
               lineStyle: {
-                color: '#A7BAFA',
+                color: '#18bfa4',
                 type:'dotted'
               },
             }

@@ -18,10 +18,15 @@
 <script>
 import imgeditor from './imgEditor'
 import videoeditor from './vedioEditor'
-import modeleditor from './vedioEditor'
+import modeleditor from './threeModule'
 
 var qs = require("querystring");
 export default {
+    mounted(){
+        this.$bus.on('closeModel',()=>{
+            this.filetype="NULL"
+        })
+    },
     components: {
         imgeditor,
         videoeditor,

@@ -82,7 +82,7 @@
                                           <!-- 文件上传结束 -->
                                           <!-- 任务详情 -->
                                           <Modal 
-                                                v-model="isTabModal" 
+                                                v-model="isTabModal"
                                                 width="1200" 
                                                 :styles="{top: '100px'}"
                                                 :closable="false"
@@ -90,9 +90,7 @@
                                                 cancelText='取消'
                                                 @on-cancel="closeTabmodal"
                                                 >
-                                                <browsetask ref="browsetask" 
-                                                            >
-                                                </browsetask>
+                                                <browsetask ref="browsetask" style="min-height:570px;"></browsetask>
                                                 <div slot="footer">
                                                 </div>
                                           </Modal>
@@ -152,7 +150,7 @@
                                               <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
                                               <Timeline-item color='lightgray' v-for="(Litem,index) in ListFeedBack" :key="index">
                                                   <Icon type="record" slot="dot"></Icon>
-                                                  <span><em>{{Litem.inside_audit_time|fromatDate}}</em> 上传</span>
+                                                  <span><em>{{Litem.create_time|fromatDate}}</em> 上传</span>
                                                   <span>{{Litem.task_name}}</span>
                                                   <span><em>{{Litem.run_uname}}</em> 审核</span>
                                                   <span @click="taskDetaInfo(
@@ -160,7 +158,7 @@
                                                   Litem.stage_file.type,
                                                   Litem.stage_file.file,
                                                   Litem.stage_file.task_id
-                                                  )"><a href="javascript:;">查看</a></span>
+                                                  )">查看</span>
                                               </Timeline-item>
                                               
                                           </Timeline>
@@ -177,7 +175,7 @@
                                               <Timeline-item color="lightgray" v-for="(Aitem,index) in AlrFeedBack" :key="index">
                                              <!-- <Timeline-item :color="[Aitem.stage_id==AlrFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Aitem in AlrFeedBack"> -->
                                                   <Icon type="record" slot="dot"></Icon>
-                                                  <span><em>{{Aitem.client_audit_time|fromatDate}}</em> 上传</span>
+                                                  <span><em>{{Aitem.create_time|fromatDate}}</em> 上传</span>
                                                   <span>{{Aitem.task_name}}</span>
                                                   <span><s>{{Aitem.tag_count}}处修改</s></span>
                                                   <span><Icon type="chatbox-working"></Icon> {{Aitem.feedback}}</span>
@@ -186,7 +184,7 @@
                                                   Aitem.stage_file.type,
                                                   Aitem.stage_file.file,
                                                   Aitem.stage_file.task_id
-                                                  )"><a href="javascript:;">查看</a></span>
+                                                  )">查看</span>
                                               </Timeline-item>
                                           </Timeline>
                                       </dd>
@@ -231,12 +229,13 @@
         Current:0,
         TaksID:0,
         AddMinFile:[],
-        AllowEdit:"NotAllow", //控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
+        AllowEdit:"Allow", //控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
         pageIndex:1,
         maxPage:0,
         accomMore:true,
         ile:null,
-        UpLoadValue:''
+        UpLoadValue:'',
+        userID:sessionStorage.userId
       }
     },
     components:{Calend,UploadM,CalendInfo,browsetask},
@@ -247,6 +246,7 @@
       this.taskGet();
       this.awaitTaskGet();
       this.taskAccom();
+      this.InfoRefresh();
     //   接收主文件
       this.$bus.on('MainFile',(val)=>{
             this.MainFlie=val
@@ -344,6 +344,12 @@
     },
 
     methods:{
+        //关闭窗口
+        InfoRefresh(){
+            this.$bus.on('InfoRefresh',()=>{
+                 this.isTabModal=false;
+            })
+        },
         //  加载更多
         loadAdd(){
             let PagIndex=this.pageIndex;
@@ -389,6 +395,7 @@
     //   关闭Model
     closeTabmodal(){
         this.isTabModal=false;
+        this.$bus.emit('closeModel');
     },
     //   初始化行高  
       onLoad(){
@@ -399,7 +406,7 @@
     //   反馈和待反馈数据请求
       get(){
         let _this=this;
-        let url=this.GLOBAL.baseRouter+'task/task/stage-page';
+        let url=this.GLOBAL.baseRouter+'task/task/stage-page&is_my=1';
         _this.$axios.get(url).then((data)=>{
             let MsData=data.data.data;
             MsData.forEach((element)=>{
@@ -420,7 +427,7 @@
     //   正在实施数据请求
       taskGet(){
           let _this=this;
-          let url=this.GLOBAL.baseRouter+'task/task/page';
+          let url=this.GLOBAL.baseRouter+'task/task/page&run_uid='+_this.userID;
           _this.$axios.get(url).then((msg)=>{
             // 获取总页数
               _this.maxPage=msg.data.page.count_page;
@@ -449,7 +456,7 @@
     //   等待开始任务
       awaitTaskGet(){
           let _this=this;
-          let url=this.GLOBAL.baseRouter+'task/task/page';
+          let url=this.GLOBAL.baseRouter+'task/task/page&run_uid='+_this.userID;
           _this.$axios.get(url).then((msg)=>{
             // 获取数据
               let MsgData=msg.data.data;
@@ -481,16 +488,22 @@
           })
       },
     //   任务开始
-      instance(id){
+      instance(Tid){
           let _this=this;
           _this.$Modal.confirm({
                     title: '任务开始',
-                    content: '<p>确认开始任务？</p>'+id,
+                    content: '<p>确认开始任务？</p>',
                     onOk: () => {
-                        _this.$Message.info('开始成功');
-                        _this.dataUnderway=[];
-                        _this.dataWait=[];
-                        _this.taskGet();
+                        let url=_this.GLOBAL.baseRouter+'task/task/start';
+                        _this.$axios.post(url,qs.stringify({id:Tid})).then(msg=>{
+                            _this.$Message.info('开始成功');
+                            _this.dataUnderway=[];
+                            _this.dataWait=[];
+                            _this.taskGet();
+                            _this.awaitTaskGet();
+                        },()=>{
+                             _this.$Message.error('开始失败');
+                        })
                     }
          });
       },
@@ -568,6 +581,7 @@
                 // console.log(CodeData)
                 if(CodeData.err_code==0){
                         _this.taskGet();
+                        _this.get();
                         _this.$Message.info('提交成功');
                         _this.MainFlie=[];
                         _this.MinFile=[];

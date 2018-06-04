@@ -39,107 +39,99 @@ export default {
 
     //遍历列表分类数据
     ListEach() {
-      let fiC = this;
-      this.get(
-        cateList,
-        {
-          company_id: 1
-        },
-        res => {
-          let getData = res.data.data;
-          let item = [];
-          getData.forEach(req => {
-            let obj = {
-              expand: true,
-              render: (h, { root, node, data }) => {
-                return h(
-                  "span",
-                  {
-                    style: {
-                      display: "inline-block",
-                      width: "100%",
-                      cursor: "pointer"
-                    },
-                    on: {
-                      click: () => {
-                        this.targriClass(root, node, data);
-                      }
-                    }
+      this.get(cateList, { company_id: 1 }, res => {
+        let getData = res.data.data;
+        let item = [];
+        getData.forEach(req => {
+          let obj = {
+            expand: true,
+            render: (h, { root, node, data }) => {
+              return h(
+                "span",
+                {
+                  style: {
+                    display: "inline-block",
+                    width: "100%",
+                    cursor: "pointer"
                   },
-                  [
-                    h(
-                      "span",
-                      {
+                  on: {
+                    click: () => {
+                      this.targriClass(root, node, data);
+                    }
+                  }
+                },
+                [
+                  h(
+                    "span",
+                    {
+                      style: {
+                        background: data.actClass
+                      }
+                    },
+                    [
+                      h("Icon", {
+                        props: {
+                          type: "ios-folder-outline"
+                        },
                         style: {
-                          background: data.actClass
+                          marginRight: "8px"
                         }
-                      },
-                      [
-                        h("Icon", {
-                          props: {
-                            type: "ios-folder-outline"
-                          },
-                          style: {
-                            marginRight: "8px"
-                          }
+                      }),
+                      h("span", data.title)
+                    ]
+                  ),
+                  h(
+                    "span",
+                    {
+                      style: {
+                        display: "inline-block",
+                        float: "right",
+                        marginRight: "32px"
+                      }
+                    },
+                    [
+                      h("Button", {
+                        props: Object.assign({}, this.buttonProps, {
+                          icon: "ios-plus-empty"
                         }),
-                        h("span", data.title)
-                      ]
-                    ),
-                    h(
-                      "span",
-                      {
-                        style: {
-                          display: "inline-block",
-                          float: "right",
-                          marginRight: "32px"
+                        id: "addbtn",
+                        on: {
+                          click: $event => {
+                            this.addClassTask(root, node, data, $event); //
+                          }
                         }
-                      },
-                      [
-                        h("Button", {
-                          props: Object.assign({}, this.buttonProps, {
-                            icon: "ios-plus-empty"
-                          }),
-                          id:"addbtn",
-                          on: {
-                            click : ($event) => {
-                              this.addClassTask(root, node, data,$event); //
-                            }
-                          }
-                        }),
-                        h("Button", {
-                          props: Object.assign({}, this.buttonProps, {
-                            icon: "trash-b"
-                          }),
-                          type:"ghost",
-                          style: {
-                            marginLeft: "10px"
-                          },
-                          on: {
-                            click: ($event) => {
-                              this.removeClass(data,$event);
-                            }
-                          }
-                        })
-                      ]
-                    )
-                  ]
-                );
-              },
-              children: []
-            };
-            obj.title = req.name;
-            obj.pId = req.cate_id;
+                      }),
+                      // h("Button", {
+                      //   props: Object.assign({}, this.buttonProps, {
+                      //     icon: "trash-b"
+                      //   }),
+                      //   style: {
+                      //     marginLeft: "10px"
+                      //   },
+                      //   on: {
+                      //     click: $event => {
+                      //       this.removeClass(data, $event);
+                      //     }
+                      //   }
+                      // })
+                    ]
+                  )
+                ]
+              );
+            },
+            children: []
+          };
+          obj.title = req.name;
+          obj.pId = req.cate_id;
+          obj.id = req.id;
+          if (req.tasktype != undefined && req.tasktype.length > 0) {
             obj.id = req.id;
-            if (req.tasktype != undefined && req.tasktype.length > 0) {
-              obj.id = req.id;
-              obj.children = fiC.eachLxinfo(req.tasktype);
-            }
-            item.push(obj);
-          });
-          fiC.kNodes = item;
-        }
-      );
+            obj.children = this.eachLxinfo(req.tasktype);
+          }
+          item.push(obj);
+        });
+        this.kNodes = item;
+      });
     },
     renderContent(h, { root, node, data }) {
       return h(
@@ -191,8 +183,8 @@ export default {
                   icon: "trash-b"
                 }),
                 on: {
-                  click: ($event) => {
-                    this.remove(data,$event);
+                  click: $event => {
+                    this.remove(data, $event);
                   }
                 }
               })
@@ -235,24 +227,24 @@ export default {
         });
     },
     //增加子节点
-    addClassTask(root, node,data,$event) {
+    addClassTask(root, node, data, $event) {
       $event.cancelBubble = true;
       // let children = data.children || [];
       let newType = {
         title: "新建任务类型",
         expand: true,
         selected: true,
-        category_id: data.pId,
+        category_id: data.pId
       };
       this.kNodes[data.nodeKey].children.push(newType);
-      
+
       // document.getElementById("addClassTaskBtn").click();
       // this.$set(data, "children", children);
       // this.targriClass(this.kNodes[data.nodeKey].children, newType, newType);
     },
     //点击左边列表增加标识
     targriClass(root, node, data) {
-      console.log(root,node,data);
+      console.log(root, node, data);
       root.forEach(r => {
         this.$set(r.node, "actClass", "#fff");
       });
@@ -281,7 +273,7 @@ export default {
     },
 
     // onChange(data) {},
-    removeClass(data,$event) {
+    removeClass(data, $event) {
       $event.cancelBubble = true;
       let cIs = this;
       let removeData = data.pId;
@@ -296,7 +288,7 @@ export default {
         }
       );
     },
-    remove(data,$event) {
+    remove(data, $event) {
       $event.cancelBubble = true;
       let cIs = this;
       let removeCad = data.id;

@@ -42,7 +42,7 @@
                     <Col span="18" class="listLine">
                         <div class="line">
                             <div class="title">时间进度</div>
-                            <div class="lineRow"><Progress :percent="ProTiemDate" :stroke-width="16"></Progress></div>
+                            <div class="lineRow"><Progress :percent="ProTiemDate|filtePressTiem" :stroke-width="16">{{ProTiemDate|filteTime}}</Progress></div>
                             <div class="clear"></div>
                         </div>
                         <div class="line">
@@ -103,6 +103,24 @@ export default {
             ProPauseNum:0,
             ChildMsgData:[],
             memberMsgData:[]
+        }
+    },
+    filters:{
+        filteTime(val){
+            if(val<0){
+                return "0%"
+            }else{
+                return val
+            }
+        },
+        filtePressTiem(val){
+            if(val<0){
+                return 0
+            }else if(val>100){
+                return 101
+            }else{
+                return val
+            }
         }
     },
     components:{EchartLine},

@@ -142,8 +142,8 @@
             height: 30,
             show: true,
             realtime: true,
-            start: 10,
-            end: 90,
+            start: 0,
+            end: 100,
             fillerColor:"rgba(190,221,216,0.8)",
 
           }],
