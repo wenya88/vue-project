@@ -9,16 +9,16 @@
                 <li v-for="(item,index) in headList" :key="index">{{item}}</li>
               </ul>
             </div> -->
-    <Row class="margin-top-10">
-      <Col span="16">
+    <!-- <Row class="margin-top-10">
+      <Col span="16"> -->
       <Card>
-        <p slot="title">
-          <Icon type="navicon-round"></Icon>
-          左侧为已识别的表格字段和数据，可拖动至右侧
-        </p>
         <Row>
           <Col span="12" class="padding-left-10">
           <Card dis-hover>
+            <p slot="title">
+              <Icon type="navicon-round"></Icon>
+              左侧为已识别的表格字段和数据，可拖动至右侧
+            </p>
             <div style="height: 530px;">
               <ul id="excelList" class="iview-admin-draggable-list">
                 <li v-for="(item, index) in excelList" :key="index" class="notwrap todolist-item" :data-index="index">
@@ -31,15 +31,55 @@
           </Col>
           <Col span="12">
           <Card dis-hover>
-            <div style="height: 530px;">
-              <ul id="affordList" class="iview-admin-draggable-list"></ul>
-            </div>
+            <p slot="title">
+              <Icon type="android-funnel"></Icon>
+              匹配数据
+            </p>
+            <Row>
+              <Col span="4">
+                <ul>
+                  <li v-for="(item,index) in titleList" :key="index" style="padding: 12px 0; text-align: center;">{{item.name}}</li>
+                </ul>
+              </Col>
+              <Col span="20">
+                <div style="height: 44px;">
+                  <ul id="taskName" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="startTime" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="endTime" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="subproject" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="participants" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="taskStyle" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="demand" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="images" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="enclosure" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+                <div style="height: 44px;">
+                  <ul id="remarks" class="iview-admin-draggable-list hideList"></ul>
+                </div>
+              </Col>
+            </Row>
           </Card>
           </Col>
         </Row>
       </Card>
-      </Col>
-      <Col span="8" class="padding-left-10">
+      <!-- </Col> -->
+      <!-- <Col span="8" class="padding-left-10">
       <Card>
         <p slot="title">
           <Icon type="android-funnel"></Icon>
@@ -47,16 +87,16 @@
         </p>
         <div style="height: 530px;">
           <Table border :columns="columns" :data="titleList" width=100 style="float: left;"></Table>
-          <DragableTable v-model="tableData" :columns-list="columnsList" style="width: 245px;float: left;"></DragableTable>
+          <DragableTable v-model="tableData" :columns-list="columnsList" style="width: 245px;float: left;"></DragableTable> -->
           <!-- <ul class="iview-admin-draggable-list">
                 <li v-for="(item, index) in affordList" :key="index" class="notwrap" :data-index="index">
                   {{ item.label }}
                 </li>
               </ul>  -->
-        </div>
+        <!-- </div>
       </Card>
-      </Col>
-    </Row>
+      </Col> -->
+    <!-- </Row> -->
   </div>
 </template>
 
@@ -131,36 +171,96 @@ export default {
       event.preventDefault();
       event.stopPropagation();
     };
-    let vm = this;
-    let excelList = document.getElementById('excelList');
-    Sortable.create(excelList, {
-      group: {
-        name: 'list',
-        pull: true
-      },
-      animation: 120,
-      ghostClass: 'placeholder-style',
-      fallbackClass: 'iview-admin-cloned-item',
-      onRemove(event) {
-        vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
-        console.log(event);
-      }
-    });
-    let affordList = document.getElementById('affordList');
-    Sortable.create(affordList, {
-      group: {
-        name: 'list',
-        pull: true
-      },
-      filter: '.iview-admin-draggable-delete',
-      animation: 120,
-      fallbackClass: 'iview-admin-cloned-item',
-      onRemove(event) {
-        vm.affordList.splice(event.oldIndex, 1);
-      }
-    });
+    this.dragableAssembly("excelList");
+    this.dragableAssembly("taskName");
+    this.dragableAssembly("startTime");
+    this.dragableAssembly("endTime");
+    this.dragableAssembly("subproject");
+    this.dragableAssembly("participants");
+    this.dragableAssembly("taskStyle");
+    this.dragableAssembly("demand");
+    this.dragableAssembly("images");
+    this.dragableAssembly("enclosure");
+    this.dragableAssembly("remarks");
+    // let vm = this;
+    // let excelList = document.getElementById('excelList');
+    // Sortable.create(excelList, {
+    //   group: {
+    //     name: 'list',
+    //     pull: true
+    //   },
+    //   animation: 120,
+    //   ghostClass: 'placeholder-style',
+    //   fallbackClass: 'iview-admin-cloned-item',
+    //   onRemove(event) {
+    //     // vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
+    //     console.log(event);
+    //   }
+    // });
+    // let taskName = document.getElementById('taskName');
+    // Sortable.create(taskName, {
+    //   group: {
+    //     name: 'list',
+    //     pull: true
+    //   },
+    //   // sort: false,
+    //   filter: '.iview-admin-draggable-delete',
+    //   animation: 120,
+    //   fallbackClass: 'iview-admin-cloned-item',
+    //   onRemove(event) {
+    //     // vm.taskName.splice(event.oldIndex, 1);
+    //   }
+    // });
+    // let startTime = document.getElementById('startTime');
+    // Sortable.create(startTime, {
+    //   group: {
+    //     name: 'list',
+    //     pull: true
+    //   },
+    //   // sort: false,
+    //   filter: '.iview-admin-draggable-delete',
+    //   animation: 120,
+    //   fallbackClass: 'iview-admin-cloned-item',
+    //   onRemove(event) {
+    //     // vm.startTime.splice(event.oldIndex, 1);
+    //   }
+    // });
+    // let endTime = document.getElementById('endTime');
+    // Sortable.create(endTime, {
+    //   group: {
+    //     name: 'list',
+    //     pull: true
+    //   },
+    //   // sort: false,
+    //   filter: '.iview-admin-draggable-delete',
+    //   animation: 120,
+    //   fallbackClass: 'iview-admin-cloned-item',
+    //   onRemove(event) {
+    //     // vm.endTime.splice(event.oldIndex, 1);
+    //   }
+    // });
   },
   methods: {
+    /**
+     * 配置sortable
+     */
+    dragableAssembly(idDom) {
+      let idDom2 = document.getElementById(idDom);
+      console.log(idDom, idDom2);
+      Sortable.create(idDom2, {
+        group: {
+          name: 'list',
+          pull: true
+        },
+        animation: 120,
+        ghostClass: 'placeholder-style',
+        fallbackClass: 'iview-admin-cloned-item',
+        onRemove(event) {
+          // vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
+          console.log(event);
+        }
+      });
+    },
     fetchExcel() {
 
     },
