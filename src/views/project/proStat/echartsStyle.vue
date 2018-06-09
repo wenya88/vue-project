@@ -61,45 +61,7 @@
               type: 'pie',
               radius : '66%',
               center: ['50%', '60%'],
-              //data:this.data,
-              data:[
-            {
-                "value": 123,
-                "name": "吴帮麟"
-            },
-            {
-                "value": 311,
-                "name": "罗龙伟"
-            },
-            {
-                "value": 10,
-                "name": "罗渝嘉"
-            },
-            {
-                "value": 40,
-                "name": "杨俊飞"
-            },
-            {
-                "value": 43,
-                "name": "潘军辉"
-            },
-            {
-                "value": 89,
-                "name": "石梦婷"
-            },
-            {
-                "value": 25,
-                "name": "孙翎夏"
-            },
-            {
-                "value": 76,
-                "name": "吴杰"
-            },
-            {
-                "value": 120,
-                "name": "何晓芳"
-            }
-        ],
+              data:this.data,
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,

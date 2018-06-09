@@ -259,6 +259,12 @@
         }
         .alrFeedBack{
             margin-left:51.5%;border:0px solid #ddd;box-shadow:@boxShadow;border-radius:@borderRadius12;
+            .ivu-timeline-item{
+                padding:0px 0px 5px;
+            }
+            .ivu-timeline-item-content{
+                top:-8px;
+            }
             dd{
                 &:extend(.feedBack .stayFeedBack dd);
                 span{
@@ -272,7 +278,8 @@
                         width:80px;text-align:center;display:inline-block;margin-right:10px;
                     }
                     &:nth-of-type(4){
-                        color:#888;display:inline-block;width:25%;text-align:left;overflow:hidden;height:20px;line-height:20px; 
+                        color:#888;display:inline-block;width:25%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+                        
                     }
                     &:nth-of-type(5){
                         float:right;margin-left:5px;cursor: pointer;

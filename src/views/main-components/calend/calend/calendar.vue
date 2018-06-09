@@ -145,7 +145,7 @@
                 <div class="wh_content_item" v-for="tag in textTop">
                     <div>
                         {{tag}}
-          </div>
+                    </div>
                 </div>
             </div>
             <div class="wh_content">

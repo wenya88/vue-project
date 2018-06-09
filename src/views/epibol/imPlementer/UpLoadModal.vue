@@ -46,7 +46,7 @@ export default {
              value:'',
              taskID:0,
              stage:[],
-             ShowStage:true
+             ShowStage:true,
         }
     },
     computed:{

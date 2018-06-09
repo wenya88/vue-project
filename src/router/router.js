@@ -124,26 +124,26 @@ export const appRouter = [
                 path: '/epibol/bidManage',
                 icon: 'ios-paper-outline',
                 name: 'bidManage',
-                title: '招投标管理',
+                title: '投标',
                 component: resolve => { require(['@/views/epibol/bidManage.vue'], resolve); }
             }, {
                 path: '/epibol/contractManage',
                 icon: 'ios-paper-outline',
                 name: 'contractManage',
-                title: '合同管理',
+                title: '合同',
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
             }, {
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
                 name: 'projectManage',
-                title: '项目管理',
+                title: '项目',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             },
             {
                 path: '/epibol/memberManager',
                 icon: 'ios-paper-outline',
                 name: 'memberManager',
-                title: '成员管理',
+                title: '团队',
                 component: resolve => { require(['@/views/epibol/memberManager.vue'], resolve); }
             },
             {
@@ -194,11 +194,11 @@ export const appRouter = [
                 title: '外包公司库',
                 component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); }
             }, {
-                path: '/epibol/contractManage',
+                path: '/customer/contractManage',
                 icon: 'ios-paper-outline',
                 name: 'cContractManage',
                 title: '合同管理',
-                component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
+                component: resolve => { require(['@/views/customer/contractManage.vue'], resolve); }
             }, {
                 path: '/customer/bidManage',
                 icon: 'ios-paper-outline',

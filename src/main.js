@@ -7,8 +7,7 @@ import VueResource from 'vue-resource';
 import axios from 'axios'
 import 'iview/dist/styles/iview.css';
 import './theme/dist/iview.css';
-import 'vue-event-calendar/dist/style.css';
-import vueEventCalendar from 'vue-event-calendar';
+import vueEventCalendar from '../src/views/main-components/calend/vue-event-calendar/dist/index'
 import Bus from './config/bus.js'
 import config from './config/config.js' 
 import global from './components/Global'//引用全局变量文件

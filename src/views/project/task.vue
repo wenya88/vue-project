@@ -54,7 +54,16 @@
       </accretiontaskpop>
     </Modal>
     <!-- excel解析组件 -->
-    <excel-modal v-if="isExcelTask" ></excel-modal>
+    <Modal v-model="isExcelTask" width="1200">
+      <p slot="header">
+        <span>批量导入任务</span>
+      </p>
+      <div>
+        <excel-modal ref="upload"></excel-modal>
+      </div>
+      <div slot="footer" style="height:20px;"></div> 
+    </Modal>
+    <!-- <excel-modal v-if="isExcelTask" ></excel-modal> -->
   </div>
   
 </template>
@@ -64,13 +73,15 @@ import taskclasses from "./task/taskClasses";
 import tasklist from "./task/taskList";
 import taskinfopop from "./task/taskInfoPop";
 import accretiontaskpop from "./task/accretionTaskPop";
+import ExcelModal from "./components/excel"
 
 export default {
   components: {
     taskclasses,
     tasklist,
     taskinfopop,
-    accretiontaskpop
+    accretiontaskpop,
+    ExcelModal
   },
   data() {
     return {
@@ -163,11 +174,12 @@ export default {
         }
       },
       //EXCEL添加
-      showExcelTask: function() {
+      showExcelTask() {
         this.isExcelTask = true;
+        this.$refs.upload.isShowPage(true)
       },
       //添加任务
-      showAccretionTask: function(index) {
+      showAccretionTask(index) {
         this.isAccretionTask = true;
         this.$refs.add.accretionTaskPop(this.projectInfo);
       },

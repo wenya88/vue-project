@@ -1,9 +1,7 @@
 <template>
     <div>
-        <div>
-            <p>OBJ<span>提供3D源文件</span></p>
-            <p>PSD<span>要上传源文件</span></p>
-            <p>PSD<span>侧面源文件</span></p>
+        <div style="min-height:86px">
+            <p v-for="item in fileAskData">{{item.file_format}}<span><b>{{item.require[0].value}}</b></span></p>
         </div>
         <div class="demo-upload-list" v-for="item in MuploadList">
             <template v-if="item.status === 'finished'">
@@ -46,10 +44,26 @@
                 visible: false,
                 MuploadList: [],
                 // MinFile:[],
-                url:[]
+                url:[],
+                taskTypeID:0,
+                fileAskData:[]
             }
         },
         methods: {
+            // 文件格式要求
+            fileAsk(){
+                let _this=this;
+                let url=_this.GLOBAL.baseRouter+'task/task-type/info&id='+_this.taskTypeID;
+                _this.$axios.get(url).then(msg=>{
+                    msg.data.file.forEach(val => {
+                        if(val.is_main==0){
+                            _this.fileAskData.push(val)
+                        }
+                    });
+                })
+            },
+
+            //文件上传
             handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
@@ -86,6 +100,10 @@
             _this.$bus.on('RemoveFile',()=>{
                _this.$refs.upload.fileList.splice(0);
             });
+            this.$bus.on("taskTypeID",(val)=>{
+                this.taskTypeID=val.taskTypeID;
+                this.fileAsk();
+            })
         },
         watch:{
             MuploadList(val){

@@ -44,33 +44,39 @@ module.exports = merge(webpackBaseConfig, {
         stats: { colors: true },
         proxy: {
             //匹配代理的url
-            '/task': {
-                // 目标服务器地址
-                target: 'http://192.168.2.19/index.php?r=task',
-                // target: 'http://59.111.95.148/index.php?r=task',
-                // target: 'http://plat.yhcgame.com/index.php?r=task',
-                //路径重写
-                pathRewrite: { '^/task': '' },
-                changeOrigin: true
-            },
-            '/system': {
-                // 登录
-                target: 'http://192.168.2.19/index.php?r=system',
-                // target: 'http://59.111.95.148/index.php?r=system',
-                // target: 'http://plat.yhcgame.com/index.php?r=system',
-                //路径重写
-                pathRewrite: { '^/system': '' },
-                changeOrigin: true
-            },
-            '/file': {
-                // 文件
-                target: 'http://192.168.2.19/index.php?r=file',
-                // target: 'http://59.111.95.148/index.php?r=file',
-                // target: 'http://plat.yhcgame.com/index.php?r=file',
-                // 路径重写
-                pathRewrite: { '^/file': '' },
-                changeOrigin: true
-            }
+            // '/': {
+            //     // 目标服务器地址
+            //     target: 'http://192.168.2.19',
+            //     pathRewrite: { '^/': '' },
+            //     changeOrigin: true
+            // }
+            // '/task': {
+            //     // 目标服务器地址
+            //     target: 'http://192.168.2.19/index.php?r=task',
+            //     // target: 'http://59.111.95.148/index.php?r=task',
+            //     // target: 'http://plat.yhcgame.com/index.php?r=task',
+            //     //路径重写
+            //     pathRewrite: { '^/task': '' },
+            //     changeOrigin: true
+            // },
+            // '/system': {
+            //     // 登录
+            //     target: 'http://192.168.2.19/index.php?r=system',
+            //     // target: 'http://59.111.95.148/index.php?r=system',
+            //     // target: 'http://plat.yhcgame.com/index.php?r=system',
+            //     //路径重写
+            //     pathRewrite: { '^/system': '' },
+            //     changeOrigin: true
+            // },
+            // '/file': {
+            //     // 文件
+            //     target: 'http://192.168.2.19/index.php?r=file',
+            //     // target: 'http://59.111.95.148/index.php?r=file',
+            //     // target: 'http://plat.yhcgame.com/index.php?r=file',
+            //     // 路径重写
+            //     pathRewrite: { '^/file': '' },
+            //     changeOrigin: true
+            // }
         }
     }
 });

@@ -68,7 +68,7 @@
                                                   </span>
                                                   <em class="ShowEm" >
                                                       <em class="ShowUpLoad">
-                                                          <Button @click.stop="ShowModel(item.name,item.id,item.progress,item.stage)" class="upload"><Icon type="ios-cloud-upload-outline" size="24"></Icon> 上传文件</Button>
+                                                          <Button @click.stop="ShowModel(item.name,item.id,item.progress,item.stage,item.tasktype_id)" class="upload"><Icon type="ios-cloud-upload-outline" size="24"></Icon> 上传文件</Button>
                                                       </em>
                                                       <u><b>{{item.progress}}</b> / {{item.stage | stageArr }}<br/>{{item.stage[item.progress==0?item.progress:item.progress-1].stage_name}}</u>
                                                   </em>
@@ -521,14 +521,15 @@
         el2.style=''
       },
     //   上传窗口
-      ShowModel(name,id,progress,stage){
+      ShowModel(name,id,progress,stage,taskTypeID){
           let obj={
               name:name,
               id:id,
               progress:Number(progress),
-              stage:stage
+              stage:stage,
           }
           this.$bus.emit('EMname',obj);
+          this.$bus.emit('taskTypeID',{taskTypeID:taskTypeID})
           this.modal=true;
       },
 
@@ -578,7 +579,6 @@
                 };
                 _this.$axios.post(url,qs.stringify(Mparams)).then(function(data){
                 let CodeData=data.data;
-                // console.log(CodeData)
                 if(CodeData.err_code==0){
                         _this.taskGet();
                         _this.get();

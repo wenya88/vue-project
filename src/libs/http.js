@@ -1,17 +1,35 @@
 import axios from 'axios'
-axios.defaults.baseURL = 'http://192.168.2.19'
-axios.defaults.withCredentials = true
-axios.defaults.timeout = 100000
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
-axios.interceptors.request.use( config => {
-  // config.headers([
-    // 设置请求体和携带token信息
-  // ])
-  return config
-})
+const http = axios.create({
+  baseURL: 'http://192.168.2.19/index.php?r=',
+  timeout: 100000,
+  withCredentials: true,
+  data: {},
+  // headers: {
+  //   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  //   // 'Content-Type': 'application/json;charset=UTF-8',
+  //   Accept: 'application/json'
+  // }
+  // proxy: {
+  //   host: '192.168.19.2',
+  //   port: 8080,
+  //   auth: {
+  //     username: 'mikeymike',
+  //     password: 'rapunz3l'
+  //   }
+  // }
+});
 
-axios.interceptors.response.use(response => {
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
+// http.interceptors.request.use( config => {
+//   // config.headers([
+//     // 设置请求体和携带token信息
+//   // ])
+//   return config
+// })
+
+http.interceptors.response.use(response => {
   // 判断后台返回数据携带的请求码
   if(response.data.retcode === 200 || response.data.retcode === '200') {
     return response.data.data || response.data
@@ -21,4 +39,4 @@ axios.interceptors.response.use(response => {
   }
 })
 
-export default axios
+export default http

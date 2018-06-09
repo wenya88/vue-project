@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>任务类型工时统计</h2>
+        <h2>任务类型工时统计<span v-show="flag">{{xAxis}}</span></h2>
         <div id="echartTypeTask"></div>
     </div>
 </template>
@@ -10,7 +10,9 @@
   export default{
     data(){
       return{
-
+        flag:false,
+        xAxis:[],
+        series:[]
       }
     },
     mounted(){
@@ -31,7 +33,8 @@
           let url=this.GLOBAL.baseRouter+'task/total/task-type-work-time-total&project_id='+projectID
           _this.$axios.get(url).then(msg=>{
                 let MsgData=msg.data.data;
-                console.log(MsgData)
+                this.xAxis=MsgData.xAxis.data;
+                this.series=MsgData.series.data
           })
       },
       autoHeight(){
@@ -40,12 +43,12 @@
       },
       myCharts(){
         var echarts = require('echarts');
+        echarts.dataTool = require("echarts/extension/dataTool");
         var myChart = echarts.init(document.getElementById('echartTypeTask'));
-
+        var data = echarts.dataTool.prepareBoxplotData(this.series);
         myChart.setOption({
           color: ['#006555'],
           title: {
-
             x: 'center',
             y: 20,
             textStyle:{
@@ -61,12 +64,12 @@
             }
           },
           grid: {
-            left: '25',
+            left: '40',
             right: '10',
           },
           xAxis: {
             type: 'category',
-            data: ['原画', 'UI', '动作', '特效','地编','原画成员'],
+            data: this.xAxis,
             nameTextStyle: {
               color: '#3259B8',
               fontSize: 14,
@@ -75,9 +78,9 @@
             axisTick: {
               show: false,
             },
-            axisLine: {
-              lineStyle: {
-                color: '#18bfa4',
+            axisLine:{
+              lineStyle:{
+                color:'#18bfa4'
               }
             },
             splitLine: {
@@ -97,10 +100,11 @@
             axisTick: {
               show: false,
             },
-            axisLine: {
-              lineStyle: {
-                color: '#18bfa4',
-              }},
+            axisLine:{
+              lineStyle:{
+                color:'#18bfa4'
+              }
+            },
             splitLine: {
               lineStyle: {
                 color: '#18bfa4',
@@ -112,38 +116,7 @@
           series: [{
             name: 'boxplot',
             type: 'boxplot',
-            data: [
-              [12,
-                32,
-                44,
-                55,
-                66,],
-              [12,
-                32,
-                44,
-                55,
-                66,],
-              [12,
-                32,
-                44,
-                55,
-                66,],
-              [12,
-                32,
-                44,
-                55,
-                66,],
-              [12,
-                32,
-                44,
-                55,
-                66,],
-              [12,
-                32,
-                44,
-                55,
-                66,],
-            ],
+            data:data.boxData,
             itemStyle: {
               normal:{
                 borderColor: {
@@ -190,7 +163,11 @@
               }
             }
           },
-
+          {
+              name: 'outlier',
+              type: 'scatter',
+              data: data.outliers
+          }
           ]
 
         })
@@ -198,6 +175,4 @@
       }
     }
   }
-
 </script>
-

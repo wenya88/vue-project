@@ -111,20 +111,14 @@
                 silent: true,
                 barWidth: 40,
                 barGap: '-100%',
-                //data: this.seriesData
-                data:[
-                  1050,2510,3215,1203,4210,4567,5234,3234,5643
-                ]
+                data: this.seriesData
               },
               {
                 name:'已用工时',
                 type: 'bar',
                 barWidth: 40,
                 z: 10,
-               // data: this.seriesDataTwo,
-               data:[
-                  453,1343,2332,675,3321,2313,4321,1212,2143
-               ],
+               data: this.seriesDataTwo,
                 label: {
                   normal: {
                     show: true,

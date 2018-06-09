@@ -1,5 +1,5 @@
 <template>
-  <div>任务类型库</div>
+  <div>合同管理</div>
 </template>
 
 <script>

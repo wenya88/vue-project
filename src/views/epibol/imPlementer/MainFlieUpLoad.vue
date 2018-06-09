@@ -1,9 +1,7 @@
 <template>
     <div class="MainFile">
-        <div v-if="Flag">
-            <p>格式：<span><b style="color:#009f86;font-size:14px;">无限制</b></span></p>
-            <p>贴图数量：<span>无限制</span></p>
-            <p>大小：<span>无限制</span></p>
+        <div style="min-height:86px">
+            <p v-for="item in fileAskData">{{item.config_name}}<span><b>{{item.value}}</b></span></p>
         </div>
         <div class="demo-upload-list" v-for="item in uploadList">
             <template v-if="item.status === 'finished'">
@@ -43,13 +41,28 @@
             return {
                 imgName: '',
                 uploadList: [],
-                Flag:true,
+                Flag:false,
                 //file:[],
                 defaultList: [],
                 url:[],
+                taskTypeID:0,
+                fileAskData:[]
             }
         },
-        methods: {      
+        methods: {
+            // 文件格式要求
+            fileAsk(){
+                let _this=this;
+                let url=_this.GLOBAL.baseRouter+'task/task-type/info&id='+_this.taskTypeID;
+                _this.$axios.get(url).then(msg=>{
+                    msg.data.file.forEach(val => {
+                        if(val.is_main==1){
+                            _this.fileAskData=val.require
+                        }
+                    });
+                })
+            },
+            //上传
             handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
@@ -89,6 +102,10 @@
             this.$bus.on("RemoveFile",()=>{
                 this.$refs.upload.fileList.splice(0);
                 // this.uploadList=[];
+            })
+            this.$bus.on("taskTypeID",(val)=>{
+                this.taskTypeID=val.taskTypeID;
+                this.fileAsk()
             })
         },
     }
