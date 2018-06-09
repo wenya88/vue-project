@@ -5,24 +5,24 @@
       <div>解析中</div>
     </Spin>
     <!-- <div class="left">
-          <ul>
-            <li v-for="(item,index) in headList" :key="index">{{item}}</li>
-          </ul>
-        </div> -->
+              <ul>
+                <li v-for="(item,index) in headList" :key="index">{{item}}</li>
+              </ul>
+            </div> -->
     <Row class="margin-top-10">
       <Col span="16">
       <Card>
         <p slot="title">
           <Icon type="navicon-round"></Icon>
-          可滚动拖拽
+          左侧为已识别的表格字段和数据，可拖动至右侧
         </p>
         <Row>
           <Col span="12" class="padding-left-10">
           <Card dis-hover>
-            <div style="height: 360px;">
+            <div style="height: 530px;">
               <ul id="excelList" class="iview-admin-draggable-list">
                 <li v-for="(item, index) in excelList" :key="index" class="notwrap todolist-item" :data-index="index">
-                   {{ item.title }} : {{ item.label }} 
+                  {{ item.title }} : {{ item.label }}
                   <!-- <div>{{ item.title }}</div><div>{{ item.label }}</div> -->
                 </li>
               </ul>
@@ -31,7 +31,7 @@
           </Col>
           <Col span="12">
           <Card dis-hover>
-            <div style="height: 360px;">
+            <div style="height: 530px;">
               <ul id="affordList" class="iview-admin-draggable-list"></ul>
             </div>
           </Card>
@@ -43,14 +43,16 @@
       <Card>
         <p slot="title">
           <Icon type="android-funnel"></Icon>
-          买得起的清单
+          匹配数据
         </p>
-        <div style="height: 394px;">
-          <ul class="iview-admin-draggable-list">
-            <li v-for="(item, index) in affordList" :key="index" class="notwrap" :data-index="index">
-              {{ item.label }}
-            </li>
-          </ul>
+        <div style="height: 530px;">
+          <Table border :columns="columns" :data="titleList" width=100 style="float: left;"></Table>
+          <DragableTable v-model="tableData" :columns-list="columnsList" style="width: 245px;float: left;"></DragableTable>
+          <!-- <ul class="iview-admin-draggable-list">
+                <li v-for="(item, index) in affordList" :key="index" class="notwrap" :data-index="index">
+                  {{ item.label }}
+                </li>
+              </ul>  -->
         </div>
       </Card>
       </Col>
@@ -61,8 +63,12 @@
 <script>
 var qs = require('querystring');
 import Sortable from 'sortablejs';
+import DragableTable from '../dragableTable.vue'
 export default {
   name: 'ExcelAnalysis',
+  components: {
+    DragableTable
+  },
   props: {
     // headList: {
     //   type: Array,
@@ -79,13 +85,46 @@ export default {
       firstList: [],
       loadingStatus: true,
       excelList: [],
-      affordList: []
+      affordList: [],
+      columnsList: [],
+      tableData: [],
+      columns: [
+        {
+          title: '字段',
+          key: 'name'
+        }
+      ],
+      titleList: [
+        {
+          name: '任务名称'
+        }, {
+          name: '预计开始'
+        }, {
+          name: '预计结束'
+        }, {
+          name: '子项目'
+        }, {
+          name: '参与人'
+        }, {
+          name: '任务类型'
+        }, {
+          name: '文件要求'
+        }, {
+          name: '参考图片'
+        }, {
+          name: '参考附件'
+        }, {
+          name: '要求说明'
+        }
+      ]
     }
   },
   created() {
     if (sessionStorage.analysisFileId) {
       this.analysisExcel(sessionStorage.analysisFileId)
     }
+    // 可在此从服务端获取表格数据
+    this.getData();
   },
   mounted() {
     document.body.ondrop = function(event) {
@@ -104,6 +143,7 @@ export default {
       fallbackClass: 'iview-admin-cloned-item',
       onRemove(event) {
         vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
+        console.log(event);
       }
     });
     let affordList = document.getElementById('affordList');
@@ -112,7 +152,6 @@ export default {
         name: 'list',
         pull: true
       },
-      sort: false,
       filter: '.iview-admin-draggable-delete',
       animation: 120,
       fallbackClass: 'iview-admin-cloned-item',
@@ -140,26 +179,51 @@ export default {
           if (excelData) {
             this.loadingStatus = false;
           }
-          
+
           // console.log(res,res.excel_data)
-          let obj=[]
-          res.excel_data.forEach((item,index) => {
-             for(let i=0;i<res.excel_data[index].length;i++){
-              let k=res.excel_data[0][i];
-              let j=res.excel_data[1][i];
+          // let obj=[]
+          res.excel_data.forEach((item, index) => {
+            for (let i = 0; i < res.excel_data[index].length; i++) {
+              let k = res.excel_data[0][i];
+              let j = res.excel_data[1][i];
               // obj.push('{'+k+':'+j+'}')
               this.excelList.push({
                 title: k,
                 label: j
               })
-             }
+            }
           });
-          let arrLength = this.excelList.length/2;
+          let arrLength = this.excelList.length / 2;
           // console.log(arrLength,this.excelList.slice(0,arrLength))
           // let oobj=JSON.stringify(obj)
           // console.log(oobj.replace(/"/g,''))
         })
       // this.$emit('analysisNext')
+    },
+    getData() {
+      this.columnsList = [
+        {
+          title: '演示数据',
+          key: 'label'
+        },{
+          title: '拖拽',
+          key: 'drag',
+          width: 90,
+          align: 'center',
+          render: (h) => {
+            return h(
+              'Icon',
+              {
+                props: {
+                  type: 'arrow-move',
+                  size: 24
+                }
+              }
+            );
+          }
+        }
+      ];
+      this.tableData = this.affordList;
     }
   }
 }
