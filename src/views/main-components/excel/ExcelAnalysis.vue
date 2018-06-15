@@ -22,7 +22,7 @@
             <div style="height: 530px;">
               <ul id="excelList" class="iview-admin-draggable-list">
                 <li v-for="(item, index) in excelList" :key="index" class="notwrap todolist-item" :data-index="index">
-                  {{ item.title }} : {{ item.label }}
+                  {{ item.title }}:{{ item.label }}
                   <!-- <div>{{ item.title }}</div><div>{{ item.label }}</div> -->
                 </li>
               </ul>
@@ -60,15 +60,15 @@
                 <div style="height: 44px;">
                   <ul id="taskStyle" class="iview-admin-draggable-list hideList"></ul>
                 </div>
-                <div style="height: 44px;">
+                <!-- <div style="height: 44px;">
                   <ul id="demand" class="iview-admin-draggable-list hideList"></ul>
-                </div>
+                </div> -->
                 <div style="height: 44px;">
                   <ul id="images" class="iview-admin-draggable-list hideList"></ul>
                 </div>
-                <div style="height: 44px;">
+                <!-- <div style="height: 44px;">
                   <ul id="enclosure" class="iview-admin-draggable-list hideList"></ul>
-                </div>
+                </div> -->
                 <div style="height: 44px;">
                   <ul id="remarks" class="iview-admin-draggable-list hideList"></ul>
                 </div>
@@ -97,11 +97,22 @@
       </Card>
       </Col> -->
     <!-- </Row> -->
+    <Button class="toTable" type="primary" @click="toTable()" v-if="second">下一步</Button>  
   </div>
 </template>
 
 <script>
 var qs = require('querystring');
+var mate = {
+  name: '',
+  expect_start_time: '',
+  expect_end_time: '',
+  project_child: '',
+  run_member_id: '',
+  tasktype_id: '',
+  image: '',
+  description: ''
+}
 import Sortable from 'sortablejs';
 import DragableTable from '../dragableTable.vue'
 export default {
@@ -110,14 +121,10 @@ export default {
     DragableTable
   },
   props: {
-    // headList: {
-    //   type: Array,
-    //   default: []
-    // }
-    // excelData: {
-    //   type: Object,
-    //   default: {}
-    // }
+    second:{
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -148,23 +155,19 @@ export default {
         }, {
           name: '任务类型'
         }, {
-          name: '文件要求'
-        }, {
           name: '参考图片'
-        }, {
-          name: '参考附件'
         }, {
           name: '要求说明'
         }
-      ]
+      ],
+      mate: {},
+      excel_key: ''
     }
   },
   created() {
     if (sessionStorage.analysisFileId) {
       this.analysisExcel(sessionStorage.analysisFileId)
     }
-    // 可在此从服务端获取表格数据
-    this.getData();
   },
   mounted() {
     document.body.ondrop = function(event) {
@@ -178,67 +181,10 @@ export default {
     this.dragableAssembly("subproject");
     this.dragableAssembly("participants");
     this.dragableAssembly("taskStyle");
-    this.dragableAssembly("demand");
+    // this.dragableAssembly("demand");
     this.dragableAssembly("images");
-    this.dragableAssembly("enclosure");
+    // this.dragableAssembly("enclosure");
     this.dragableAssembly("remarks");
-    // let vm = this;
-    // let excelList = document.getElementById('excelList');
-    // Sortable.create(excelList, {
-    //   group: {
-    //     name: 'list',
-    //     pull: true
-    //   },
-    //   animation: 120,
-    //   ghostClass: 'placeholder-style',
-    //   fallbackClass: 'iview-admin-cloned-item',
-    //   onRemove(event) {
-    //     // vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
-    //     console.log(event);
-    //   }
-    // });
-    // let taskName = document.getElementById('taskName');
-    // Sortable.create(taskName, {
-    //   group: {
-    //     name: 'list',
-    //     pull: true
-    //   },
-    //   // sort: false,
-    //   filter: '.iview-admin-draggable-delete',
-    //   animation: 120,
-    //   fallbackClass: 'iview-admin-cloned-item',
-    //   onRemove(event) {
-    //     // vm.taskName.splice(event.oldIndex, 1);
-    //   }
-    // });
-    // let startTime = document.getElementById('startTime');
-    // Sortable.create(startTime, {
-    //   group: {
-    //     name: 'list',
-    //     pull: true
-    //   },
-    //   // sort: false,
-    //   filter: '.iview-admin-draggable-delete',
-    //   animation: 120,
-    //   fallbackClass: 'iview-admin-cloned-item',
-    //   onRemove(event) {
-    //     // vm.startTime.splice(event.oldIndex, 1);
-    //   }
-    // });
-    // let endTime = document.getElementById('endTime');
-    // Sortable.create(endTime, {
-    //   group: {
-    //     name: 'list',
-    //     pull: true
-    //   },
-    //   // sort: false,
-    //   filter: '.iview-admin-draggable-delete',
-    //   animation: 120,
-    //   fallbackClass: 'iview-admin-cloned-item',
-    //   onRemove(event) {
-    //     // vm.endTime.splice(event.oldIndex, 1);
-    //   }
-    // });
   },
   methods: {
     /**
@@ -246,7 +192,7 @@ export default {
      */
     dragableAssembly(idDom) {
       let idDom2 = document.getElementById(idDom);
-      console.log(idDom, idDom2);
+      // console.log(idDom,typeof idDom);
       Sortable.create(idDom2, {
         group: {
           name: 'list',
@@ -257,12 +203,39 @@ export default {
         fallbackClass: 'iview-admin-cloned-item',
         onRemove(event) {
           // vm.affordList.splice(event.newIndex, 0, vm.excelList[event.item.getAttribute('data-index')]);
-          console.log(event);
+          // console.log(idDom,event,event.item.innerText.split(':')[0]);
+          let toIdDom = event.to.id
+          // let mate = {}
+          switch (toIdDom)
+          {
+          case "taskName":
+          // console.log(idDom)
+            mate.name = event.item.innerText.split(':')[0];
+            break;
+          case "startTime":
+            mate.expect_start_time = event.item.innerText.split(':')[0];
+            break;
+          case "endTime":
+            mate.expect_end_time = event.item.innerText.split(':')[0];
+            break;
+          case "subproject":
+            mate.project_child = event.item.innerText.split(':')[0];
+            break;
+          case "participants":
+            mate.run_member_id = event.item.innerText.split(':')[0];
+            break;
+          case "taskStyle":
+            mate.tasktype_id = event.item.innerText.split(':')[0];
+            break;
+          case "images":
+            mate.image = event.item.innerText.split(':')[0];
+            break;
+          case "remarks":
+            mate.description = event.item.innerText.split(':')[0];
+            break;
+          }
         }
       });
-    },
-    fetchExcel() {
-
     },
     /**
      * 解析excel
@@ -279,7 +252,7 @@ export default {
           if (excelData) {
             this.loadingStatus = false;
           }
-
+          this.excel_key = res.excel_key
           // console.log(res,res.excel_data)
           // let obj=[]
           res.excel_data.forEach((item, index) => {
@@ -291,44 +264,45 @@ export default {
                 title: k,
                 label: j
               })
+              // console.log(k.length,k)
+              // console.log(j.length,j)
             }
           });
           let arrLength = this.excelList.length / 2;
-          // console.log(arrLength,this.excelList.slice(0,arrLength))
+          // console.log(arrLength,this.excelList.slice(0,arrLength));
+          this.excelList = this.excelList.slice(0,arrLength);
           // let oobj=JSON.stringify(obj)
           // console.log(oobj.replace(/"/g,''))
         })
       // this.$emit('analysisNext')
     },
-    getData() {
-      this.columnsList = [
-        {
-          title: '演示数据',
-          key: 'label'
-        },{
-          title: '拖拽',
-          key: 'drag',
-          width: 90,
-          align: 'center',
-          render: (h) => {
-            return h(
-              'Icon',
-              {
-                props: {
-                  type: 'arrow-move',
-                  size: 24
-                }
-              }
-            );
-          }
-        }
-      ];
-      this.tableData = this.affordList;
+    toTable() {
+      this.mate = JSON.stringify(mate);
+      // console.log('下一步',this.mate)
+      let data = {
+        mate: this.mate,
+        excel_key: this.excel_key,
+        project_id: sessionStorage.projectID
+      }
+      // console.log(data)
+      sessionStorage.matchData = JSON.stringify(data)
+      // this.$axios.post(this.GLOBAL.baseRouter+'task/task/mate-excel', qs.stringify(data))
+      // .then(res => res.data)
+      // .then(res => {
+      //   console.log(res)
+      // })
+      this.$emit('next',data)
     }
   }
 }
 </script>
 
 <style scoped>
+.toTable{
+  position: absolute;
+  bottom: 5px;
+  z-index: 10;
+  left: 87px;
+}
 @import 'style/draggableList.less';
 </style>

@@ -1,32 +1,6 @@
 <template>
   <div class="defaultH">
       <div class="imgEditorCom">
-          <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
-          <div class="stageListRow" @mouseleave="hideStageList">
-              <ul>
-                <li v-for="(item,index) in IMGlist" @click="changCont(
-                        item.file.file,
-                        item.file.tag,
-                        item.status,
-                        item.inside_audit_time,
-                        item.client_audit_time,
-                        item.inside_audit_date,
-                        item.client_audit_date,
-                        item.inside_audit_uid,
-                        item.client_audit_uid,
-                        index,
-                        item.file.stage_id,
-                        item.file.id
-                    )" :class="{showBg:index==liIndex}"> 
-                    <span>{{index+1}}<br/>{{item.stage_name}}</span>
-                    <em>
-                      {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
-                      {{item.status | filtStat}}
-                    </em>
-                    <div class="clear"></div>
-                </li>
-              </ul>
-          </div>
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
           <div class="imgFocus" id="signx">
@@ -40,17 +14,18 @@
             <span class="EditSub">
                 <button class="actionPost">需修改</button>
             </span>
-            <span class="EditSub" v-if="data==null?true:false">
+            <span class="EditSub">
                 <button class="subPass">通过</button>
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
           </div>
           
           <!-- 反馈信息 -->
-          <div v-if="SataeInfo" class="feedbackInfo">
-            <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
-            <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
-            <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+          <div v-if="SataeInfo" class="feedbackInfo feedbackInfoTow">
+            <span><p>审核意见</p><br/>{{Biddata.examine_description}}</span>
+            <span><p>审核结果</p><br/><b :class="[Biddata.status==2?'NOT':'']">{{Biddata.status==2?'需求修改':'通过'}}</b></span>
+            <span><p>审核人</p><br/>{{Biddata.examine_user}}</span>
+            <span><p>审核时间</p><br/>{{Biddata.examine_days==0?'今天':Biddata.examine_days+'天前'}}</span>
             <div class="clear"></div>
           </div>
       </div>
@@ -70,13 +45,10 @@
       return {
         data:[],
         IMGdata:[],
+        Biddata:[],
         url:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977865243&di=9bfb3c4611ef0ebfe80a67aa478d6b21&imgtype=0&src=http%3A%2F%2Fwww.xingda-fs.com%2Fcomdata%2F6480613%2Fproduct%2F20170518164212591d5e64f3fe2_b.jpg',
-        TID:80,
-        TaskID:0,
-        IMGlist:[],
-        AllowEdit:String,
-        AllowEditRow:false,
-        SataeInfo:false,
+        AllowEditRow:true,
+        SataeInfo:true,
         StateFeedBack:0,
         insTime:0,
         cliTiem:0,
@@ -95,74 +67,29 @@
       FeedbackValue(val){
         sessionStorage.FeedbackValue=val;
       }
-    },
-    filters:{
-      filtStat(val){
-            if(val==1){
-              return '内部待审'
-            }else if(val==2){
-              return '客户待审'
-            }else if(val==3){
-              return '内部已反馈'
-            }else if(val==4){
-              return '客户已反馈'
-            }else if(val==5){
-              return '审核通过'
-            }else{
-              return '--'
-            }
-      }
-    },
-    
+    },    
     mounted(){
-      // this.initImgEditor();
       this.loadWH();
     },
     methods:{
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
-      initImgEditor()
-      {
-        this.url=sessionStorage.FileURl;
-        this.get();
-        this.onLoad();
-        sessionStorage.removeItem("FeedbackValue");
-      },
       onLoad(){
           let el=document.getElementById("ImgOnlod");
           let el2=document.getElementById("onload");
-          // el2.style.display="block";
+          el2.style.display="block";
           el.onload=function(){
               el2.style.display="none";
           }
       },
       loadWH(){
           $('.stageListRow,.imgEditorCom').height($(window).height()-500);
-          $(".imgEditorCom").width($(".filebrowse").width());
+          $(".imgEditorCom").width($(".ivu-modal").width()-400);
           $('.imgFocus img').height($(window).height()-500);
           $(".defaultH").height($(window).height()-400);
       },
-      changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
-         this.url=file;
-         this.data=tag;
-         this.StateFeedBack=status;
-         this.insTime=insTime;
-         this.cliTiem=cliTiem;
-         this.insDate=insDate;
-         this.cliDate=cliDate;
-         this.insUid=insUid;
-         this.cliUid=cliUid;
-         this.liIndex=index;
-         let fileID=taskID;
-         let fID=fid;
-        
-         this.defue(fileID,fID);
-         this.imgdef();
-         Data=[];
-         this.onLoad();
-      },
-      defue(fileID,fID){
+      defue(BID,status){
         (function($){
           var cX,cY,indexId=0,removeId,DOM;
           var Rleft,Rtop;//需要删除的坐标
@@ -186,7 +113,7 @@
 
           function defined(dom){
             //是否显示标记
-            if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){
+            if( status=="1" || status=="2"){
                 return
             }
             //鼠标右键
@@ -227,6 +154,7 @@
                 $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
                 var mes={left:cX-11,top:cY-29,message:text};
                 Data[Data.length]=mes;
+                
               }
             });//确认编辑
             $(document).on('mouseenter','[id*=Ts]',function(e){
@@ -300,36 +228,28 @@
               }
               })
           };
-
+          
           // 标注
           $(".actionPost").unbind('click').click(function(){
             // var url='/task/task/inside-audit';
-            var url=baseUrl+'index.php?r=task/task/inside-audit';
+            var url=baseUrl+'index.php?r=task/company/bid-tag';
             var ImgData={
-                  "stage_id": fileID,
-                  "audit": 2,
-                  "feedback": sessionStorage.FeedbackValue,
-                  "file": [{
-                    "file_id": fID,
-                    "tag":Data
-                  }]
+                    "id": BID,
+                    "tag":JSON.stringify(Data),
+                    "examine_description":sessionStorage.FeedbackValue
                 }
                 AjaxFun(url,ImgData)
           });
 
           // 审核通过
           $(".subPass").unbind('click').click(function(){
-               var url=baseUrl+'index.php?r=task/task/inside-audit';
+               var url=baseUrl+'index.php?r=task/company/examine-bid';
                var ImgData={
-                  "stage_id": fileID,
-                  "audit": 1,
-                  "feedback":'',
-                  "file": [{
-                    "file_id": fID,
-                    "tag":[]
-                  }]
+                    "status":1,
+                    "id": BID,
+                    "examine_description":sessionStorage.FeedbackValue
                 }
-               AjaxFun(url,ImgData)
+            AjaxFun(url,ImgData)
           });
 
         })(jQuery);
@@ -338,70 +258,25 @@
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
       },
-      get(){
-          //  获取图片的标注信息
-           let TaskID=sessionStorage.TaskID;
-           if(TaskID == 0)
-           {
-              return false;
-           }
+      Editget(bidFile){
            let _this=this;
+           _this.onLoad();
+           sessionStorage.removeItem("FeedbackValue");
           //  控制图片是否可标注
-           if(sessionStorage.AllowEdit=="Allow"){ //允许标注
+           if(bidFile.status=="0"){ //允许标注
                 _this.AllowEditRow=true;
                 _this.SataeInfo=false;
-            }else if(sessionStorage.AllowEdit=="NotAllow"){ //不允许标注
+            }else if(bidFile.status=="1"||bidFile.status=="2"){ //不允许标注
                 _this.AllowEditRow=false
                  _this.SataeInfo=true;
-            }else if(sessionStorage.AllowEdit=="Other"){ //不显示下面和不允许标注
-                _this.AllowEditRow=false;
-                _this.SataeInfo=false;
             }
-           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
-           _this.$axios.get(url).then(function(msg){
-            let Sdate=msg.data;
-            if(Sdate.err_code==0){
-                _this.IMGlist = [];
-                _this.IMGlist = Sdate.data;
-
-                _this.IMGlist.forEach((val,index)=>{
-                   if(val.file.file==sessionStorage.FileURl){
-                    // 设置初始化值
-                    // console.log(val.status)
-                     _this.data=val.file.tag;
-                     _this.StateFeedBack=val.status;
-                     _this.insTime=val.insTime;
-                     _this.cliTiem=val.cliTiem;
-                     _this.insDate=val.insDate;
-                     _this.cliDate=val.cliDate;
-                     _this.insUid=val.insUid;
-                     _this.cliUid=val.cliUid;
-                     _this.liIndex=index;
-                     _this.IMGID=val.file.id;
-                     _this.fileID=val.file.stage_id
-                   }
-                })
-              
-              // 把StageID传到提交
-              let fileID = _this.fileID;
-              let fID=_this.IMGID;
-              _this.defue(fileID,fID);
-              _this.imgdef();
-              }else{
-                return
-              }          
-          },()=>{
-            _this.$Message.error('请求失败')
-          })
+            _this.data=bidFile.tag;
+            _this.url=bidFile.file;
+            _this.Biddata=bidFile;
+            _this.defue(bidFile.id,bidFile.status);
+            _this.imgdef();
       },
-      showStageList(){
-          document.getElementsByClassName('controlListRow')[0].style.display='none';
-          document.getElementsByClassName('stageListRow')[0].style.display='block';
-      },
-      hideStageList(){
-          document.getElementsByClassName('controlListRow')[0].style.display='block';
-          document.getElementsByClassName('stageListRow')[0].style.display='none';
-      }
+      
     }
 
   }

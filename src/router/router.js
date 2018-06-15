@@ -191,13 +191,14 @@ export const appRouter = [
                 path: '/customer/epibolCompany',
                 icon: 'ios-paper-outline',
                 name: 'epibolCompany',
-                title: '外包公司库',
-                component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); }
+                title: '合作',
+                component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); },
+               
             }, {
                 path: '/customer/contractManage',
                 icon: 'ios-paper-outline',
                 name: 'cContractManage',
-                title: '合同管理',
+                title: '合同',
                 component: resolve => { require(['@/views/customer/contractManage.vue'], resolve); }
             }, {
                 path: '/customer/bidManage',
@@ -205,12 +206,19 @@ export const appRouter = [
                 name: 'cusBidManage',
                 title: '招投标管理',
                 component: resolve => { require(['@/views/customer/bidManage.vue'], resolve); }
-            }, {
+            },{
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
                 name: 'cProjectManage',
                 title: '项目管理',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
+            }
+            ,{
+                path: '/customer/payManage/:id',
+                icon: 'ios-paper-outline',
+                name: 'cpayManage',
+                title: '支付',
+                component: resolve => { require(['@/views/customer/payManage.vue'], resolve); }
             }
         ]
     }, {
@@ -265,7 +273,7 @@ export const appRouter = [
         path: '/artsquare',
         icon: 'ios-folder',
         name: 'artsquare',
-        title: '艺术广场',
+        title: '任务大厅',
         component: Main,
         // redirect: '/depot/project',
         children: [
@@ -273,7 +281,7 @@ export const appRouter = [
                 path: '/artsquare/home',
                 icon: 'ios-paper-outline',
                 name: 'aHome',
-                title: '艺术广场',
+                title: '任务大厅',
                 component: resolve => { require(['@/views/artsquare/home.vue'], resolve); }
             }
         ]

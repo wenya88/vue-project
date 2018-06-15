@@ -9,12 +9,14 @@
     </Steps>
     <div class="center">
       <excel-upload :fcert="cert" @analysisNext="next" :frist="stepStatus" v-if="current==0"></excel-upload>
-      <excel-analysis v-else-if="current==1"></excel-analysis>
+      <excel-analysis v-else-if="current==1" @next="next" :second="stepSecond"></excel-analysis>
+      <excel-table v-else-if="current==2"></excel-table>
     </div>
     <div class="footer"> 
       <Button type="primary" @click="pre" :style="`display: ${displayPre}`">上一步</Button>
       <Button type="primary" @click="next" :style="`display: ${displayNext}`">下一步</Button> 
-      <!-- <Button type="primary" @analysisNext="test" :style="`display: ${displayNext}`">下一步1111</Button> -->
+      <!-- <Button type="primary" @next="next" :style="`display: ${displayTable}`">下一步111</Button>  -->
+      <!-- <Button type="primary" @analysisNext="test" :style="`display: ${displayNext}`">下一步1111</Button>  -->
     </div> 
   </div>
 </template>
@@ -22,16 +24,19 @@
 <script>
 import ExcelUpload from '../../main-components/excel/ExcelUpload'
 import ExcelAnalysis from '../../main-components/excel/ExcelAnalysis'
+import ExcelTable from '../../main-components/excel/ExcelTable'
 export default {
   components: {
     ExcelUpload,
     ExcelAnalysis,
+    ExcelTable
   },
   data() {
     return {
       current: 0,
       displayPre: 'none',
       displayNext: 'inline-block',
+      displayTable: 'none',
       uploadFile: true,
       cert: '',
       stepStatus: true
@@ -57,10 +62,13 @@ export default {
       this.current += 1;
       this.displayPre = 'inline-block';
       this.displayNext = 'inline-block';
+      this.displayTable = 'none';
       this.stepStatus = false;
       if (this.current == 3) {
         this.displayPre = 'inline-block';
         this.displayNext = 'none';
+      } else if (this.current == 1) {
+        this.stepSecond = true
       }
     },
     /**

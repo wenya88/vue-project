@@ -67,7 +67,7 @@
                     <Button icon="ios-plus-empty" type="dashed" size="small" @click.stop="Addlabel">
                         增加
                         <div class="addLabel" v-show="addLabDIV">
-                            <Input v-model="LabelVal" placeholder="请输入标签" style="width: 100px;"></Input>
+                            <Input v-model="LabelVal" placeholder="请输入标签" style="width: 100px;" @keyup.13.native="submitLabel($event)"></Input>
                             <Button type="primary" size="small" @click.native.stop="submitLabel">添加</Button>&nbsp;
                             <Button size="small" @click.stop="closeAddDIV">取消</Button>
                         </div>
@@ -251,11 +251,6 @@ export default {
         this.$bus.on("EditProData",(val)=>{
            this.Pid=val.EPid;
            this.proCont=val.EPcontract;
-        //    this.ContList.forEach((item,index)=>{ //获取合同的索引
-        //        if(item.id==val.EPcontract){
-        //           this.proCont=index+1;
-        //        }
-        //    })
            this.proName=val.EPname;
            this.startDate=val.EPstartTime;
            this.endDate=val.EPendTime;
@@ -281,53 +276,6 @@ export default {
   
 }
 </script>
-<style scoped>
-    .font18{font-size:16px;font-weight:normal;}
-    .addRow dt{line-height:30px;height:30px;font-weight:bold;font-size:12px;margin-bottom:5px;}
-    .addRow dt span{font-weight:normal;margin-left:5px;color:#888;}
-    .addRow dd{margin-bottom:5px;}
-    .addRow dd .addLabel{position:absolute;border-radius:4px;padding:5px;background:#fff;width:200px;border:1px dashed #ddd;margin-top:-28px;margin-left:-10px;text-align:left;}
-    .addRow dd .addLabel .ivu-input{height:24px;line-height:24px;}
-    .addRow dd .addLabel p{margin-top:5px;text-align:right;}
-    .addRow dd .span{width:33px;display:inline-block;text-align:center;}
-    .addRow .ImaUpload{width:220px;height:90px;display:block;}
-    .addRow .ImaUpload .demo-upload-list{
-        height:90px;
-        width:218px;
-        display: block;
-        text-align: center;
-        line-height: 45px;
-        /* border: 1px solid transparent; */
-        border-radius: 0px;
-        overflow: hidden;
-        background: #fff;
-        position:absolute;
-        margin:1px;
-        z-index:11;
-        box-shadow: 0 1px 1px rgba(0,0,0,0);
-        border-radius:4px;
-    }
-    .MainFile .demo-upload-list img{
-        width: 100%;
-        height: 90px;
-    }
-    .demo-upload-list-cover{
-        padding-top:13%;
-        display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,.6);
-    }
-    .demo-upload-list:hover .demo-upload-list-cover{
-        display: block;
-    }
-    .demo-upload-list-cover i{
-        color: #fff;
-        font-size: 20px;
-        cursor: pointer;
-        margin: 0 2px;
-    }
+<style lang="less">
+@import './style/addProject.less';
 </style>
