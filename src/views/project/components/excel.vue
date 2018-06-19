@@ -9,8 +9,9 @@
     </Steps>
     <div class="center">
       <excel-upload :fcert="cert" @analysisNext="next" :frist="stepStatus" v-if="current==0"></excel-upload>
-      <excel-analysis v-else-if="current==1" @next="next" :second="stepSecond"></excel-analysis>
-      <excel-table v-else-if="current==2"></excel-table>
+      <excel-analysis v-else-if="current==1" @next="next" :second="stepSecond"></excel-analysis> 
+      <excel-table v-else-if="current==2" @upload="next" :third="stepThird"></excel-table>  
+       <!-- <excel-table :third="stepStatus"></excel-table>  -->
     </div>
     <div class="footer"> 
       <Button type="primary" @click="pre" :style="`display: ${displayPre}`">上一步</Button>
@@ -69,6 +70,8 @@ export default {
         this.displayNext = 'none';
       } else if (this.current == 1) {
         this.stepSecond = true
+      } else if (this.current == 2) {
+        this.stepThird = true
       }
     },
     /**

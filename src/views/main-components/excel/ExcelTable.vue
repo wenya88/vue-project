@@ -3,11 +3,12 @@
     <Spin fix v-if="loadingStatus" style="top: 50%;">
       <Icon type="load-c" size=36 class="demo-spin-icon-load"></Icon>
       <div>正在匹配数据</div>
-    </Spin>
+    </Spin> 
     <!-- <Table border :columns="editIncellColumns" :data="editIncellData"></Table> -->
      <div class="edittable-table-height-con" style="height: 660px;overflow: auto;">
       <can-edit-table refs="table3" v-model="editIncellData" :hover-show="true" :edit-incell="true" :columns-list="editIncellColumns"></can-edit-table>
     </div> 
+    <Button class="toTable" type="primary" @click="uploadExcel()" v-if="third">下一步</Button>
   </div>
 </template>
 
@@ -18,6 +19,12 @@ export default {
   name: 'ExcelTable',
   components: {
     canEditTable
+  },
+  props: {
+    third:{
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -35,9 +42,7 @@ export default {
           title: '任务开始',
           align: 'center',
           width: 160,
-          key: 'expect_start_time',
-          editable: true,
-          cellType: 'datePicker'
+          key: 'expect_start_time'
         }, {
           title: '任务结束',
           align: 'center',
@@ -52,11 +57,19 @@ export default {
           key: 'project_child',
           editable: true,
           cellType: 'select'
+          // render: (h,param) => {
+          //   let texts = ''
+          //   console.log(param.row.project_child_name)
+          //   // console.log(this.editIncellData[param.index].project_child.project_child_name)
+          //   // texts = this.editIncellData[param.index].project_child.project_child_name
+          //   return h('div', {}
+          //   ,texts)
+          // }
         }, {
           title: '参与人',
           align: 'center',
           width: 120,
-          key: 'remark_name',
+          key: 'run_member_id',
           editable: true,
           cellType: 'select'
         }, {
@@ -114,13 +127,30 @@ export default {
             content: `<p>${res.err_message}</p><p>请返回上一步重新解析</p>`
           });
         }
-        // console.log(res)
       })
+    },
+    uploadExcel() {
+      let param = {
+        data: sessionStorage.excelJson,
+        project_id: sessionStorage.projectID
+      }
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/mate-excel', qs.stringify(param))
+      .then(res => res.data)
+      .then(res => {
+        console.log(res)
+      })
+      this.$emit('upload')
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.toTable{
+  position: absolute;
+  bottom: 5px;
+  z-index: 10;
+  left: 87px;
+  background: red;
+}
 </style>

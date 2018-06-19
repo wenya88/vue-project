@@ -158,7 +158,7 @@ export default {
         this.fetchKey();
     },
     methods: {
-        geMode(mode) {
+        changeMode(mode) {
             if(mode == 'login') {
                 this.isRegister = true;
                 this.loginform.userName = '';
