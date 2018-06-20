@@ -11,7 +11,7 @@
       <excel-upload :fcert="cert" @analysisNext="next" :frist="stepStatus" v-if="current==0"></excel-upload>
       <excel-analysis v-else-if="current==1" @next="next" :second="stepSecond"></excel-analysis> 
       <excel-table v-else-if="current==2" @upload="next" :third="stepThird"></excel-table>  
-       <!-- <excel-table :third="stepStatus"></excel-table>  -->
+      <excel-import v-else-if="current==3"></excel-import>
     </div>
     <div class="footer"> 
       <Button type="primary" @click="pre" :style="`display: ${displayPre}`">上一步</Button>
@@ -26,11 +26,13 @@
 import ExcelUpload from '../../main-components/excel/ExcelUpload'
 import ExcelAnalysis from '../../main-components/excel/ExcelAnalysis'
 import ExcelTable from '../../main-components/excel/ExcelTable'
+import ExcelImport from '../../main-components/excel/ExcelImport'
 export default {
   components: {
     ExcelUpload,
     ExcelAnalysis,
-    ExcelTable
+    ExcelTable,
+    ExcelImport
   },
   data() {
     return {
@@ -66,7 +68,7 @@ export default {
       this.displayTable = 'none';
       this.stepStatus = false;
       if (this.current == 3) {
-        this.displayPre = 'inline-block';
+        this.displayPre = 'none';
         this.displayNext = 'none';
       } else if (this.current == 1) {
         this.stepSecond = true

@@ -63,33 +63,20 @@ export default {
     },
     uploadSuccess(res,file) {
       this.loadingStatus = false;
-      console.log('成功',res, file);
+      // console.log('成功',res, file);
       this.fileId = res.file.fid;
       sessionStorage.analysisFileId = res.file.fid
       return false;
     },
     uploadFail(error,file) {
       this.loadingStatus = false;
-      console.log('失败',error);
+      // console.log('失败',error);
       return false;
     },
     /**
      * 解析excel
      */
     analysisExcel() {
-      // let data = {
-      //   fid: this.fileId
-      // }
-      // this.$axios.post(this.GLOBAL.baseRouter+'task/task/resolve-excel', qs.stringify(data))
-      // .then(res => res.data)
-      // .then(res => {
-      //   console.log(res)
-      //   // this.loadingStatus = true
-      //   sessionStorage.analysisExcel = res
-      //   // if(sessionStorage.analysisExcel) {
-      //     // this.loadingStatus = false
-      //   // }
-      // })
       this.$emit('analysisNext')
     }
   }

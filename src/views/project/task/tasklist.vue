@@ -216,6 +216,9 @@ export default {
   },
   mounted() {
     this.initTaskListFromId();
+    this.$bus.on('clearExcleData',()=>{
+      this.refreshTaskList();
+    })
   },
   methods: {
     

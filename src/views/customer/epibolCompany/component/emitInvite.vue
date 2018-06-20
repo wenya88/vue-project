@@ -13,12 +13,12 @@
                 
                     <Col span="12">
                         项目研发时间<br/>
-                        <DatePicker type="date" placeholder="开始" style="width: 47.9%" @on-change="startTime" :value="startDate"></DatePicker> ~
-                        <DatePicker type="date" placeholder="结束" style="width: 48%" @on-change="endTime" :value="endDate"></DatePicker>
+                        <DatePicker type="date" :options="endDateOptions" placeholder="开始" style="width: 47.9%" @on-change="startTime" :value="startDate"></DatePicker> ~
+                        <DatePicker type="date" :options="endDateOptions" placeholder="结束" style="width: 48%" @on-change="endTime" :value="endDate"></DatePicker>
                     </Col>
                     <Col span="12">
                         反馈截止时间<br/>
-                        <DatePicker type="date" placeholder="截止时间" style="width: 100%" @on-change="joinEndTime" :value="joinEndDate"></DatePicker>
+                        <DatePicker type="date" :options="endDateOptions" placeholder="截止时间" style="width: 100%" @on-change="joinEndTime" :value="joinEndDate"></DatePicker>
                     </Col>
                     <Col span=24>
                         项目说明<br/>
@@ -100,7 +100,12 @@ export default {
                 {title:'联系人',key:'contact_people'},
                 {title:'联系电话',key:'tel'}
             ],
-            detailsData:[]
+            detailsData:[],
+            endDateOptions:{
+                disabledDate (date) {
+                    return date && date.valueOf() < Date.now() - 86400000;
+                }
+            }
         }
     },
     mounted(){

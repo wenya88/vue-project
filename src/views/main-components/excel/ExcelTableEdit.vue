@@ -139,13 +139,23 @@ const cellSelect = (vm, h, param, item) => {
       return h('Select', {
         props: {
           filterable: true,
-          value: vm.edittingStore[param.index][item.key]
+          value: vm.edittingStore[param.index][item.key].tasktype_name
         },
         on: {
           'on-change'(event) {
-            // console.log(event)
+            let id;
+            vm.taskType.forEach((item) => {
+              if(item.tasktype) {
+                item.tasktype.forEach((key) => {
+                  if(event == key.tasktype_name) {
+                    id = key.id
+                  }
+                })
+              }
+            })
             let key = item.key;
-            vm.edittingStore[param.index][key] = event;
+            vm.edittingStore[param.index][key].tasktype_name = event;
+            vm.edittingStore[param.index][key].tasktype_id = id+"";
           }
         }
       },
@@ -174,9 +184,15 @@ const cellSelect = (vm, h, param, item) => {
         },
         on: {
           'on-change'(event) {
-            console.log(event)
+            let id;
+            vm.subProjectList.forEach((item) => {
+              if(event == item.name) {
+                id = item.id
+              }
+            })
             let key = item.key;
             vm.edittingStore[param.index][key].project_child_name = event;
+            vm.edittingStore[param.index][key].project_child_id = id+"";
           }
         }
       },
@@ -190,17 +206,23 @@ const cellSelect = (vm, h, param, item) => {
         })
       );
       break;
-    case 'remark_name': 
+    case 'run_member_id': 
       return h('Select', {
         props: {
           filterable: true,
-          value: vm.edittingStore[param.index][item.key]
+          value: vm.edittingStore[param.index][item.key].remark_name
         },
         on: {
           'on-change'(event) {
-            // console.log(event)
+            let id;
+            vm.memberdata.forEach((item) => {
+              if(event == item.remark_name) {
+                id = item.id
+              }
+            })
             let key = item.key;
-            vm.edittingStore[param.index][key] = event;
+            vm.edittingStore[param.index][key].remark_name = event;
+            vm.edittingStore[param.index][key].member_id = id+"";
           }
         }
       },
@@ -230,7 +252,6 @@ const cellDatePicker = (vm, h, param, item) => {
       　　　},
       　　　on: {
         　　　　'on-change': (val) => {
-                  // console.log('发布时间1')
                   vm.edittingStore[param.index].expect_start_time = val[0]
                   vm.edittingStore[param.index].expect_end_time = val[1]
         　　　　}
@@ -263,18 +284,6 @@ export default {
       columns: [],
       thisTableData: [],
       edittingStore: [],
-      options: [
-        {
-          value: 0,
-          label: 'option1'
-        }, {
-          value: 1,
-          label: 'option2'
-        }, {
-          value: 2,
-          label: 'option3'
-        }
-      ],
       memberdata: []
     };
   },
@@ -317,7 +326,6 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter+'task/company/member-page', qs.stringify(data))
       .then(res => res.data)
       .then(res => {
-          // console.log(res)
         if(res.err_code == 0) {
           this.pageSize = res.page.page_size;
           this.allData = res.data
@@ -342,6 +350,12 @@ export default {
         }
       });
       let cloneData = JSON.parse(JSON.stringify(this.value));
+      // console.log(this.value)
+      this.value.forEach((item) => {
+        item.project_child = item.project_child.project_child_id;
+        item.run_member_id = item.run_member_id.member_id;
+        item.tasktype_id = item.tasktype_id.tasktype_id;
+      })
       sessionStorage.excelJson = JSON.stringify(this.value);   // 批量上传所需要的表格中的JSON格式的数据
       let res = [];
       res = cloneData.map((item, index) => {

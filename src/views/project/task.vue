@@ -54,7 +54,7 @@
       </accretiontaskpop>
     </Modal>
     <!-- excel解析组件 -->
-    <Modal v-model="isExcelTask" width="1200">
+    <Modal v-model="isExcelTask" width="1200" @on-cancel="excelCancel">
       <p slot="header">
         <span>批量导入任务</span>
       </p>
@@ -101,6 +101,9 @@ export default {
     });
   },
   methods: {
+      excelCancel(){
+        this.$bus.emit('clearExcleData')
+      },
       autoH() {
         let oIframe = document.getElementById("show-iframe");
         let deviceHeight = document.documentElement.clientHeight - 190;

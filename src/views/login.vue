@@ -23,7 +23,7 @@
                     </FormItem>
                     <FormItem prop="passwdCheck">
                         <div class="itemname">再次输入密码</div>
-                        <Input v-model="register.passwdCheck" id="a" :type="pwpic2.pwdType2" placeholder="请再次输入密码"></Input>
+                        <Input v-model="register.passwdCheck" :type="pwpic2.pwdType2" placeholder="请再次输入密码"></Input>
                         <img :src="pwpic2.src" @click="changeType2()"/>
                     </FormItem>
                     <FormItem>

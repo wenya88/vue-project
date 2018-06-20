@@ -9,8 +9,8 @@
                 <li v-for="(item,index) in headList" :key="index">{{item}}</li>
               </ul>
             </div> -->
-    <!-- <Row class="margin-top-10">
-      <Col span="16"> -->
+     <Row class="margin-top-10">
+      <Col span="16"> 
       <Card>
         <Row>
           <Col span="12" class="padding-left-10">
@@ -78,25 +78,28 @@
           </Col>
         </Row>
       </Card>
-      <!-- </Col> -->
-      <!-- <Col span="8" class="padding-left-10">
+       </Col> 
+       <Col span="8" class="padding-left-10">
       <Card>
         <p slot="title">
           <Icon type="android-funnel"></Icon>
-          匹配数据
+          智能匹配的数据
         </p>
         <div style="height: 530px;">
-          <Table border :columns="columns" :data="titleList" width=100 style="float: left;"></Table>
-          <DragableTable v-model="tableData" :columns-list="columnsList" style="width: 245px;float: left;"></DragableTable> -->
-          <!-- <ul class="iview-admin-draggable-list">
-                <li v-for="(item, index) in affordList" :key="index" class="notwrap" :data-index="index">
-                  {{ item.label }}
-                </li>
-              </ul>  -->
-        <!-- </div>
+          <ul class="matchList" style="line-height: 40px;">
+            <li>任务名称：{{mate.name}}</li>
+            <li>预计开始：{{mate.expect_start_time}}</li>
+            <li>预计结束：{{mate.expect_end_time}}</li>
+            <li>子项目：{{mate.project_child}}</li>
+            <li>参与人：{{mate.run_member_id}}</li>
+            <li>任务类型：{{mate.tasktype_id}}</li>
+            <li>参考图片：{{mate.image}}</li>
+            <li>要求说明：{{mate.description}}</li>
+          </ul>
+        </div>
       </Card>
-      </Col> -->
-    <!-- </Row> -->
+      </Col> 
+     </Row> 
     <Button class="toTable" type="primary" @click="toTable()" v-if="second">下一步</Button>  
   </div>
 </template>
@@ -247,38 +250,41 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter + 'task/task/resolve-excel', qs.stringify(data))
         .then(res => res.data)
         .then(res => {
-          this.loadingStatus = true;
-          let excelData = res;
-          if (excelData) {
-            this.loadingStatus = false;
-          }
-          this.excel_key = res.excel_key
-          // console.log(res,res.excel_data)
-          // let obj=[]
-          res.excel_data.forEach((item, index) => {
-            for (let i = 0; i < res.excel_data[index].length; i++) {
-              let k = res.excel_data[0][i];
-              let j = res.excel_data[1][i];
-              // obj.push('{'+k+':'+j+'}')
-              this.excelList.push({
-                title: k,
-                label: j
-              })
-              // console.log(k.length,k)
-              // console.log(j.length,j)
+          if(res.err_code == 0) {
+            this.loadingStatus = true;
+            let excelData = res;
+            if (excelData) {
+              this.loadingStatus = false;
             }
-          });
-          let arrLength = this.excelList.length / 2;
-          // console.log(arrLength,this.excelList.slice(0,arrLength));
-          this.excelList = this.excelList.slice(0,arrLength);
-          // let oobj=JSON.stringify(obj)
-          // console.log(oobj.replace(/"/g,''))
+            this.excel_key = res.excel_key
+            // 获取excel中第一条数据
+            res.excel_data.forEach((item, index) => {
+              for (let i = 0; i < res.excel_data[index].length; i++) {
+                let k = res.excel_data[0][i];
+                let j = res.excel_data[1][i];
+                this.excelList.push({
+                  title: k,
+                  label: j
+                })
+              }
+            });
+            let arrLength = this.excelList.length / 2;
+            this.excelList = this.excelList.slice(0,arrLength);
+            // 获取智能匹配的数据
+            mate.name = res.mate.name;
+            mate.expect_start_time = res.mate.expect_start_time;
+            mate.expect_end_time = res.mate.expect_end_time;
+            mate.project_child = res.mate.project_child;
+            mate.run_member_id = res.mate.run_member_id;
+            mate.tasktype_id = res.mate.tasktype_id;
+            mate.image = res.mate.image;
+            mate.description = res.mate.description;
+            this.mate = mate
+          }
         })
-      // this.$emit('analysisNext')
     },
     toTable() {
       this.mate = JSON.stringify(mate);
-      // console.log('下一步',this.mate)
       let data = {
         mate: this.mate,
         excel_key: this.excel_key,
@@ -303,6 +309,9 @@ export default {
   bottom: 5px;
   z-index: 10;
   left: 87px;
+}
+.matchList{
+  line-height: 40px;
 }
 @import 'style/draggableList.less';
 </style>

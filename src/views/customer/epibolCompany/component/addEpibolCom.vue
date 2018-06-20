@@ -49,7 +49,7 @@
             </dd>
             <dt>投稿截止时间</dt>
             <dd>
-                <DatePicker type="date" placeholder="选择结束时间" style="width: 400px" @on-change="changeDate" :value="testDate" :disabled='flag'></DatePicker>
+                <DatePicker :options="endDateOptions" type="date" placeholder="选择结束时间" style="width: 400px" @on-change="changeDate" :value="testDate" :disabled='flag'></DatePicker>
             </dd>
             <dt class="title"><Icon type="grid"></Icon> 测试任务要求</dt>
             <dt>文件要求</dt>
@@ -96,8 +96,12 @@ export default {
             testDate:'',
             id:null,
             defaultList:[],
-            flag:false
-
+            flag:false,
+            endDateOptions:{
+                disabledDate (date) {
+                    return date && date.valueOf() < Date.now() - 86400000;
+                }
+            }
         }
     },
     mounted(){

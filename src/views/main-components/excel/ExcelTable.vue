@@ -2,8 +2,9 @@
   <div>
     <Spin fix v-if="loadingStatus" style="top: 50%;">
       <Icon type="load-c" size=36 class="demo-spin-icon-load"></Icon>
-      <div>正在匹配数据</div>
+      <div>{{text}}</div>
     </Spin> 
+    <div style="color: red;">带*号的字段为必填项，不能为空</div>
     <!-- <Table border :columns="editIncellColumns" :data="editIncellData"></Table> -->
      <div class="edittable-table-height-con" style="height: 660px;overflow: auto;">
       <can-edit-table refs="table3" v-model="editIncellData" :hover-show="true" :edit-incell="true" :columns-list="editIncellColumns"></can-edit-table>
@@ -32,19 +33,20 @@ export default {
       editIncellData: [],
       editIncellColumns: [
         {
-          title: '任务名称',
+          title: '* 任务名称',
           align: 'center',
           key: 'name',
           width: 120,
           editable: true,
+          required: true,
           cellType: 'input'
         }, {
-          title: '任务开始',
+          title: '* 任务开始',
           align: 'center',
           width: 160,
           key: 'expect_start_time'
         }, {
-          title: '任务结束',
+          title: '* 任务结束',
           align: 'center',
           width: 160,
           key: 'expect_end_time',
@@ -73,7 +75,7 @@ export default {
           editable: true,
           cellType: 'select'
         }, {
-          title: '任务类型',
+          title: '* 任务类型',
           align: 'center',
           width: 160,
           key: 'tasktype_id',
@@ -100,7 +102,8 @@ export default {
           editable: true,
           cellType: 'input'
         }
-      ]
+      ],
+      text: '正在匹配数据'
     }
   },
   created() {
@@ -119,7 +122,7 @@ export default {
         if(res.err_code == 0) {
           this.loadingStatus = false;
           this.editIncellData = res.data;
-          console.log(this.editIncellData)
+          // console.log(this.editIncellData)
         } else {
           this.loadingStatus = false;
           this.$Modal.error({
@@ -130,16 +133,21 @@ export default {
       })
     },
     uploadExcel() {
+      this.text = '正在批量上传'
+      this.loadingStatus = true;
       let param = {
         data: sessionStorage.excelJson,
         project_id: sessionStorage.projectID
       }
-      this.$axios.post(this.GLOBAL.baseRouter+'task/task/mate-excel', qs.stringify(param))
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/batch-add', qs.stringify(param))
       .then(res => res.data)
       .then(res => {
-        console.log(res)
+        // console.log(res.err_code)
+        if(res.err_code == 0) {
+          this.loadingStatus = false
+          this.$emit('upload')
+        }
       })
-      this.$emit('upload')
     }
   }
 }
@@ -151,6 +159,6 @@ export default {
   bottom: 5px;
   z-index: 10;
   left: 87px;
-  background: red;
+  /* background: red; */
 }
 </style>
