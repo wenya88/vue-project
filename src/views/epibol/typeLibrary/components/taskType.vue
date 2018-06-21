@@ -1,11 +1,6 @@
 <template>
   <Layout class="Award">
     <Sider hide-trigger class="list">
-      <div class="failHeader">
-        <!-- <icon type="folder" class="icon"></icon>
-        <icon type="filing" class="icon"></icon>
-        <icon type="search" class="icon search"></icon> -->
-      </div>
       <tree class="tree" ref="child" @getListId="getListId"></tree>
     </Sider>
     <Content style="margin-left:100px">
@@ -48,7 +43,7 @@
                 <Icon type="trash-a" class="icon"></Icon>
           </div>
         </div>
-        <div id="addProperty" class="marTop10 width12" @click="addProperty">+增加</div>
+        <div id="addProperty" class="marTop10 width12" @click="addProperty"><Icon type="plus-round"></Icon>&nbsp;增加</div>
         <h3 class="h3 marTop10 marTop40">附加文件</h3>
         <h4 class="h4">
           <span>文件格式</span><span>描述</span>
@@ -62,7 +57,7 @@
           </div>
         </div>
 
-        <div class="marTop10 width12"  @click="modal1 = true" >+增加附加文件</div >
+        <div class="marTop10 width12"  @click="modal1 = true" ><Icon type="plus-round"></Icon>&nbsp;增加附加文件</div >
         <Modal v-model="modal1" title="增加附加文件" @on-ok="ok" @on-cancel="cancel">
           <Input type="text" v-model="aFileFormat "  :autofocus="true" placeholder="请输入文件格式" style="width: 48%;margin-right:2% "></Input
           ><Input type="text" v-model="describe " placeholder="请输入描述内容" style="width: 48%"></Input>
@@ -95,14 +90,17 @@ export default {
       data5: ["8000*8000", ">2000", ">24"],
       appendFileFormat: [],
       modal1: false,
+      modal2: false,
       aFileFormat:"",
-      describe:""
+      describe:"",
+      arrStageName:[]
     };
   },
   mounted() {
     if(sessionStorage.oneid) {
         this.Lxinfo(sessionStorage.oneid)
     }
+    
   },
 
   methods: {
@@ -114,7 +112,6 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
         this.typeName = msg.data.tasktype_name
              msg.data.stage.forEach(req => {
-             
               this.arr.push({
                 stage_name:req.stage_name
               });
@@ -176,15 +173,16 @@ export default {
         }
       });
     },
-    delpro1(){
+
+    addProperty () {
+      $("#addPropertyInput").show();
+      // $("#addProperty").hide()
+    },
+        delpro1(){
       $("#addPropertyInput").empty()
     },
     delpro2(){
       $("#addPropertyInput2").empty()
-    },
-    addProperty () {
-      $("#addPropertyInput").show();
-      $("#addProperty").hide()
     },
   // 添加附加文件
    ok () {
@@ -201,37 +199,53 @@ export default {
     this.appendFileFormat.splice(0)
     this.$Message.info('已删除');
   },
+  
     //修改
     conserve() {
-      
       let typeId = JSON.parse(sessionStorage.getItem("clickId"));
       let data2 = {
-        category_id: 22,
         id: typeId,
+        category_id: 22,
         name: this.typeName,
-        file_format: this.fileFormat,
-        config_name: this.fileSize,
-        value: this.fileValue,
         stage: JSON.stringify([
           {
-            stage_name: null,
+            stage_name: '',
             is_inside_audit: 1
           }
         ]),
+        file: JSON.stringify([
+          {
+            file_name: "1",
+            file_format: this.fileFormat,
+            is_main: 1,
+            require: [
+              {
+                config_id: 1,
+                config_name: this.fileSize,
+                value: this.fileValue
+              }
+            ]
+          }
+        ])
       };
-      this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {
-          
+
+          // if(sessionStorage.tasktypeName.indexOf(this.typeName)){
             if (this.typeName) {
-              //  this.$refs.child.eachLxinfo();
-              // console.log(this.$refs.child.eachLxinfo())
-               window.location.reload();
-              this.$Message.success("成功保存");
+              this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {             
+                this.$refs.child.taskTypeList()
+                this.$Message.success("成功保存");
+              });
             } else {
               alert("请输入类型名称");
-            }
+            }            
+          // }else{
+          //  this.$Message.error("增加失败请重新修改");
+          // }
+
           
           
-        });
+        
+
     },  
       // 获取信息
     getListId(clicktype) {
@@ -246,6 +260,7 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
         this.typeName = msg.data.tasktype_name
           msg.data.stage.forEach(req => {
+            // console.log(req)
             this.arr.push(req);
             if(req.is_inside_audit == 1){
               req.is_inside_audit = true
@@ -273,7 +288,7 @@ export default {
         }),
         sessionStorage.setItem("clickId", clicktype.id);
     },
-
+// return  getListId,
     filterMethod(value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
     },
@@ -286,27 +301,9 @@ export default {
 .ivu-layout-sider {
   background: 0;
 }
-
-.failHeader {
-  position: relative;
-  width: 251px;
-  height: 43px;
-  line-height: 33px;
-  padding: 8px;
-  background-color: #e6e6e6;
-  border-radius: 5px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
 .icon {
   font-size: 20px;
   vertical-align: middle;
-}
-
-.search {
-  position: absolute;
-  right: 10px;
-  top: 15px;
 }
 .checkbox {
   display: grid;

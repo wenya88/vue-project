@@ -1,14 +1,34 @@
 <template>
   <div>
+    <div class="failHeader"  @click="modal2 = true">
+      <Icon type="android-add" class="icon"></Icon>
+      <span>新建</span>
+      <!-- <icon type="search" class="icon search"></icon>  -->
+    </div>
     <Tree :data="data5"  :render="renderContent"></Tree>
-    
+    <Modal
+        v-model="modal2"
+        title="新建类型"
+        @on-ok="ok2"
+        @on-cancel="cancel2">
+        <span class="h4">类型名称</span>
+        <Input type="text" v-model="addTypeName"  :autofocus="true" style="width: 25%"></Input>
+        <span class="h4">阶段名称</span>
+        <Input type="text" v-model="stageName"  :autofocus="true" style="width: 25%"></Input>
+        
+        <span class="h4">文件格式</span>
+        <Input type="text" v-model="fileFormat"  :autofocus="true" style="width: 10%"></Input>
+        </br>
+        <span class="h4">文件配置项名称</span>
+        <Input type="text" v-model="fileOptionsName"  :autofocus="true" style="width: 25%"></Input>
+        <span class="h4">值</span>
+        <Input type="text" v-model="describe"  :autofocus="true" style="width: 25%"></Input>
+    </Modal>
   </div>
-
 </template>
 <script>
 var qs = require("querystring");
 export default {
-  
   data() {
     return {
       data5: [],
@@ -18,13 +38,19 @@ export default {
         size: "small"
       },
       calssType: [],
+      tasktypeName:[],
+      modal2: false,
+      addTypeName:"",
+      stageName:"",
+      fileFormat:"",
+      fileOptionsName:"",
+      describe:""
     };
   },
   mounted() {
     this.taskTypeList();
   },
   methods: {
-    
     // 获取列表
     taskTypeList() {
       let _this = this;
@@ -80,19 +106,19 @@ export default {
                         }
                       },
                       [
-                        h("Button", {
-                          //增加
-                          props: Object.assign({}, this.buttonProps, {
-                            icon: "ios-plus-empty"
-                          }),
-                          id: "addbtn",
-                          on: {
-                            click: () => {
-                              // this.addClassTask(root, node, data);
-                              this.append(root, node, data);
-                            }
-                          }
-                        }),
+                        // h("Button", {
+                        //   //增加
+                        //   props: Object.assign({}, this.buttonProps, {
+                        //     icon: "ios-plus-empty"
+                        //   }),
+                        //   id: "addbtn",
+                        //   on: {
+                        //     click: () => {
+                        //       // this.addClassTask(root, node, data);
+                        //       // this.append(root, node, data);
+                        //     }
+                        //   }
+                        // }),
                         h("Button", {
                           //分类删除
                           props: Object.assign({}, this.buttonProps, {
@@ -118,9 +144,6 @@ export default {
             obj.pId = req.cate_id;
             obj.id = req.id;
             if (req.tasktype) {
-              //   req.tasktype.forEach( item => {
-              //       obj.children = _this.eachLxinfo(item.id);
-              //   })
               obj.children = _this.eachLxinfo(req.tasktype);
             }
             item.push(obj);
@@ -172,7 +195,7 @@ export default {
               style: {
                 display: "inline-block",
                 float: "right",
-                marginRight: "32px"
+                // marginRight: "32px"
               }
             },
             [
@@ -194,11 +217,14 @@ export default {
     },
     //渲染二级数据
     eachLxinfo(submenu) {
-      let _this = this;
       let im = [];
       this.test = submenu;
       // this.submenu = submenu
-      // console.log(submenu[0].id)
+      
+      submenu.forEach(req => {
+        this.tasktypeName.push(req.tasktype_name)
+        sessionStorage.tasktypeName = this.tasktypeName
+      })
       sessionStorage.oneid = submenu[0].id
       if (this.test) {
         this.test.forEach((req, index) => {
@@ -212,21 +238,7 @@ export default {
       return im;
       
     },
-    // 增加父节点
-    // appendClass(data) {
-    //   let children = data.children || [];
-    //   children.push({
-    //     title: "父节点",
-    //     expand: true
-    //   });
-    //   this.$set(data, "children", children);
-    //   let Clsobj = {};
-    //   Clsobj.name = "父节点";
-    //   Clsobj.company_id = 1;
-    //   this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/cate-add",qs.stringify(Clsobj)).then(r => {
-    //       console.log(r);
-    //     });
-    // },
+
     // 增加二级菜单
     addClassTask(root, node, data) {
       let _this = this;
@@ -234,7 +246,6 @@ export default {
         let clickDel = {
           category_id: r.category_id
         };
-        _this.$emit("addClassTask", clickDel);
       });
     },
 
@@ -248,10 +259,7 @@ export default {
         liName: data.title
       };
       _this.$emit("getListId", clicktype)
-    // let unMask = true;
-    //   if(unMask){
-    //     let unMask=false;
-    //   }
+
       
 
       //点击左边列表增加标识
@@ -280,47 +288,80 @@ export default {
         cIs.$Message.success("删除成功");
       })
     },
-    // 新增
-    append(root, node, data) {
-      console.log(data)
-      let addType = {
+// 新增分类
+  ok2(){
+    // this.$Message.info('Clicked ok');
+          let addType = {
         category_id: 22,
-        name: "新建任务类型",
+        name: this.addTypeName,
         expand: true,
         stage: JSON.stringify([
           {
-            stage_name: '',
+            stage_name:this.stageName,
             is_inside_audit: 1
           }
         ]),
         file: JSON.stringify([
           {
-            file_name: null,
-            file_format: "BMP",
+            file_name: "",
+            file_format: this.fileFormat,
             is_main: 1,
             require: [
               {
                 config_id: "",
-                config_name: "",
-                value: ""
+                config_name: this.fileOptionsName,
+                value: this.describe
               }
             ]
           }
         ])
       };
+      if(sessionStorage.tasktypeName.indexOf(this.addTypeName)){
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/add",qs.stringify(addType)).then(r => {
-          const children = data.children || [];
-          if (this.category_id == 0) {
-            alert("默认不能自建");
+          // const children = data.children || [];
+          if (r.data.err_code!== 0) {
+            this.$Message.error("增加失败");
           } else {
-            children.push({
+            this.test.push({
               title: "新建任务类型",
               expand: true
             });
-            
+            this.taskTypeList()
           }
         });
-    }
+      }else{
+        this.$Message.error("已有任务类型名称");
+      }
+
+  },
+  cancel2(){
+   this.$Message.info('Clicked cancel');
+  },
+   
   }
 };
 </script>
+<style scoped>
+  .failHeader {
+    position: relative;
+    width: 251px;
+    height: 43px;
+    line-height: 33px;
+    padding: 8px;
+    background-color: #e6e6e6;
+    border-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .icon {
+    font-size: 20px;
+    vertical-align: middle;
+  }
+
+  .search {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+  }
+</style>
+
