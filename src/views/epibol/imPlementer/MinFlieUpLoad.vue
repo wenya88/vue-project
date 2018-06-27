@@ -43,7 +43,6 @@
                 imgName: '',
                 visible: false,
                 MuploadList: [],
-                // MinFile:[],
                 url:[],
                 taskTypeID:0,
                 fileAskData:[]
@@ -67,7 +66,6 @@
             handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-                // this.MinFile.splice(fileList.indexOf(file), 1)
             },
             handleSuccess (res, file) {
                 file.url = this.url;
@@ -86,12 +84,6 @@
             },
             handleBeforeUpload (file) {
                 this.url=window.URL.createObjectURL(file);
-                // let fileArr=file.name;
-                // let fileTrr=fileArr.lastIndexOf('.')+1
-                // let fileSrr=fileArr.substring(fileTrr,fileArr.length)
-                // if(fileSrr=='png'||fileSrr=='jpg'){
-                //     this.MinFile.push(file);
-                // }
             },
         },
         mounted () {

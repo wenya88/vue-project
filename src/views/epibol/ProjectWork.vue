@@ -204,7 +204,7 @@ export default {
             taskType:[],
             subpId:'',
             tType:'',
-            AllowEdit:"Allow"//控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
+            //AllowEdit:"Allow"//控制是否允许标注 Allow允许，NotAllow不允许，Other不显示下面的容器和不允许标注
         }
     },
     components:{CalendInfo,browsetask},
@@ -265,11 +265,13 @@ export default {
             this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
 
             // 本地缓存信息
-            sessionStorage.TaskID=TaskID;
-            sessionStorage.FileURl=file;
+            this.$store.commit('changeComponentTaskID',TaskID);
+            this.$store.commit('changeComponentFileURl',file);
+            // sessionStorage.TaskID=TaskID;
+            // sessionStorage.FileURl=file;
 
             // 是否显示编辑信息
-            sessionStorage.AllowEdit=_this.AllowEdit;
+            //sessionStorage.AllowEdit=_this.AllowEdit;
         },
         closeTabmodal(){
             this.isTabModal=false;

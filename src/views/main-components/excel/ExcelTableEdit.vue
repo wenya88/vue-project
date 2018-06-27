@@ -352,9 +352,15 @@ export default {
       let cloneData = JSON.parse(JSON.stringify(this.value));
       // console.log(this.value)
       this.value.forEach((item) => {
-        item.project_child = item.project_child.project_child_id;
-        item.run_member_id = item.run_member_id.member_id;
-        item.tasktype_id = item.tasktype_id.tasktype_id;
+        if(item.project_child) {
+          item.project_child = item.project_child.project_child_id;
+        }
+        if(item.run_member_id) {
+          item.run_member_id = item.run_member_id.member_id;
+        }
+        if(item.tasktype_id) {
+          item.tasktype_id = item.tasktype_id.tasktype_id;
+        }
       })
       sessionStorage.excelJson = JSON.stringify(this.value);   // 批量上传所需要的表格中的JSON格式的数据
       let res = [];
@@ -447,13 +453,25 @@ export default {
                   let cellKey = item.key;
                   switch (cellKey) {
                     case 'project_child':
-                      cellValue = currentRow.project_child.project_child_name;
+                      if(currentRow.project_child) {
+                        cellValue = currentRow.project_child.project_child_name;
+                      } else {
+                        cellValue = "暂无数据";
+                      }
                       break;
                     case 'tasktype_id': 
-                      cellValue = currentRow.tasktype_id.tasktype_name;
+                      if(currentRow.tasktype_id) {
+                        cellValue = currentRow.tasktype_id.tasktype_name;
+                      } else {
+                        cellValue = "暂无数据";
+                      }
                       break;
                     case 'run_member_id':
-                      cellValue = currentRow.run_member_id.remark_name;
+                      if(currentRow.run_member_id) {
+                        cellValue = currentRow.run_member_id.remark_name;
+                      } else {
+                        cellValue = "暂无数据";
+                      }
                       break;
                     default:
                       cellValue = "暂无数据";

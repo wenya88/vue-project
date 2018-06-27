@@ -139,6 +139,9 @@ export default {
         this.$bus.on('succeedCommit',()=>{
            this.coopCorpGet(this.sourceData,this.searchData);
         })
+        this.$bus.on('inviteScuess',()=>{
+           this. companyInvite();
+        })
     },
     methods:{
     //   新增

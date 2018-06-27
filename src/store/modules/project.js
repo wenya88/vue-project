@@ -72,7 +72,8 @@ const state = {
     }
   ],
   taskType: [],
-  subProjectList: []
+  subProjectList: [],
+    detail:{},
 }
 
 const getters = {
@@ -110,8 +111,16 @@ const mutations = {
   },
   updateSubProjectList(state, data) {
     state.subProjectList = data
+  },
+    setProjectInfoDetails(state, data) {
+        Vue.set(state.detail, 'projectInfo', data)
+
+  },
+  setDetailAll(state, data) {
+      Vue.set(state.detail, 'setDetailAll', data)
   }
-}
+
+};
 
 export default {
   state,

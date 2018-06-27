@@ -105,6 +105,7 @@ export default {
                 if(msg.data.err_code==0){
                     this.$Message.success('发送成功!');
                     this.$refs.addCoop.ScuessClear();
+                    this.$bus.emit('inviteScuess')
                 }else if(msg.data.err_code>0){
                     this.$Message.warning(msg.data.err_message);
                     this.applModal=true;

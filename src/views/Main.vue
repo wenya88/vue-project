@@ -1,50 +1,3 @@
-<style lang="less">
-@import "./main.less";
-
-
-/*    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        border-radius: 4px;
-        overflow: hidden;
-    }*/
-
-// .ivu-layout-header {
-//     background: #fff !important;
-// }
-
-.layout-logo {
-    width: 100px;
-    height: 30px;
-    // background: #fff !important;
-    border-radius: 3px;
-    float: left;
-    position: relative;
-    top: 15px;
-    left: 20px;
-}
-
-.layout-nav {
-    /*width: 500px;*/
-    margin: 0 auto;
-    margin-right: 20px;
-}
-
-.stem-logo img {
-    max-width: 8rem;
-}
-
-.stem-l {
-    margin-left: 10rem;
-}
-.ivu-menu-item-group-title{
-    display: none;
-}
-.sidebar-menu-con ul li:first-child{
-    display: none;
-}
-</style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
         <div class="backIcon" v-if="havaBack" @click="goBack()"><Icon type="chevron-left" size='20'></Icon></div>
@@ -54,19 +7,17 @@
                     <div class="layout-logo stem-logo" @click="collapsedSider()">
                         <img v-show="!shrink" src="../images/logo.png" key="max-logo" />
                     </div>
-                    <div class="layout-nav stem-l">
+                    <!-- <div class="layout-nav stem-l">
                         <Menu mode="horizontal" :active-name="activePath">
                              <MenuItem 
                              :name="item.path" 
                              v-for="item in subMenu" 
                              :key="item.path" 
                              :label="item.title">
-                                <!-- <Icon :type="item.icon"></Icon> -->
-                                <!-- {{item.title}}   -->
                                 <router-link :to="item.path">{{item.title}}</router-link>   
                             </MenuItem>  
                         </Menu>
-                    </div>
+                    </div> -->
                 </Menu>
             </Header>
         </div>
@@ -75,16 +26,6 @@
                 <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                     <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
                     <span style="padding: 0 50px 0 10px;color: #fff;">{{ userName }}</span>
-                    <!-- <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
-                        <a href="javascript:void(0)">
-                            <span class="main-user-name">{{ userName }}</span>
-                            <Icon type="arrow-down-b"></Icon>
-                        </a>
-                        <DropdownMenu slot="list">
-                            <DropdownItem name="ownSpace">个人中心</DropdownItem>
-                            <DropdownItem name="loginout" divided>退出登录</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown> -->
                 </Row>
             </div>
             <message-tip v-model="mesCount"></message-tip>
@@ -101,7 +42,7 @@
                 </Dropdown>
             </div>
         </div>
-        <div class="main-content" :style="`height:${centerHight}px`">
+        <div class="main-content"> <!-- :style="`height:${centerHight}px`" -->
             <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
                 <Menu>
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
@@ -112,6 +53,12 @@
                     </Submenu>
                 </Menu>
             </div>
+            <ul class="menu">
+                <li v-for="(item,index) in subMenu" :key="index">
+                    <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']"></router-link>
+                    <span class="name">{{item.title}}</span>
+                </li>
+            </ul>
              <div class="single-page-con">
                 <div class="single-page">
                     <router-view></router-view>
@@ -121,6 +68,7 @@
     </div>
 </template>
 <script>
+// import menu from '@/router/menu'
 import Cookies from 'js-cookie';
 import messageTip from './main-components/message-tip.vue';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
@@ -151,17 +99,15 @@ export default {
         // }
         '$route': 'updateMenu'
     },
-    created() {
-        let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
-        let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
-        if(bodyWidth <= 1366) {
-            this.centerHight = bodyHight - 90
-        } else {
-            this.centerHight = bodyHight - 120
-            // console.log(this.centerHight)
-        }
-        // console.log(document.documentElement.clientWidth)
-    },
+    // created() {
+    //     let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
+    //     let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+    //     if(bodyWidth <= 1366) {
+    //         this.centerHight = bodyHight - 90
+    //     } else {
+    //         this.centerHight = bodyHight - 120
+    //     }
+    // },
     mounted() {
         this.init();
         this.updateMenu();
@@ -169,18 +115,7 @@ export default {
          * 刷新当前页面路由设置
          */
         this.refresh();
-        // let currentRoute = location.hash
-        // let routeName = (location.hash).match(/\#\/(.*)(?=\/)/)[1]
-        // this.menuList.forEach((item) => {
-        //     if(routeName === item.name) {
-        //         this.subMenu = item.children
-        //         let menuArr = item.children
-        //         // console.log(routeName,this.subMenu)
-        //         this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
-        //     }
-        // })
-        // this.activePath = this.$route.path
-        // console.log(this.activePath)
+        // console.log(this.menuList)
     },
     computed: {
         menuList() {
@@ -189,30 +124,31 @@ export default {
         mesCount () {
             return this.$store.state.app.messageCount;
         },
-        // avatorPath () {
-        //     return localStorage.avatorImgPath;
-        // }
+        activeMenu () {
+            return this.$route.name
+        }
     },
     methods: {
         /**
          * 刷新当前页面
          */
         refresh() {
-            let currentRoute = location.hash
-            let routeName = (location.href).match(/\/#\/(.*?)\//)[1]
-            this.menuList.forEach((item) => {
-                if(routeName === item.name) {
-                    this.subMenu = item.children
-                    let menuArr = item.children
-                    // console.log(routeName,this.subMenu)
-                    this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
-                    if(routeName == 'project') {
-                        this.havaBack = true
-                    } else {
-                        this.havaBack = false
+            if(location.href.match(/\/#\/(.*?)\//) !=null) {
+                let routeName = location.href.match(/\/#\/(.*?)\//)[1]
+                this.menuList.forEach((item) => {
+                    if(routeName === item.name) {
+                        this.subMenu = item.children
+                        console.log(this.subMenu)
+                        let menuArr = item.children
+                        this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
+                        if(routeName == 'project') {
+                            this.havaBack = true
+                        } else {
+                            this.havaBack = false
+                        }
                     }
-                }
-            })
+                })
+            }
             this.activePath = this.$route.path
         },
         goBack() {
@@ -243,6 +179,8 @@ export default {
                         this.$router.push('/login');
                     }
                 })
+            }else if(name === 'ownSpace'){
+                this.$router.push({path:'/home/personalCenter'})
             }
         },
         collapsedSider() {
@@ -254,35 +192,124 @@ export default {
         },
         updateMenu() {
             this.menuList.forEach((item) => {
-                let routeName = this.$route.name
-                // console.log(this.$route.name, typeof this.$route.name)
-                if(this.$route.name === item.name) {
-                    this.subMenu = item.children
-                    let menuArr = item.children
-                    console.log(this.$route.name,this.subMenu)
-                    this.$router.push(menuArr[0].path)
-                } else {
+                // let routeName = this.$route.name
+                // console.log(item.name)
+                // if(this.$route.name === item.name) {
+                //     this.subMenu = item.children
+                //     let menuArr = item.children
+                //     console.log(this.$route.name,this.subMenu)
+                //     this.$router.push(menuArr[0].path)
+                // } else {
                      this.refresh();
-                }
+                // }
             })
             this.activePath = this.$route.path
             // console.log(this.activePath)
-        },
-        handleChange(name) {
-            console.log(name)
-            // let willpush = true;
-            // if (this.beforePush !== undefined) {
-            //     if (!this.beforePush(name)) {
-            //         willpush = false;
-            //     }
-            // }
-            // if (willpush) {
-                this.$router.push({
-                    name: name
-                });
-            // }
-            // this.$emit('on-change', name);
         }
     }
 }
 </script>
+<style lang="less">
+@import "./main.less";
+.layout-logo {
+    width: 100px;
+    height: 30px;
+    // background: #fff !important;
+    border-radius: 3px;
+    float: left;
+    position: relative;
+    top: 15px;
+    left: 20px;
+}
+.layout-nav {
+    /*width: 500px;*/
+    margin: 0 auto;
+    margin-right: 20px;
+}
+.stem-logo img {
+    max-width: 8rem;
+}
+.stem-l {
+    margin-left: 10rem;
+}
+.ivu-menu-item-group-title{
+    display: none;
+}
+.sidebar-menu-con ul li:first-child{
+    display: none;
+}
+.menu{
+    width: 121px;
+    padding: 0 18px;
+    padding-top: 119px;
+    float: left;
+}
+.menu li a {
+    display: block;
+    width: 85px;
+    height: 60px;
+  }
+  .menu li {
+    position: relative;
+    margin-bottom: 40px;
+  }
+  .menu li a + .name {
+    position: absolute;
+    transition: all .5s ease;
+    opacity: 0;
+    left: 40px;
+    top: 40px;
+    width: 75px;
+    height: 28px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 28px;
+    background: #FFFBDE;
+    border: 1px solid #CCCAB9;
+    box-shadow: 0 12px 18px 0 rgba(0,0,0,0.06);
+    border-radius: 4px;
+  }
+  .menu li a:hover + .name {
+    opacity: 1;
+    left: 46px;
+    top: 30px;
+  }
+  .menu li a.eHome, .menu li a.cHome {
+    background: url(../images/icon/company.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.bidManage, .menu li a.cusBidManage {
+    background: url(../images/icon/bidManage.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.contractManage, .menu li a.cContractManage {
+    background: url(../images/icon/contractManage.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.projectManage, .menu li a.cProjectManage {
+    background: url(../images/icon/project.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.memberManager {
+    background: url(../images/icon/memberManager.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.statistics {
+    background: url(../images/icon/statistics.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.custom {
+    background: url(../images/icon/statistics.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.task {
+    background: url(../images/icon/task.png) no-repeat center center / 37px 34px;
+  }
+//   .menu li a.yuntu {
+//     background: url(./assets/images/icon/icon-yuntu.svg) no-repeat center center;
+//   }
+//   .menu li a.finance {
+//     background: url(./assets/images/icon/icon-finance.svg) no-repeat center center;
+//   }
+  .menu li a:hover {
+    // background-color: #F1F7F9;
+    border-right: 6px solid #48c5b5;
+  }
+  .menu li a.active {
+    // background-color: #F3F3F3;
+    border-right: 6px solid #48c5b5;
+  }
+</style>

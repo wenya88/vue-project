@@ -23,7 +23,7 @@
                     <DatePicker type="date" placeholder="结束时间" style="width: 180px" @on-change="HendDate" :value="endDate"></DatePicker>
                 </dd>
                 <dt>项目图片 <span>[说明：图片小于1M，限JPG，PNG格式，建议大小100*70]</span></dt>
-                <dd>
+                <dd style="width:235px;">
                     <div class="ImaUpload">
                         <div class="demo-upload-list" v-for="item in uploadList">
                             <template v-if="item.status === 'finished'">

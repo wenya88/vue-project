@@ -29,7 +29,7 @@
             type="drag"
             action='/file/file/file-upload'
             style="display:block;width:100%;">
-            <div style="width:100%;padding:70px 0px;display:block;">
+            <div style="width:100%;padding:67px 0px;display:block;">
                 <Icon type="ios-cloud-upload-outline" size="30"></Icon>&nbsp;&nbsp;拖入/点击上传
              </div>
         </Upload>
@@ -42,7 +42,6 @@
                 imgName: '',
                 uploadList: [],
                 Flag:false,
-                //file:[],
                 defaultList: [],
                 url:[],
                 taskTypeID:0,
@@ -66,11 +65,9 @@
             handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-                //this.file=[]
             },
             handleSuccess (res, file) {
                 file.url = this.url;
-                // console.log(this.file)
                 this.$bus.emit('MainFile',this.uploadList)
             },
             handleFormatError (file) {
@@ -87,21 +84,12 @@
             },
             handleBeforeUpload (file) {
                 this.url=window.URL.createObjectURL(file);
-                // let fileArr=file.name;
-                // let fileTrr=fileArr.lastIndexOf('.')+1
-                // let fileSrr=fileArr.substring(fileTrr,fileArr.length)
-                // if(fileSrr=='png'||fileSrr=='jpg'){
-                //     this.file.push(file);
-                // }else{
-                //     return
-                // }
             },
         },
         mounted () {
             this.uploadList = this.$refs.upload.fileList;
             this.$bus.on("RemoveFile",()=>{
                 this.$refs.upload.fileList.splice(0);
-                // this.uploadList=[];
             })
             this.$bus.on("taskTypeID",(val)=>{
                 this.taskTypeID=val.taskTypeID;
@@ -129,12 +117,12 @@
     }
     .MainFile .demo-upload-list img{
         width: 100%;
-        height: 100%;
+        height: 100%!important;
     }
     .demo-upload-list-cover{
         display: none;
         position: absolute;
-        top: 0;
+        top: -30px!important;
         bottom: 0;
         left: 0;
         right: 0;

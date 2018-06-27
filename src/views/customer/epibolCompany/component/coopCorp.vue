@@ -39,7 +39,7 @@
         <!-- Modal组件 -->
         <Modal
             v-model="applModal"
-            title="添加/编辑服务商"
+            :title="Cooptitle"
             @on-ok="coopOk"
             @on-cancel="coopCancel"
             ok-text="确认添加"
@@ -57,7 +57,8 @@ export default {
     data(){
         return{
             applModal:false,
-            coopData:{}
+            coopData:{},
+            Cooptitle:''
         }
     },
     props:{
@@ -85,10 +86,12 @@ export default {
                 explain:explain,
                 tag:JSON.parse(tag)
             }
-            this.$bus.emit('editCoopData',obj)
+            this.$bus.emit('editCoopData',obj);
+            this.Cooptitle='编辑服务商'
         },
         // 新增
         newAdd(){
+           this.Cooptitle='增加服务商'
            this.applModal=true;
         },
         // 提交

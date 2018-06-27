@@ -1,32 +1,33 @@
 <template>
   <div>
       <!-- 项目进度右侧 -->
-      <div class="projectPlanRight">
-          <div class="rightTitle">
-            <Icon type="android-apps" size="20"></Icon> 子项目进度
-          </div>
-          <div class="rightRow">
-              <div class="line" v-for="item in ChildMsgData">
-                  <div class="title">{{item.name}}</div>
-                  <div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.total}}</span></Progress></div>
-                  <div class="clear"></div>
-              </div>
-          </div>
-          <div class="rightTitle" style="border-top:0px;margin-top:15px;">
-            <Icon type="android-apps" size="20"></Icon> 成员进度
-          </div>
-          <div class="rightRow">
-                <div class="line" v-for="item in memberMsgData">
-                  <div class="title">
-                    <div class="demo-avatar">
-                        <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar" size="small"/>&nbsp;&nbsp;{{item.realname}}
-                    </div>
-                   </div>
-                  <div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.task_num}}</span></Progress></div>
-                  <div class="clear"></div>
-                </div>
-          </div>
-      </div>
+      <!--<div class="projectPlanRight">-->
+          <!--<div class="rightTitle">-->
+            <!--<Icon type="android-apps" size="20"></Icon> 子项目进度-->
+          <!--</div>-->
+          <!--<div class="rightRow">-->
+              <!--<div class="line" v-for="item in ChildMsgData">-->
+                  <!--<div class="title">{{item.name}}</div>-->
+                  <!--<div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.total}}</span></Progress></div>-->
+                  <!--<div class="clear"></div>-->
+              <!--</div>-->
+          <!--</div>-->
+          <!--<div class="rightTitle" style="border-top:0px;margin-top:15px;">-->
+            <!--<Icon type="android-apps" size="20"></Icon> 成员进度-->
+          <!--</div>-->
+          <!--<div class="rightRow">-->
+                <!--<div class="line" v-for="item in memberMsgData">-->
+                  <!--<div class="title">-->
+                    <!--<div class="demo-avatar">-->
+                        <!--<Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar" size="small"/>&nbsp;&nbsp;{{item.realname}}-->
+                    <!--</div>-->
+                   <!--</div>-->
+                  <!--<div class="lineRow"><Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.task_num}}</span></Progress></div>-->
+                  <!--<div class="clear"></div>-->
+                <!--</div>-->
+          <!--</div>-->
+      <!--</div>-->
+
       <!-- 项目进度左侧 -->
       <div class="projectPlanLeft">
         <div class="projectPlanList">
@@ -133,7 +134,7 @@ export default {
             let projectID=sessionStorage.projectID;
             let ProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
             let ChlidProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
-            let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID); 
+            let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID);
             _this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
 
                     // 项目进度

@@ -1,0 +1,107 @@
+@import '../../../../styles/common.less';
+.contract{
+    dl{
+        dt{
+            span{
+                float:left;
+            }
+            em{
+                float:right;font-style:normal;margin-left:10px;
+            }
+        }
+        dl{
+            border:1px solid #ddd;margin-top:15px;
+            i{
+                font-style:normal;margin:0px 5px;cursor:pointer;
+                &:hover{
+                    color:#2d8cf0;
+                }
+            }
+            .btn{
+                background:#ff9900;color:#fff;padding:0px 10px;border-radius:4px;line-height:22px;display:inline-block;
+                &:hover{
+                    color:#fff;background:#dc8400;
+                }
+            }
+            .title{
+                border-top:0px;font-weight:bold;background:#f1f1f1;padding:10px 5px;
+                span{
+                    width:10%;display:inline-block;text-align:center;
+                    &:nth-of-type(1){
+                        width:20%;text-align:left;
+                    }
+                    &:nth-of-type(2){
+                        width:13%;text-align:left;
+                    }
+                    &:nth-of-type(3){
+                        width:20%;text-align:left;
+                    }
+                    &:nth-of-type(6){
+                        width:15.6%
+                    }
+                    &:nth-of-type(7){
+                        text-align:right;
+                    }
+                }
+            }
+            dd{
+               border-bottom:1px solid #ddd;line-height:18px;padding:15px 5px;margin-bottom:-1px;
+               span{
+                   &:extend(.contract dl dl .title span);
+                   &:nth-of-type(1){
+                       &:extend(.contract dl dl .title span:nth-of-type(1));
+                   }
+                   &:nth-of-type(2){
+                       &:extend(.contract dl dl .title span:nth-of-type(2));
+                   }
+                   &:nth-of-type(3){
+                       &:extend(.contract dl dl .title span:nth-of-type(3));
+                   }
+                   &:nth-of-type(6){
+                       &:extend(.contract dl dl .title span:nth-of-type(6));
+                   }
+                   &:nth-of-type(7){
+                        &:extend(.contract dl dl .title span:nth-of-type(7));
+                   }
+               }
+               s{
+                   text-decoration-line:none;color:#888;margin-left:5px;
+               }
+            }
+            .ddBg{
+                background:#f9f9f9;line-height:0px;border-top:1px solid #ddd;
+            }
+            
+        }
+    }
+}
+.contractRow{
+   overflow:auto;display:block;
+}
+.editContract{
+    .ivu-alert-with-desc{
+        .ivu-alert-message{
+            font-weight:bold;color:#ff662c;
+        }
+    }
+    .ivu-alert-with-desc.ivu-alert-with-icon{
+        padding:5px 5px 5px 60px;
+    }
+    .contractInfo{
+        dd{
+            margin-bottom:10px;line-height:24px;width:100%;display:block;
+            em{
+                width:48%;float:left;display:inline-block;font-style: normal;
+                &:nth-of-type(2){
+                    margin-left:4%;
+                }
+                b{
+                    margin-bottom:5px;display:block;
+                }
+            }
+            .block{
+                width: 100%;
+            }
+        }
+    }
+}

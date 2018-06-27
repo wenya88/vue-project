@@ -54,7 +54,9 @@
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
-                    <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
+                    <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                    <span class="orange-span" v-else>暂无上传阶段</span>
+                  </td>
                   <td class="w25">
                     <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
@@ -116,7 +118,8 @@
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
-                    <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
+                    <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                    <span class="orange-span" v-else>暂无上传阶段</span>
                   <td class="w25">
                     <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
@@ -190,7 +193,8 @@
                     <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
                   <td class="w25">
                     <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
-                    <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
+                    <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                    <span class="orange-span" v-else>暂无上传阶段</span>
                   <td class="w25">
                     <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
                 </tr>
@@ -252,7 +256,9 @@
                     <span class="orange-span">{{item.examineTime}}</span>/天</td>
                   <td class="w25">
                     <!-- <span class="orange-span">{{item.stage}}</span>/5</td> -->
-                    <span class="orange-span">{{item.tasktype_stage_now.stage_name}}</span></td>
+                    <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                    <span class="orange-span" v-else>暂无上传阶段</span>
+                  </td>
                   <td class="w25">
                     <!-- <span class="orange-span" v-if="item.surplusTime<0">延期{{item.surplusTime}}</span>天 -->
                     <span class="orange-span">{{item.surplusTime}}</span>天</td>
@@ -596,8 +602,6 @@ export default {
     },
     closeTabmodal() {
       this.isTabModal = false;
-      // this.taskType = '';
-      // this.fetchData();
     },
     /**
      * 获取阶段文件中某个文件的详情
@@ -606,8 +610,10 @@ export default {
      */
     fetchFileData(stageId,type,file,taskId) {
       this.isTabModal = true;
-      sessionStorage.FileURl=file;
-      sessionStorage.TaskID=taskId;
+      // sessionStorage.FileURl=file;
+      // sessionStorage.TaskID=taskId;
+      this.$store.commit('changeComponentTaskID',TaskID);
+      this.$store.commit('changeComponentFileURl',file);
       this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
       this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
 
@@ -616,23 +622,6 @@ export default {
       } else {
         sessionStorage.AllowEdit='Other';
       }
-      // this.$Loading.start();
-      // this.boxHeight = 0;
-      // let data = {
-      //   id: stageId
-      // }
-      // this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-info', qs.stringify(data))
-      //   .then(res => res.data)
-      //   .then(res => {
-      //     this.isTabModal = true;
-      //     this.formLeft = res;
-      //     // console.log('formLeft',this.formLeft)
-      //     localStorage.display = 'block'
-      //     this.$Loading.finish();
-      //     this.getSubProject(res.project_id)
-      //     this.taskType = res.tasktype_id
-      //     this.subpId = parseInt(res.project_child_id)
-      //   })
     },
     /**
      * 获取滚动条当前的位置

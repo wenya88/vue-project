@@ -7,6 +7,9 @@
       <!-- <Select v-model="model1" style="width:200px" @on-change="model3D()">
           <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select> -->
+      <!-- <ul>
+        <li v-for="(valuename, keys, index) in file_obj" :key="index">{{keys}}</li>
+      </ul> -->
     </div>
   </body>
 </template>
@@ -60,6 +63,9 @@ export default {
       model1: ''
     };
   },
+  created() {
+    // this.getBaseData();
+  },
   // mounted() {
   //   // this.fbxThree();
   //   this.newFBXMedel();
@@ -101,6 +107,37 @@ export default {
           this.$Message.error("获取任务信息失败，请重试！");
         });
     },
+    // getBaseData() {
+    //   var Zip = new JSZip();
+    //   console.log(Zip)
+    //   let url = 'http://192.168.2.19/index.php?r=file/file/download&url_key=' + this.fileKey;
+    //   var xmlhttp = null;
+    //   if(window.XMLHttpRequest) {
+    //     xmlhttp = new window.XMLHttpRequest()
+    //   } else {
+    //     xmlhttp = new window.ActiveXObject('Microsoft.XMLHTTP')
+    //   }
+    //   xmlhttp.open('GET', url, true)
+    //   xmlhttp.withCredentials = true
+
+    //   if('responseType' in xmlhttp) {
+    //     xmlhttp.responseType = 'arraybuffer'
+    //   }
+
+    //   if(xmlhttp.overrideMimeType) {
+    //     xmlhttp.overrideMimeType('text.plain; charset=x-user-defined')
+    //   }
+    //   xmlhttp.send()
+    //   xmlhttp.onreadystatechange = function() {
+    //     if(xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+    //       var file = xmlhttp.response || xmlhttp.responseText
+
+    //       JSZip.loadAsync(file).then(function(zip) {
+    //         console.log(zip)
+    //       })
+    //     }
+    //   }
+    // },
     handleFileName(filename) {
       var returnObj = {}
       var str = ''
@@ -149,10 +186,10 @@ export default {
         if (err) {
           throw err; // or handle err
         }
-        // console.log(data);
+        // console.log('解压',data);
 
         JSZip.loadAsync(data).then((zip) => {
-          // console.log(zip);
+          console.log('压缩包',zip);
           // console.log(zip.files);
           zip.forEach((relativePath, zipEntry) => {
             var fileName = zipEntry.name
@@ -203,6 +240,7 @@ export default {
                     }
                     // console.log('555',file_arr)
                     this.fbxurl = file_arr[0]
+                    sessionStorage.fbxurl = file_arr[0]
                     // console.log('666',this.fbxurl)
                   }
                 }
@@ -215,6 +253,7 @@ export default {
       });
     },
     newFBXMedel() {
+      console.log('this.fbxurl',sessionStorage.fbxurl)
       this.getThreeFileKey();
       var container, stats, controls;//容器、统计?、控制器
       var camera, scene, renderer, light;//相机、场景、渲染、灯光
@@ -223,6 +262,7 @@ export default {
       init();//初始化
       animate();//动画
       function init() {
+        console.log('传参url',url)
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
@@ -264,12 +304,12 @@ export default {
         scene.add(grid);
         //加载
         var loader = new THREE.FBXLoader();
-        let url3 = "http://192.168.2.19/index.php?r=file/file/get-file&fid=1145";
-        let url2 = '../src/views/project/components/threeFile/M_atk.fbx';
-        let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
+        // let url3 = "http://192.168.2.19/index.php?r=file/file/get-file&fid=1145";
+        // let url = '../src/views/project/components/threeFile/M_atk.fbx';
+        // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-
-        loader.load(url2, function(object) {
+        let url = "http://file.yhc_plat.com/2018/06/25/3d/165447-877532-5a38f4.FBX"
+        loader.load(url, function(object) {
           // console.log(url2);
           object.mixer = new THREE.AnimationMixer(object);
           mixers.push(object.mixer);

@@ -1,18 +1,67 @@
 <!-- 任务列表组件 -->
 <template>
-  <div >
-      <Table 
-        height='660' 
-        :columns="columnsTask" 
-        :data="dataList" 
-        :ellipsis="true"
-        size="large"
-        highlight-row
-        :loading="loading"
-        ref="table" 
-        @on-current-change="changeTaskListItem"
-        >
-      </Table>
+  <div class=" taskListContainer" >
+      <!--<Table-->
+        <!--height='660'-->
+        <!--:columns="columnsTask"-->
+        <!--:data="dataList"-->
+        <!--:ellipsis="true"-->
+        <!--size="large"-->
+        <!--highlight-row-->
+        <!--:loading="loading"-->
+        <!--ref="table"-->
+        <!--@on-current-change="changeTaskListItem"-->
+        <!--&gt;-->
+      <!--</Table>-->
+
+          <section  class="WaitingToStart">
+              <p class="title">未开始({{dataList_type.start.length}})</p>
+              <div class="list"  @click.stop ="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start" :key="index"  >
+                  <p class="title">{{items.name}}</p>
+               <div class="BottomInfo">
+                   <span>{{items.expect_work_day}}工作日</span>
+                   <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                   <span>{{items.remark_name}}</span>
+               </div>
+                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+              </div>
+          </section>
+          <section  class="perform">
+              <p class="title">进行中({{dataList_type.underWay.length}})</p>
+              <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay" :key="index"  >
+                 <template v-if="items.status ==='3'" >
+                     <p class="pause">暂停中</p>
+                     <p class="sign" ></p>
+                 </template>
+                  <p class="title">{{items.name}}</p>
+                  <div>
+                      <span>{{items.expect_work_day}}工作日</span>
+                      <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                      <span>{{items.remark_name}}</span>
+                  </div>
+                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+
+              </div>
+
+          </section>
+          <section  class="complete">
+              <p class="title">已完成({{dataList_type.end.length}})</p>
+              <div class="list"  @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end" :key="index">
+                  <p class="title">{{items.name}}</p>
+                  <div>
+                      <span>{{items.expect_work_day}}工作日</span>
+                      <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                      <span>{{items.remark_name}}</span>
+                  </div>
+                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+
+              </div>
+          </section>
+
+
+
+
+
       <!-- <Table 
         height='660' 
         :columns="columnsTask_del" 
@@ -36,6 +85,11 @@ export default {
   },
   data() {
     return {
+        dataList_type:{
+            start:[],
+            underWay:[],
+            end:[],
+        },
       currentMsg:{},
       loading:true,
       dellisthighlight:false,
@@ -221,18 +275,29 @@ export default {
     })
   },
   methods: {
+      delButton(items){
+          this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:items.id}))
+              .then(res => {
+                  this.$bus.emit('refreshCurrentTaskList');
+                  this.refreshTaskList();
+              })
+              .catch(error => {
+                  this.$Message.error("删除任务失败，请重试！");
+                  return false;
+              });
+      },
     
     //打开任务详情
     showTaskDetail: function(index) {
-      this.$emit('showTaskDetails',this.dataList[index]);
+//      this.$emit('showTaskDetails',this.dataList[index]);
     },
     //点击切换任务项
     changeTaskListItem(currentRow,oldRow)
-    { 
+    {
       if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
       {
-        this.$emit('showTaskDetails',currentRow); 
-        this.$refs.table.clearCurrentRow();
+        this.$emit('showTaskDetails',currentRow);
+//        this.$refs.table.clearCurrentRow();
       }
     },
     //删除
@@ -278,6 +343,7 @@ export default {
       $event.cancelBubble = true;
       this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.dataList[index].id}))
                   .then(res => {
+                      this.$Message.error("删除任务成功");
                       this.$bus.emit('refreshCurrentTaskList');
                       this.refreshTaskList();
                   })
@@ -316,6 +382,7 @@ export default {
                 .then( res => {
                       this.dataList = res.data;
                       this.formatTaskList(this.dataList.reverse());//颠倒顺序
+                    this.typeSelection();
                       this.loading = false;
                       this.dataList_del=[];
                       this.dataList.forEach(
@@ -374,11 +441,116 @@ export default {
           break;
       }
     },
-  }
+      typeSelection(){
+           this.dataList_type = {
+               start:[],
+               underWay:[],
+               end:[],
+           };
+
+          this.dataList.map((items)=>{
+            switch (items.status)
+            {
+                case '1':
+                    this.dataList_type.start.push(items);
+                    break;
+                case '2':
+                    this.dataList_type.underWay.push(items);
+                    break;
+                case '3':
+                    this.dataList_type.underWay.push(items);
+                    break;
+                case '4':
+                    this.dataList_type.end.push(items);
+                    break;
+            }
+
+        })
+      },
+      timeType(time){
+       return  time.split(' ')[0].split('-').join('/')
+      }
+  },
 };
 </script>
-<style>
+<style lang="less">
 @import "../../../styles/task/task.css";
+
+.taskListContainer {
+    height: 700px;
+    overflow: auto;
+        .WaitingToStart,.perform,.complete,.suspended{
+            float: left;
+            width: 33.3%;
+            height: 700px;
+            .title{
+                margin: 5px 0;
+                font-size: 16px;
+                text-align: center;
+            }
+            .list{
+                position: relative;
+                margin:  0 10px 10px 0;
+                color: #fff;
+                box-shadow: 2px 2px 2px #525252;
+                border-radius: 4px;
+                transition: all .3s;
+                .BottomInfo{
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .pause {
+                    position: absolute;
+                    top: 0;
+                    left: -3px;
+                    z-index: 3;
+
+                }
+                .sign {
+                    position: absolute;
+                    top: 18px;
+                    left: -3px;
+                    width: 0;
+                    height: 0;
+                    margin-top: -20px;
+                    border-top: none;
+                    border-right: 50px solid transparent;
+                    border-bottom: 50px solid transparent;
+                    border-left: 50px solid #ff7970;
+                    z-index: 2;
+                }
+                .close{
+                    position: absolute;
+                    top:0;
+                    right: 0;
+                    margin: 2px 2px 0 0 ;
+                    font-size: 18px;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+
+                .title{
+                    margin-bottom: 60px;
+                    color: #fff;
+                }
+                text-align: center;
+                background: #48C5B5;
+                &:hover{
+                    transform: scale(1.02);
+                    .close{
+                        opacity: 1;
+                    }
+                }
+            }
+            &::after{
+                content: ' ';
+                display: block;
+                clear: left;
+            }
+        }
+
+}
+
 
 .main-header-con {
   z-index: 0 !important;

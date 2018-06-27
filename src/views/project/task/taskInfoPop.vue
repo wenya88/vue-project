@@ -1,18 +1,19 @@
 <!-- 任务信息弹窗-->
 <template>
     <div class="taskinfopop">
-          <Tabs type="card" style="height: 680px;">
+        <Tabs type="card" style="height: 680px;">
             <TabPane label="基本管理">
                 <div v-show="isInitTask" class="browsetaskpop">
-                  <div class="taskbrowse">
-                    <maintask ref="main" 
-                              v-on:sendSubTaskList="sendSubTaskList"
-                              v-on:sendLogData="sendLogData"
-                    ></maintask>
-                  </div>
-                  <div class="filebrowse">
-                    <filebrowse ref="filebrowse"></filebrowse>
-                  </div>
+                    <div class="taskbrowse">
+                        <maintask ref="main"
+                                  v-on:sendSubTaskList="sendSubTaskList"
+                                  v-on:sendLogData="sendLogData"
+                        >
+                        </maintask>
+                    </div>
+                    <div class="filebrowse">
+                        <filebrowse ref="filebrowse"></filebrowse>
+                    </div>
                 </div>
             </TabPane>
             <TabPane label="子任务">
@@ -21,9 +22,13 @@
             <TabPane label="日志">
                 <tasklog ref="log"></tasklog>
             </TabPane>
-          </Tabs>
-        <!-- </div> -->
+        </Tabs>
+        <div class="taskButton">
+            <router-link to="/project/task" tag="button" >返回</router-link>
+            <button @click="saveTaskDetail" style="background: #39f;color: #fff">保存</button>
+        </div>
     </div>
+
       <!-- </div> -->
     <!-- </div> -->
   <!-- </transition> -->
@@ -50,6 +55,10 @@ export default {
     tasklog,
     filebrowse
   },
+    mounted(){
+      this.initTaskDetail();
+        this.initTaskDetailProjecInfo();
+    },
   data() {
     return {
       taskId:0,
@@ -150,16 +159,23 @@ export default {
   },
   methods: {
     //根据任务ID初始化属性
-    initTaskDetail(taskData) {      
+    initTaskDetail() {
+        let taskData = this.$store.state.project.detail.setDetailAll;
       this.isInitTask = true;
-      this.$refs.main.initTaskDetailFromID(taskData.id);
-      let filetype = taskData.stage_file ? taskData.stage_file.type:"NULL";
-      this.$refs.filebrowse.initFileBrowse(taskData.id,filetype);
+      if(taskData){
+          this.$refs.main.initTaskDetailFromID(taskData.id);
+          let filetype = taskData.stage_file ? taskData.stage_file.type:"NULL";
+          this.$refs.filebrowse.initFileBrowse(taskData.id,filetype);
+      }
+
+
     },
     //初始化项目信息
-    initTaskDetailProjecInfo(projectInfo)
+    initTaskDetailProjecInfo()
     {
-      this.$refs.main.initProjectInfo(projectInfo);
+        let data = this.$store.state.project.detail.projectInfo;
+
+      this.$refs.main.initProjectInfo(data);
     },
     //子任务子组件传参
     sendSubTaskList(data)
@@ -178,6 +194,7 @@ export default {
       this.$refs.main.saveTaskDetails();
       //保存子任务
       this.$refs.sublist.saveSubTasks();
+      this.$Message.success('保存任务成功');
       return true;
     },
     //单击编辑Modal中子任务列表，数据添加至右侧form表单
@@ -298,11 +315,33 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
 @import "../style/taskModal.css";
 .taskinfopop{
   display:inline-block;
   overflow:hidden;
+    .taskButton{
+        margin-top: 50px;
+        padding-right: 120px;
+        text-align: right;
+        button{
+            width: 110px;
+            height: 35px;
+            margin-right: 30px;
+            text-align: center;
+            line-height:35px;
+            color: #657180;
+            background: #fff;
+            border: 1px solid #e4e4e4;
+            border-radius: 4px;
+            box-shadow: 2px 2px 2px 0 #e4e4e4;
+            cursor: pointer;
+            outline: none;
+            &:active{
+                transform: translate3d(2px,2px,0);
+            }
+        }
+    }
 }
 .task-body {
   width:1100px;

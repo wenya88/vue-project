@@ -233,10 +233,13 @@ util.toDefaultPage = function (routers, name, route, next) {
     let i = 0;
     let notHandle = true;
     while (i < len) {
+        // console.log(routers[i].name, typeof routers[i].name)
         if (routers[i].name === name && routers[i].redirect === undefined) {
-            route.replace({
-                name: routers[i].children[0].name
-            });
+            if(routers[i].name != 'login') {
+                route.replace({
+                    name: routers[i].children[0].name
+                });
+            }
             notHandle = false;
             next();
             break;

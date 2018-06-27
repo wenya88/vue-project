@@ -8,7 +8,7 @@
         </div>
         <div class="payStyle">
             <dl>
-                <dt>线上支付</dt>
+                <dt>线上支付</dt>{{payStore}}
                 <dd>
                     <RadioGroup v-model="payStatus">
                         <Radio label="1"><img src="./epibolCompany/images/1.png" alt="微信支付"></Radio>
@@ -26,7 +26,8 @@ var qs=require('querystring');
 export default {
     data(){
         return{
-            payStatus:'1'
+            payStatus:'1',
+            data:{}
         }
     },
     computed:{
@@ -42,11 +43,12 @@ export default {
                pay_status:this.payStatus
            }
            this.$axios.post(url,qs.stringify(parmas)).then(msg=>{
-               if(msg.data.err_code==0){
-                   this.$Message.success('支付成功！');
-                   setTimeout(()=>{
-                       this.$router.go(-1);
-                   },1000)
+               if(typeof(msg.data.msg)=='object'){
+                   
+                  //传信息到Vuex
+                  this.$store.commit('actionPaySkip',msg.data.msg)
+                  this.$router.push('/customer/paySkip');
+                  
                }else if(msg.data.err_code>0){
                    this.$$Message.error(msg.data.err_message);
                }

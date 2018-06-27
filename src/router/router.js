@@ -40,7 +40,24 @@ export const otherRouter =
         component: Main,
         redirect: '/home/home',
         children: [
-            { path: '/home/home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } }
+            { path: '/home/home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+            {
+                path: '/home/personalCenter',
+                icon: 'ios-folder',
+                name: '/home/personalCenter',
+                title: '个人中心',
+                component: resolve => { require(['@/views/personalCenter/index.vue'], resolve); },
+                redirect: '/personalCenter/info',
+                children:[
+                    {
+                        path: '/personalCenter/info',
+                        icon: 'ios-paper-outline',
+                        name: 'personalCenter',
+                        title: '艺术WIKI',
+                        component: resolve => { require(['@/views/personalCenter/info.vue'], resolve); }
+                    }
+                ]
+            }
             // { path: '/home/login', title: {i18n: 'login'}, name: 'login', component: resolve => { require(['@/views/home/login.vue'], resolve); } }
         ]
         // }, {
@@ -102,7 +119,19 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'file',
                 title: '设置',
-                component: resolve => { require(['@/views/project/setting.vue'], resolve); }
+                component:resolve=>{ require (['@/views/projectSet/projectTiemSet.vue'],resolve)}
+            },
+            {
+                path: '/project/details',
+                icon: 'ios-paper-outline',
+                name: 'file',
+                title: '任务管理详情',
+                component:resolve=>{ require (['@/views/project/task/taskInfoPop.vue'],resolve)}
+            },
+            {
+                path:'/project/projectMember',
+                titie:'项目成员',
+                component: resolve => { require(['@/views/artist/projectMember.vue'], resolve);},
             }
         ]
     },
@@ -172,6 +201,13 @@ export const appRouter = [
                 name: '3D',
                 title: '3D',
                 component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
+            },
+            {
+                path: '/epibol/contractDetails/:id',
+                icon: 'ios-paper-outline',
+                name: 'contractDetails',
+                title: '合同详情',
+                component: resolve => { require(['@/views/epibol/contractManage/component/contractDetails.vue'], resolve); }
             }
         ]
     }, {
@@ -220,6 +256,14 @@ export const appRouter = [
                 title: '支付',
                 component: resolve => { require(['@/views/customer/payManage.vue'], resolve); }
             }
+            ,{
+                path: '/customer/paySkip',
+                icon: 'ios-paper-outline',
+                name: 'paySkip',
+                title: '支付跳转',
+                component: resolve => { require(['@/views/customer/paySkip.vue'], resolve); }
+            }
+            
         ]
     }, {
         path: '/depot',
@@ -299,50 +343,50 @@ export const appRouter = [
                 name: 'awkHome',
                 title: '艺术WIKI',
                 component: resolve => { require(['@/views/artwiki/home.vue'], resolve); }
-            },
-            {
-                path: '/artwiki/excel',
-                icon: 'ios-paper-outline',
-                name: 'awkExcek',
-                title: 'excel解析',
-                component: resolve => { require(['@/views/artwiki/excel.vue'], resolve); }
             }
-        ]
-    },
-    {
-        path: '/typeLibrary',
-        icon: 'ios-paper',
-        title: '项目管理',
-        name: 'typeLibrary',
-        component: Main,
-        children: [
             // {
-            //     path: '/page/taskClass',
+            //     path: '/artwiki/excel',
             //     icon: 'ios-paper-outline',
-            //     name: 'taskClass',
-            //     title: '任务类别库',
-            //     component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
-            // },
-            // {
-            //     path: '/page/index',
-            //     title: 'Page',
-            //     name: 'page_index',
-            //     component: resolve => { require(['@/views/page/page.vue'], resolve); }
-            // },
-            // {
-            //     path: '/page/grid',
-            //     title: '拖拽功能',
-            //     name: 'grid',
-            //     component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
-            // },
-            // {
-            //     path: '/page/layout',
-            //     title: '拖拽布局',
-            //     name: 'layout',
-            //     component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
+            //     name: 'awkExcek',
+            //     title: 'excel解析',
+            //     component: resolve => { require(['@/views/artwiki/excel.vue'], resolve); }
             // }
         ]
-    }
+    },
+    // {
+    //     path: '/typeLibrary',
+    //     icon: 'ios-paper',
+    //     title: '项目管理',
+    //     name: 'typeLibrary',
+    //     component: Main,
+    //     children: [
+    //         // {
+    //         //     path: '/page/taskClass',
+    //         //     icon: 'ios-paper-outline',
+    //         //     name: 'taskClass',
+    //         //     title: '任务类别库',
+    //         //     component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
+    //         // },
+    //         // {
+    //         //     path: '/page/index',
+    //         //     title: 'Page',
+    //         //     name: 'page_index',
+    //         //     component: resolve => { require(['@/views/page/page.vue'], resolve); }
+    //         // },
+    //         // {
+    //         //     path: '/page/grid',
+    //         //     title: '拖拽功能',
+    //         //     name: 'grid',
+    //         //     component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
+    //         // },
+    //         // {
+    //         //     path: '/page/layout',
+    //         //     title: '拖拽布局',
+    //         //     name: 'layout',
+    //         //     component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
+    //         // }
+    //     ]
+    // }
 ];
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [

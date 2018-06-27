@@ -32,7 +32,6 @@
         <video id="my-video" class="video-js" controls preload="auto" width="810" height="480" data-setup="{}">
             <source :src="VideoURL" type="video/mp4">
         </video>
-
         <!-- 标注提交 -->
         <div v-if="AllowEditRow" class="VideoAllowEdit">
             <span class="EditInput">
@@ -67,8 +66,8 @@ export default {
             TID:49,
             fileID:10,
             AllowEdit:String,
-            AllowEditRow:Boolean,
-            SataeInfo:Boolean,
+            AllowEditRow:false,
+            SataeInfo:false,
             StateFeedBack:0,
             IMGlist:[],
             insTime:0,
@@ -107,6 +106,14 @@ export default {
     mounted(){
         this.VedioGet();
     },
+    computed:{
+      storeTaskID(){
+        return this.$store.state.ImgVedioStatus.TaskID
+      },
+      storeFileURl(){
+        return this.$store.state.ImgVedioStatus.FileURl
+      }
+    },
     methods:{
         InfoRefresh(){
          this.$bus.emit('InfoRefresh')
@@ -124,6 +131,7 @@ export default {
          this.liIndex=index;
          let fileID=taskID;
          let fID=fid;
+         this.changeState(this.StateFeedBack);
          this.Vdefault(fileID,fID);
          this.vedioLoad();
         //  切换视频初始化播放器
@@ -380,32 +388,37 @@ export default {
                 e.preventDefault();
             };
         },
+        changeState(state){
+        //  控制图片是否可标注
+              if(state==1||state==2){
+                sessionStorage.AllowEdit="Allow";//允许标注
+                  this.AllowEditRow=true;
+                  this.SataeInfo=false;
+              }else if(state==3||state==4||state==5){
+                sessionStorage.AllowEdit="NotAllow";//不允许标注
+                  this.AllowEditRow=false
+                  this.SataeInfo=true;
+              }else{
+                sessionStorage.AllowEdit="Other";//不显示下面和不允许标注
+                  this.AllowEditRow=false;
+                  this.SataeInfo=false;
+              }
+       },
         VedioGet(){
              let _this=this;
-             _this.VideoURL=sessionStorage.FileURl;
+             _this.VideoURL=_this.storeFileURl;
              //  列表高度
              $(".stageListRow").height(480)
-             //  控制图片是否可标注
-            if(sessionStorage.AllowEdit=="Allow"){ //允许标注
-                _this.AllowEditRow=true;
-                _this.SataeInfo=false;
-            }else if(sessionStorage.AllowEdit=="NotAllow"){ //不允许标注
-                _this.AllowEditRow=false
-                 _this.SataeInfo=true;
-            }else if(sessionStorage.AllowEdit=="Other"){ //不显示下面和不允许标注
-                _this.AllowEditRow=false;
-                _this.SataeInfo=false;
-            }
             //  获取视频的标注信息
-            let TaskID=sessionStorage.TaskID;
-            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
+            let TaskID=_this.storeTaskID;
+            let url=_this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
             _this.$axios.get(url).then(function(msg){
                 let Sdate=msg.data;
                 if(Sdate.err_code==0){
                     _this.IMGlist = [];
                     _this.IMGlist = Sdate.data;
                     _this.IMGlist.forEach((val,index)=>{
-                   if(val.file.file==sessionStorage.FileURl){
+                   if(val.file.file==_this.storeFileURl){
                         // 设置初始化值
                         _this.data=val.file.tag;
                         _this.StateFeedBack=val.status;
@@ -420,6 +433,7 @@ export default {
                         _this.fileID=val.file.stage_id;
                     }
                 })
+                _this.changeState(_this.StateFeedBack)
                 // 把StageID传到提交
                 let fileID = _this.fileID;
                 let fID=_this.IMGID;

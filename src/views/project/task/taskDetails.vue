@@ -12,27 +12,27 @@
                 </Select>
             </FormItem>
             <FormItem label="计划时间">
-                <DatePicker 
+                <DatePicker
                 :value="getTimeRange"
-                @on-change="setTimeRange" 
-                format="yyyy-MM-dd" 
-                type="daterange" 
-                :options="startTime" 
+                @on-change="setTimeRange"
+                format="yyyy-MM-dd"
+                type="daterange"
+                :options="startTime"
                 split-panels
-                placeholder="选择计划时间范围" 
+                placeholder="选择计划时间范围"
                 :disabled="editDisabled"
                 >
                 </DatePicker>
             </FormItem>
             <FormItem label="子项目">
-                <Select 
-                @on-change='setChildProject' 
-                v-model="editData.project_child_name" 
+                <Select
+                @on-change='setChildProject'
+                v-model="editData.project_child_name"
                 clearable
                 :disabled="editDisabled"
                 >
-                    <Option 
-                        v-for="item in childProjectsList" 
+                    <Option
+                        v-for="item in childProjectsList"
                         :key="item.child_id"
                         :value="item.name"
                         >
@@ -41,12 +41,12 @@
                 </Select>
             </FormItem>
             <FormItem label="任务类型">
-                <AutoComplete  v-model="editData.tasktype_name" 
+                <AutoComplete  v-model="editData.tasktype_name"
                             placeholder="选择任务类型"
                             @on-select="selectTaskType"
                             :disabled="editDisabled"
                             >
-                    <Option v-for="item in taskTypesList" 
+                    <Option v-for="item in taskTypesList"
                     :key="item.tasktype_name"
                     :value="item.tasktype_name"
                     >
@@ -66,7 +66,7 @@
                 <Upload
                 multiple
                 type="drag"
-                :show-upload-list="true" 
+                :show-upload-list="true"
                 :on-success="referenceFileSuccess"
                 :on-remove ="referenceFileRemove"
                 action="http://192.168.2.19/index.php?r=file/file/file-upload"
@@ -79,9 +79,9 @@
                 <!-- <div v-for="item in editData.file" :key="item.url">{{item.url}}</div> -->
             </FormItem>
             <FormItem label="要求说明">
-                <Input 
-                v-model="editData.description" 
-                type="textarea" 
+                <Input
+                v-model="editData.description"
+                type="textarea"
                 :autosize="{minRows: 2,maxRows: 5}"
                 :disabled="editDisabled"
                 ></Input>
@@ -148,12 +148,12 @@ export default{
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
                         console.log(res);
-                        
+
                     }
                 )
                 .catch(error => {
                     console.log(error);
-                    
+
                     this.$Message.error("获取任务信息失败，请重试！");
                 });
             }
@@ -161,7 +161,7 @@ export default{
         //直接赋值任务属性-DONE
         initTaskDetailFromData(data)
         {
-            this.editData = data; 
+            this.editData = data;
             this.formatLocalData();
         },
         //设置能否编辑-DONE
@@ -233,7 +233,7 @@ export default{
                             //     });
                             // })
                         }
-                        
+
                     })
                     })
                 .catch(error => {
@@ -288,7 +288,7 @@ export default{
                 dataForm.run_member_id = this.getUserId(this.principalName);
                 dataForm.remark_name = this.principalName;
                 console.log(dataForm.run_member_id);
-                
+
             return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm);
         },
         //获得参与人ID
@@ -301,10 +301,10 @@ export default{
                     if(namesData == this.principal[i].remark_name)
                      {
                          console.log(this.principal[i].id);
-                         
+
                         return this.principal[i].id;
                     }
-                }          
+                }
             }
             else
                 return null;
@@ -313,7 +313,7 @@ export default{
         getUserName(namesId)
         {
             console.log(namesId);
-            
+
             if(this.principal.length > 0)
             {
                 for(let i=0;i<this.principal.length;i++)
@@ -321,10 +321,10 @@ export default{
                     if(namesId == this.principal[i].id)
                      {
                          console.log(this.principal[i].remark_name);
-                         
+
                         return this.principal[i].remark_name;
                     }
-                }          
+                }
             }
             else
                 return "";
@@ -405,7 +405,7 @@ export default{
                         if(res.tasktype_name == id_name)
                         {
                             this.editData.tasktype_id = parseInt(res.id);
-                            this.getTaskTypeRequire(res.id);  
+                            this.getTaskTypeRequire(res.id);
                         }
                     }
                 );
@@ -427,7 +427,7 @@ export default{
                 )
                 .catch(error => {
                     console.log(error);
-                    
+
                     this.$Message.error("获取公司成员失败，请重试！");
                 });
         },
@@ -465,7 +465,7 @@ export default{
                 {
                     this.referenceFileUrl.splice(i);
                 }
-            }              
+            }
         },
         //判断图片格式
         handleFormatError(file) {

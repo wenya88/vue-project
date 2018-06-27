@@ -71,7 +71,7 @@ export default {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/task-stage',qs.stringify({task_id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-                        sessionStorage.TaskID = taskid;
+                        //sessionStorage.TaskID = taskid;
                         this.$refs.imgeditor.initImgEditor();
                     }
                 )

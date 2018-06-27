@@ -10,40 +10,37 @@
         <Input type="text" v-model="typeName" :autofocus="true" placeholder="请输入类型名称" style="width: 50%"></Input>
         <h4 class="h4 marTop10">实施阶段</h4>
         <Steps :current="3" class="steps">
-          <Step v-for="item in arr" :title=item.stage_name></Step>
+          <Step v-for="(item,index) in arr" :key="index"  :title=item.stage_name >
+            <div @click="delStage" class="cursor delStage">
+              <Icon type="ios-close-outline" class="iconSmall"></Icon>
+            </div>            
+          </Step>
+          <Step title="成品确认"></Step>
         </Steps>
         <CheckboxGroup class="checkbox">
-          <Checkbox type="checkbox"  v-for="item in internalAudit" label="内审"></Checkbox>
+          <Checkbox type="checkbox"  v-for="(item,index) in internalAudit"  :key="index" label="内审"></Checkbox>
+          <Checkbox type="checkbox"  label="内审"></Checkbox>
         </CheckboxGroup>
-        <div class="increase" @click="addStageInput">
+        <div class="increase cursor" @click="addStageInput">
           <Icon type="ios-plus-outline" class="increaseIcon"></Icon>
           <p>增加阶段</p>
         </div>
 
         <h3 class="h3 marTop10 marTop40">主文件</h3>
         <h4 class="h4">文件格式</h4>
-        <AutoComplete v-model="fileFormat" :data="data3" :filter-method="filterMethod" placeholder="选择主文件格式，可直接输入如jpg" style="width:50%">
+        <AutoComplete v-model="fileFormat" :data="fileFormatArr" :filter-method="filterMethod" placeholder="选择主文件格式，可直接输入如jpg" style="width:50%">
         </AutoComplete>
         <h4 class="h4">文件属性要求</h4>
-        <div class="onefailPro" id="addPropertyInput">
-          <AutoComplete v-model="fileSize" :data="data4" :filter-method="filterMethod" placeholder="尺寸" style="width:20%">
+        <div class="onefailPro" v-for="item in fileProDemand">
+          <AutoComplete v-model="item.fileSize" :data="ProReqArr" :filter-method="filterMethod" style="width:20%">
           </AutoComplete>
-          <AutoComplete v-model="fileValue" :data="data5" :filter-method="filterMethod" placeholder="8000*8000" style="width:30%">
+          <AutoComplete v-model="item.fileValue" :data="valueArr" :filter-method="filterMethod" style="width:30%">
           </AutoComplete>
-          <div @click="delpro1">
-                <Icon type="trash-a" class="icon"></Icon>
+          <div @click="delpro" class="cursor">
+            <Icon type="trash-a" class="icon"></Icon>
           </div>
         </div>
-        <div class="onefailPro" id="addPropertyInput2" style="display:none;margin-top:5px">
-          <AutoComplete v-model="fileSize" :data="data4" :filter-method="filterMethod" placeholder="尺寸" style="width:20%">
-          </AutoComplete>
-          <AutoComplete v-model="fileValue" :data="data5" :filter-method="filterMethod" placeholder="8000*8000" style="width:30%">
-          </AutoComplete>
-          <div @click="delpro2">
-                <Icon type="trash-a" class="icon"></Icon>
-          </div>
-        </div>
-        <div id="addProperty" class="marTop10 width12" @click="addProperty"><Icon type="plus-round"></Icon>&nbsp;增加</div>
+        <div class=" width12 cursor" @click="addProperty"><Icon type="plus-round"></Icon>&nbsp;增加</div>
         <h3 class="h3 marTop10 marTop40">附加文件</h3>
         <h4 class="h4">
           <span>文件格式</span><span>描述</span>
@@ -52,16 +49,20 @@
           <div>
             <span>{{item.taskType}}</span><span>{{item.value}}</span>
           </div>
-          <div @click="delFormat">
+          <div @click="Closelabel">
               <Icon type="trash-a" class="icon"></Icon>
           </div>
         </div>
-
-        <div class="marTop10 width12"  @click="modal1 = true" ><Icon type="plus-round"></Icon>&nbsp;增加附加文件</div >
-        <Modal v-model="modal1" title="增加附加文件" @on-ok="ok" @on-cancel="cancel">
-          <Input type="text" v-model="aFileFormat "  :autofocus="true" placeholder="请输入文件格式" style="width: 48%;margin-right:2% "></Input
-          ><Input type="text" v-model="describe " placeholder="请输入描述内容" style="width: 48%"></Input>
-        </Modal>
+        <div><Button icon="ios-plus-empty" type="text" size="small" @click.stop="Addlabel">
+          增加附加文件
+            <div class="addLabel" v-show="addLabDIV">
+              <Input v-model="aFileFormat" placeholder="文件格式" style="width: 100px;"></Input>
+              <Input v-model="describe" placeholder="描述" style="width: 200px;"  @keyup.13.native="submitLabel($event)"></Input>
+              <Button type="primary" size="small" @click.native.stop="submitLabel">添加</Button>&nbsp;
+              <Button size="small" @click.stop="closeAddDIV">取消</Button>
+            </div>          
+          </Button>
+        </div>
         <Button type="primary" class="btn" @click="conserve">保存</Button>
       </Form>
     </Content>
@@ -78,29 +79,30 @@ export default {
   },
   data() {
     return {
+      arr: [],
+      internalAudit: [],
+      appendFileFormat: [],
+      arrStageName:[],
+      fileProDemand:[],
+      fileFormatArr: ["jpg", "png", "fbx", "avi", "unity"],
+      ProReqArr: ["尺寸", "贴面数", "帧率"],
+      valueArr: ["8000*8000", ">2000", ">24"],
       typeName: "",
       fileFormat: "",
       fileSize: "",
       fileValue: "",
-      current: 0,
-      arr: [],
-      internalAudit: [],
-      data3: ["jpg", "png", "fbx", "avi", "unity"],
-      data4: ["尺寸", "贴面数", "帧率"],
-      data5: ["8000*8000", ">2000", ">24"],
-      appendFileFormat: [],
+      aFileFormat:'',
+      describe:'',
+      categoryId:'',
       modal1: false,
       modal2: false,
-      aFileFormat:"",
-      describe:"",
-      arrStageName:[]
+      addLabDIV:false,
     };
   },
   mounted() {
     if(sessionStorage.oneid) {
         this.Lxinfo(sessionStorage.oneid)
     }
-    
   },
 
   methods: {
@@ -108,7 +110,6 @@ export default {
       let data = {
         id: oneid
       };
-      
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
         this.typeName = msg.data.tasktype_name
              msg.data.stage.forEach(req => {
@@ -139,7 +140,7 @@ export default {
           
       })
     },
-    // 增加阶段
+    // newStage
     addStageInput(req) {
       this.$Modal.confirm({
         title: "增加阶段",
@@ -158,7 +159,6 @@ export default {
           });
         },
         onOk: () => {
-          // 增加阶段
           if (this.value == null) {
             alert("请输入阶段名称");
             this.$Message.error("增加失败");
@@ -167,49 +167,74 @@ export default {
               stage_name: this.value
             });
             this.internalAudit.push(0)
-
+            this.value = ""
             this.$Message.success("增加成功");
           }
         }
       });
     },
-
+    delStage(){
+      const index = this.arr.indexOf(name);
+      this.arr.splice(index, 1);
+      const index2 = this.internalAudit.indexOf(name);
+      this.internalAudit.splice(index2, 1);      
+    },    
+    overShow(){
+      console.log("111")
+    },
+    outHide(){
+      console.log("222")
+    },
+    // 增加文件属性
     addProperty () {
-      $("#addPropertyInput").show();
-      // $("#addProperty").hide()
+      let fileSize
+        this.fileProDemand.push({
+          fileSize :this.fileSize,
+          fileValue :this.fileValue
+        })
     },
-        delpro1(){
-      $("#addPropertyInput").empty()
+    // 附加文件
+    Addlabel () {
+        this.addLabDIV=true;
+    },    
+    submitLabel(){
+        this.appendFileFormat.push({
+            taskType : this.aFileFormat,
+            value : this.describe
+        });
+        this.addLabDIV=false;
+        this.aFileFormat='';
+        this.describe=''
+    }, 
+    closeAddDIV(){
+        this.addLabDIV=false;
+        this.aFileFormat='';
+        this.describe=''
+    },  
+    
+    Closelabel (event, name) {
+      const index = this.appendFileFormat.indexOf(name);
+      this.appendFileFormat.splice(index, 1);
+    }, 
+        
+    delpro(){
+      const index = this.fileProDemand.indexOf(name);
+      this.fileProDemand.splice(index, 1);
     },
-    delpro2(){
-      $("#addPropertyInput2").empty()
-    },
-  // 添加附加文件
-   ok () {
-      this.$Message.info('添加完成');
-      this.appendFileFormat.push({
-             taskType: this.aFileFormat,
-              value: this.describe
-            });
-      // console.log(,)
-    },
-  cancel () {
-  },
-  delFormat(){
-    this.appendFileFormat.splice(0)
-    this.$Message.info('已删除');
-  },
-  
-    //修改
+    //修改、提交
     conserve() {
       let typeId = JSON.parse(sessionStorage.getItem("clickId"));
+      this.arr.forEach(r => {
+        console.log(r.stage_name)
+      })
       let data2 = {
         id: typeId,
-        category_id: 22,
+        category_id: this.categoryId,
         name: this.typeName,
         stage: JSON.stringify([
           {
-            stage_name: '',
+
+            stage_name: "",
             is_inside_audit: 1
           }
         ]),
@@ -222,30 +247,20 @@ export default {
               {
                 config_id: 1,
                 config_name: this.fileSize,
-                value: this.fileValue
+                value: this.fileValue,
               }
             ]
           }
         ])
       };
-
-          // if(sessionStorage.tasktypeName.indexOf(this.typeName)){
-            if (this.typeName) {
-              this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {             
-                this.$refs.child.taskTypeList()
-                this.$Message.success("成功保存");
-              });
-            } else {
-              alert("请输入类型名称");
-            }            
-          // }else{
-          //  this.$Message.error("增加失败请重新修改");
-          // }
-
-          
-          
-        
-
+      if (this.typeName) {
+        this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {             
+          this.$refs.child.taskTypeList()
+          this.$Message.success("成功保存");
+        });
+      } else {
+        alert("请输入类型名称");
+      }       
     },  
       // 获取信息
     getListId(clicktype) {
@@ -258,9 +273,9 @@ export default {
         id: clicktype.id
       };
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
+        this.categoryId = msg.data.category_id
         this.typeName = msg.data.tasktype_name
           msg.data.stage.forEach(req => {
-            // console.log(req)
             this.arr.push(req);
             if(req.is_inside_audit == 1){
               req.is_inside_audit = true
@@ -272,9 +287,9 @@ export default {
             let value;
             r.require.forEach(item => {
               if(r.is_main == 1){
-                this.fileFormat = r.file_format
-                this.fileSize = item.config_name
-                this.fileValue = item.value
+                this.fileFormat = r.file_format//格式
+                this.fileSize = item.config_name//配置项
+                this.fileValue = item.value//尺寸
               }else{
                 _this.appendFileFormat.push({
                   taskType: taskType,
@@ -288,7 +303,6 @@ export default {
         }),
         sessionStorage.setItem("clickId", clicktype.id);
     },
-// return  getListId,
     filterMethod(value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
     },
@@ -296,13 +310,20 @@ export default {
   }
 };
 </script>
-
 <style scoped>
+.steps{
+ line-height: 20px
+}
 .ivu-layout-sider {
   background: 0;
 }
 .icon {
   font-size: 20px;
+  vertical-align: middle;
+}
+.iconSmall{
+  font-size: 14px;
+  color: #999;
   vertical-align: middle;
 }
 .checkbox {
@@ -341,7 +362,8 @@ h3 {
   margin: 10px 0;
 }
 .onefailPro>div{
-  display: inline-block
+  display: inline-block;
+  margin-bottom: 10px;
 }
 .border {
   width: auto;
@@ -389,5 +411,24 @@ h4 > span:last-child {
 }
 .width12 {
   width: 12%
+}
+.cursor {
+  cursor: pointer;
+}
+.addLabel{
+  position:absolute;
+  border-radius:4px;
+  padding:5px;
+  background:#fff;
+  width:200px;
+  margin-top:-28px;
+  margin-left:-10px;
+  text-align:left;
+            
+}
+.delStage{
+  position: absolute;
+  top: -5px;
+  right:-5px;
 }
 </style>

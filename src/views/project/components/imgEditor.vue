@@ -70,7 +70,7 @@
       return {
         data:[],
         IMGdata:[],
-        url:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977865243&di=9bfb3c4611ef0ebfe80a67aa478d6b21&imgtype=0&src=http%3A%2F%2Fwww.xingda-fs.com%2Fcomdata%2F6480613%2Fproduct%2F20170518164212591d5e64f3fe2_b.jpg',
+        url:'',
         TID:80,
         TaskID:0,
         IMGlist:[],
@@ -113,18 +113,29 @@
             }
       }
     },
-    
     mounted(){
       // this.initImgEditor();
       this.loadWH();
     },
+    computed:{
+      storeTaskID(){
+        return this.$store.state.ImgVedioStatus.TaskID
+      },
+      storeFileURl(){
+        return this.$store.state.ImgVedioStatus.FileURl
+      }
+
+    },
     methods:{
+      // addClass(){
+      //      $('.AllowEdit').css('margin-top','520px')
+      // },
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
       initImgEditor()
       {
-        this.url=sessionStorage.FileURl;
+        this.url=this.storeFileURl;
         this.get();
         this.onLoad();
         sessionStorage.removeItem("FeedbackValue");
@@ -135,13 +146,20 @@
           // el2.style.display="block";
           el.onload=function(){
               el2.style.display="none";
+              let imgH=$("#ImgOnlod").height()
+              let divH=$(".browsetaskpop").height()
+              $('.stageListRow').css('height',imgH)
+              if(imgH>divH){
+                $(".browsetaskpop").css('height',imgH+88)
+              }
           }
       },
       loadWH(){
           $('.stageListRow,.imgEditorCom').height($(window).height()-500);
           $(".imgEditorCom").width($(".filebrowse").width());
-          $('.imgFocus img').height($(window).height()-500);
+          //$('.imgFocus img').height($(window).height()-500);
           $(".defaultH").height($(window).height()-400);
+          //$(".imgFocus").width($(".filebrowse").width());    
       },
       changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
@@ -156,7 +174,7 @@
          this.liIndex=index;
          let fileID=taskID;
          let fID=fid;
-        
+         this.changeState(this.StateFeedBack);
          this.defue(fileID,fID);
          this.imgdef();
          Data=[];
@@ -338,36 +356,39 @@
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
       },
+      changeState(state){
+        //  控制图片是否可标注
+              if(state==1||state==2){
+                sessionStorage.AllowEdit="Allow";//允许标注
+                  this.AllowEditRow=true;
+                  this.SataeInfo=false;
+              }else if(state==3||state==4||state==5){
+                sessionStorage.AllowEdit="NotAllow";//不允许标注
+                  this.AllowEditRow=false
+                  this.SataeInfo=true;
+              }else{
+                sessionStorage.AllowEdit="Other";//不显示下面和不允许标注
+                  this.AllowEditRow=false;
+                  this.SataeInfo=false;
+              }
+      },
       get(){
           //  获取图片的标注信息
-           let TaskID=sessionStorage.TaskID;
+           let TaskID=this.storeTaskID
            if(TaskID == 0)
            {
               return false;
            }
            let _this=this;
-          //  控制图片是否可标注
-           if(sessionStorage.AllowEdit=="Allow"){ //允许标注
-                _this.AllowEditRow=true;
-                _this.SataeInfo=false;
-            }else if(sessionStorage.AllowEdit=="NotAllow"){ //不允许标注
-                _this.AllowEditRow=false
-                 _this.SataeInfo=true;
-            }else if(sessionStorage.AllowEdit=="Other"){ //不显示下面和不允许标注
-                _this.AllowEditRow=false;
-                _this.SataeInfo=false;
-            }
            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
-
                 _this.IMGlist.forEach((val,index)=>{
-                   if(val.file.file==sessionStorage.FileURl){
+                   if(val.file.file==_this.storeFileURl){
                     // 设置初始化值
-                    // console.log(val.status)
                      _this.data=val.file.tag;
                      _this.StateFeedBack=val.status;
                      _this.insTime=val.insTime;
@@ -378,10 +399,10 @@
                      _this.cliUid=val.cliUid;
                      _this.liIndex=index;
                      _this.IMGID=val.file.id;
-                     _this.fileID=val.file.stage_id
+                     _this.fileID=val.file.stage_id;
                    }
                 })
-              
+              _this.changeState(_this.StateFeedBack);
               // 把StageID传到提交
               let fileID = _this.fileID;
               let fID=_this.IMGID;

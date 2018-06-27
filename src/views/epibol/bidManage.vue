@@ -1,7 +1,7 @@
 <template>
    <!-- 投标 -->
   <div class="bidManage">
-      <Tabs value="application" @on-click="application" :animated="false">
+      <Tabs value="application" :animated="false">
         <!-- 已报名招标 -->
         <TabPane :label="appName" name="application">
             <div class="fileCondition">
@@ -48,7 +48,7 @@
                             ￥{{item.project_min_price}}~{{item.project_max_price}}
                         </span>
                         <span>
-                            <img :src="item.headimage!=null?item.headimage:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1528168614&di=2d0f1e00b83ecd741a9c32a4c83ef526&src=http://pic.90sjimg.com/design/00/67/59/63/58e89bee922a2.png'"> {{item.execute_user}}
+                            <img :src="item.headimage" v-if="item.headimage==null?false:true"> {{item.execute_users}}
                         </span>
                         <span>
                             <em class="action" v-if="item.end_days>0">{{item.end_days>0?item.end_days+'天':'今天结束'}}</em>
@@ -72,55 +72,34 @@
                     :closable="false"
                     @on-cancel="cancelModal"
                     width="1100px">
-
                     <!-- 招标详情Modal -->
                     <bid-Details :appData='appData' ref="getCont"></bid-Details>
-                    
                    <div slot="footer"></div>
                 </Modal>
             </div>
-
         </TabPane>
         <!-- 外包邀请 -->
-        <TabPane label="外包邀请" name="invite">
+        <TabPane :label="inviteName" name="invite">
             <div class="fileCondition">
                 <em> 
                     <Select v-model="fileInvite" size="small" style="width:110px">
-                        <Option v-for="item in inviteList" :value="item.value" :key="item.value">{{ item.value }}</Option>
+                        <Option v-for="item in inviteList" :value="item.key" :key="item.value">{{ item.value }}</Option>
                     </Select>
                 </em>
                 <em>
-                    <Input v-model="searchData" size="small" style="width:150px;margin-top:-1px;" placeholder="输入搜索的内容">
-                        <Button slot="append" icon="ios-search" size="small"></Button>
+                    <Input v-model="searchData" size="small" style="width:150px;margin-top:-1px;" placeholder="输入搜索的内容" @on-enter="searchInVite">
+                        <Button slot="append" icon="ios-search" size="small" @click.native="searchInVite"></Button>
                     </Input>
                 </em>
                 <div class="clear"></div>
             </div>
-             <div class="bidList invite">
-                <dl>
-                    <dt>
-                        <span>项目名称</span>
-                        <span>项目预计总额</span>
-                        <span>时间要求</span>
-                        <span>邀请方</span>
-                        <span>邀请反馈</span>
-                        <div class="clear"></div>
-                    </dt>
-                    <dd>
-                        <span>项目名称</span>
-                        <span>项目预计总额</span>
-                        <span>时间要求</span>
-                        <span>邀请方</span>
-                        <span><Button type="primary">确认</Button></span>
-                        <div class="clear"></div>
-                    </dd>
-                </dl>
-             </div>
+            <bid-invite :inviteData="inviteData"></bid-invite>
         </TabPane>
       </Tabs>
   </div>
 </template>
 <script>
+import bidInvite from './bidManage/component/bidInvite'
 import bidDetails from './bidManage/component/bidDetails'
 var qs = require('querystring')
 export default {
@@ -136,7 +115,17 @@ export default {
                         })
                     ])
                 },
-            companyID:1,
+            inviteName:(h)=>{
+                 return h('div', [
+                        h('span', '外包邀请'),
+                        h('Badge', {
+                            props: {
+                                count:'('+this.inviteData.length+')',
+                            }
+                        })
+                    ])
+            },
+            companyID:2,
             applicationData:[],
             applModal:false,
             modalTitle:'',
@@ -157,24 +146,33 @@ export default {
                 {value:'招标失败',index:4}
             ],
             searchData:null,
-            fileInvite:'不限',
+            fileInvite:0,
             inviteList:[
-                {value:'不限'},
-                {value:'待确认'},
-                {value:'邀请已过期'},
-                {value:'已接受'},
-                {value:'已拒绝'}
+                {value:'不限',key:0},
+                {value:'未反馈',key:1},
+                {value:'已接受',key:2},
+                {value:'已拒绝',key:3},
+                {value:'邀请过期',key:4}
             ],
-            appData:[],
-            personnel:[]
+            appData:{},
+            personnel:[],
+            inviteData:[]
         }
     },
     components:{
-        bidDetails:bidDetails
+        bidDetails:bidDetails,
+        bidInvite:bidInvite
     },
     mounted(){
         this.bidGet();
         this.Refresh();
+        this.inviteGet();
+        this.$bus.on('updataSuccess',()=>{
+            this.inviteGet();
+        })
+        this.$bus.on('setExecuteUser',()=>{
+            this.bidGet(); 
+        })
     },
     filters:{
         filerStatus(val){
@@ -193,6 +191,9 @@ export default {
         },
         resultData(val){
            this.bidGet(this.condtionData,val);
+        },
+        fileInvite(val){
+           this.inviteGet(this.searchData,val) 
         }
     },
     methods:{
@@ -204,15 +205,17 @@ export default {
         },
         //关闭Modal回调
         cancelModal(){
-            this.$bus.emit("defaultType")
+            
         },
         // 招标详情
         applicationInfo(name,id){
             let _this=this;
+            _this.$Loading.start();
             _this.applModal=true;
             _this.modalTitle=name;
             let url=_this.GLOBAL.baseRouter+'task/company/bid-info&bid_id='+id;
             _this.$axios.get(url).then(msg=>{
+                _this.$Loading.finish();
                 let MsgData=msg.data;
                 if(MsgData.err_code==0){
                     let MsgObj={
@@ -235,15 +238,14 @@ export default {
                 }
             })
         },
-        // 切换外包和招标
-        application(name){
-            console.log(name)
-        },
-        // 搜索
+        // 招标搜索
         search(){
             this.bidGet(this.condtionData,this.resultData,this.searchData)
         },
-        //初始化招标数据
+        searchInVite(){
+            this.inviteGet(this.searchData,this.fileInvite)
+        },
+        // 初始化招标数据
         bidGet(condData=this.condtionData,resultData=this.resultData,searData=this.searchData){
             let _this=this;
             _this.$Loading.start();
@@ -265,6 +267,24 @@ export default {
             },()=>{
                 _this.$Loading.error();
             })  
+        },
+        // 邀请列表
+        inviteGet(search=this.searchData,status=this.fileInvite){
+            let _this=this;
+            let url=_this.GLOBAL.baseRouter+'task/company/my-invite-list';
+            let params={
+                search:search,
+                status:status
+            }
+            _this.$Loading.start();
+            _this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                if(msg.data.err_code==0){
+                    _this.$Loading.finish();
+                    _this.inviteData=msg.data.data
+                }
+            },()=>{
+                _this.$Loading.error();
+            })
         }
     }
 }

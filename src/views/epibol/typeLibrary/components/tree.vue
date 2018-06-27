@@ -1,28 +1,39 @@
 <template>
   <div>
-    <div class="failHeader"  @click="modal2 = true">
-      <Icon type="android-add" class="icon"></Icon>
-      <span>新建</span>
-      <!-- <icon type="search" class="icon search"></icon>  -->
+    <div class="failHeader cursor">
+      <span  @click="typeModal = true">
+        <Icon type="android-add" class="icon"></Icon>
+        <span>增加类型</span>
+      </span>
+      <span  @click="classModal = true">
+        <Icon type="android-add" class="icon"></Icon>
+        <span>增加分类</span>        
+      </span>
     </div>
-    <Tree :data="data5"  :render="renderContent"></Tree>
-    <Modal
-        v-model="modal2"
-        title="新建类型"
-        @on-ok="ok2"
-        @on-cancel="cancel2">
-        <span class="h4">类型名称</span>
-        <Input type="text" v-model="addTypeName"  :autofocus="true" style="width: 25%"></Input>
-        <span class="h4">阶段名称</span>
-        <Input type="text" v-model="stageName"  :autofocus="true" style="width: 25%"></Input>
-        
-        <span class="h4">文件格式</span>
-        <Input type="text" v-model="fileFormat"  :autofocus="true" style="width: 10%"></Input>
+    <Tree :data="tree"  :render="renderContent"></Tree>
+    <modal v-model="classModal" title="新建分类" @on-ok="newClassify">
+          <Input type="text" v-model="classify"  :autofocus="true" style="width: 50%"></Input>
+    </modal>
+    <Modal v-model="typeModal" title="新建类型" @on-ok="newType">
+        <div class="h4">选择属于分类</div>
+        <Select v-model="selClass" style="width:50%">
+            <Option v-for="item in tree" :value="item.pId"  :key="item.pId">{{ item.title }}</Option>
+        </Select>
+        <div class="h4">类型名称</div>
+        <Input type="text" v-model="addTypeName" :autofocus="true" style="width: 50%"></Input>
+        <div class="h4">阶段名称</div>
+        <Input type="text" v-model="stageName" :autofocus="true" style="width: 50%"></Input>
+        <div class="h4">主文件格式</div>
+        <AutoComplete type="text" v-model="fileFormat" :data="fileFormatArr"  :autofocus="true" style="width: 20%"></AutoComplete>
         </br>
-        <span class="h4">文件配置项名称</span>
-        <Input type="text" v-model="fileOptionsName"  :autofocus="true" style="width: 25%"></Input>
-        <span class="h4">值</span>
-        <Input type="text" v-model="describe"  :autofocus="true" style="width: 25%"></Input>
+        <div class="h4">主文件属性要求</div>
+        <AutoComplete type="text" v-model="fileOptionsName"  :data="ProReqArr"  :autofocus="true" placeholder="尺寸" style="width: 50%"></AutoComplete>
+        <div class="h4">数值</div>
+        <AutoComplete type="text" v-model="describe" :data="valueArr"  :autofocus="true" style="width: 50%"></AutoComplete>
+        <div class="h4">附加文件格式</div>
+        <Input type="text" v-model="appendFileFormat "  :autofocus="true" style="width: 20%"></Input>
+        <div class="h4">附加文件描述</div>
+        <Input type="text" v-model="appendFileDes"  :autofocus="true" style="width: 50%"></Input>
     </Modal>
   </div>
 </template>
@@ -31,32 +42,38 @@ var qs = require("querystring");
 export default {
   data() {
     return {
-      data5: [],
-      test: [],//二级列表
-      buttonProps: {
-        type: "ghost",
-        size: "small"
-      },
+      tree: [],
+      oneMenu: [],
       calssType: [],
       tasktypeName:[],
-      modal2: false,
+      fileFormatArr: ["jpg", "png", "fbx", "avi", "unity"],
+      ProReqArr: ["尺寸", "贴面数", "帧率"],
+      valueArr: ["8000*8000", ">2000", ">24"],
+      selClass:"", 
       addTypeName:"",
       stageName:"",
       fileFormat:"",
       fileOptionsName:"",
-      describe:""
+      describe:"",
+      appendFileFormat:"",
+      appendFileDes:"",
+      classify:"",
+      typeModal: false,
+      classModal: false, 
+      buttonProps: {
+        type: "ghost",
+        size: "small"
+      },
     };
   },
   mounted() {
     this.taskTypeList();
   },
   methods: {
-    // 获取列表
+    // getTree
     taskTypeList() {
       let _this = this;
-      this.$axios
-        .get(this.GLOBAL.baseRouter + "task/task-type/cate-list&company_id=1")
-        .then(msg => {
+      this.$axios.get(this.GLOBAL.baseRouter + "task/task-type/cate-list&company_id=1").then(msg => {
           let MsgData = msg.data.data;
           let item = [];
           MsgData.forEach(req => {
@@ -65,13 +82,15 @@ export default {
               selected: true,
               render: (h, { root, node, data }) => {
                 return h(
+                  
                   "span",
                   {
                     style: {
                       display: "inline-block",
                       width: "90%",
                       cursor: "pointer",
-                      background: data.actClass
+                      background: "#e6e6e6",
+                      padding: "2px 10px"
                     }
                   },
                   [
@@ -91,14 +110,15 @@ export default {
                             type: "ios-folder-outline"
                           },
                           style: {
-                            marginRight: "8px"
+                            marginRight: "8px",
+                            lineHeight:"24px"
                           }
                         }),
                         h("span", data.title)
                       ]
                     ),
                     h(
-                      "span", //增加删除
+                      "span", 
                       {
                         style: {
                           display: "inline-block",
@@ -106,30 +126,17 @@ export default {
                         }
                       },
                       [
-                        // h("Button", {
-                        //   //增加
-                        //   props: Object.assign({}, this.buttonProps, {
-                        //     icon: "ios-plus-empty"
-                        //   }),
-                        //   id: "addbtn",
-                        //   on: {
-                        //     click: () => {
-                        //       // this.addClassTask(root, node, data);
-                        //       // this.append(root, node, data);
-                        //     }
-                        //   }
-                        // }),
                         h("Button", {
-                          //分类删除
                           props: Object.assign({}, this.buttonProps, {
                             icon: "ios-minus-empty"
                           }),
                           style: {
-                            marginLeft: "10px"
+                            marginLeft: "10px",
+                            color:"#333",
                           },
                           on: {
                             click: $event => {
-                              this.removeClass(data, $event);
+                              this.classDel(root, node, data);
                             }
                           }
                         })
@@ -148,13 +155,13 @@ export default {
             }
             item.push(obj);
           });
-          _this.data5 = item;
+          _this.tree = item;
         });
 
     },
     renderContent(h, { root, node, data }) {
       return h(
-        "span", //二级列表
+        "span", 
         {
           style: {
             display: "inline-block",
@@ -168,11 +175,9 @@ export default {
             {
               style: {
                 background: data.actClass,
-                
                 display: "inline-block",
                 width: "120px",
               },
-
               on: {
                 click: () => {
                   this.targriClass(root, node, data);
@@ -195,7 +200,7 @@ export default {
               style: {
                 display: "inline-block",
                 float: "right",
-                // marginRight: "32px"
+                marginRight: "10px"
               }
             },
             [
@@ -206,7 +211,7 @@ export default {
                 }),
                 on: {
                   click: $event => {
-                    this.remove(root, node, data);
+                    this.typeDel(root, node, data);
                   }
                 }
               })
@@ -215,86 +220,21 @@ export default {
         ]
       );
     },
-    //渲染二级数据
-    eachLxinfo(submenu) {
-      let im = [];
-      this.test = submenu;
-      // this.submenu = submenu
-      
-      submenu.forEach(req => {
-        this.tasktypeName.push(req.tasktype_name)
-        sessionStorage.tasktypeName = this.tasktypeName
-      })
-      sessionStorage.oneid = submenu[0].id
-      if (this.test) {
-        this.test.forEach((req, index) => {
-          let obj = {};
-          obj.title = req.tasktype_name;
-          obj.id = req.id;
-          obj.category_id = req.category_id;
-          im.push(obj);
-        });
+  newClassify(){
+    let classify ={
+      name:this.classify,
+      company_id:1
       }
-      return im;
-      
-    },
-
-    // 增加二级菜单
-    addClassTask(root, node, data) {
-      let _this = this;
-      data.children.forEach(r => {
-        let clickDel = {
-          category_id: r.category_id
-        };
-      });
-    },
-
-    //向父组件传递数据
-    targriClass(root, node, data) {
-      let _this = this;
-      let clicktype = {
-        isInit: false,
-        id: data.id,
-        category_id: data.category_id,
-        liName: data.title
-      };
-      _this.$emit("getListId", clicktype)
-
-      
-
-      //点击左边列表增加标识
-      root.forEach(r => {
-        this.$set(r.node, "actClass", "#fff");
-      });
-      this.$set(data, "actClass", "#d5e8fc");
-    },
-    // 分类删除
-    removeClass(data, $event) {
-      $event.cancelBubble = true;
-      let cIs = this;
-      let removeData = data.pId;
-      cIs.$axios.get(this.GLOBAL.baseRouter + "task/task-type/cate-delete&id=removeData").then(msg => {
-          cIs.taskTypeList();
-          cIs.$Message.success("删除成功");
-        });
-    },
-    //删除
-    remove(root, node, data) {
-            let cIs = this;
-      let removeData = {id: data.id};
-      let removeCad = data.id;
-      cIs.$axios.post(this.GLOBAL.baseRouter + "task/task-type/delete&id=removeCad",qs.stringify(removeData)).then(msg => {
-        cIs.taskTypeList();
-        cIs.$Message.success("删除成功");
-      })
-    },
-// 新增分类
-  ok2(){
-    // this.$Message.info('Clicked ok');
-          let addType = {
-        category_id: 22,
+    this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/cate-add",qs.stringify(classify)).then(msg => {
+      this.taskTypeList()
+      this.$Message.success("增加成功");
+    })
+  },
+  newType(){
+      let addType = {
+        category_id: this.selClass,
         name: this.addTypeName,
-        expand: true,
+        expand: true, 
         stage: JSON.stringify([
           {
             stage_name:this.stageName,
@@ -316,28 +256,81 @@ export default {
           }
         ])
       };
-      if(sessionStorage.tasktypeName.indexOf(this.addTypeName)){
-      this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/add",qs.stringify(addType)).then(r => {
-          // const children = data.children || [];
-          if (r.data.err_code!== 0) {
-            this.$Message.error("增加失败");
-          } else {
-            this.test.push({
-              title: "新建任务类型",
-              expand: true
-            });
-            this.taskTypeList()
-          }
-        });
+      if(this.tasktypeName.indexOf(this.addTypeName) > -1){
+        this.$Message.error("类型名称不能相同");
       }else{
-        this.$Message.error("已有任务类型名称");
+       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/add",qs.stringify(addType)).then(r => {
+          if (r.data.err_code == 0) {
+            this.taskTypeList()
+            this.addTypeName = ""
+            this.stageName =""
+            this.fileFormat ="" 
+            this.fileOptionsName ="" 
+            this.describe =""
+            this.appendFileFormat =""
+            this.appendFileDes =""
+          } else {
+            this.$Message.error("增加失败");
+          }
+      });
       }
-
   },
-  cancel2(){
-   this.$Message.info('Clicked cancel');
-  },
-   
+    classDel(root, node, data) {
+      let _this = this;
+      let removeData = {id : data.pId};
+          if(data.pId == 0) {
+            _this.$Message.error("默认不能删除");
+          }else{
+            _this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/cate-delete",qs.stringify(removeData)).then(msg => {
+              _this.taskTypeList();
+              _this.$Message.success("删除成功");
+            });
+          }
+         
+        
+    },
+    typeDel(root, node, data) {
+      let _this = this;
+      let removeData = {id: data.id};
+      _this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/delete",qs.stringify(removeData)).then(msg => {
+        _this.taskTypeList();
+        _this.$Message.success("删除成功");
+      })
+    },
+    //子列表
+    eachLxinfo(submenu) {
+      let im = [];
+      this.oneMenu = submenu;
+      submenu.forEach(req => {
+        this.tasktypeName.push(req.tasktype_name)
+      })
+      sessionStorage.oneid = submenu[0].id
+      if (this.oneMenu) {
+        this.oneMenu.forEach((req, index) => {
+          let obj = {};
+          obj.title = req.tasktype_name;
+          obj.id = req.id;
+          obj.category_id = req.category_id;
+          im.push(obj);
+        });
+      }
+      return im;
+    },
+    //子传父
+    targriClass(root, node, data) {
+      let _this = this;
+      let clicktype = {
+        isInit: false,
+        id: data.id,
+        category_id: data.category_id,
+        liName: data.title
+      };
+      _this.$emit("getListId", clicktype)
+      root.forEach(r => {
+        this.$set(r.node, "actClass", "#fff");
+      });
+      this.$set(data, "actClass", "#d5e8fc");
+    },
   }
 };
 </script>
@@ -348,10 +341,13 @@ export default {
     height: 43px;
     line-height: 33px;
     padding: 8px;
-    background-color: #e6e6e6;
+    border: 1px solid #e6e6e6;
     border-radius: 5px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0; 
+    border-bottom-left-radius: 0; 
+  }
+  .failHeader>span{
+    margin-right: 10px
   }
   .icon {
     font-size: 20px;
@@ -362,6 +358,10 @@ export default {
     position: absolute;
     right: 10px;
     top: 15px;
+  }
+  .cursor {
+    cursor: pointer;
+   
   }
 </style>
 

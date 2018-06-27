@@ -25,7 +25,7 @@
             <span><p>审核意见</p><br/>{{Biddata.examine_description}}</span>
             <span><p>审核结果</p><br/><b :class="[Biddata.status==2?'NOT':'']">{{Biddata.status==2?'需求修改':'通过'}}</b></span>
             <span><p>审核人</p><br/>{{Biddata.examine_user}}</span>
-            <span><p>审核时间</p><br/>{{Biddata.examine_days==0?'今天':Biddata.examine_days+'天前'}}</span>
+            <span><p>审核时间</p><br/>{{Biddata.examine_days==0?'今天':Math.abs(Biddata.examine_days)+'天前'}}</span>
             <div class="clear"></div>
           </div>
       </div>
@@ -46,7 +46,7 @@
         data:[],
         IMGdata:[],
         Biddata:[],
-        url:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977865243&di=9bfb3c4611ef0ebfe80a67aa478d6b21&imgtype=0&src=http%3A%2F%2Fwww.xingda-fs.com%2Fcomdata%2F6480613%2Fproduct%2F20170518164212591d5e64f3fe2_b.jpg',
+        url:'',
         AllowEditRow:true,
         SataeInfo:true,
         StateFeedBack:0,
@@ -81,13 +81,18 @@
           el2.style.display="block";
           el.onload=function(){
               el2.style.display="none";
+              let imgH=$("#ImgOnlod").height()+120;
+              let divH=$(".ivu-modal-body").height();
+              if(imgH>divH){
+                $(".ivu-modal-body").css('height',imgH)
+              }
           }
       },
       loadWH(){
-          $('.stageListRow,.imgEditorCom').height($(window).height()-500);
+          $('.imgEditorCom').height($(window).height()-500);
           $(".imgEditorCom").width($(".ivu-modal").width()-400);
-          $('.imgFocus img').height($(window).height()-500);
-          $(".defaultH").height($(window).height()-400);
+          // $('.imgFocus img').height($(window).height()-500);
+          //$(".defaultH").height($(window).height()-400);
       },
       defue(BID,status){
         (function($){

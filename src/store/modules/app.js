@@ -1,4 +1,5 @@
 import {otherRouter, appRouter} from '@/router/router';
+import {menu} from '@/router/menu'
 import Cookies from 'js-cookie';
 import Vue from 'vue';
 
@@ -15,7 +16,7 @@ const app = {
     },
     mutations: {
         updateMenulist (state) {
-            state.menuList = appRouter;
+            state.menuList = menu;
         },
         changeMenuTheme (state, theme) {
             state.menuTheme = theme;

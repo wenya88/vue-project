@@ -12,8 +12,8 @@
 import tasktype from './components/taskType.vue';
 export default {
   components:{
-      tasktype
-      },
+    tasktype
+  }
 }
 </script>
 

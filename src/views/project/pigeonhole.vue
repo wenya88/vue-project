@@ -179,8 +179,10 @@ export default {
     },
     fetchFileData(taskId,type,file) {
       this.isTabModal = true;
-      sessionStorage.TaskID=taskId;
-      sessionStorage.FileURl=file;
+      // sessionStorage.TaskID=taskId;
+      // sessionStorage.FileURl=file;
+      this.$store.commit('changeComponentTaskID',TaskID);
+      this.$store.commit('changeComponentFileURl',file);
       sessionStorage.AllowEdit=undefined;
       console.log(taskId,type);
       

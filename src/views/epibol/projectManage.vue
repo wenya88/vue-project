@@ -38,7 +38,7 @@
         </div>
         <!-- 新建项目 -->
         <Modal v-model="modal"  @on-ok="subOk" @on-cancel="cancel"  width="700">
-               <AddProbox></AddProbox>
+               <Add-Probox></Add-Probox>
         </Modal>
 
         <!-- 删除项目 -->
@@ -74,18 +74,7 @@
                                 <Icon type="ios-more">操作</Icon>
                             </a>
                             <DropdownMenu slot="list">
-                                <DropdownItem @click.native.stop="editPro(
-                                    item.id,
-                                    item.name,
-                                    item.leader,
-                                    item.contract,
-                                    item.tag,
-                                    item.start_date,
-                                    item.end_date,
-                                    item.status,
-                                    item.picture,
-                                    item.realname
-                                )">编辑</DropdownItem>
+                                <DropdownItem @click.native.stop="editPro(item)">编辑</DropdownItem>
                                 <DropdownItem @click.native.stop="deletePro(item.id,index,item.name)">删除</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -212,7 +201,9 @@ export default {
           }
       }
   },
-  components:{AddProbox},
+  components:{
+      AddProbox:AddProbox
+  },
   mounted(){
       this.$bus.on("AddProInfo",(val)=>{
           this.AddPorData=val;
@@ -270,20 +261,20 @@ export default {
         this.Prostatus="NewAdd"
     },
     // 编辑项目
-    editPro(id,name,leader,contract,tag,startTime,endTime,status,picture,Mname){
+    editPro(item){
         this.modal=true;
         this.Prostatus="editPro";
         let EditProObj={
-            EPid:id,
-            EPname:name,
-            EPleader:leader,
-            EPcontract:contract,
-            EPtag:tag,
-            EPstartTime:startTime,
-            EPendTime:endTime,
-            EPstatus:status,
-            EPpicture:picture,
-            EpmanangeName:Mname==null||Mname==" "?{"name":"NotName"}:{"name":Mname}
+            EPid:item.id,
+            EPname:item.name,
+            EPleader:item.leader,
+            EPcontract:item.contract,
+            EPtag:item.tag,
+            EPstartTime:item.startTime,
+            EPendTime:item.endTime,
+            EPstatus:item.status,
+            EPpicture:item.picture,
+            EpmanangeName:item.Mname==null||item.Mname==" "?{"name":"NotName"}:{"name":item.Mname}
         };
         this.$bus.emit("EditProData",EditProObj);
     },

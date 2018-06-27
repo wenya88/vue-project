@@ -1,7 +1,9 @@
 import Cookies from 'js-cookie';
 
 const user = {
-    state: {},
+    state: {
+        secretKey:null
+    },
     mutations: {
         logout (state, vm) {
             Cookies.remove('user');
@@ -18,8 +20,13 @@ const user = {
             if (theme) {
                 localStorage.theme = theme;
             }
-
+        },
+        getSecretKey(state,data){
+            state.secretKey = data
         }
+    },
+    actions:{
+
     }
 };
 
