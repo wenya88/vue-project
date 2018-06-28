@@ -10,6 +10,7 @@
                             <img  :src="item.headimage ? item.headimage : imgHead" alt="头像">
                             <p>{{item.remark_name}}</p>
                             <div style="color: #a1a1a1">{{item.department_name}}</div>
+                            <p>{{item.job}}</p>
                         </div>
                     </li>
                 </template>
@@ -208,7 +209,7 @@
                     width: 25%;
                     .card {
                         position: relative;
-                        height: 180px;
+                        height: 200px;
                         padding: 25px 0;
                         margin: 10px 20px 0 0px;
                         text-align: center;
@@ -237,7 +238,7 @@
                             cursor: pointer;
                         }
                         &:hover {
-                            transform: scale(1.1);
+                            transform: scale(1.05);
                             transition: transform .3s;
 
                             .sign {

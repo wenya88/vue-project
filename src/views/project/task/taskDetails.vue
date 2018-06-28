@@ -1,13 +1,14 @@
 <!-- 任务详情组件 -->
 <template>
     <div>
-        <Form label-position="left" :label-width="60" >
-            <FormItem label="任务名称">
-                <Input v-model="editData.name" :disabled="editDisabled">
+        <Form label-position="top" :label-width="60" >
+            <FormItem   label="任务名称">
+                <Input   v-model="editData.name"  :disabled="editDisabled">
+                <span slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
             <FormItem label="负责人">
-                <Select v-model="principalName" >
+                <Select v-model="principalName"  placeholder="">
                     <Option v-for="item in principal" :value="item.remark_name" :key="item.value">{{ item.remark_name }}</Option>
                 </Select>
             </FormItem>
@@ -19,7 +20,7 @@
                 type="daterange"
                 :options="startTime"
                 split-panels
-                placeholder="选择计划时间范围"
+
                 :disabled="editDisabled"
                 >
                 </DatePicker>
@@ -30,6 +31,7 @@
                 v-model="editData.project_child_name"
                 clearable
                 :disabled="editDisabled"
+                placeholder=""
                 >
                     <Option
                         v-for="item in childProjectsList"
@@ -41,26 +43,39 @@
                 </Select>
             </FormItem>
             <FormItem label="任务类型">
-                <AutoComplete  v-model="editData.tasktype_name"
-                            placeholder="选择任务类型"
-                            @on-select="selectTaskType"
-                            :disabled="editDisabled"
-                            >
-                    <Option v-for="item in taskTypesList"
-                    :key="item.tasktype_name"
-                    :value="item.tasktype_name"
+                <section class="requirement">
+                    <AutoComplete  v-model="editData.tasktype_name"
+                                   @on-select="selectTaskType"
+                                   :disabled="editDisabled"
+                                   icon="android-color-palette"
                     >
-                    <span> {{item.tasktype_name}}</span>
-                    </Option>
-                </AutoComplete>
+                        <Option v-for="item in taskTypesList"
+                                :key="item.tasktype_name"
+                                :value="item.tasktype_name"
+                        >
+                            <span> {{item.tasktype_name}}</span>
+                        </Option>
+                    </AutoComplete>
+                    <Card :bordered="true" style="text-align: center">
+                        <div v-for="item in taskTypeInfo" :key="item.id">
+                           <p>
+                               <span>尺寸</span><span>{{item.require[0].value?item.require[0].value:'无'}}</span>
+                           </p>
+                            <p>
+                                 <span>格式</span><span>{{item.file_format}}</span>
+                            </p>
+                        </div>
+                    </Card>
+
+                </section>
             </FormItem>
-            <FormItem label="文件要求">
-                <Card :bordered="true" style="text-align: center">
-                    <p v-for="item in taskTypeInfo" :key="item.id">
-                        {{item.file_format}}&#160&#160{{item.require[0].value}}
-                    </p>
-                </Card>
-            </FormItem>
+            <!--<FormItem label="文件要求">-->
+                <!--<Card :bordered="true" style="text-align: center">-->
+                    <!--<p v-for="item in taskTypeInfo" :key="item.id">-->
+                        <!--{{item.file_format}}&#160&#160{{item.require[0].value}}-->
+                    <!--</p>-->
+                <!--</Card>-->
+            <!--</FormItem>-->
             <FormItem label="参考附件">
                 <div>
                 <Upload
@@ -137,6 +152,7 @@ export default{
     methods:{
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
+            console.log(123)
             if(id!=0)
             {
                 this.taskID = id;
@@ -174,6 +190,7 @@ export default{
         {
             this.isNewTask = true;
             this.initProjectInfo(projectInfo);
+            this.clickMenberDropdown();
         },
         //初始化项目相关信息-DONE
         initProjectInfo(projectInfo)
@@ -273,7 +290,7 @@ export default{
             }
         },
         //主任务保存编辑数据
-        saveTaskDetails() {
+        saveTaskDetails(link) {
             let dataForm = {};
                 dataForm.id = this.editData.id;
                 dataForm.father = this.editData.father ? this.editData.father : 0;
@@ -289,7 +306,7 @@ export default{
                 dataForm.remark_name = this.principalName;
                 console.log(dataForm.run_member_id);
 
-            return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm);
+            return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm,link);
         },
         //获得参与人ID
         getUserId(namesData)
@@ -343,11 +360,14 @@ export default{
             return true;
         },
         //更新任务
-        updateTaskDetail(dataForm)
+        updateTaskDetail(dataForm,link)
         {
             this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dataForm))
                         .then(res => {
                             this.$bus.emit('refreshCurrentTaskList');
+                            if(link){
+                                this.$router.push({path:'/project/task'});
+                            }
                         })
                         .catch(error => {
                             this.$Message.error("编辑任务失败，请重试！");
@@ -415,14 +435,16 @@ export default{
         //点击参与人下拉
         clickMenberDropdown()
         {
+            console.log(111 )
             this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-page',qs.stringify({company_id: 1}))
                 .then( res => res.data)
                 .then( res => {
-                    console.log(1)
-                        this.principal=[];
-                        this.principalName="";
-                        this.principal = res.data;
-                        this.principalName = this.getUserName(this.editData.member_id);
+                    this.principal = res.data;
+                    console.log(res)
+//                        this.principal=[];
+//                        this.principalName="";
+//                        this.principal = res.data;
+//                        this.principalName = this.getUserName(this.editData.member_id);
                     }
                 )
                 .catch(error => {

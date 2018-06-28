@@ -46,7 +46,7 @@
       scene.add(grid);
       //加载
       var loader = new THREE.FBXLoader();
-      let url3 = "http://192.168.2.19/index.php?r=file/file/get-file&fid=1145";
+      // let url3 = "http://192.168.2.19/index.php?r=file/file/get-file&fid=1145";
       let url2 = '../src/views/project/components/threeFile/M_atk.fbx';
       // let url2 = '../src/views/project/components/threeFile/M_idle.fbx';
       // let url2 = '../src/views/project/components/threeFile/test.fbx';

@@ -30,10 +30,12 @@
         <AutoComplete type="text" v-model="fileOptionsName"  :data="ProReqArr"  :autofocus="true" placeholder="尺寸" style="width: 50%"></AutoComplete>
         <div class="h4">数值</div>
         <AutoComplete type="text" v-model="describe" :data="valueArr"  :autofocus="true" style="width: 50%"></AutoComplete>
-        <div class="h4">附加文件格式</div>
-        <Input type="text" v-model="appendFileFormat "  :autofocus="true" style="width: 20%"></Input>
-        <div class="h4">附加文件描述</div>
-        <Input type="text" v-model="appendFileDes"  :autofocus="true" style="width: 50%"></Input>
+        
+          <div class="h4">附加文件格式</div>
+          <Input type="text" v-model="appendFileFormat "  :autofocus="true" style="width: 20%"></Input>
+          <div class="h4">附加文件描述</div>
+          <Input type="text" v-model="appendFileDes"  :autofocus="true" style="width: 50%"></Input>
+        
     </Modal>
   </div>
 </template>
@@ -49,6 +51,7 @@ export default {
       fileFormatArr: ["jpg", "png", "fbx", "avi", "unity"],
       ProReqArr: ["尺寸", "贴面数", "帧率"],
       valueArr: ["8000*8000", ">2000", ">24"],
+      allFile:[],
       selClass:"", 
       addTypeName:"",
       stageName:"",
@@ -231,6 +234,32 @@ export default {
     })
   },
   newType(){
+    if(this.appendFileFormat){
+        this.allFile.push({
+          file_name: "",
+          file_format: this.appendFileFormat,
+          is_main: 0,
+          require: [
+            {
+              config_id: "",
+              config_name: "",
+              value: this.appendFileDes
+            }
+          ] 
+        })
+      }
+    this.allFile.push({
+      file_name: "",
+      file_format: this.fileFormat,
+      is_main: 1,
+      require: [
+        {
+          config_id: "",
+          config_name: this.fileOptionsName,
+          value: this.describe
+        }
+      ]      
+    })
       let addType = {
         category_id: this.selClass,
         name: this.addTypeName,
@@ -241,20 +270,7 @@ export default {
             is_inside_audit: 1
           }
         ]),
-        file: JSON.stringify([
-          {
-            file_name: "",
-            file_format: this.fileFormat,
-            is_main: 1,
-            require: [
-              {
-                config_id: "",
-                config_name: this.fileOptionsName,
-                value: this.describe
-              }
-            ]
-          }
-        ])
+        file: JSON.stringify(this.allFile)
       };
       if(this.tasktypeName.indexOf(this.addTypeName) > -1){
         this.$Message.error("类型名称不能相同");
@@ -362,6 +378,9 @@ export default {
   .cursor {
     cursor: pointer;
    
+  }
+  .h4{
+    width: 200px
   }
 </style>
 

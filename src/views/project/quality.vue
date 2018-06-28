@@ -282,6 +282,9 @@
           <span class="more" @click="changePageIndex()">{{moreText}}</span>
         </div>
       </TabPane>
+      <TabPane label="归档文件" name="5">
+        <pigeonhole></pigeonhole>
+      </TabPane>
     </Tabs>
     <!-- 浏览任务弹窗 -->
     <Modal 
@@ -303,13 +306,15 @@
 <script>
 var qs = require('querystring');
 
-import browsetask from './task/browseTaskPop'
+import browsetask from './task/browseTaskPop';
 import mySort from '../main-components/sort';
+import pigeonhole from './pigeonhole';
 import { mapGetters } from 'vuex'
 export default {
   components: {
     mySort,
     browsetask,
+    pigeonhole
   },
   data() {
     return {

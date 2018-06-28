@@ -12,29 +12,30 @@ export const menu = [
                 path: '/project/task',
                 name: 'task',
                 title: '任务管理',
+            // }, {
+            //     path: '/project/schedule',
+            //     name: 'schedule',
+            //     title: '项目进度',
             }, {
-                path: '/project/schedule',
-                name: 'schedule',
-                title: '项目进度',
-            },
-            {
                 path: '/project/quality',
                 name: 'quality',
-                title: '质量管理',
+                title: '资源管理',
+            // }, {
+            //     path: '/project/pigeonhole',
+            //     name: 'pigeonhole',
+            //     title: '归档文件',
             }, {
-                path: '/project/pigeonhole',
-                name: 'pigeonhole',
-                title: '归档文件',
-            },
-            {
+                path: '/epibol/memberManager',
+                name: 'eMember',
+                title: '团队',
+            }, {
                 path: '/project/statistics',
                 name: 'statistics',
-                title: '项目统计',
-            },
-            {
-                path: '/project/setting',
-                name: 'file',
-                title: '设置',
+                title: '统计',
+            // }, {
+            //     path: '/project/setting',
+            //     name: 'file',
+            //     title: '设置',
             }
         ]
     },
@@ -47,8 +48,7 @@ export const menu = [
                 path: '/epibol/home',
                 name: 'eHome',
                 title: '概况页',
-            },
-            {
+            }, {
                 path: '/epibol/bidManage',
                 name: 'bidManage',
                 title: '投标',
@@ -60,16 +60,18 @@ export const menu = [
                 path: '/epibol/projectManage',
                 name: 'projectManage',
                 title: '项目',
-            },
-            {
+            }, {
                 path: '/epibol/memberManager',
                 name: 'memberManager',
                 title: '团队',
-            },
-            {
-                path: '/project/statistics',
-                name: 'statistics',
+            }, {
+                path: '/epibol/statistics',
+                name: 'eStatistics',
                 title: '统计',
+            }, {
+                path: '/epibol/3D',
+                name: '3D',
+                title: '3D',
             }
         ]
     }, {
@@ -135,8 +137,7 @@ export const menu = [
                     {
                         path:'/artist/opus/info',
                         title: '个人资料/基本管理',
-                    } ,
-                    {
+                    }, {
                         path:'/artist/opus/management',
                         titie:'个人资料/个人主页',
                     }

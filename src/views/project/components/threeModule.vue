@@ -32,9 +32,13 @@
 //       console.log(THREE);
 //   });
 var qs = require("querystring");
-var Zlib = require('zlib');
-import JSZip from 'jszip'
-import JSZipUtils from 'jszip-utils'
+var lab = require("lab");
+console.log(lab)
+// require("../../../js/labjs.min.js");
+// var lab = require('lab');
+// var Zlib = require('zlib');
+// import JSZip from 'jszip'
+// import JSZipUtils from 'jszip-utils'
 
 export default {
   data() {
@@ -102,7 +106,7 @@ export default {
         }
         )
         .catch(error => {
-          console.log(error);
+          // console.log(error);
 
           this.$Message.error("获取任务信息失败，请重试！");
         });
@@ -189,7 +193,7 @@ export default {
         // console.log('解压',data);
 
         JSZip.loadAsync(data).then((zip) => {
-          console.log('压缩包',zip);
+          // console.log('压缩包',zip);
           // console.log(zip.files);
           zip.forEach((relativePath, zipEntry) => {
             var fileName = zipEntry.name
@@ -253,8 +257,7 @@ export default {
       });
     },
     newFBXMedel() {
-      console.log('this.fbxurl',sessionStorage.fbxurl)
-      this.getThreeFileKey();
+      // this.getThreeFileKey();
       var container, stats, controls;//容器、统计?、控制器
       var camera, scene, renderer, light;//相机、场景、渲染、灯光
       var clock = new THREE.Clock();//时钟
@@ -262,7 +265,6 @@ export default {
       init();//初始化
       animate();//动画
       function init() {
-        console.log('传参url',url)
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
@@ -308,7 +310,7 @@ export default {
         // let url = '../src/views/project/components/threeFile/M_atk.fbx';
         // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-        let url = "http://file.yhc_plat.com/2018/06/25/3d/165447-877532-5a38f4.FBX"
+        let url = "https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX"
         loader.load(url, function(object) {
           // console.log(url2);
           object.mixer = new THREE.AnimationMixer(object);

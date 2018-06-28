@@ -1,18 +1,18 @@
 <!-- 任务信息弹窗-->
 <template>
     <div class="taskinfopop">
-        <Tabs type="card" style="height: 680px;">
+        <Tabs type="card">
             <TabPane label="基本管理">
                 <div v-show="isInitTask" class="browsetaskpop">
+                    <div class="filebrowse">
+                        <filebrowse ref="filebrowse"></filebrowse>
+                    </div>
                     <div class="taskbrowse">
                         <maintask ref="main"
                                   v-on:sendSubTaskList="sendSubTaskList"
                                   v-on:sendLogData="sendLogData"
                         >
                         </maintask>
-                    </div>
-                    <div class="filebrowse">
-                        <filebrowse ref="filebrowse"></filebrowse>
                     </div>
                 </div>
             </TabPane>
@@ -191,10 +191,11 @@ export default {
     saveTaskDetail()
     {
       //保存父任务
-      this.$refs.main.saveTaskDetails();
+      this.$refs.main.saveTaskDetails(true);
       //保存子任务
       this.$refs.sublist.saveSubTasks();
       this.$Message.success('保存任务成功');
+
       return true;
     },
     //单击编辑Modal中子任务列表，数据添加至右侧form表单
@@ -315,11 +316,95 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" >
 @import "../style/taskModal.css";
+@gray:#E6EAEB;
 .taskinfopop{
   display:inline-block;
   overflow:hidden;
+
+    .ivu-form-item{
+        /*&:hover{*/
+            /*.ivu-form-item-label{*/
+                /*top:0 ;*/
+            /*}*/
+        /*}*/
+    }
+    .ivu-date-picker{
+        width: 100%;
+    }
+    .ivu-input-group-prepend{
+        font-size: 22px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #ccc;
+    }
+    .ivu-input,.ivu-select-selection{
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        outline: none;
+        box-shadow: none;
+        &:focus,&:hover{
+            border-bottom: 1px solid #ccc;
+            box-shadow: none;
+
+        }
+    }
+    .ivu-select-visible, .ivu-select-selection{
+        border-bottom: 1px solid #ccc !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .ivu-form-item{
+        position: relative;
+        .ivu-form-item-label{
+            margin-left: 66px;
+            text-align: left;
+        }
+    }
+    .requirement {
+        padding: 5px 10px 70px 10px;
+        background: #fff;
+        .ivu-card {
+            background: transparent;
+            border: none;
+            .ivu-card-body {
+                padding: 16px 0;
+            }
+            &:hover {
+                box-shadow: none;
+            }
+        }
+        .ivu-input {
+            padding-right: 0;
+            font-size: 20px;
+            text-align: right;
+        }
+        .ivu-input-icon {
+            left: 0;
+            font-size: 20px;
+        }
+        p {
+            display: flex;
+            height: 22px;
+            margin-bottom: 10px;
+            padding: 0 5px;
+            font-size: 14px;
+            line-height: 22px;
+            justify-content: space-between;
+            border-radius: 8px;
+            background: @gray;
+        }
+    }
+    .ivu-upload-list{
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+
     .taskButton{
         margin-top: 50px;
         padding-right: 120px;
@@ -356,7 +441,8 @@ export default {
 }
 .taskbrowse{
     float:left;
-    width:340px;
+    width:540px !important;
+    padding-right: 200px;
     margin:0 12px 0 0;
 }
 .filebrowse{

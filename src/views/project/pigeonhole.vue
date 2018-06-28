@@ -76,6 +76,7 @@ var qs = require('querystring');
 import browsetask from './task/browseTaskPop'
 import { mapGetters } from 'vuex'
 export default {
+  name: 'pigeonhole',
   components: {
     browsetask,
   },

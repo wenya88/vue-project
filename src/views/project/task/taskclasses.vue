@@ -4,7 +4,7 @@
         <div class="taskHead">
             <div class="taskInfo">
               <span v-for="item in childProjectList" :key='item.name'>
-                <!-- v-on:mouseenter="dataDetails($event)" 
+                <!-- v-on:mouseenter="dataDetails($event)"
                 v-on:mouseleave="hiddenDetail($event)"> -->
                 <a href="javascript:;" @click=filterTask(item) >
                     {{item.name}} ({{item.task_count}})
@@ -29,7 +29,7 @@
                     <Button type="ghost" size="small" @click="showModifySubProject">取消</Button>
                 </div>
               </span>
-            
+
         </div>
     </div>
 </template>

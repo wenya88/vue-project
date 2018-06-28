@@ -77,6 +77,12 @@
                                placeholder="输入您的姓名"></Input>
                     </FormItem>
                 </div>
+                <div>
+                    <FormItem prop="job">
+                        <Input type="text" @change.native="changeNickname('job')" v-model="formInline.job"
+                               placeholder='输入您的工种如 “原画”、“动作”，“地编”'></Input>
+                    </FormItem>
+                </div>
             </Form>
         </section>
         <section class="headPortrait">
@@ -275,6 +281,9 @@
                     ePassword: [
                         {required: true, message: '请输入密码', trigger: 'blur'}
                     ],
+                    job: [
+                        {required: true, message: '请输入职业', trigger: 'blur'}
+                    ],
                 },
             }
         },
@@ -312,7 +321,10 @@
                         }
                         break;
                     case 'headimage':
-                        data = {id: this.userId, headimage: this.formInline.headimage}
+                        data = {id: this.userId, headimage: this.formInline.headimage};
+                        break;
+                    case 'job':
+                        data = {id: this.userId, job: this.formInline.job};
                         break;
                 }
                 this.$axios.post(this.GLOBAL.baseRouter + 'system/user/update', qs.stringify(data))
@@ -369,12 +381,9 @@
                           .then(res => res.data)
                           .then(res => {
                               if (res.err_code === 0 && res.msg) {
-                                  console.log(1111)
                                   if (res.msg !== '该邮箱已被其他用户绑定') {
-                                      console.log(222.1)
                                       this.messageSuccess(res.msg);
                                   } else {
-                                      console.log(222.2)
                                       this.getAuthCode('emailAuthCode');
 
                                   }

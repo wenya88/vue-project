@@ -131,7 +131,7 @@ export const appRouter = [
             {
                 path:'/project/projectMember',
                 titie:'项目成员',
-                component: resolve => { require(['@/views/artist/projectMember.vue'], resolve);},
+                component: resolve => { require(['@/views/projectSet/projectTiemSet/component/peopleSet.vue'], resolve);},
             }
         ]
     },
@@ -174,6 +174,13 @@ export const appRouter = [
                 name: 'memberManager',
                 title: '团队',
                 component: resolve => { require(['@/views/epibol/memberManager.vue'], resolve); }
+            },
+            {
+                path: '/epibol/statistics',
+                icon: 'ios-paper-outline',
+                name: 'eStatistics',
+                title: '统计',
+                component: resolve => { require(['@/views/epibol/statistics.vue'], resolve); }
             },
             {
                 path: '/epibol/taskClass',

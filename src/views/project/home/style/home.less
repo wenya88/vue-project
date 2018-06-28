@@ -1,4 +1,5 @@
 @import '../../../../styles/common.less';
+@fontColor:#48c5b5;
 .homePage{
     em{
         font-style:normal;
@@ -46,6 +47,74 @@
             }
             .contentRow{
                margin-top:60px;background:#fafafa;min-height:368px;padding:15px;
+               .project{
+                   float:left;width:40%;display:inline-block;min-height:338px;border-right:1px solid #eaeaea;
+                   background:url('../image/project.png') no-repeat;background-size:30%;background-position:90%;
+                   transition:all .5s;cursor:pointer;
+                   &:hover{
+                       background-image:url('../image/project2.png');
+                       span{
+                           color:@fontColor;
+                       }
+                   }
+                   span{
+                       font-size:@fs28;color:#929292;font-weight:lighter;float:left;margin-top:60%;margin-left:30px;
+                       transition: color .3s
+                   }
+               }
+               .bid{
+                   &:extend(.homePage .pageContent .companyContent .contentRow .project);
+                   background:url('../image/bid.png') no-repeat;min-height:169px;background-size:25%;width:30%;background-position:90%;
+                   &:hover{
+                        background-image:url('../image/bid2.png');
+                        span{
+                            color:@fontColor;
+                        }
+                   }
+                   span{
+                       &:extend(.homePage .pageContent .companyContent .contentRow .project span);
+                       margin-top:35%;font-size:@fs118;
+                   }
+               }
+               .contract{
+                  &:extend(.homePage .pageContent .companyContent .contentRow .bid);
+                  background-image:url('../image/contract.png');background-size:20%;border-right:0px;
+                  &:hover{
+                    background-image:url('../image/contract2.png');
+                    span{
+                        color:@fontColor
+                    }
+                  }
+                  span{
+                    &:extend(.homePage .pageContent .companyContent .contentRow .bid span);
+                  }
+               }
+               .group{
+                  &:extend(.homePage .pageContent .companyContent .contentRow .bid);border-top:1px solid #eaeaea;
+                  background-image:url('../image/group.png');
+                  &:hover{
+                    background-image:url('../image/group2.png'); 
+                    span{
+                        color:@fontColor
+                    }
+                  }
+                  span{
+                    &:extend(.homePage .pageContent .companyContent .contentRow .bid span);
+                  }
+               }
+               .statis{
+                    &:extend(.homePage .pageContent .companyContent .contentRow .group);border-right:0px;
+                    background-image:url('../image/statis.png');
+                    &:hover{
+                        background-image:url('../image/statis2.png');
+                        span{
+                            color:@fontColor
+                        }
+                    }
+                    span{
+                        &:extend(.homePage .pageContent .companyContent .contentRow .bid span);
+                    }
+               }
             }
         }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="personalContainer">
-        <Menu class="menuList" :theme="theme2" active-name="1">
+        <Menu class="menuList"   active-name="1">
             <MenuGroup>
                 <MenuItem name="1">
                     <Icon type="document-text"></Icon>
@@ -25,7 +25,7 @@
     export default {
         data() {
             return {
-                theme2:'light'
+                theme2:'primary'
             }
         },
         created() {
@@ -42,6 +42,15 @@
         height: 100%;
     }
     .personalContainer{
+        .ivu-menu{
+            background: #fff !important;
+            z-index: 2;
+            .ivu-menu-vertical,.ivu-menu-item{
+                &:hover{
+                    background: #ccc!important;
+                }
+            }
+        }
         display: flex;
         /*height: 100%;*/
         /*margin-left: 150px;*/

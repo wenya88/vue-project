@@ -1,13 +1,13 @@
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div class="backIcon" v-if="havaBack" @click="goBack()"><Icon type="chevron-left" size='20'></Icon></div>
+        <!-- <div class="backIcon" v-if="havaBack" @click="goBack()"><Icon type="chevron-left" size='20'></Icon></div> -->
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
                     <div class="layout-logo stem-logo" @click="collapsedSider()">
-                        <img v-show="!shrink" src="../images/logo.png" key="max-logo" />
+                        <img v-show="!shrink" src="../images/icon/menu.png" key="max-logo" />
                     </div>
-                    <!-- <div class="layout-nav stem-l">
+                     <!-- <div class="layout-nav stem-l">
                         <Menu mode="horizontal" :active-name="activePath">
                              <MenuItem 
                              :name="item.path" 
@@ -17,7 +17,7 @@
                                 <router-link :to="item.path">{{item.title}}</router-link>   
                             </MenuItem>  
                         </Menu>
-                    </div> -->
+                    </div>  -->
                 </Menu>
             </Header>
         </div>
@@ -25,7 +25,7 @@
              <div class="user-dropdown-menu-con" style="float: left;">
                 <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                     <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
-                    <span style="padding: 0 50px 0 10px;color: #fff;">{{ userName }}</span>
+                    <span style="padding: 0 50px 0 10px;color: #2d2d2d;">{{ userName }}</span>
                 </Row>
             </div>
             <message-tip v-model="mesCount"></message-tip>
@@ -33,7 +33,7 @@
                 <Dropdown style="margin-left: 20px" trigger="click" @on-click="handleClickUserDropdown">
                     <a href="javascript:void(0)" style="padding-top: 8px;display: block;">
                         <!-- 菜单(居中) -->
-                        <Icon type="navicon" size="32"></Icon>
+                        <Icon type="navicon" color='#2d2d2d' size="32"></Icon>
                     </a>
                     <DropdownMenu slot="list">
                         <DropdownItem name="ownSpace">个人中心</DropdownItem>
@@ -59,7 +59,7 @@
                     <span class="name">{{item.title}}</span>
                 </li>
             </ul>
-             <div class="single-page-con">
+             <div class="single-page-con" :style="`width:${mainWidth}px`">
                 <div class="single-page">
                     <router-view></router-view>
                 </div>
@@ -87,6 +87,7 @@ export default {
             subMenu: [],
             activePath: '',
             centerHight: 0,
+            mainWidth: 0,
             havaBack: false,
             avatorPath: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg'
         };
@@ -97,17 +98,22 @@ export default {
         //         console.log(newVal.name)
         //     }
         // }
-        '$route': 'updateMenu'
+        '$route': 'updateMenu',
+        mainWidth() {
+            let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+            this.mainWidth = bodyWidth - 121
+        }
     },
-    // created() {
-    //     let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
-    //     let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
-    //     if(bodyWidth <= 1366) {
-    //         this.centerHight = bodyHight - 90
-    //     } else {
-    //         this.centerHight = bodyHight - 120
-    //     }
-    // },
+    created() {
+        // let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
+        let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+        // if(bodyWidth <= 1366) {
+        //     this.centerHight = bodyHight - 90
+        // } else {
+        //     this.centerHight = bodyHight - 120
+        // }
+        this.mainWidth = bodyWidth - 121
+    },
     mounted() {
         this.init();
         this.updateMenu();
@@ -138,7 +144,6 @@ export default {
                 this.menuList.forEach((item) => {
                     if(routeName === item.name) {
                         this.subMenu = item.children
-                        console.log(this.subMenu)
                         let menuArr = item.children
                         this.$router.push('/'+location.hash.match(/\#\/(.*)/)[1])
                         if(routeName == 'project') {
@@ -289,14 +294,23 @@ export default {
   .menu li a.memberManager {
     background: url(../images/icon/memberManager.png) no-repeat center center / 37px 34px;
   }
-  .menu li a.statistics {
+  .menu li a.eStatistics {
     background: url(../images/icon/statistics.png) no-repeat center center / 37px 34px;
   }
   .menu li a.custom {
-    background: url(../images/icon/statistics.png) no-repeat center center / 37px 34px;
+    background: url(../images/icon/survey.png) no-repeat center center / 37px 34px;
   }
   .menu li a.task {
     background: url(../images/icon/task.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.quality {
+    background: url(../images/icon/resources.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.eMember {
+    background: url(../images/icon/member.png) no-repeat center center / 37px 34px;
+  }
+  .menu li a.statistics {
+    background: url(../images/icon/pstatistics.png) no-repeat center center / 37px 34px;
   }
 //   .menu li a.yuntu {
 //     background: url(./assets/images/icon/icon-yuntu.svg) no-repeat center center;

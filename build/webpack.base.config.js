@@ -4,14 +4,15 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-function resolve (dir) {
+function resolve(dir) {
     return path.join(__dirname, dir);
 }
 module.exports = {
     entry: {
         main: '@/main',
         'vender-base': '@/vendors/vendors.base.js',
-        'vender-exten': '@/vendors/vendors.exten.js'
+        'vender-exten': '@/vendors/vendors.exten.js',
+        'lab': '@/js/labjs.min.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist/dist')
@@ -25,10 +26,12 @@ module.exports = {
                     loaders: {
                         less: ExtractTextPlugin.extract({
                             use: ['css-loader?minimize', 'autoprefixer-loader', 'less-loader'],
+                            publicPath: './',
                             fallback: 'vue-style-loader'
                         }),
                         css: ExtractTextPlugin.extract({
                             use: ['css-loader', 'autoprefixer-loader'],
+                            publicPath: './',
                             fallback: 'vue-style-loader'
                         })
                     }
@@ -53,6 +56,7 @@ module.exports = {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
                     use: ['css-loader?minimize', 'autoprefixer-loader'],
+                    publicPath: './',
                     fallback: 'style-loader'
                 })
             },
@@ -60,12 +64,13 @@ module.exports = {
                 test: /\.less$/,
                 use: ExtractTextPlugin.extract({
                     use: ['css-hot-loader', 'autoprefixer-loader', 'less-loader'],
+                    publicPath: './',
                     fallback: 'style-loader'
                 }),
             },
             {
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-                loader: 'url-loader?limit=8192'
+                loader: 'url-loader?limit=8192&name=images/[hash:8].[name].[ext]'
             },
             {
                 test: /\.(html|tpl)$/,
@@ -86,6 +91,7 @@ module.exports = {
             $: "jquery"
         })
     ],
+
     resolve: {
         extensions: ['.js', '.vue'],
         alias: {

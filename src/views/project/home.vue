@@ -57,7 +57,23 @@
                 
                 <!-- 内容 -->
                 <div class="contentRow">
-                    1
+                    <div class="project">
+                        <i class="iconfont icon-xiangmu"></i>
+                        <span>项目</span>
+                    </div>
+                    <div class="bid">
+                        <span>招标</span>
+                    </div>
+                    <div class="contract">
+                        <span>合同</span>
+                    </div>
+                    <div class="group">
+                        <span>团队</span>
+                    </div>
+                    <div class="statis">
+                        <span>统计</span>
+                    </div>
+                    <!-- <div class="clear"></div> -->
                 </div>
 
             </div>

@@ -9,7 +9,7 @@
       <Form>
         <Input type="text" v-model="typeName" :autofocus="true" placeholder="请输入类型名称" style="width: 50%"></Input>
         <h4 class="h4 marTop10">实施阶段</h4>
-        <Steps :current="3" class="steps">
+        <Steps :current="30" class="steps">
           <Step v-for="(item,index) in arr" :key="index"  :title=item.stage_name >
             <div @click="delStage" class="cursor delStage">
               <Icon type="ios-close-outline" class="iconSmall"></Icon>
@@ -18,8 +18,8 @@
           <Step title="成品确认"></Step>
         </Steps>
         <CheckboxGroup class="checkbox">
-          <Checkbox type="checkbox"  v-for="(item,index) in internalAudit"  :key="index" label="内审"></Checkbox>
-          <Checkbox type="checkbox"  label="内审"></Checkbox>
+          <Checkbox type="checkbox" v-for="(item,index) in internalAudit"  :key="index" label="内审"></Checkbox>
+          <Checkbox type="checkbox" label="内审"></Checkbox>
         </CheckboxGroup>
         <div class="increase cursor" @click="addStageInput">
           <Icon type="ios-plus-outline" class="increaseIcon"></Icon>
@@ -84,6 +84,9 @@ export default {
       appendFileFormat: [],
       arrStageName:[],
       fileProDemand:[],
+      allFileObj: {},
+      allFile:[],
+      require:[],
       fileFormatArr: ["jpg", "png", "fbx", "avi", "unity"],
       ProReqArr: ["尺寸", "贴面数", "帧率"],
       valueArr: ["8000*8000", ">2000", ">24"],
@@ -94,9 +97,12 @@ export default {
       aFileFormat:'',
       describe:'',
       categoryId:'',
+      taskType:"",
+      value:"",
       modal1: false,
       modal2: false,
       addLabDIV:false,
+      // internalAuditCheck:[],
     };
   },
   mounted() {
@@ -111,15 +117,15 @@ export default {
         id: oneid
       };
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
-        this.typeName = msg.data.tasktype_name
-             msg.data.stage.forEach(req => {
-              this.arr.push({
-                stage_name:req.stage_name
-              });
+        this.typeName = msg.data.tasktype_name        
+          msg.data.stage.forEach(req => {
+            this.arr.push({
+              stage_name:req.stage_name
+            }); 
             if(req.is_inside_audit == 1){
               req.is_inside_audit = true
               this.internalAudit.push(req.is_inside_audit)
-            }              
+            }           
           });
           msg.data.file.forEach(r => {
             r.require.forEach(item => {
@@ -164,7 +170,8 @@ export default {
             this.$Message.error("增加失败");
           } else {
             this.arr.push({
-              stage_name: this.value
+              stage_name: this.value,
+              is_inside_audit:0
             });
             this.internalAudit.push(0)
             this.value = ""
@@ -178,13 +185,7 @@ export default {
       this.arr.splice(index, 1);
       const index2 = this.internalAudit.indexOf(name);
       this.internalAudit.splice(index2, 1);      
-    },    
-    overShow(){
-      console.log("111")
-    },
-    outHide(){
-      console.log("222")
-    },
+    },   
     // 增加文件属性
     addProperty () {
       let fileSize
@@ -224,46 +225,66 @@ export default {
     //修改、提交
     conserve() {
       let typeId = JSON.parse(sessionStorage.getItem("clickId"));
-      this.arr.forEach(r => {
-        console.log(r.stage_name)
+      this.appendFileFormat.forEach(r => {
+        this.taskType = r.taskType
+        this.value = r.value
       })
+      this.allFileObj = {
+        file_name: "",
+        is_main: 1,
+        file_format:this.fileFormat,
+        require:[]
+      }
+      this.allFile.push(this.allFileObj)
+      this.fileProDemand.forEach(r => {
+        this.allFileObj.require.push({
+              config_id: "",
+              config_name: r.fileSize,
+              value: r.fileValue,
+        }) 
+      })
+      if(this.appendFileFormat.length !== 0){
+        console.log(this.appendFileFormat)
+        this.appendFileFormat.forEach(r => {
+          this.allFile.push({
+            file_name: "",
+            file_format: r.taskType,
+            is_main: 0,
+            require: [
+              {
+                config_id: "",
+                config_name: "",
+                value: r.value,
+              }
+            ]
+          })          
+        })
+
+      }
+       
       let data2 = {
         id: typeId,
         category_id: this.categoryId,
         name: this.typeName,
-        stage: JSON.stringify([
-          {
-
-            stage_name: "",
-            is_inside_audit: 1
-          }
-        ]),
-        file: JSON.stringify([
-          {
-            file_name: "1",
-            file_format: this.fileFormat,
-            is_main: 1,
-            require: [
-              {
-                config_id: 1,
-                config_name: this.fileSize,
-                value: this.fileValue,
-              }
-            ]
-          }
-        ])
+        stage: JSON.stringify(this.arr),        
+        file: JSON.stringify(this.allFile)
       };
       if (this.typeName) {
-        this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {             
-          this.$refs.child.taskTypeList()
-          this.$Message.success("成功保存");
-        });
+        this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/update",qs.stringify(data2)).then(res => {
+          if(res.data.err_code == 0){
+            this.$refs.child.taskTypeList()
+            this.$Message.success("保存成功");
+            this.allFile = []
+          }else{
+            this.$Message.error("保存失败");
+          }   
+        }); 
       } else {
         alert("请输入类型名称");
       }       
     },  
       // 获取信息
-    getListId(clicktype) {
+    getListId(clicktype) {     
       this.arr = [];
       this.appendFileFormat = [];
       this.internalAudit = []
@@ -273,19 +294,23 @@ export default {
         id: clicktype.id
       };
       this.$axios.post(this.GLOBAL.baseRouter + "task/task-type/info",qs.stringify(data)).then(msg => {
+        
+
         this.categoryId = msg.data.category_id
         this.typeName = msg.data.tasktype_name
+        
           msg.data.stage.forEach(req => {
             this.arr.push(req);
             if(req.is_inside_audit == 1){
-              req.is_inside_audit = true
+              req.is_inside_audit = 1
               this.internalAudit.push(req.is_inside_audit)
             }
           });
+          
           msg.data.file.forEach(r => {
             let taskType = r.file_format;
-            let value;
             r.require.forEach(item => {
+              let value = item.value;
               if(r.is_main == 1){
                 this.fileFormat = r.file_format//格式
                 this.fileSize = item.config_name//配置项
@@ -300,6 +325,7 @@ export default {
             });
             
           });
+          
         }),
         sessionStorage.setItem("clickId", clicktype.id);
     },
@@ -430,5 +456,10 @@ h4 > span:last-child {
   position: absolute;
   top: -5px;
   right:-5px;
+  padding:0 0px 10px 60px;
+  opacity: 0;
+}
+.delStage:hover{
+  opacity: 1;
 }
 </style>

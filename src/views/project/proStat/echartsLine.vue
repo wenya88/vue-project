@@ -1,5 +1,5 @@
 <template>
-    <div style="height:100%">
+    <div class="echartContainer" style="height:100%;">
         <div class="taskTip"><span>任务数量：<b>{{data.all_task_num}}</b> </span><span>已完成：<b>{{data.complete_task_num}}</b> </span><span>剩作：<b>{{data.surplus_task_num}}</b> </span><span>待审文件：<b>{{data.wait_review}}</b></span></div>
         <div id="echartLine"></div>
         <span v-show="flag">{{EcherDate}}</span>
@@ -151,4 +151,10 @@
   }
 
 </script>
+<style lang="less">
+    .echartContainer{
+        position: relative;
+        height: 100%;
+    }
+</style>
 
