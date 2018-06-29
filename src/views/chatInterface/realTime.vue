@@ -240,7 +240,8 @@ export default {
               $(this).sinaEmotion()
               event.stopPropagation()
               //  alert(1111)
-              $('#sina-emotion').attr('style', `bottom:40px;left:105px;display:block;z-index:9999;`)
+              $('#sina-emotion').attr('style', `bottom:40px;right:105px;display:block;z-index:9999;`)
+              $('#sina-emotion').find('.face').attr('style', 'height: 30px;')
             }
           }
         })
@@ -287,8 +288,9 @@ export default {
         this.$nextTick(() => {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
           const offset = ele.caret('offset')
+          console.log('offset', offset)
           this.personPosi = {
-            left: offset.left + 30 + 'px',
+            left: offset.left - 750 + 'px',
             top: offset.top - contentsHeight + 'px'
           }
         })

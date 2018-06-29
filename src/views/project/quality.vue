@@ -6,12 +6,12 @@
           :size="168"
           :trail-width="0"
           :stroke-width="15"
-          :percent="75"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#1a99aa">
           <div class="text">
             <p>归档</p>
-            <p class="big">30/40</p>
+            <p class="big">{{param.num}}</p>
           </div>
         </i-circle>
       </div>
@@ -20,12 +20,12 @@
           :size="120"
           :trail-width="0"
           :stroke-width="15"
-          :percent="75"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#48c5b5">
           <div class="text">
             <p>内部待审</p>
-            <p class="big">30/40</p>
+            <p class="big">{{param.num1}}</p>
           </div>
         </i-circle>
       </div>
@@ -34,12 +34,12 @@
           :size="120"
           :trail-width="0"
           :stroke-width="15"
-          :percent="75"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#48c5b5">
           <div class="text">
             <p>内审已反馈</p>
-            <p class="big">30/40</p>
+            <p class="big">{{param.num2}}</p>
           </div>
         </i-circle>
       </div>
@@ -48,12 +48,12 @@
           :size="120"
           :trail-width="0"
           :stroke-width="15"
-          :percent="75"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#48c5b5">
           <div class="text">
             <p>客户待审</p>
-            <p class="big">30/40</p>
+            <p class="big">{{param.num3}}</p>
           </div>
         </i-circle>
       </div>
@@ -62,23 +62,25 @@
           :size="120"
           :trail-width="0"
           :stroke-width="15"
-          :percent="75"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#48c5b5">
           <div class="text">
             <p>客户已反馈</p>
-            <p class="big">30/40</p>
+            <p class="big">{{param.num4}}</p>
           </div>
         </i-circle>
       </div>
     </div>
-    <!-- <ul class="topNav">
+    <!-- <Affix>
+     <ul class="topNav">
       <li class="active" @click="finishData(4)">归档</li>
       <li @click="resourcesData(1)">内部待审</li>
       <li @click="resourcesData(3)">内审已反馈</li>
       <li @click="resourcesData(2)">客户待审</li>
       <li @click="resourcesData(4)">客户已反馈</li>
-    </ul> -->
+    </ul> 
+    </Affix> -->
     <!-- <Tabs value="1" :animated="false" v-model="status" @on-click="changeTabs()">
       <TabPane label="归档文件" name="1"> -->
         <pigeonhole ref="finish" v-if="finish"></pigeonhole> 
@@ -131,7 +133,8 @@ export default {
         num1: 0,
         num2: 0,
         num3: 0,
-        num4: 0
+        num4: 0,
+        num: 0
       },
       feedback: '',
       status: '1',
@@ -163,10 +166,11 @@ export default {
   },
   created() {
     // console.log(this.$children[0],this.$children[1]) 
-    // this.fetchNum(1);
-    // this.fetchNum(2);
-    // this.fetchNum(3);
-    // this.fetchNum(4);
+    this.fetchNum(1);
+    this.fetchNum(2);
+    this.fetchNum(3);
+    this.fetchNum(4);
+    this.fetchFinishNum();
     // this.getTaskList();
     // if(this.status == '1') {
     //   this.sortStatus = 'stage_create_time';
@@ -174,25 +178,6 @@ export default {
     // } else {
     //   this.fetchData();
     // } 
-  },
-  mounted() {
-  },
-  watch: {
-    status() {
-      if(this.status === '1') {
-        this.sortStatus = 'stage_create_time';
-        this.fetchData();
-      } else if(this.status === '2') {
-        this.sortStatus = 'inside_audit_time';
-        this.fetchData();
-      } else if(this.status === '3') {
-        this.sortStatus = 'inside_audit_time';
-        this.fetchData();
-      } else if(this.status === '4') {
-        this.sortStatus = 'client_audit_time';
-        this.fetchData();
-      }
-    }
   },
   methods: {
     finishData(status) {
@@ -260,6 +245,22 @@ export default {
             }
           }
         })
+    },
+    fetchFinishNum() {
+      let data = {
+        status: '4',
+        project_id: sessionStorage.projectID
+      }
+      this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
+      .then(res => res.data)
+      .then(res => {
+        // console.log(res)
+        if(res.err_code == 0) {
+          // console.log(res.data);
+          this.param.num = res.page.count
+          // console.log(this.fileData)
+        }
+      })
     },
     /**
      * 从store中把任务类型获取出来

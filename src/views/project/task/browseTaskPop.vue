@@ -47,6 +47,7 @@ export default {
 <style>
 .browsetaskpop {
     display:inline-block;
+    width: 100%;
     overflow:hidden;
 }
 .taskbrowse{

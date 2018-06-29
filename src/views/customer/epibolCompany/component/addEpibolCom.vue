@@ -30,7 +30,7 @@
                         :on-exceeded-size="handleMaxSize"
                         :before-upload="handleBeforeUpload"
                         type="drag"
-                        action='/file/file/file-upload'
+                        :action="fileup"
                         style="display:block;width:220px">
                         <div style="width:100%;display:block;padding:33px 10px 33px 10px;">
                                 <p style="font-size:16px;"><Icon type="plus"></Icon> 上传图片</p>   
@@ -66,7 +66,7 @@
                     :on-remove="fileRemove"
                     :max-size="2048"
                     :on-exceeded-size="fileMaxSize"
-                    action='/file/file/file-upload'
+                    :action="fileup"
                 >
                     <Button type="ghost" icon="ios-cloud-upload-outline"  style="width:400px">点击/拖入可上传</Button>
                 </Upload>
@@ -104,6 +104,11 @@ export default {
             }
         }
     },
+    computed:{
+        fileup(){
+                return this.$store.state.paySkip.fileUpload
+            },
+        },
     mounted(){
          this.uploadList = this.$refs.upload.fileList;
          this.$bus.on("clearEpiboComData",()=>{

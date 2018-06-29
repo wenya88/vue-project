@@ -35,7 +35,9 @@
         <Col span="8" v-for="(item,index) in listData" :key="index">
         <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
           <div class="card-box">
-            <img class="card-box-pic" :src="item.thumb" />
+            <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
+            <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
+            <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
             <div class="tips">
               <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
               <span class="date">上传：{{item.create_date}}</span>
@@ -129,8 +131,20 @@ export default {
   },
   mounted() {
     this.getTaskList();
-    
-    this.filterFTime(0);
+    switch (this.sortShow){
+        case 'frist':
+          this.filterFTime(0);
+        break;
+        case 'second':
+          this.filterSTime(0);
+        break;
+        case 'third':
+          this.filterTTime(0);
+        break;
+        case 'fourth':
+          this.filterFoTime(0);
+        break;
+      }
   },
   computed: {
     ...mapGetters({
@@ -144,6 +158,9 @@ export default {
     }),
   },
   methods: {
+    change (status) {
+                this.$Message.info(`Status: ${status}`);
+            },
     /**
      * 文件筛选条件
      */
@@ -238,35 +255,12 @@ export default {
         .then(res => res.data)
         .then(res => {
           if (res.err_code == 0) {
-            // if (status == '1') {
               if(this.page == 1) {
                 this.listData = res.data
               } else{
                 this.listData.push.apply(this.listData,res.data);
               }
               this.searchInput = ''
-            // } else if (status == '2') {
-            //   if(this.page == 1) {
-            //     this.listData = res.data
-            //   } else{
-            //     this.listData.push.apply(this.listData,res.data);
-            //   }
-            //   this.searchInput = ''
-            // } else if (status == '3') {
-            //   if(this.page == 1) {
-            //     this.listData = res.data
-            //   } else{
-            //     this.listData.push.apply(this.listData,res.data);
-            //   }
-            //   this.searchInput = ''
-            // } else if (status == '4') {
-            //   if(this.page == 1) {
-            //     this.listData = res.data
-            //   } else{
-            //     this.listData.push.apply(this.listData,res.data);
-            //   }
-            //   this.searchInput = ''
-            // }
             if(parseInt(this.page) == res.page.count_page && parseInt(this.page)!=1) {
               this.moreText = '没有更多内容'
             } else if(parseInt(this.page)==1 && res.data.length > 0) {

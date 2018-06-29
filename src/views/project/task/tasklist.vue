@@ -85,6 +85,7 @@ export default {
   },
   data() {
     return {
+        projectId:sessionStorage.getItem('projectID'),
         dataList_type:{
             start:[],
             underWay:[],
@@ -287,7 +288,7 @@ export default {
                   return false;
               });
       },
-    
+
     //打开任务详情
     showTaskDetail: function(index) {
 //      this.$emit('showTaskDetails',this.dataList[index]);
@@ -355,20 +356,27 @@ export default {
       return true;
     },
     //遍历主任务列表数据
-    initTaskListFromId(data) {
-      if(data == null)
-        data={}
-      let msg = {}
-      if(!data.project_child_id)//主项目
-      {
-        msg.project_id = data.project_id?data.project_id:sessionStorage.projectID;
-      }
-      else
-      {
-        msg.project_child_id = data.project_child_id;
-      }
-      this.currentMsg = msg;
-      this.getTaskList(msg);
+    initTaskListFromId(data,type) {
+        if(data == null)
+            data={}
+         if(data === 'all'){
+            this.getTaskList(data);
+        }else if(type === 'member'){
+            this.getTaskList(data.run_uid,'member');
+        }else{
+            let msg = {}
+            if(!data.project_child_id)//主项目
+            {
+                msg.project_id = data.project_id?data.project_id:sessionStorage.projectID;
+            }
+            else
+            {
+                msg.project_child_id = data.project_child_id;
+            }
+            this.currentMsg = msg;
+            this.getTaskList(msg);
+
+        }
     },
     //刷新当前列表
     refreshTaskList()
@@ -376,8 +384,14 @@ export default {
       this.loading = true;
       this.getTaskList(this.currentMsg);
     },
-    getTaskList(msg)
+    getTaskList(msg,type)
     {
+        if(msg === 'all'){
+            msg = {project_id:this.projectId}
+        }else if(type === 'member'){
+            msg = {user_id:msg}
+        }
+
         this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
                 .then( res => res.data)
                 .then( res => {
@@ -478,7 +492,7 @@ export default {
 @import "../../../styles/task/task.css";
 
 .taskListContainer {
-    height: 700px;
+    height: 850px;
     padding-left: 10px;
     overflow: auto;
         .WaitingToStart,.perform,.complete,.suspended{

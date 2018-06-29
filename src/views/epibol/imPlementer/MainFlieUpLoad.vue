@@ -27,7 +27,7 @@
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             type="drag"
-            action='/file/file/file-upload'
+            :action="fileup"
             style="display:block;width:100%;">
             <div style="width:100%;padding:67px 0px;display:block;">
                 <Icon type="ios-cloud-upload-outline" size="30"></Icon>&nbsp;&nbsp;拖入/点击上传
@@ -47,6 +47,11 @@
                 taskTypeID:0,
                 fileAskData:[]
             }
+        },
+        computed:{
+            fileup(){
+                return this.$store.state.paySkip.fileUpload
+            },
         },
         methods: {
             // 文件格式要求

@@ -4,20 +4,20 @@
     window.webSocket = new WebSocket(wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
-      console.log("webSocket连接成功")
+      // console.log("webSocket连接成功")
     //   let data = {type: 'bind'}
     //   let json = JSON.stringify(msgData)
-      console.log("webSocket连接成功...", msgData)
+      // console.log("webSocket连接成功...", msgData)
       webSocket.send(msgData)
     }
     /*连接关闭*/
     webSocket.onclose = evt => {
-      console.log("webSocket连接关闭")
+      // console.log("webSocket连接关闭")
     }
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      console.log('推送数据', data)
+      // console.log('推送数据', data)
       if (data.action === 'notice') {
         notice.ymNotice({
           title: '提示',

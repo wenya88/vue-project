@@ -29,10 +29,15 @@ export default {
     subtask
     },
   props: {
+      subtaskInfoData:{
+          type:Object,
+          default:{}
+      },
     //subTaskList: Object
   },
   data() {
     return {
+        subtaskInfoArr:{},
       fatherTaskData:{},
       subTasks:[],//子任务内容
       subTaskListData:[],//子任务列表
@@ -87,8 +92,9 @@ export default {
     };
   },
   created() {
-    // this.forEachSubData();
-    // this.getforechDailt();
+
+//     this.forEachSubData();
+//     this.getforechDailt();
   },
   methods: {
     //初始化
@@ -152,34 +158,45 @@ export default {
     //改变当前显示的子列表
     changeSubTask(currentRow,oldRow)
     {
-      if(oldRow && oldRow._highlight)
-      {
-        oldRow._highlight=false;
-      }
-      this.localLastSubList = currentRow;
-      //保存切换前修改的值
-      let old_taskdata = this.$refs.subtaskinfo.getTaskDetail();
-      if(this.subTasks.length > 0)
-      {
-        this.subTasks.forEach((datas)=>{
-            if(old_taskdata.subid)
-            {
-              if(old_taskdata.subid == datas.subid)
-              {
-                this.subTasks[old_taskdata.subid-1] = old_taskdata;
-              }
-            }
-            if(currentRow.subid)
-            {
-              if(currentRow.subid == datas.subid)
-              {
-                //显示新切换的子任务值
-                this.$refs.subtaskinfo.initTaskDetailFromData(this.subTasks[currentRow.subid-1]);
-              }
-            }
-          });
-      }
-      
+
+
+        this.$refs.subtaskinfo.initTaskDetailFromData(this.subtaskInfoArr[currentRow.id]);
+
+
+//        this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: currentRow.id}))
+//            .then(({data})=>{
+//                this.$refs.subtaskinfo.initTaskDetailFromData(data);
+//            })
+
+//      if(oldRow && oldRow._highlight)
+//      {
+//        oldRow._highlight=false;
+//      }
+//      this.localLastSubList = currentRow;
+//      //保存切换前修改的值
+//      let old_taskdata = this.$refs.subtaskinfo.getTaskDetail();
+//      if(this.subTasks.length > 0)
+//      {
+//        this.subTasks.forEach((datas)=>{
+//            if(old_taskdata.subid)
+//            {
+//              if(old_taskdata.subid == datas.subid)
+//              {
+//                this.subTasks[old_taskdata.subid-1] = old_taskdata;
+//              }
+//            }
+//            if(currentRow.subid)
+//            {
+//              if(currentRow.subid == datas.subid)
+//              {
+//                //显示新切换的子任务值
+//                this.$refs.subtaskinfo.initTaskDetailFromData(this.subTasks[currentRow.subid-1]);
+//
+//              }
+//            }
+//          });
+//      }
+
     },
     //删除子任务
     delSubtask(id)
@@ -189,6 +206,7 @@ export default {
     //保存所有临时的子任务
     saveSubTasks()
     {
+        console.log(333,'子任务')
         //处理仅仅添加子任务后离开页面直接保存的情况
         if(this.subTaskListData.length > this.initAmount)
         {
@@ -238,60 +256,72 @@ export default {
     },
     //遍历子任务列表数据
     forEachSubData() {
-      // let cIs = this;
-      // this.get(
-      //   gettasklistData,
-      //   {
-      //     project_id: 1
-      //   },
-      //   res => {
-      //     //子任务数据渲染及状态上色
-      //     //console.log(res);
-          
-      //     let dataColortd = res.data.data;
-      //     for (var i = 0; i < dataColortd.length; i++) {
-      //       dataColortd[i].status;
-      //       dataColortd[i].status_text;
-      //       let child = dataColortd[i].child;
-      //       if (child) {
-      //         for (var k = 0; k < child.length; k++) {
-      //           if (
-      //             child[k].status === "1" ||
-      //             child[k].status_text === "等待开始"
-      //           ) {
-      //             child[k].cellClassName = {
-      //               status_text: "demo-table-info-cell-start"
-      //             };
-      //           } else if (
-      //             child[k].status === "2" ||
-      //             child[k].status_text === "执行中"
-      //           ) {
-      //             child[k].cellClassName = {
-      //               status_text: "demo-table-info-cell-execution"
-      //             };
-      //           } else if (
-      //             child[k].status === "3" ||
-      //             child[k].status_text === "暂停"
-      //           ) {
-      //             child[k].cellClassName = {
-      //               status_text: "demo-table-info-cell-pause"
-      //             };
-      //           } else if (
-      //             child[k].status === "4" ||
-      //             child[k].status_text === "完成"
-      //           ) {
-      //             child[k].cellClassName = {
-      //               status_text: "demo-table-info-cell-complete"
-      //             };
-      //           }
-      //         }
-      //       }
-      //       //cIs.row.child = child;
-      //     }
-      //   }
-      // );
+       let cIs = this;
+       this.get(
+         gettasklistData,
+         {
+           project_id: 1
+         },
+         res => {
+           //子任务数据渲染及状态上色
+           //console.log(res);
+
+           let dataColortd = res.data.data;
+           for (var i = 0; i < dataColortd.length; i++) {
+             dataColortd[i].status;
+             dataColortd[i].status_text;
+             let child = dataColortd[i].child;
+             if (child) {
+               for (var k = 0; k < child.length; k++) {
+                 if (
+                   child[k].status === "1" ||
+                   child[k].status_text === "等待开始"
+                 ) {
+                   child[k].cellClassName = {
+                     status_text: "demo-table-info-cell-start"
+                   };
+                 } else if (
+                   child[k].status === "2" ||
+                   child[k].status_text === "执行中"
+                 ) {
+                   child[k].cellClassName = {
+                     status_text: "demo-table-info-cell-execution"
+                   };
+                 } else if (
+                   child[k].status === "3" ||
+                   child[k].status_text === "暂停"
+                 ) {
+                   child[k].cellClassName = {
+                     status_text: "demo-table-info-cell-pause"
+                   };
+                 } else if (
+                   child[k].status === "4" ||
+                   child[k].status_text === "完成"
+                 ) {
+                   child[k].cellClassName = {
+                     status_text: "demo-table-info-cell-complete"
+                   };
+                 }
+               }
+             }
+             //cIs.row.child = child;
+           }
+         }
+       );
     },
-  }
+  },
+    watch:{
+        subtaskInfoData(data){
+            data.child.map((items)=>{
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: items.id}))
+                    .then((res)=>{
+                        this.subtaskInfoArr[items.id] = res.data;
+                    })
+            })
+            console.log(33,this.subtaskInfoArr)
+
+        }
+    }
 };
 </script>
 <style>

@@ -284,22 +284,22 @@ export const appRouter = [
             
         ]
     }, {
-        path: '/depot',
-        icon: 'ios-folder',
-        name: 'depot',
-        title: '项目库',
-        component: Main,
-        // redirect: '/depot/project',
-        children: [
-            {
-                path: '/depot/project',
-                icon: 'ios-paper-outline',
-                name: 'dProject',
-                title: '项目库',
-                component: resolve => { require(['@/views/depot/project.vue'], resolve); }
-            }
-        ]
-    }, {
+    //     path: '/depot',
+    //     icon: 'ios-folder',
+    //     name: 'depot',
+    //     title: '项目库',
+    //     component: Main,
+    //     // redirect: '/depot/project',
+    //     children: [
+    //         {
+    //             path: '/depot/project',
+    //             icon: 'ios-paper-outline',
+    //             name: 'dProject',
+    //             title: '项目库',
+    //             component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+    //         }
+    //     ]
+    // }, {
         path: '/outsourced',
         icon: 'ios-folder',
         name: 'outsourced',
@@ -345,13 +345,19 @@ export const appRouter = [
                 name: 'aHome',
                 title: '任务大厅',
                 component: resolve => { require(['@/views/artsquare/home.vue'], resolve); }
+            }, {
+                path: '/artsquare/project',
+                icon: 'ios-paper-outline',
+                name: 'dProject',
+                title: '项目库',
+                component: resolve => { require(['@/views/artsquare/project.vue'], resolve); }
             }
         ]
     }, {
         path: '/artwiki',
         icon: 'ios-folder',
         name: 'artwiki',
-        title: '艺术WIKI',
+        title: '艺术大厅',
         component: Main,
         // redirect: '/depot/project',
         children: [
@@ -359,7 +365,7 @@ export const appRouter = [
                 path: '/artwiki/home',
                 icon: 'ios-paper-outline',
                 name: 'awkHome',
-                title: '艺术WIKI',
+                title: '艺术大厅',
                 component: resolve => { require(['@/views/artwiki/home.vue'], resolve); }
             }
             // {
@@ -371,40 +377,40 @@ export const appRouter = [
             // }
         ]
     },
-    // {
-    //     path: '/typeLibrary',
-    //     icon: 'ios-paper',
-    //     title: '项目管理',
-    //     name: 'typeLibrary',
-    //     component: Main,
-    //     children: [
-    //         // {
-    //         //     path: '/page/taskClass',
-    //         //     icon: 'ios-paper-outline',
-    //         //     name: 'taskClass',
-    //         //     title: '任务类别库',
-    //         //     component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
-    //         // },
-    //         // {
-    //         //     path: '/page/index',
-    //         //     title: 'Page',
-    //         //     name: 'page_index',
-    //         //     component: resolve => { require(['@/views/page/page.vue'], resolve); }
-    //         // },
-    //         // {
-    //         //     path: '/page/grid',
-    //         //     title: '拖拽功能',
-    //         //     name: 'grid',
-    //         //     component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
-    //         // },
-    //         // {
-    //         //     path: '/page/layout',
-    //         //     title: '拖拽布局',
-    //         //     name: 'layout',
-    //         //     component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
-    //         // }
-    //     ]
-    // }
+    {
+        path: '/typeLibrary',
+        icon: 'ios-paper',
+        title: '项目管理',
+        name: 'typeLibrary',
+        component: Main,
+        children: [
+            {
+                path: '/page/taskClass',
+                icon: 'ios-paper-outline',
+                name: 'taskClass',
+                title: '任务类别库',
+                component: resolve => { require(['@/views/page/taskClass.vue'], resolve); }
+            },
+            // {
+            //     path: '/page/index',
+            //     title: 'Page',
+            //     name: 'page_index',
+            //     component: resolve => { require(['@/views/page/page.vue'], resolve); }
+            // },
+            // {
+            //     path: '/page/grid',
+            //     title: '拖拽功能',
+            //     name: 'grid',
+            //     component: resolve => { require(['@/views/page/grid/grid.vue'], resolve); }
+            // },
+            // {
+            //     path: '/page/layout',
+            //     title: '拖拽布局',
+            //     name: 'layout',
+            //     component: resolve => { require(['@/views/page/layout/grid.vue'], resolve); }
+            // }
+        ]
+    }
 ];
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="projectManage">
         <!-- 项目管理头部 -->
         <div class="projectMenu">
             <dl>
@@ -50,6 +50,7 @@
         </Modal>
         <!-- 项目管理内容 -->
         <div class="projectManageContent">
+            <GeminiScrollbar>
             <div class="ContentRow" v-for="(item,index) in MsgData" :key="index" >
                 <!-- Header -->
                 <div class="RowTitle">
@@ -111,6 +112,7 @@
                 </div>
             </div>
             <div class="clear"></div>
+            </GeminiScrollbar>
         </div>
     </div>
 </template>
@@ -217,7 +219,7 @@ export default {
   methods:{
     // 初始化高度
     AutoH(){
-        $(".projectManageContent").height($(window).height()-220)
+        $(".projectManageContent").height($(window).height()-136)
     },
     //   筛选选择
     sortAction(index,action){

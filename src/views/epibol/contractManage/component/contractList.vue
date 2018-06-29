@@ -1,45 +1,47 @@
 <template>
     <div>
         <div class="contractRow">
-            <dl>
-                <dd v-for="item in contData">
-                    <div class="title">
-                        <Dropdown>
-                            <a href="javascript:void(0)">
-                                <Icon type="ios-more" size="20"></Icon>
-                            </a>
-                            <DropdownMenu slot="list" v-if="item.status=='0'||item.status=='13'">
-                                <DropdownItem @click.native="editContract(item)">编辑</DropdownItem>
-                                <DropdownItem @click.native="editContract(item.id)">删除</DropdownItem>
-                            </DropdownMenu>
-                            <DropdownMenu slot="list" v-else>
-                                <DropdownItem v-show="item.status=='12'||item.status=='8'?true:false">{{item.status=='3'?'申请结算首付款':'申请结算尾款'}}</DropdownItem>
-                                <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                    <div class="projectName">
-                        {{item.project_name!=null?item.project_name:'--'}}
-                    </div>
-                    <div class="projectName">
-                        ￥{{item.contract_price}}
-                    </div>
-                    <div class="projectStatus">
-                        <span class="status">
-                            {{item.status_text}}
-                        </span>
-                        <span class="line">&nbsp;</span>
-                    </div>
-                    <div class="projectInfo">
-                        <span class="company">
-                            <i class="iconfont icon-ren"></i> {{item.customer_name}}
-                        </span>
-                        <span class="date">
-                            {{item.create_time}}
-                        </span>
-                    </div>
-                </dd>
-            </dl>
+            <GeminiScrollbar>
+                <dl>
+                    <dd v-for="item in contData">
+                        <div class="title">
+                            <Dropdown>
+                                <a href="javascript:void(0)">
+                                    <Icon type="ios-more" size="20"></Icon>
+                                </a>
+                                <DropdownMenu slot="list" v-if="item.status=='0'||item.status=='13'">
+                                    <DropdownItem @click.native="editContract(item)">编辑</DropdownItem>
+                                    <DropdownItem @click.native="editContract(item.id)">删除</DropdownItem>
+                                </DropdownMenu>
+                                <DropdownMenu slot="list" v-else>
+                                    <DropdownItem v-show="item.status=='12'||item.status=='8'?true:false">{{item.status=='3'?'申请结算首付款':'申请结算尾款'}}</DropdownItem>
+                                    <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </div>
+                        <div class="projectName">
+                            {{item.project_name!=null?item.project_name:'--'}}
+                        </div>
+                        <div class="projectName">
+                            ￥{{item.contract_price}}
+                        </div>
+                        <div class="projectStatus">
+                            <span class="status">
+                                {{item.status_text}}
+                            </span>
+                            <span class="line">&nbsp;</span>
+                        </div>
+                        <div class="projectInfo">
+                            <span class="company">
+                                <i class="iconfont icon-ren"></i> {{item.customer_name}}
+                            </span>
+                            <span class="date">
+                                {{item.create_time}}
+                            </span>
+                        </div>
+                    </dd>
+                </dl>
+            </GeminiScrollbar>
         </div>
         <Modal
             v-model="addModal"

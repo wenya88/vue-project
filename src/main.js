@@ -11,7 +11,7 @@ import vueEventCalendar from '../src/views/main-components/calend/vue-event-cale
 import Bus from './config/bus.js'
 import notice from './notice/index.js' // 通知类
 import './notice/style.css' // 全局通知样式
-import 'jquery-sina-emotion/dist/jquery-sina-emotion.min.js' // 新浪表情js
+import './views/chatInterface/jquery-sina-emotion.min.js' // 新浪表情js
 import 'jquery-sina-emotion/dist/jquery-sina-emotion.min.css' // 新浪表情css
 import GeminiScrollbar from 'vue-gemini-scrollbar' // 美化滚动条
 import 'jquery.caret/dist/jquery.caret.min.js' // caret插件

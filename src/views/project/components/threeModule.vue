@@ -88,6 +88,11 @@ export default {
     }
     // this.newFBXMedel();
   },
+  computed: {
+    storeFileURl(){
+      return this.$store.state.ImgVedioStatus.FileURl
+    }
+  },
   methods: {
     //请求3D文件凭证
     getThreeFileKey() {
@@ -255,14 +260,15 @@ export default {
       });
     },
     newFBXMedel() {
+      
       // this.getThreeFileKey();
       var container, stats, controls;//容器、统计?、控制器
       var camera, scene, renderer, light;//相机、场景、渲染、灯光
       var clock = new THREE.Clock();//时钟
       var mixers = [];
-      init();//初始化
+      init(this.storeFileURl);//初始化
       animate();//动画
-      function init() {
+      function init(url) {
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
@@ -308,7 +314,8 @@ export default {
         // let url = '../src/views/project/components/threeFile/M_atk.fbx';
         // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-        let url = "https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX"
+        
+        
         loader.load(url, function(object) {
           // console.log(url2);
           object.mixer = new THREE.AnimationMixer(object);

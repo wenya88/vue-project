@@ -1,24 +1,25 @@
 <!-- 任务信息弹窗-->
 <template>
-    <div class="taskinfopop">
+    <div class="taskinfopop" >
         <Tabs type="card" >
             <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                 <div v-show="isInitTask" class="browsetaskpop">
                     <div class="filebrowse">
                         <filebrowse ref="filebrowse"></filebrowse>
                     </div>
-                    <div class="taskbrowse">
+                    <div   :class="$route.query.type === 'taskManagement'?'taskManagement':'taskbrowse'" >
                         <maintask ref="main"
                                   v-on:sendSubTaskList="sendSubTaskList"
                                   v-on:sendLogData="sendLogData"
                                   taskManagement="true"
+                                  v-on:subtask='getSubtaskInfo'
                         >
                         </maintask>
                     </div>
                 </div>
             </TabPane>
             <TabPane label="子任务" style="height: 800px;overflow-y: auto">
-                <subtasklist ref="sublist"></subtasklist>
+                <subtasklist :subtaskInfoData="subtaskInfo" ref="sublist"></subtasklist>
             </TabPane>
             <TabPane label="日志" style="height: 800px;overflow-y: auto">
                 <tasklog ref="log"></tasklog>
@@ -62,6 +63,7 @@ export default {
     },
   data() {
     return {
+        subtaskInfo:null,
       taskId:0,
       editData:{},
       isInitTask:false,
@@ -199,7 +201,7 @@ export default {
       this.$refs.main.saveTaskDetails(true);
       //保存子任务
       this.$refs.sublist.saveSubTasks();
-      this.$Message.success('保存任务成功');
+
 
       return true;
     },
@@ -317,7 +319,11 @@ export default {
         }
       );
       this.subData.splice(index, 1);
-    }
+    },
+      getSubtaskInfo(data){
+        console.log(313,data)
+          this.subtaskInfo = data
+      }
   }
 };
 </script>
@@ -325,6 +331,12 @@ export default {
 @import "../style/taskModal.css";
 @gray:#E6EAEB;
 .taskinfopop{
+    .taskManagement{
+        float: left;
+        padding: 0!important;
+        margin: 0 !important;
+        width: 304px!important;
+    }
   .taskbrowse{
     float:left;
     width:540px !important;
@@ -413,11 +425,7 @@ export default {
         border-bottom: 1px solid #ccc;
     }
 
-
-
-
     .taskButton{
-
         padding-right: 120px;
         text-align: right;
         button{

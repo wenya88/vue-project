@@ -63,15 +63,16 @@ html,body{
             // box-shadow: 0 2px 1px 1px rgba(100,100,100,.1);
             transition: padding .3s;
             .ivu-layout-header{
-                background: #1d2731 !important;
+                background: #f2f2f2 !important;
                 padding: 0;
                 .ivu-menu-light{
-                    background: #1d2731;
+                    // background: #1d2731;
                     .layout-logo{
                         // width: 160px;
                         // height: 64px;
                         // left: 0;
                         // top: 0;
+                        background: transparent;
                         width: 40px;
                         height: 40px;
                         left: 42px;
@@ -309,12 +310,13 @@ html,body{
                 background: #f2f2f2 !important;
                 padding: 0;
                 .ivu-menu-light{
-                    background: #1d2731;
+                    // background: #1d2731;
                     .layout-logo{
                         // width: 160px;
                         // height: 64px;
                         // left: 0;
                         // top: 0;
+                        background: transparent;
                         width: 40px;
                         height: 40px;
                         left: 42px;
@@ -494,7 +496,7 @@ html,body{
             // left: 121px;
             // height: 100%;
             // overflow: auto;
-            // background-color: #FFFFFF;
+            background-color: #f5f7f6;
             // transition: left .3s;
             // float: left;
             // width: calc(100% - 121px);
@@ -552,30 +554,41 @@ html,body{
             width: 150px;
             height: 100px;
             float: left;
+            a{
+                margin: 10px 50px;
+            }
+            .name{
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+            }
         }
-        li.work{
+        li:first-child{
+            display: none;
+        }
+        li a.workbench, li a.imPlementer{
             background: url(../images/icon/work.png) no-repeat; 
-            background-position: 50px 10px;
+            // background-position: 50px 10px;
             background-size: 50px 50px;
-            padding: 70px 0 0 43px;
+            padding: 25px;
         }
-        li.comp{
+        li a.epibol{
             background: url(../images/icon/company1.png) no-repeat; 
-            background-position: 50px 10px;
+            // background-position: 50px 10px;
             background-size: 50px 50px;
-            padding: 70px 0 0 61px;
+            padding: 25px;
         }
-        li.project{
+        li a.artsquare{
             background: url(../images/icon/project1.png) no-repeat; 
-            background-position: 50px 10px;
+            // background-position: 50px 10px;
             background-size: 50px 50px;
-            padding: 70px 0 0 50px;
+            padding: 25px;
         }
-        li.art{
+        li a.artwiki{
             background: url(../images/icon/art.png) no-repeat; 
-            background-position: 50px 10px;
+            // background-position: 50px 10px;
             background-size: 50px 50px;
-            padding: 70px 0 0 50px;
+            padding: 25px;
         }
     }
 }

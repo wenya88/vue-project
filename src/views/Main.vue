@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="main-content" :style="`height:${centerHight}px`"> <!-- :style="`height:${centerHight}px`" -->
-             <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'hidden'}" v-if="showMenu">
+             <!-- <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'hidden'}" v-if="showMenu">
                 <Menu>
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
                         <template slot="title">
@@ -52,10 +52,14 @@
                         </template>
                     </Submenu>
                 </Menu>
-            </div> 
-             <!-- <div class="menuBlock" v-if="showMenu">
+            </div>  -->
+            <div class="menuBlock" v-if="showMenu">
                  <ul> 
-                     <li class="work" @click="linkTo('/epibol/ProjectWork')">
+                    <li v-for="(item,index) in menuList" :key="index">
+                        <router-link :to="item.path" :class="[item.name]" @click.native="collapsedSider()"></router-link>
+                        <span class="name">{{item.title}}</span>
+                    </li>
+                    <!-- <li class="work" @click="linkTo('/epibol/ProjectWork')">
                         个人工作台
                     </li> 
                     <li class="comp" @click="linkTo('/epibol')">
@@ -66,9 +70,9 @@
                     </li> 
                     <li class="art" @click="linkTo('/epibol')">
                         艺术广场
-                    </li>  
+                    </li>   -->
                 </ul>
-            </div>   -->
+            </div>   
             <ul class="menu">
                 <li v-for="(item,index) in subMenu" :key="index">
                     <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']"></router-link>
@@ -206,8 +210,10 @@ export default {
                         Cookies.remove('user');
                         localStorage.removeItem('token');
                         this.$router.push('/login');
+                        webSocket.close();
+                        this.$store.state.msgShow = false;
+                        localStorage.removeItem('msgShow');
                     }
-                  webSocket.close()
                 })
             }else if(name === 'ownSpace'){
                 this.$router.push({path:'/home/personalCenter'})

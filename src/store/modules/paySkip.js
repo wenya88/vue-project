@@ -4,7 +4,8 @@ const paystatus={
         payData:{},
         projectData:[],
         userData:[],
-        enterContractFlag:false
+        enterContractFlag:false,
+        fileUpload:"http://192.168.2.19/index.php?r=file/file/file-upload"
     },
     mutations:{
         actionPaySkip(state,pData){

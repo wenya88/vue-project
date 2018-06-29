@@ -1,4 +1,6 @@
 <template >
+<div>
+   <div class="msg_button_fix" @click="geMsg">消息</div>
    <div class="real_all" v-if="isShow">
      <div class="clearfix real_header_box">
         <p class="header_project project_is_actice" @click="getReal(0)">项目沟通(15)</p>
@@ -8,6 +10,7 @@
      <real-message v-if="!isMsg"></real-message>
      <remind v-else></remind>
    </div>
+ </div>
 </template>
 <script>
 import realMessage from './realMessage.vue'
@@ -16,7 +19,7 @@ export default {
   // props:['visidy'],
   data () {
     return {
-      isShow: true,
+      isShow: false,
       isMsg: false
     }
   },
@@ -27,6 +30,10 @@ export default {
   watch: {
   },
   methods: {
+    // 关闭信息
+    geMsg () {
+      this.isShow = true
+    },
     getReal (index) {
       const elements = document.getElementsByClassName('header_project')
       if (index === 0) {
@@ -47,15 +54,54 @@ export default {
 }
 </script>
 <style scoped>
+.msg_button_fix{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  line-height: 50px;
+  background: rgb(24,191,164);
+  position:fixed;
+  cursor: pointer;
+  bottom: 50%;
+  right: 20px;
+  margin-bottom: -25px;
+  box-shadow: 0px 2px 19px rgb(231,231,231);
+}
+.msg_button_fix:hover {
+  animation: myfix 2s ease-in-out 0s 1 alternate forwards;
+}
+@keyframes myfix {
+  0% {
+    opacity: .5;
+    width: 50px;
+    height: 50px;
+  }
+  50%{
+    opacity: .6;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+  }
+  100%{
+    opacity: 1;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+  }
+}
 .real_all{
  position: fixed;
  top: 0;
- left: 0;
+ right: 0;
  height: 100%;
  width: 600px;
  z-index: 9999;
  background: #ffffff;
  border-right: 2px solid rgba(49,187,159);
+ border-left: 2px solid rgba(49,187,159);
 }
 .real_header_box{
   width: 100%;

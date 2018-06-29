@@ -38,9 +38,9 @@
         </div>
         <table class="card-table">
           <tr>
-            <td class="w15"><span class="tag">{{item.tasktype_name}}</span></td>
-            <td class="w55">{{item.name}}</td>
-            <td class="w20"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
+            <td class="w40"><span class="tag">{{item.tasktype_name}}</span></td>
+            <td class="w40">{{item.name}}</td>
+            <td class="w10"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
             <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>
           </tr>
         </table>

@@ -12,18 +12,10 @@ export const menu = [
                 path: '/project/task',
                 name: 'task',
                 title: '任务管理',
-            // }, {
-            //     path: '/project/schedule',
-            //     name: 'schedule',
-            //     title: '项目进度',
             }, {
                 path: '/project/quality',
                 name: 'quality',
                 title: '资源管理',
-            // }, {
-            //     path: '/project/pigeonhole',
-            //     name: 'pigeonhole',
-            //     title: '归档文件',
             }, {
                 path: '/project/projectMember',
                 name: 'eMember',
@@ -32,17 +24,13 @@ export const menu = [
                 path: '/project/statistics',
                 name: 'statistics',
                 title: '统计',
-            // }, {
-            //     path: '/project/setting',
-            //     name: 'file',
-            //     title: '设置',
             }
         ]
     },
     {
         path: '/epibol',
         name: 'epibol',
-        title: '外包公司管理',
+        title: '公司',
         children: [
             {
                 path: '/epibol/home',
@@ -79,101 +67,111 @@ export const menu = [
             }
         ]
     }, {
-        path: '/customer',
-        name: 'customer',
-        title: '客户公司管理',
-        children: [
-            {
-                path: '/customer/home',
-                name: 'cHome',
-                title: '概况页',
-            }, {
-                path: '/customer/epibolCompany',
-                name: 'epibolCompany',
-                title: '合作',
-            }, {
-                path: '/customer/contractManage',
-                name: 'cContractManage',
-                title: '合同',
-            }, {
-                path: '/customer/bidManage',
-                name: 'cusBidManage',
-                title: '招投标管理',
-            },{
-                path: '/epibol/projectManage',
-                name: 'cProjectManage',
-                title: '项目管理',
-            }
+    //     path: '/customer',
+    //     name: 'customer',
+    //     title: '客户公司管理',
+    //     children: [
+    //         {
+    //             path: '/customer/home',
+    //             name: 'cHome',
+    //             title: '概况页',
+    //         }, {
+    //             path: '/customer/epibolCompany',
+    //             name: 'epibolCompany',
+    //             title: '合作',
+    //         }, {
+    //             path: '/customer/contractManage',
+    //             name: 'cContractManage',
+    //             title: '合同',
+    //         }, {
+    //             path: '/customer/bidManage',
+    //             name: 'cusBidManage',
+    //             title: '招投标管理',
+    //         },{
+    //             path: '/epibol/projectManage',
+    //             name: 'cProjectManage',
+    //             title: '项目管理',
+    //         }
             
-        ]
-    }, {
-        path: '/depot',
-        name: 'depot',
-        title: '项目库',
-        children: [
-            {
-                path: '/depot/project',
-                name: 'dProject',
-                title: '项目库',
-            }
-        ]
-    }, {
-        path: '/outsourced',
-        name: 'outsourced',
-        title: '外包商',
-        children: [
-            {
-                path: '/outsourced/home',
-                name: 'oHome',
-                title: '公司网页',
-            }
-        ]
-    }, {
-        path: '/artist',
-        name: 'artist',
-        title: '艺术家',
-        children: [
-            {
-                path: '/artist/opus',
-                name: 'opus',
-                title: '作品集',
+    //     ]
+    // }, {
+    //     path: '/depot',
+    //     name: 'depot',
+    //     title: '项目库',
+    //     children: [
+    //         {
+    //             path: '/depot/project',
+    //             name: 'dProject',
+    //             title: '项目库',
+    //         }
+    //     ]
+    // }, {
+    //     path: '/outsourced',
+    //     name: 'outsourced',
+    //     title: '外包商',
+    //     children: [
+    //         {
+    //             path: '/outsourced/home',
+    //             name: 'oHome',
+    //             title: '公司网页',
+    //         }
+    //     ]
+    // }, {
+    //     path: '/artist',
+    //     name: 'artist',
+    //     title: '艺术家',
+    //     children: [
+    //         {
+    //             path: '/artist/opus',
+    //             name: 'opus',
+    //             title: '作品集',
 
-            },{
-                path:'/artist/projectMember',
-                titie:'项目成员',
-            }
-        ]
-    }, {
+    //         },{
+    //             path:'/artist/projectMember',
+    //             titie:'项目成员',
+    //         }
+    //     ]
+    // }, {
         path: '/artsquare',
         name: 'artsquare',
-        title: '任务大厅',
+        title: '项目大厅',
         children: [
             {
                 path: '/artsquare/home',
                 name: 'aHome',
                 title: '任务大厅',
+            }, {
+                path: '/artsquare/project',
+                name: 'dProject',
+                title: '项目库',
             }
         ]
     }, {
         path: '/artwiki',
         name: 'artwiki',
-        title: '艺术WIKI',
+        title: '艺术大厅',
         children: [
             {
                 path: '/artwiki/home',
                 name: 'awkHome',
-                title: '艺术WIKI',
+                title: '艺术大厅',
             }
         ]
-    },{
+    }, {
         path: '/epibol/imPlementer',
         name: 'imPlementer',
         title: '实施人员',
+        access: 3,
         // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
     }, {
         path: '/epibol/ProjectWork',
         name: 'workbench',
         title: '工作台',
+        access: 1,
         // component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
+    // }, {
+    //     path: '/epibol/taskClass',
+    //     name: 'setting',
+    //     title: '设置',
     }
 ];

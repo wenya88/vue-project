@@ -7,7 +7,7 @@
         :on-remove="fileRemove"
         :max-size="2048"
         :on-exceeded-size="fileMaxSize"
-        action='/file/file/file-upload'
+        :action="fileup"
         >
         <Button type="ghost" icon="ios-cloud-upload-outline"  :style="fileWidth">点击/拖入可上传</Button>
     </Upload>
@@ -20,6 +20,11 @@ export default {
              defaultList:[],
              fileWidth:''
         }
+    },
+    computed:{
+        fileup(){
+            return this.$store.state.paySkip.fileUpload
+        },
     },
     methods:{
         //初始化附件的宽度

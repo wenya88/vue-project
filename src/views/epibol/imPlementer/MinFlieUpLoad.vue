@@ -27,7 +27,7 @@
             :before-upload="handleBeforeUpload"
             multiple
             type="drag"
-            action="/file/file/file-upload"
+            :action="fileup"
             >
             <div style="padding:10px 0px">
                 <Icon type="ios-cloud-upload-outline" size="30"></Icon>&nbsp;&nbsp;拖入/点击上传
@@ -47,6 +47,11 @@
                 taskTypeID:0,
                 fileAskData:[]
             }
+        },
+        computed:{
+            fileup(){
+                return this.$store.state.paySkip.fileUpload
+            },
         },
         methods: {
             // 文件格式要求

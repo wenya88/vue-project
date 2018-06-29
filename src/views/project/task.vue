@@ -17,44 +17,53 @@
                   <Icon type="android-apps" style="vertical-align: top" size="20"></Icon>&nbsp;项目进度
                   <span class="editBtn">
                       <Icon @click.native="editMode" type="edit" style="vertical-align: top" size="20"></Icon>
-            </span>
+                  </span>
               </div>
               <div v-if="editShow" class="rightRow">
+                  <div style="background: #39f;color: #fff" @click="changeTaskListData('all')">全部</div>
                   <div class="line" v-for="item in ChildMsgData">
-                      <div class="title">
-                          <span v-if="!item.realname" @click="changeTaskListData(item)" style="cursor: pointer">{{item.child_project_name }}</span>
-                        <div v-else class="alone">
+                      <div class="title headTitle">
+                          <template v-if="!item.realname">
+                              <span  @click="changeTaskListData(item)" style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap; cursor: pointer;">{{item.child_project_name }}</span>
+                              <Avatar style="margin-top: -30px;"  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                       size="small"/>&nbsp;&nbsp;
+                              <span style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" >{{item.leader_name}}</span>
+
+                          </template>
+                        <div v-else class="alone" >
                             <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
                                     size="small"/>&nbsp;&nbsp;
                             <div v-if="item.realname">{{item.realname}}</div>
                         </div>
+
                       </div>
-                      <div  class="lineRow showPlan">
+                      <div  class="lineRow showPlan" :class="item.realname?'':'showPlanColor'">
                           <Progress  :percent="Number(item.progress)">
                               <span>{{item.complete}}/{{item.total}}</span>
                           </Progress>
                       </div>
                       <div class="clear"></div>
-                      <div v-if="!item.realname" style="position: relative;padding-left: 30px;">
-                            <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                     size="small"/>&nbsp;&nbsp;
-                            <span >{{item.leader_name}}</span>
-                          <Icon class="flag" type="flag"></Icon>
+                      <div v-if="!item.realname" style="background: #e4e4e4;position: relative;padding-left: 30px;border-radius: 0 0 6px 6px;">
+                            <!--<Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"-->
+                                     <!--size="small"/>&nbsp;&nbsp;-->
+                            <!--<span >{{item.leader_name}}</span>-->
+                          <!--<Icon class="flag" type="flag"></Icon>-->
                       </div>
                       <!--<Select v-model="item.leader"    style="width:100px">-->
                       <!--<Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.nickname }}</Option>-->
                       <!--</Select>-->
-                      <div  style="padding-left: 30px;">
+                      <div  style="padding-left: 43px;">
                           <div class="line" v-for="member in item.child_project">
                               <div class="title">
                                   <div class="demo-avatar">
                                       <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                               size="small"/>&nbsp;&nbsp;&nbsp;&nbsp;{{member.user}}
+                                               size="small"/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"  @click="changeTaskListData(member,'member')">{{member.user}}</span>
                                   </div>
                               </div>
                               <div class="lineRow">
-                                  <Progress :percent="Number(member.progress)"><span>{{member.complete}}/{{member.total}}</span>
-                                  </Progress>
+                                  <!--<Progress :percent="Number(member.progress)"><span>{{member.complete}}/{{member.total}}</span>-->
+                                  <!--</Progress>-->
+                                  <p style="text-align: right;padding-right: 23px;">{{member.complete}}/{{member.total}}</p>
                               </div>
                               <div class="clear"></div>
                           </div>
@@ -66,8 +75,8 @@
                   <div class="line" v-for="item in ChildMsgData">
                       <div  class="editList" v-if="item.child_project">
                        <div>
-                           <input type="text" @change="changeName(item,$event)"
-                                  :value="item.child_project_name || item.realname" class="title"/>
+                           <Input type="text" @on-blur="changeName(item,$event)"
+                                  :value="item.child_project_name || item.realname" class="title"></Input>
                            <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
                                    size="small"/>&nbsp;&nbsp;
                            <Select v-model="item.leader"   @on-change="changePrincipal(item,item.leader)"    style="width:100px">
@@ -118,17 +127,17 @@
                   <tasklist style="padding-left: 450px;" ref="list" v-on:showTaskDetails='showTaskDetails'
                             v-on:delTask="closeTaskDetails"></tasklist>
               </Tab-pane>
-              <Tab-pane  label="甘特图模式" icon="podium" style="height: 700px;overflow: auto;">
+              <Tab-pane  label="甘特图模式" icon="podium" >
                   <iframe style="padding-left: 450px;" id="show-iframe" frameborder=0  name="showHere" scrolling=auto
                           src="../../../src/views/project/gantt/gantt.html"></iframe>
               </Tab-pane>
-              <Tab-pane   label="进度" icon="podium"  style="height: 700px;overflow: auto;" >
+              <Tab-pane   label="进度" icon="podium"   >
                   <v-schedule-plan  style="padding-left: 450px;" ></v-schedule-plan>
               </Tab-pane>
           </Tabs>
       </div>
 
-    <!-- 编辑任务组件 -->
+     <!--编辑任务组件-->
     <!--<Modal-->
           <!--v-model="isShowTaskDetails"-->
           <!--width="1200"-->
@@ -207,7 +216,7 @@ export default {
         companyMember: null,
         subProjectManager: null,
         subProjectName: null,
-        isShowTaskDetails: false,
+        isShowTaskDetails: true,
         isSaveLoading: true,
         taskId: 0,
         isExcelTask: false,
@@ -240,9 +249,12 @@ export default {
         sessionStorage.TaskID = 0;
       },
       //改变任务列表
-      changeTaskListData(subType){
-          subType.project_child_id = subType.child_id
-        this.$refs.list.initTaskListFromId(subType);
+      changeTaskListData(subType,type){
+            if(subType !== 'all'){
+                subType.project_child_id = subType.child_id;
+            }
+            this.$refs.list.initTaskListFromId(subType,type);
+
       },
       //刷新当前任务列表
       refreshCurrentTaskList()
@@ -262,7 +274,7 @@ export default {
 
         this.setProjectInfoDetails(this.projectInfo);
         this.setDetailAll(data);
-        this.$router.push({path:'/project/details'})
+        this.$router.push({path:'/project/details',query:{type:'taskManagement'}})
       },
       //编辑后关闭modal
       closeTaskDetails() {
@@ -325,9 +337,9 @@ export default {
       // 项目进度初始化接口
       projectPlan() {
           let projectID=sessionStorage.projectID;
-          let ProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
-          let ChlidProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
-          let MemberProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID);
+//          let ProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
+//          let ChlidProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
+//          let MemberProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID);
 //          this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
 //              // 项目进度
 //              let MsData=msg.data.data;
@@ -349,13 +361,12 @@ export default {
 //          },()=>{
 //              console.log("请求失败")
 //          })
-
-          this.$axios.post(`${this.GLOBAL.baseRouter}/task/total/member-child-project-total`,qs.stringify({project_id:this.projectId}))
+          this.$axios.post(this.GLOBAL.baseRouter+'/task/total/member-child-project-total',qs.stringify({project_id:this.projectId}))
               .then(({data})=>{
-              if(data.err_code === 0){
-                  this.ChildMsgData = data.data;
-                  console.log(11,data.data)
-              }
+                  if(data.err_code === 0){
+                      this.ChildMsgData = data.data;
+                      console.log(11,data.data)
+                  }
               })
 
       },
@@ -363,8 +374,9 @@ export default {
       editMode(){
           this.editShow = !this.editShow
           if (!this.companyMember) {
-              this._ajax('task/company/member-page', {company_id: 1})
+              this._ajax('task/company/joined-members', {project_id: this.projectId})
                   .then(({data}) => {
+                  console.log(1,data)
                       if (data.err_code === 0) {
                           this.companyMember = data.data
 
@@ -383,17 +395,17 @@ export default {
           this._ajax('task/project/child-delete', {id: id})
               .then(({data}) => {
                   if (data.err_code === 0) {
-                      this.projectPlan();
                       this.$Message.success('删除成功');
+                     this.projectPlan()
                   }
               })
       },
       // 更改负责人
       changePrincipal(data,leader){
-          console.log(33,data)
          if(leader){
              let id = data.child_id;
              let name = data.child_project_name;
+
              this._ajax('task/project/child-update',{id:id,name:name,leader:leader})
                  .then(({data})=>{
                      if(data.err_code === 0){
@@ -405,16 +417,17 @@ export default {
       },
       // 更改项目名称
       changeName(data,e){
-          console.log(111,data)
           let id = data.child_id;
           let name = e.target.value
-          this._ajax('task/project/child-update',{id:id,name:name,leader:data.leader})
-              .then(({data})=>{
-                  if(data.err_code === 0){
-                      this.projectPlan();
-                      this.$Message.success('修改成功');
-                  }
-              })
+          if(data.child_project_name !== name ){
+              this._ajax('task/project/child-update',{id:id,name:name,leader:data.leader})
+                  .then(({data})=>{
+                      if(data.err_code === 0){
+                          this.projectPlan();
+                          this.$Message.success('修改成功');
+                      }
+                  })
+          }
 
       },
       // 添加项目
@@ -437,6 +450,7 @@ export default {
 <style lang="less" >
 .task{
   position:relative;
+    height: 100%;
     .taskMainContainer{
         position: relative;
         display: flex;
@@ -446,10 +460,22 @@ export default {
             top:35px;
             left: -11px;
             width: 457px;
-            height: 100%;
+            height: 800px;
             padding: 10px 23px;
             z-index: 333;
             background: #fff;
+            overflow-y: auto;
+            .title{
+                width: 120px !important;
+                padding: 0 !important;
+                /*overflow:hidden;*/
+                /*text-overflow:ellipsis;*/
+                /*white-space:nowrap*/
+            }
+            .headTitle{
+                height: 40px;
+                line-height: 40px;
+            }
             .flag{
                 position: absolute;
                 top:0;
@@ -466,15 +492,26 @@ export default {
                     cursor: pointer;
                 }
             }
+            .showPlanColor{
+                padding-top: 10px;
+                padding-bottom: 10px;
+                background: #e4e4e4;
+                border-radius: 6px 6px 0 0;
+            }
             .showPlan{
-                margin-left: 131px !important;
+                padding-left: 150px !important;
+                /*margin-left: 0 !important;*/
+                /*padding-left: 133px;*/
+                /*margin-left: 131px !important;*/
             }
             .editShowPlan{
                 margin-left: 355px !important;
             }
             .alone{
                 display: flex;
-                margin-left: 30px;
+                margin-left: 43px;
+                background: #fff;
+                line-height: normal!important;
             }
             .editList{
                 display: flex;
@@ -501,7 +538,7 @@ export default {
     height:60px;
     /* text-align:right; */
     float:right;
-    right: -10px;
+    right: 17px;
     padding: 4px 10px 10px 24px;
     z-index:2;
 }

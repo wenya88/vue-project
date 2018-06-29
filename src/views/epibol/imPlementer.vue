@@ -145,6 +145,7 @@
                                   <dl>
                                       <dt><Icon type="social-buffer-outline"></Icon> 待反馈({{ListFeedBack.length}})</dt>
                                       <dd>
+                                          <GeminiScrollbar>
                                           <Timeline>
                                               <div v-if="ListFeedBack==''" class="notData">暂无数据</div>
                                               <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
@@ -162,6 +163,7 @@
                                               </Timeline-item>
                                               
                                           </Timeline>
+                                          </GeminiScrollbar>
                                       </dd>
                                   </dl>
                               </div>
@@ -382,7 +384,7 @@
     //  打开任务详情
     taskDetaInfo(id,type,file,TaskID){
         let _this=this;
-        _this.isTabModal=true;        
+        _this.isTabModal=true;
         this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
         this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
         // 本地缓存信息

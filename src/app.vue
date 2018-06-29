@@ -1,6 +1,7 @@
 <template>
     <div id="main" class="app-main">
         <router-view></router-view>
+        <chat-interface v-if="ishow"></chat-interface>
     </div>
 </template>
 
@@ -8,10 +9,12 @@
     export default {
       data () {
             return {
-                theme: this.$store.state.app.themeColor
+                theme: this.$store.state.app.themeColor,
+                ishow: false
             };
         },
         created() {
+        //  console.log('数据', localStorage.token)
          if (localStorage.token) {
           const msgData = JSON.stringify({
             action: 'login',
@@ -20,8 +23,18 @@
           this.$connectSoket.connectSocket(msgData)
          }
         },
+        computed: {
+          getishow () {
+            this.ishow = this.$store.state.msgShow
+          }
+        },
+        watch: {
+          getishow(e) {
+             console.log('数据', e)
+          }
+        },
         mounted () {
-         
+        //   console.log('数据2', this.$store.state.msgShow)
         },
         beforeDestroy () {
         },

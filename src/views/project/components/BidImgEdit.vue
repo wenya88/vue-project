@@ -47,8 +47,8 @@
         IMGdata:[],
         Biddata:[],
         url:'',
-        AllowEditRow:true,
-        SataeInfo:true,
+        AllowEditRow:false,
+        SataeInfo:false,
         StateFeedBack:0,
         insTime:0,
         cliTiem:0,
@@ -60,7 +60,8 @@
         FeedbackValue:'',
         onload:true,
         IMGID:0,
-        fileID:0
+        fileID:0,
+        bidFileStatus:null
       }
     },
     watch:{
@@ -76,6 +77,7 @@
          this.$bus.emit('InfoRefresh')
       },
       onLoad(){
+          this.fileStatus();
           let el=document.getElementById("ImgOnlod");
           let el2=document.getElementById("onload");
           el2.style.display="block";
@@ -86,12 +88,13 @@
               if(imgH>divH){
                 $(".ivu-modal-body").css('height',imgH)
               }
+           
           }
       },
       loadWH(){
           $('.imgEditorCom').height($(window).height()-500);
           $(".imgEditorCom").width($(".ivu-modal").width()-400);
-          // $('.imgFocus img').height($(window).height()-500);
+          $('.imgFocus').height(350);
           //$(".defaultH").height($(window).height()-400);
       },
       defue(BID,status){
@@ -263,23 +266,26 @@
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
       },
+      fileStatus(){
+        if(this.bidFileStatus==0){ //允许标注
+                this.AllowEditRow=true;
+                this.SataeInfo=false;
+        }else if(this.bidFileStatus==1||this.bidFileStatus==2){ //不允许标注
+                this.AllowEditRow=false
+                this.SataeInfo=true;
+        }
+      },
       Editget(bidFile){
-           let _this=this;
-           _this.onLoad();
+          let _this=this;
+          _this.onLoad();
            sessionStorage.removeItem("FeedbackValue");
           //  控制图片是否可标注
-           if(bidFile.status=="0"){ //允许标注
-                _this.AllowEditRow=true;
-                _this.SataeInfo=false;
-            }else if(bidFile.status=="1"||bidFile.status=="2"){ //不允许标注
-                _this.AllowEditRow=false
-                 _this.SataeInfo=true;
-            }
-            _this.data=bidFile.tag;
-            _this.url=bidFile.file;
-            _this.Biddata=bidFile;
-            _this.defue(bidFile.id,bidFile.status);
-            _this.imgdef();
+          _this.bidFileStatus=bidFile.status;
+          _this.data=bidFile.tag;
+          _this.url=bidFile.file;
+          _this.Biddata=bidFile;
+          _this.defue(bidFile.id,bidFile.status);
+          _this.imgdef();
       },
       
     }

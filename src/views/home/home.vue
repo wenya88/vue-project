@@ -5,8 +5,7 @@
     <div class="home-main">
         <!-- 主页 -->
          <Button type="primary">退出登录</Button>
-          <Button type="primary">登录</Button>
-          <!-- <chat-interface></chat-interface> -->
+          <Button type="primary" @click="login">登录</Button>
     </div>
 </template>
 
@@ -37,17 +36,19 @@ export default {
                 this.$router.push(url)
             }
         },
-        // login() {
-        //   this.$set()
-        // },
+        login() {
+          console.log('数据3', this.$store.state.msgShow)
+        },
         userInfo() {
             this.$axios.get(this.GLOBAL.baseRouter+'system/login/info')
             .then( res => res.data)
             .then( res => {
                 if(res.err_code == 0){
                     // console.log(res)
-                    sessionStorage.userId = res.user.id
+                    // sessionStorage.userId = res.user.id
+                    Cookies.set('post_id', res.company.post_id)
                 }
+                this.$store.commit('updateMenulist');
             })
         },
         invateInfo(code) {

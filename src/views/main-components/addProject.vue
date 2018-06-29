@@ -46,7 +46,7 @@
                             :on-exceeded-size="handleMaxSize"
                             :before-upload="handleBeforeUpload"
                             type="drag"
-                            action='/file/file/file-upload'
+                            :action="fileup"
                             style="display:block;width:100%;">
                             <div style="width:100%;display:block;padding:33px 10px 33px 10px;">
                                 <p style="font-size:16px;"><Icon type="plus"></Icon> 上传图片</p>   
@@ -114,6 +114,11 @@ export default {
             addManageDIV:false,
             manageData:[],
         }
+    },
+    computed:{
+        fileup(){
+            return this.$store.state.paySkip.fileUpload
+        },
     },
     methods:{
         // 编辑标签

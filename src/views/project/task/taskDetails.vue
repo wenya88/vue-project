@@ -7,11 +7,16 @@
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
-            <FormItem label="负责人">
+            <FormItem  label="负责人">
                 <Select v-model="principalName"  placeholder="">
-                    <Option v-for="item in principal" :value="item.remark_name" :key="item.value">{{ item.remark_name }}</Option>
+                    <Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>
                 </Select>
             </FormItem>
+            <!--<FormItem  v-else label="负责人">-->
+                <!--<Select v-model="principalName"  placeholder="">-->
+                    <!--<Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>-->
+                <!--</Select>-->
+            <!--</FormItem>-->
             <FormItem label="计划时间">
                 <DatePicker
                 :value="getTimeRange"
@@ -28,7 +33,7 @@
             <FormItem label="子项目">
                 <Select
                 @on-change='setChildProject'
-                v-model="editData.project_child_name"
+                v-model="editData.project_child"
                 clearable
                 :disabled="editDisabled"
                 placeholder=""
@@ -36,7 +41,7 @@
                     <Option
                         v-for="item in childProjectsList"
                         :key="item.child_id"
-                        :value="item.name"
+                        :value="item.id"
                         >
                         {{item.name}}
                     </Option>
@@ -100,7 +105,7 @@
                 :show-upload-list="true"
                 :on-success="referenceFileSuccess"
                 :on-remove ="referenceFileRemove"
-                action="http://192.168.2.19/index.php?r=file/file/file-upload"
+                :action="fileup"
                 :default-file-list="referenceFileName"
                 >
                 <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
@@ -132,6 +137,7 @@ export default{
     },
     data() {
         return {
+            projectId:sessionStorage.getItem('projectID'),
             //*任务属性*//
             taskID:0,
             editData:{},
@@ -169,24 +175,28 @@ export default{
     computed:{
         getTimeRange: function(){
             return [this.editData.expect_start_date,this.editData.expect_end_date]
-        }
+        },
+        fileup(){
+            return this.$store.state.paySkip.fileUpload
+        },
     },
     methods:{
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
-            console.log(123)
+            // console.log('详情',id,fatherFunctions)
             if(id!=0)
             {
+                this.getChildProject()
                 this.taskID = id;
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-                        this.initTaskDetailFromData(res)
+                        this.initTaskDetailFromData(res);
                         this.getTaskTypeRequire(res.tasktype_id);
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
-                        console.log(res);
-
+                        this.principalName = res.member_id+'';
+                        this.$emit('subtask',res)
                     }
                 )
                 .catch(error => {
@@ -210,15 +220,17 @@ export default{
         //新增任务初始化-DONE
         initTaskDetailFromNew(projectInfo)
         {
+
             this.isNewTask = true;
             this.initProjectInfo(projectInfo);
             this.clickMenberDropdown();
+            this.getChildProject()
         },
         //初始化项目相关信息-DONE
         initProjectInfo(projectInfo)
         {
             this.editData.project_id = projectInfo.id;
-            this.childProjectsList = projectInfo.child;
+//            this.childProjectsList = projectInfo.child;
         },
         //外部获得任务数据-DONE
         getTaskDetail()
@@ -317,14 +329,15 @@ export default{
                 dataForm.id = this.editData.id;
                 dataForm.father = this.editData.father ? this.editData.father : 0;
                 dataForm.name = this.editData.name;
-                dataForm.project = this.editData.project_id;
+                dataForm.project = this.projectId;
+//                dataForm.project = this.editData.project_id;
                 dataForm.project_child = this.editData.project_child;
                 dataForm.tasktype_id = this.editData.tasktype_id ? this.editData.tasktype_id: 0;
                 dataForm.expect_start_time = this.editData.expect_start_date;
                 dataForm.expect_end_time = this.editData.expect_end_date;
                 dataForm.description = this.editData.description;
                 dataForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
-                dataForm.run_member_id = this.getUserId(this.principalName);
+                dataForm.run_member_id = this.principalName;
                 dataForm.remark_name = this.principalName;
                 console.log(dataForm.run_member_id);
 
@@ -351,7 +364,7 @@ export default{
         //获得参与人ID
         getUserName(namesId)
         {
-            console.log(namesId);
+
 
             if(this.principal.length > 0)
             {
@@ -388,7 +401,7 @@ export default{
                         .then(res => {
                             this.$bus.emit('refreshCurrentTaskList');
                             if(link){
-                                this.$router.push({path:'/project/task'});
+//                                this.$router.push({path:'/project/task'});
                             }
                         })
                         .catch(error => {
@@ -420,21 +433,20 @@ export default{
             this.editData.expect_start_date = date[0];
             this.editData.expect_end_date = date[1];
         },
+        // 获得子项目
+        getChildProject(){
+            // console.log(33)
+            this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
+                .then(({data})=>{
+                // console.log(33,data)
+                this.childProjectsList = data.data
+                })
+        },
         //设置子项目
-        setChildProject(pName) {
-            this.editData.project_child_name = pName;
-            let result =false;
-            this.childProjectsList.forEach(
-                (res)=>{
-                    if(res.name == pName)
-                    {
-                        this.editData.project_child = res.child_id;
-                        result = true;
-                    }
-                }
-            );
-            if(result == false)
-                this.editData.project_child = null;
+        setChildProject(pId) {
+
+            this.editData.project_child = pId;
+
         },
         //选择任务类型自动改变类型要求-DONE
         selectTaskType(id_name)
@@ -457,20 +469,21 @@ export default{
         //点击参与人下拉
         clickMenberDropdown()
         {
-            console.log(111 )
             this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-page',qs.stringify({company_id: 1}))
                 .then( res => res.data)
                 .then( res => {
                     this.principal = res.data;
-                    console.log(res)
+                    // console.log('负责人',res.data)
 //                        this.principal=[];
 //                        this.principalName="";
 //                        this.principal = res.data;
-//                        this.principalName = this.getUserName(this.editData.member_id);
+//                        this.principalName = this.getUserName(this.editData.member_id)
+                    // console.log(1.1,this.principalName);
+                    //     console.log(1.2,this.principal);
                     }
                 )
                 .catch(error => {
-                    console.log(error);
+                    // console.log(error);
 
                     this.$Message.error("获取公司成员失败，请重试！");
                 });

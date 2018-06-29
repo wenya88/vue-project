@@ -34,7 +34,7 @@
                             :on-remove="fileRemove"
                             :max-size="2048"
                             :on-exceeded-size="fileMaxSize"
-                            action='/file/file/file-upload'
+                            :action="fileup"
                         >
                             <Button type="ghost" icon="ios-cloud-upload-outline"  style="width:767px">点击/拖入可上传</Button>
                         </Upload>
@@ -107,6 +107,11 @@ export default {
                 }
             }
         }
+    },
+    computed:{
+            fileup(){
+                return this.$store.state.paySkip.fileUpload
+            },
     },
     mounted(){
         this.coopListGet();

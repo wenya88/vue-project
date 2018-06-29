@@ -9,7 +9,7 @@
         <div v-if="filetype === 'VIDEO'">
             <videoeditor ref="videoeditor"></videoeditor>
         </div>
-        <div v-if="filetype === 'MODEL'">
+        <div v-if="filetype === '3d'">
             <modeleditor ref="modeleditor"></modeleditor>
         </div>
     </div>
@@ -44,6 +44,7 @@ export default {
         {
             //显示不同的组件
             switch(type)
+           
             {
                 case 'image':
                     // console.log("file type is "+type);
@@ -54,8 +55,8 @@ export default {
                     this.filetype = 'VIDEO';
                     // console.log("file type is "+type);
                     break;
-                case 'model':
-                    this.filetype = 'MODEL';
+                case '3d':
+                    this.filetype = '3d';
                     // console.log("file type is "+type);
                     break;
                 default:

@@ -89,7 +89,7 @@
 export default {
     methods:{
         companySet(){
-            this.$router.push('/project/setting');
+            this.$router.push('/page/taskClass');
         },
         project(){
             this.$router.push('/epibol/projectManage');

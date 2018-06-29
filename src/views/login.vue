@@ -220,18 +220,20 @@ export default {
             this.$refs.login.validate((valid) => {
                 if (valid) {
                     // Cookies.set('password', this.form.password);
-                    this.$axios.post(this.GLOBAL.baseRouter + 'system/login/login', qs.stringify(data))
-                        .then(res => res.data)
-                        .then(res => {
-                            if (res.err_code == 0) {
-                                Cookies.set('user', this.loginform.email);
-                                localStorage.token = res.token
-                                axios.defaults.headers.common['token'] = res.token;
-                                this.$router.push('/home/home')
-                            } else {
-                                this.$Message.warning(res.err_message);
-                            }
-                        })
+                    this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))
+                    .then(res => res.data)
+                    .then(res => {
+                        if(res.err_code == 0) {
+                            Cookies.set('user', this.loginform.email);
+                            localStorage.token = res.token
+                            this.$store.state.msgShow = true
+                            localStorage.msgShow = true
+                            axios.defaults.headers.common['token'] = res.token;
+                            this.$router.push('/home/home')
+                        } else {
+                            this.$Message.warning(res.err_message);
+                        }
+                    })
                     // Cookies.set('user', this.form.userName);
                     // this.$router.push({
                     //     name: 'home_index'
