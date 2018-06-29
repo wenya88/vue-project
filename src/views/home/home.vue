@@ -4,7 +4,9 @@
 <template>
     <div class="home-main">
         <!-- 主页 -->
-         <Button type="primary" @click="logout()">退出登录</Button> 
+         <Button type="primary">退出登录</Button>
+          <Button type="primary">登录</Button>
+          <!-- <chat-interface></chat-interface> -->
     </div>
 </template>
 
@@ -15,7 +17,7 @@ export default {
     name: 'home',
     data () {
         return {
-            //
+          isShow: false
         };
     },
     created() {
@@ -35,17 +37,9 @@ export default {
                 this.$router.push(url)
             }
         },
-        logout() {
-            this.$axios.get(this.GLOBAL.baseRouter+'system/login/logout')
-            .then( res => res.data)
-            .then( res => {
-                if(res.err_code == 0){
-                    Cookies.remove('user');
-                    localStorage.removeItem('token');
-                    this.$router.push('/login');
-                }
-            })
-        },
+        // login() {
+        //   this.$set()
+        // },
         userInfo() {
             this.$axios.get(this.GLOBAL.baseRouter+'system/login/info')
             .then( res => res.data)

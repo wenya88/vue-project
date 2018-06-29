@@ -48,7 +48,7 @@ export default {
   height: 14px;
   background: url(/src/images/desc.png) no-repeat center center / 100% 100%;
   display: block;
-  position: absolute;
-  top: 10px;
+  position: relative;
+  top: 12px;
 }
 </style>

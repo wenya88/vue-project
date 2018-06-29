@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>成员工时统计<span v-show="flag">{{xAxis}}</span></h2>
+        <span v-show="flag">{{xAxis}}</span>
         <div id="EHours"></div>
     </div>
 </template>

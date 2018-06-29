@@ -1,10 +1,10 @@
 <!-- 任务详情组件 -->
 <template>
     <div>
-        <Form label-position="top" :label-width="60" >
+        <Form :label-position="taskManagement?'top':'left'" :label-width="60" >
             <FormItem   label="任务名称">
                 <Input   v-model="editData.name"  :disabled="editDisabled">
-                <span slot="prepend"><Icon type="ios-person-outline"></Icon></span>
+                <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
             <FormItem label="负责人">
@@ -42,7 +42,7 @@
                     </Option>
                 </Select>
             </FormItem>
-            <FormItem label="任务类型">
+            <FormItem v-if="taskManagement" label="任务类型">
                 <section class="requirement">
                     <AutoComplete  v-model="editData.tasktype_name"
                                    @on-select="selectTaskType"
@@ -69,13 +69,29 @@
 
                 </section>
             </FormItem>
-            <!--<FormItem label="文件要求">-->
-                <!--<Card :bordered="true" style="text-align: center">-->
-                    <!--<p v-for="item in taskTypeInfo" :key="item.id">-->
-                        <!--{{item.file_format}}&#160&#160{{item.require[0].value}}-->
-                    <!--</p>-->
-                <!--</Card>-->
-            <!--</FormItem>-->
+            <template v-else>
+                <FormItem label="任务类型">
+                    <AutoComplete  v-model="editData.tasktype_name"
+                                   placeholder="选择任务类型"
+                                   @on-select="selectTaskType"
+                                   :disabled="editDisabled"
+                    >
+                        <Option v-for="item in taskTypesList"
+                                :key="item.tasktype_name"
+                                :value="item.tasktype_name"
+                        >
+                            <span> {{item.tasktype_name}}</span>
+                        </Option>
+                    </AutoComplete>
+                </FormItem>
+                <FormItem  label="文件要求">
+                    <Card :bordered="true" style="text-align: center">
+                        <p v-for="item in taskTypeInfo" :key="item.id">
+                            {{item.file_format}}&#160&#160{{item.require[0].value}}
+                        </p>
+                    </Card>
+                </FormItem>
+            </template>
             <FormItem label="参考附件">
                 <div>
                 <Upload
@@ -108,6 +124,12 @@
 <script>
 var qs = require("querystring");
 export default{
+    props:{
+        taskManagement:{
+            type:String,
+            default:''
+        }
+    },
     data() {
         return {
             //*任务属性*//
@@ -588,10 +610,10 @@ export default{
 //     "status_text": "状态文本化",
 //     "file": [
 //        "关联附件路径"
-//     ],   
+//     ],
 //   "image": [
 //        "关联图片路径"
-//     ],   
+//     ],
 //     "relevance" : [
 //           "关联任务ID",
 //      ],

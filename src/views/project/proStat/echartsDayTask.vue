@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>每日任务动态<span v-show="flag">{{date}}</span></h2>
+        <span v-show="flag">{{date}}</span>
         <div id="echartLine"></div>
     </div>
 </template>

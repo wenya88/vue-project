@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>任务类型工时统计<span v-show="flag">{{xAxis}}</span></h2>
+        <span v-show="flag">{{xAxis}}</span>
         <div id="echartTypeTask"></div>
     </div>
 </template>

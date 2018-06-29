@@ -68,15 +68,15 @@ module.exports = merge(webpackBaseConfig, {
             //     pathRewrite: { '^/system': '' },
             //     changeOrigin: true
             // },
-            '/file': {
-                // 文件
-                target: 'http://file.yhc_plat.com',
-                // target: 'http://59.111.95.148/index.php?r=file',
-                // target: 'http://plat.yhcgame.com/index.php?r=file',
-                // 路径重写
-                pathRewrite: { '^/file': '' },
-                changeOrigin: true
-            }
+            // '/file': {
+            //     // 文件
+            //     target: 'http://file.yhc_plat.com',
+            //     // target: 'http://59.111.95.148/index.php?r=file',
+            //     // target: 'http://plat.yhcgame.com/index.php?r=file',
+            //     // 路径重写
+            //     pathRewrite: { '^/file': '' },
+            //     changeOrigin: true
+            // }
         }
     }
 });

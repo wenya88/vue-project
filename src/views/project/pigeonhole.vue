@@ -134,8 +134,7 @@ export default {
       .then(res => {
         // console.log(res)
         if(res.err_code == 0) {
-          console.log(res.data);
-          
+          // console.log(res.data);
           this.fileData = res.data
           // console.log(this.fileData)
         }
@@ -182,10 +181,10 @@ export default {
       this.isTabModal = true;
       // sessionStorage.TaskID=taskId;
       // sessionStorage.FileURl=file;
-      this.$store.commit('changeComponentTaskID',TaskID);
+      this.$store.commit('changeComponentTaskID',taskId);
       this.$store.commit('changeComponentFileURl',file);
       sessionStorage.AllowEdit=undefined;
-      console.log(taskId,type);
+      // console.log(taskId,type);
       
       this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
       this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑

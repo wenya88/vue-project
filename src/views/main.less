@@ -31,7 +31,8 @@ html,body{
             z-index: 11000;
         }
         .sidebar-menu-con{
-            height: 100%;
+            // height: 100%;
+            height: 458px;
             position: fixed;
             top: 64px;
             left: 0;
@@ -242,8 +243,9 @@ html,body{
             // overflow: auto;
             // background-color: #FFFFFF;
             // transition: left .3s;
-            float: left;
-            width: calc( 100% - 121px );
+            // float: left;
+            // width: calc( 100% - 121px );
+            margin-left: 121px;
             height: 100%;
             overflow: auto;
             .single-page{
@@ -272,7 +274,8 @@ html,body{
             z-index: 11000;
         }
         .sidebar-menu-con{
-            height: 100%;
+            // height: 100%;
+            height: 458px;
             position: fixed;
             top: 64px;
             left: 0;
@@ -493,8 +496,9 @@ html,body{
             // overflow: auto;
             // background-color: #FFFFFF;
             // transition: left .3s;
-            float: left;
-            width: calc(100% - 121px);
+            // float: left;
+            // width: calc(100% - 121px);
+            margin-left: 121px;
             height: 100%;
             overflow: auto;
             .single-page{
@@ -533,4 +537,45 @@ html,body{
 }
 .ivu-modal-close{
     z-index: 10;
+}
+.ivu-menu-submenu{
+    background: #5d5c5c;
+}
+.menuBlock{
+    position: absolute;
+    width: 300px;
+    height: auto;
+    background: #fff;
+    z-index: 1;
+    ul{
+        li{
+            width: 150px;
+            height: 100px;
+            float: left;
+        }
+        li.work{
+            background: url(../images/icon/work.png) no-repeat; 
+            background-position: 50px 10px;
+            background-size: 50px 50px;
+            padding: 70px 0 0 43px;
+        }
+        li.comp{
+            background: url(../images/icon/company1.png) no-repeat; 
+            background-position: 50px 10px;
+            background-size: 50px 50px;
+            padding: 70px 0 0 61px;
+        }
+        li.project{
+            background: url(../images/icon/project1.png) no-repeat; 
+            background-position: 50px 10px;
+            background-size: 50px 50px;
+            padding: 70px 0 0 50px;
+        }
+        li.art{
+            background: url(../images/icon/art.png) no-repeat; 
+            background-position: 50px 10px;
+            background-size: 50px 50px;
+            padding: 70px 0 0 50px;
+        }
+    }
 }

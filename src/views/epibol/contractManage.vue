@@ -1,13 +1,11 @@
 <template>
-    <div class="contract">
+    <div class="newContract">
         <dl>
             <dt>
-                <span><Button type="success" @click.native="newAdd"><Icon type="plus"></Icon> 新增</Button></span>
-                <em>
-                    <Input v-model="search" style="width:300px" placeholder="项目名称/合同编号/项目经理/市场人员" @on-enter="searchCommit">
-                        <Button slot="append" icon="ios-search" @click.native="searchCommit"></Button>
-                    </Input>
-                </em>
+                <span class="span">合同</span>
+                <span class="em">
+                    <Button type="success" @click.native="newAdd">新增合同</Button>
+                </span>
                 <div class="clear"></div>
             </dt>
             <contract-list :contData="contData" ref="contractRef"></contract-list>
@@ -20,7 +18,6 @@ import contractList from './contractManage/component/contractList'
 export default {
     data(){
         return{
-            search:null,
             contData:[]
         }
     },
@@ -39,10 +36,6 @@ export default {
         // 新增
         newAdd(){
            this.$refs.contractRef.newAddData();
-        },
-        // 搜索
-        searchCommit(){
-            this.contractData(this.search);
         },
         // 初始化列表数据
         contractData(search=this.search){

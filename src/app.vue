@@ -11,6 +11,15 @@
                 theme: this.$store.state.app.themeColor
             };
         },
+        created() {
+         if (localStorage.token) {
+          const msgData = JSON.stringify({
+            action: 'login',
+            token: localStorage.token
+          })
+          this.$connectSoket.connectSocket(msgData)
+         }
+        },
         mounted () {
          
         },

@@ -1,35 +1,46 @@
 <template>
     <div>
-        <dl class="contractRow">
-            <dd class="title">
-                <span>所属项目</span>
-                <span>合同金额</span>
-                <span>甲方信息</span>
-                <span>商务人员</span>
-                <span>项目负责人</span>
-                <span>合同进度</span>
-                <span>操作</span>
-                <div class="clear"></div>
-            </dd>
-            <dd v-for="item in contData" :class="{ddBg:item.status==3||item.status==8}">
-                <span>{{item.project_name}}</span>
-                <span>￥{{item.contract_price}}</span>
-                <span>{{item.customer_name}}<s>({{item.customer_people}}{{item.customer_phone}})</s></span>
-                <span>{{item.business_people}}</span>
-                <span>{{item.manager}}</span>
-                <span>{{item.status_text}}</span>
-                <span>
-                    <em v-if="item.status=='0'||item.status=='13'">
-                        <i @click="editContract(item)">编辑</i><i @click="deleteContract(item.id)">删除</i>
-                    </em>
-                    <em v-else>
-                        <i v-show="item.status=='12'||item.status=='8'?true:false" class="btn">{{item.status=='3'?'申请结算首付款':'申请结算尾款'}}</i>
-                        <i @click="contDetails(item.id)">详情</i>
-                    </em>
-                </span>
-                <div class="clear"></div>
-            </dd>
-        </dl>
+        <div class="contractRow">
+            <dl>
+                <dd v-for="item in contData">
+                    <div class="title">
+                        <Dropdown>
+                            <a href="javascript:void(0)">
+                                <Icon type="ios-more" size="20"></Icon>
+                            </a>
+                            <DropdownMenu slot="list" v-if="item.status=='0'||item.status=='13'">
+                                <DropdownItem @click.native="editContract(item)">编辑</DropdownItem>
+                                <DropdownItem @click.native="editContract(item.id)">删除</DropdownItem>
+                            </DropdownMenu>
+                            <DropdownMenu slot="list" v-else>
+                                <DropdownItem v-show="item.status=='12'||item.status=='8'?true:false">{{item.status=='3'?'申请结算首付款':'申请结算尾款'}}</DropdownItem>
+                                <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                    <div class="projectName">
+                        {{item.project_name!=null?item.project_name:'--'}}
+                    </div>
+                    <div class="projectName">
+                        ￥{{item.contract_price}}
+                    </div>
+                    <div class="projectStatus">
+                        <span class="status">
+                            {{item.status_text}}
+                        </span>
+                        <span class="line">&nbsp;</span>
+                    </div>
+                    <div class="projectInfo">
+                        <span class="company">
+                            <i class="iconfont icon-ren"></i> {{item.customer_name}}
+                        </span>
+                        <span class="date">
+                            {{item.create_time}}
+                        </span>
+                    </div>
+                </dd>
+            </dl>
+        </div>
         <Modal
             v-model="addModal"
             :title="modalTitle"
@@ -69,7 +80,7 @@ export default {
     methods:{
         // 初始化高
         autoH(){
-            $('.contractRow').height($(window).height()-210)
+            $('.contractRow').height($(window).height()-170)
         },
         // 提交
         addOk(){

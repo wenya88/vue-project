@@ -9,13 +9,13 @@
                     </div>
                      <!-- <div class="layout-nav stem-l">
                         <Menu mode="horizontal" :active-name="activePath">
-                             <MenuItem 
+                             <Menu-item 
                              :name="item.path" 
                              v-for="item in subMenu" 
                              :key="item.path" 
                              :label="item.title">
-                                <router-link :to="item.path">{{item.title}}</router-link>   
-                            </MenuItem>  
+                                <router-link :to="item.path">{{item.title}}</router-link>
+                            </Menu-item>  
                         </Menu>
                     </div>  -->
                 </Menu>
@@ -42,8 +42,8 @@
                 </Dropdown>
             </div>
         </div>
-        <div class="main-content"> <!-- :style="`height:${centerHight}px`" -->
-            <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'auto'}" v-if="showMenu">
+        <div class="main-content" :style="`height:${centerHight}px`"> <!-- :style="`height:${centerHight}px`" -->
+             <div ref="side1" class="sidebar-menu-con" :style="{width: shrink?'60px':'160px', overflow: shrink ? 'visible' : 'hidden'}" v-if="showMenu">
                 <Menu>
                     <Submenu :name="item.name" v-for="item in menuList" :key="item.path">
                         <template slot="title">
@@ -52,7 +52,23 @@
                         </template>
                     </Submenu>
                 </Menu>
-            </div>
+            </div> 
+             <!-- <div class="menuBlock" v-if="showMenu">
+                 <ul> 
+                     <li class="work" @click="linkTo('/epibol/ProjectWork')">
+                        个人工作台
+                    </li> 
+                    <li class="comp" @click="linkTo('/epibol')">
+                        公司
+                    </li> 
+                    <li class="project" @click="linkTo('/epibol')">
+                        项目大厅
+                    </li> 
+                    <li class="art" @click="linkTo('/epibol')">
+                        艺术广场
+                    </li>  
+                </ul>
+            </div>   -->
             <ul class="menu">
                 <li v-for="(item,index) in subMenu" :key="index">
                     <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']"></router-link>
@@ -105,12 +121,12 @@ export default {
         }
     },
     created() {
-        // let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
+        let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
         let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
         // if(bodyWidth <= 1366) {
         //     this.centerHight = bodyHight - 90
         // } else {
-        //     this.centerHight = bodyHight - 120
+            this.centerHight = bodyHight - 64
         // }
         this.mainWidth = bodyWidth - 121
     },
@@ -156,6 +172,14 @@ export default {
             }
             this.activePath = this.$route.path
         },
+        linkTo(url,params) {
+            if (params) {
+                this.$router.push({path: url, query: params});
+            }
+            else {
+                this.$router.push(url);
+            }
+        },
         goBack() {
             this.$router.push('/epibol/projectManage');
         },
@@ -183,6 +207,7 @@ export default {
                         localStorage.removeItem('token');
                         this.$router.push('/login');
                     }
+                  webSocket.close()
                 })
             }else if(name === 'ownSpace'){
                 this.$router.push({path:'/home/personalCenter'})

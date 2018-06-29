@@ -25,7 +25,7 @@ export const menu = [
             //     name: 'pigeonhole',
             //     title: '归档文件',
             }, {
-                path: '/epibol/memberManager',
+                path: '/project/projectMember',
                 name: 'eMember',
                 title: '团队',
             }, {
@@ -72,6 +72,10 @@ export const menu = [
                 path: '/epibol/3D',
                 name: '3D',
                 title: '3D',
+            // }, {
+            //     path: '/epibol/list',
+            //     name: 'list',
+            //     title: 'list'
             }
         ]
     }, {
@@ -133,15 +137,6 @@ export const menu = [
                 path: '/artist/opus',
                 name: 'opus',
                 title: '作品集',
-                children:[
-                    {
-                        path:'/artist/opus/info',
-                        title: '个人资料/基本管理',
-                    }, {
-                        path:'/artist/opus/management',
-                        titie:'个人资料/个人主页',
-                    }
-                ]
 
             },{
                 path:'/artist/projectMember',
@@ -170,5 +165,15 @@ export const menu = [
                 title: '艺术WIKI',
             }
         ]
+    },{
+        path: '/epibol/imPlementer',
+        name: 'imPlementer',
+        title: '实施人员',
+        // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
+    }, {
+        path: '/epibol/ProjectWork',
+        name: 'workbench',
+        title: '工作台',
+        // component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
     }
 ];

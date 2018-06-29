@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>项目任务进度<span v-show="flag">{{date}}</span></h2>
+        <span v-show="flag">{{date}}</span>
         <div id="echartLine"></div>
     </div>
 </template>

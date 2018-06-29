@@ -32,7 +32,8 @@
   //   position: absolute;
   // }
   .ivu-col-span-8{
-    padding: 10px 20px;
+    padding: 10px 0;
+    width: calc(100% / 6);
     .card{
       border: 1px solid @gray;
       // border-radius: 5px;
@@ -58,7 +59,7 @@
         .tips{
           position: absolute;
           width: 100%;
-          height: 36px;
+          // height: 36px;
           line-height: 36px;
           bottom: 0;
           background: rgba(0, 0, 0, .2);
@@ -153,9 +154,10 @@
   }
   .sort{
     width: 15%;
-    position: absolute;
-    top: 0;
-    left: 36%;
+    float: right;
+    // position: absolute;
+    // top: 0;
+    // left: 36%;
     // margin-left: -100px;
     height: 37px;
     line-height: 37px;
@@ -166,18 +168,33 @@
       float: left;
       cursor: pointer;
       padding-right: 5px;
+      line-height: 10px;
     }
     .actived{
       color: @blue;
     }
   }
+  .search{
+    height: 40px;
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 1450px;
+    background: #fff;
+  }
   .screen{
-    width: 46%;
-    position: absolute;
-    top: 0;
-    right: 0;
+    // width: 46%;
+    width: 682px;
+    float: right;
+    // position: absolute;
+    // top: 0;
+    // right: 0;
     height: 37px;
     line-height: 37px;
+  }
+  .tab-main{
+    float: left;
+    padding: 5px 50px;
   }
   .message{
     width: 554px;
@@ -223,5 +240,64 @@
     text-align: center;
     cursor: pointer;
     margin-top: 10px;
+  }
+}
+.quality{
+  .nav{
+    height: 206px;
+    .frist{
+      float: left;
+      width: 168px;
+      height: 168px;
+      margin: 8px 36px;
+      .text{
+        background: #deeeee;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 24px;
+        color: #1a99aa;
+        padding: 32px 20px;
+        .big{
+          font-size: 34px;
+          line-height: 50px;
+        }
+      }
+    }
+    .second, .third, .fourth, .fifth{
+      float: left;
+      width: 120px;
+      height: 120px;
+      margin: 36px;
+      .text{
+        background: #deeeee;
+        width: 87px;
+        height: 87px;
+        border-radius: 50%;
+        margin: 17px;
+        color: #1a99aa;
+        padding: 22px 0px;
+        .big{
+          font-size: 24px;
+          line-height: 40px;
+        }
+      }
+    }
+  }
+  .topNav{
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    position: fixed;
+    top: 64px;
+    background: #fff;
+    z-index: 1;
+    li{
+      float: left;
+      text-align: center;
+      padding: 0 15px;
+      cursor: pointer;
+    }
   }
 }

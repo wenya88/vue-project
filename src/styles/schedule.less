@@ -1,6 +1,5 @@
 @import './common.less';
 .projectPlanLeft{
-    //margin-right:400px;
     .projectPlanList{
         border:1px solid #ddd;padding:14px;border-radius:@borderRadius12;box-shadow:@boxShadow;height:190px;
         .listTitle{
@@ -87,6 +86,109 @@
 .projectStatisRight{
     margin-left:230px;
 }
-.clear{
-  clear:both;
-}
+
+//淫荡的分割线
+.newStatis{
+    padding:20px;
+    dt{
+        background:#1a99aa;color:#fff;line-height:40px;padding-left:20px;
+    }
+    dd{
+        margin:20px 0px;
+        ul{
+            margin-left:-3%;display:inline-block;*display:inline;zoom:1;overflow:hidden;width:103%;
+            li{
+                float:left;margin-left:3%;width:22%;height:200px;white-space:nowrap;background:#fcfcfc;
+                transition:all .3s;
+                &:hover{
+                    background:#f9f9f9;
+                }
+            }
+            .taskState{
+                background:url('../views/project/proStat/image/taskstate.png') no-repeat;width:100%;height:200px;background-size:30%;background-position:90% 50%;padding-top:20%;
+                cursor:pointer;
+                .title{
+                    font-size:22px;padding-left:20px;color:#3d3d3d;font-weight:lighter;
+                    transition:all .3s;
+                }
+                &:hover{
+                    .title{
+                        color:@fontColor;
+                    }
+                }
+            }
+            .taskSchedule{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/taskSchedule.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+            .statusSchedule{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/statusSchedule.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+            .taskStyle{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/style.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+            .memberStask{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/member.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+            .memberHours{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/hours.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+            .hoursPercent{
+                &:extend(.newStatis dd ul .taskState);
+                background-image:url('../views/project/proStat/image/hoursPercent.png');
+                .title{
+                    &:extend(.newStatis dd ul .taskState .title);
+                }
+                &:hover{
+                    .title{
+                        &:extend(.newStatis dd ul .taskState:hover .title);
+                    }
+                }
+            }
+        }
+    }
+}    

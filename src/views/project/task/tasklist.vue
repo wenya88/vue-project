@@ -34,7 +34,7 @@
                      <p class="sign" ></p>
                  </template>
                   <p class="title">{{items.name}}</p>
-                  <div>
+                  <div class="BottomInfo">
                       <span>{{items.expect_work_day}}工作日</span>
                       <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
                       <span>{{items.remark_name}}</span>
@@ -48,7 +48,7 @@
               <p class="title">已完成({{dataList_type.end.length}})</p>
               <div class="list"  @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end" :key="index">
                   <p class="title">{{items.name}}</p>
-                  <div>
+                  <div class="BottomInfo">
                       <span>{{items.expect_work_day}}工作日</span>
                       <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
                       <span>{{items.remark_name}}</span>
@@ -280,6 +280,7 @@ export default {
               .then(res => {
                   this.$bus.emit('refreshCurrentTaskList');
                   this.refreshTaskList();
+                  this.$Message.success('删除任务成功');
               })
               .catch(error => {
                   this.$Message.error("删除任务失败，请重试！");
@@ -478,6 +479,7 @@ export default {
 
 .taskListContainer {
     height: 700px;
+    padding-left: 10px;
     overflow: auto;
         .WaitingToStart,.perform,.complete,.suspended{
             float: left;
@@ -497,6 +499,7 @@ export default {
                 transition: all .3s;
                 .BottomInfo{
                     display: flex;
+                    padding: 0 5px;
                     justify-content: space-between;
                 }
                 .pause {

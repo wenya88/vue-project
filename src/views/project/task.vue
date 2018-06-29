@@ -1,11 +1,11 @@
 <!-- 项目-任务页面-->
 <template>
   <div class="task">
-    <taskclasses ref="classes"
-                 v-on:changeTaskListData = 'changeTaskListData'
-                 v-on:setProjectInfo = 'setProjectInfo'
-                 >
-    </taskclasses>
+    <!--<taskclasses ref="classes"-->
+                 <!--v-on:changeTaskListData = 'changeTaskListData'-->
+                 <!--v-on:setProjectInfo = 'setProjectInfo'-->
+                 <!--&gt;-->
+    <!--</taskclasses>-->
     <div class="task-operation">
       <Button type="success" size="large" @click="showAccretionTask">新增任务</Button>
       <Button type="primary" size="large" @click="showExcelTask">Excle导入</Button>
@@ -19,30 +19,37 @@
                       <Icon @click.native="editMode" type="edit" style="vertical-align: top" size="20"></Icon>
             </span>
               </div>
-              <div class="rightRow">
+              <div v-if="editShow" class="rightRow">
                   <div class="line" v-for="item in ChildMsgData">
-                      <div v-if="editShow" class="title">{{item.child_project_name || item.realname}}</div>
-                      <input v-else type="text" @change="changeName('name',item,$event)" :value="item.child_project_name || item.realname" class="title" />
-                      <div class="lineRow enidShowBtn">
-                          <Progress style="width:90%" :percent="Number(item.progress)">
+                      <div class="title">
+                          <span v-if="!item.realname" @click="changeTaskListData(item)" style="cursor: pointer">{{item.child_project_name }}</span>
+                        <div v-else class="alone">
+                            <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                    size="small"/>&nbsp;&nbsp;
+                            <div v-if="item.realname">{{item.realname}}</div>
+                        </div>
+                      </div>
+                      <div  class="lineRow showPlan">
+                          <Progress  :percent="Number(item.progress)">
                               <span>{{item.complete}}/{{item.total}}</span>
                           </Progress>
-                              <Icon v-if="!editShow" @click.native="delProject(item)" type="trash-b" size="14"></Icon>
                       </div>
                       <div class="clear"></div>
-                      <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                              size="small"/>&nbsp;&nbsp;
-                      <span v-if="editShow" >{{item.leader}}</span>
-                      <span v-else>{{item.leader}}</span>
+                      <div v-if="!item.realname" style="position: relative;padding-left: 30px;">
+                            <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                     size="small"/>&nbsp;&nbsp;
+                            <span >{{item.leader_name}}</span>
+                          <Icon class="flag" type="flag"></Icon>
+                      </div>
                       <!--<Select v-model="item.leader"    style="width:100px">-->
-                          <!--<Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.nickname }}</Option>-->
+                      <!--<Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.nickname }}</Option>-->
                       <!--</Select>-->
-                      <div v-if="editShow" style="padding-left: 30px;">
+                      <div  style="padding-left: 30px;">
                           <div class="line" v-for="member in item.child_project">
                               <div class="title">
                                   <div class="demo-avatar">
-                                      <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                              size="small"/>&nbsp;&nbsp;{{member.user}}
+                                      <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                               size="small"/>&nbsp;&nbsp;&nbsp;&nbsp;{{member.user}}
                                   </div>
                               </div>
                               <div class="lineRow">
@@ -53,16 +60,37 @@
                           </div>
                       </div>
                   </div>
+              </div>
+              <div v-else class="rightRow">
+
+                  <div class="line" v-for="item in ChildMsgData">
+                      <div  class="editList" v-if="item.child_project">
+                       <div>
+                           <input type="text" @change="changeName(item,$event)"
+                                  :value="item.child_project_name || item.realname" class="title"/>
+                           <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                   size="small"/>&nbsp;&nbsp;
+                           <Select v-model="item.leader"   @on-change="changePrincipal(item,item.leader)"    style="width:100px">
+                               <Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.realname}}</Option>
+                           </Select>
+                       </div>
+                          <Icon @click.native="delProject(item)" type="trash-b" size="14"></Icon>
+
+
+                      </div>
+                  </div>
                   <div class="projectPlanButton">
                       <Select v-model="subProjectManager" style="width:100px">
-                          <Option v-for="item in companyMember" :value="item.user_id" :key="item.value">{{ item.nickname }}</Option>
+                          <Option v-for="item in companyMember" :value="item.user_id" :key="item.value">{{ item.realname}}
+                          </Option>
                       </Select>
                       <Input v-model="subProjectName" placeholder="项目名称" style="width: 200px"></Input>
-                      <Icon @click.native="addButton()" type="plus-round" style="vertical-align: middle" size="20"></Icon>
-                      <!--<Button type="primary" @click="submitForm" >保存</Button>-->
-                      <!--<Button type="ghost">取消</Button>-->
+                      <Icon @click.native="addButton()" type="plus-round" style="vertical-align: middle"
+                            size="20"></Icon>
                   </div>
               </div>
+
+
               <!--<div class="rightTitle" style="border-top:0px;margin-top:15px;">-->
                   <!--<Icon type="android-apps" size="20"></Icon>-->
                   <!--成员进度-->
@@ -145,7 +173,7 @@
       </div>
       <div slot="footer" style="height:20px;"></div>
     </Modal>
-    <!-- <excel-modal v-if="isExcelTask" ></excel-modal> -->
+     <excel-modal v-if="isExcelTask" ></excel-modal>
   </div>
 
 </template>
@@ -171,6 +199,7 @@ export default {
   },
   data() {
     return {
+        haha:'74',
         editShow: true,
         ChildMsgData: null,
         memberMsgData: [],
@@ -212,6 +241,7 @@ export default {
       },
       //改变任务列表
       changeTaskListData(subType){
+          subType.project_child_id = subType.child_id
         this.$refs.list.initTaskListFromId(subType);
       },
       //刷新当前任务列表
@@ -292,6 +322,7 @@ export default {
       {
         this.projectInfo = projectInfo;
       },
+      // 项目进度初始化接口
       projectPlan() {
           let projectID=sessionStorage.projectID;
           let ProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
@@ -328,16 +359,20 @@ export default {
               })
 
       },
+      // 编辑按钮并获得负责人
       editMode(){
           this.editShow = !this.editShow
-          this._ajax('task/company/member-page',{company_id: 1})
-              .then(({data})=>{
-             if(data.err_code === 0){
-                 this.companyMember = data.data
-                 console.log(22,data)
-             }
-              })
+          if (!this.companyMember) {
+              this._ajax('task/company/member-page', {company_id: 1})
+                  .then(({data}) => {
+                      if (data.err_code === 0) {
+                          this.companyMember = data.data
+
+                      }
+                  })
+          }
       },
+      // 删除项目
       delProject(data){
           let id = null;
           if (data.child_id) {
@@ -353,33 +388,37 @@ export default {
                   }
               })
       },
-      changeName(type,data,e){
-          let id = null, name = null,reqData = null;
-          if (data.child_id) {
-              id = data.child_id
-          } else if (data.run_uid) {
-              id = data.run_uid
-          };
-          console.log(123123)
-
-          if(type === 'leader'){
-              reqData = {id:id,leader: e.target.value}
-          }else{
-              name = e.target.value;
-              reqData = {id:id,name:name}
-          }
-
-
-          this._ajax('task/project/child-update',)
+      // 更改负责人
+      changePrincipal(data,leader){
+          console.log(33,data)
+         if(leader){
+             let id = data.child_id;
+             let name = data.child_project_name;
+             this._ajax('task/project/child-update',{id:id,name:name,leader:leader})
+                 .then(({data})=>{
+                     if(data.err_code === 0){
+                         this.projectPlan();
+                         this.$Message.success('修改成功');
+                     }
+                 })
+         }
+      },
+      // 更改项目名称
+      changeName(data,e){
+          console.log(111,data)
+          let id = data.child_id;
+          let name = e.target.value
+          this._ajax('task/project/child-update',{id:id,name:name,leader:data.leader})
               .then(({data})=>{
-                  if(data.orr_code === 0){
+                  if(data.err_code === 0){
+                      this.projectPlan();
                       this.$Message.success('修改成功');
                   }
               })
 
       },
+      // 添加项目
       addButton(){
-
           this._ajax('task/project/child-add',{project_id:this.projectId,name:this.subProjectName,leader:this.subProjectManager})
               .then(({data})=>{
                   if(data.err_code === 0){
@@ -387,9 +426,6 @@ export default {
                       this.projectPlan()
                   }
               })
-      },
-      submitForm(){
-
       },
       _ajax(url,data){
           return this.$axios.post(this.GLOBAL.baseRouter+url,qs.stringify(data))
@@ -401,11 +437,10 @@ export default {
 <style lang="less" >
 .task{
   position:relative;
-  margin:20px auto;
     .taskMainContainer{
         position: relative;
         display: flex;
-        margin-top: 50px;
+        padding-top: 20px;
         .projectPlanRight{
             position: absolute;
             top:35px;
@@ -414,7 +449,13 @@ export default {
             height: 100%;
             padding: 10px 23px;
             z-index: 333;
-            background: #ebeff2;
+            background: #fff;
+            .flag{
+                position: absolute;
+                top:0;
+                left: 20px;
+                transform: scale(0.8);
+            }
             .rightTitle{
                 position: relative;
                 .editBtn{
@@ -425,10 +466,20 @@ export default {
                     cursor: pointer;
                 }
             }
-            .enidShowBtn{
-                .ivu-progress-show-info {
-
-                }
+            .showPlan{
+                margin-left: 131px !important;
+            }
+            .editShowPlan{
+                margin-left: 355px !important;
+            }
+            .alone{
+                display: flex;
+                margin-left: 30px;
+            }
+            .editList{
+                display: flex;
+                padding-right: 10px;
+                justify-content: space-between;
             }
         }
     }

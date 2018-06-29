@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>任务工时统计<span v-show='flag'>{{series}}</span></h2>
+       <span v-show='flag'>{{series}}</span>
         <div id="echartStyle"></div>
     </div>
 </template>

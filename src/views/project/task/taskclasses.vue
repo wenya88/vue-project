@@ -136,6 +136,7 @@ export default {
         },
         //子“项目任务”筛选切换样式
         filterTask(tem) {
+            console.log(33,tem)
             $(".taskHead .taskInfo a").click(function() {
                 $(".taskHead .taskInfo a").removeClass("active");
                 $(this).addClass("active");

@@ -123,19 +123,19 @@
                     <p>修改手机</p>
                     <Form ref="mobileValidate" :model="mobileValidate" :rules="ruleValidate">
                         <FormItem prop="mPassword">
-                            <Input v-model="mobileValidate.password" placeholder="请输入登录密码进行验证"></Input>
+                            <Input type="password" v-model="mobileValidate.mPassword" placeholder="请输入登录密码进行验证"></Input>
                         </FormItem>
                         <FormItem prop="phoneNumber">
-                            <Input v-model="mobileValidate.phoneNumber" placeholder="请输入手机号"></Input>
+                            <Input type="text" v-model="mobileValidate.phoneNumber" placeholder="请输入手机号"></Input>
                         </FormItem>
                         <FormItem prop="mobileCode">
-                            <Input v-model="mobileValidate.mobileCode" placeholder="请输入验证码">
-                            <div style="width: 70px;" @click="sendEmail" slot="append">{{emailAuthCode}}</div>
+                            <Input type="text" v-model="mobileValidate.mobileCode" placeholder="请输入验证码">
+                            <div style="width: 70px;" @click="sendEmail('phone')" slot="append">{{mobileAuthCode}}</div>
                             </Input>
                         </FormItem>
                     </Form>
                     <div slot="footer">
-                        <Button>确认</Button>
+                        <Button @click="handleSubmit('mobileValidate')" >确认</Button>
                     </div>
                 </Modal>
             </div>
@@ -348,50 +348,84 @@
                       this.messageError('密码或邮箱不能为空');
                       return
                   }
+                  if(type ==='phone' && !(this.mobileValidate.mPassword && this.mobileValidate.phoneNumber) ){
+                      this.messageError('密码或手机不能为空');
+                      return
+                  }
                   // 之前没有秘钥
                   if (this.secretKey === null) {
                       let password = async () => {
                           await this._encryption();
-                          const is_success = await this._verifyPassword('email');
+                          const is_success = await this._verifyPassword(type);
                           if (is_success !== '1') {
                               this.messageSuccess('密码验证失败');
                               return false;
                           } else {
-                              editCode();
+                              if(type === 'email'){
+                                  this.getMailCode();
+                              }else{
+                                  this.getCodePhone();
+                              }
                           }
                       };
                       password();
                   } else {
                       //  有秘钥
-                      this._verifyPassword('email').then((is_success) => {
+                      this._verifyPassword(type).then((is_success) => {
                           if (is_success !== '1') {
                               this.messageSuccess('密码验证失败');
                               return false;
                           } else {
-                              editCode();
+                              if(type === 'email'){
+                                  this.getMailCode();
+                              }else{
+                                  this.getCodePhone();
+                              }
+
                           }
                       })
 
                   }
-                  let editCode = () => {
-                      if (this.emailAuthCode !== '验证码') {
-                          return false;
-                      }
-                      this.$axios.post(this.GLOBAL.baseRouter + 'system/user/send-email', qs.stringify({email: this.emailValidate.address}))
-                          .then(res => res.data)
-                          .then(res => {
-                              if (res.err_code === 0 && res.msg) {
-                                  if (res.msg !== '该邮箱已被其他用户绑定') {
-                                      this.messageSuccess(res.msg);
-                                  } else {
-                                      this.getAuthCode('emailAuthCode');
 
-                                  }
-                              }
-                          })
-                  }
               };
               this._reduce(fn);
+            },
+            getMailCode(){
+                if (this.emailAuthCode !== '验证码') {
+                    return false;
+                }
+                this.$axios.post(this.GLOBAL.baseRouter + 'system/user/send-email', qs.stringify({email: this.emailValidate.address}))
+                    .then(res => res.data)
+                    .then(res => {
+                        if (res.err_code === 0 && res.msg) {
+                            if (res.msg !== '该邮箱已被其他用户绑定') {
+                                this.messageSuccess(res.msg);
+                            } else {
+                                this.getAuthCode('emailAuthCode');
+
+                            }
+                        }
+                    })
+
+            },
+            getCodePhone(){
+                if (this.mobileAuthCode !== '验证码') {
+                    return false;
+                }
+                let reg = new RegExp(/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/);
+                if(!reg.test(this.mobileValidate.phoneNumber)){
+                    this.messageError('请输入正确的格式的手机号');
+                    return
+                }
+
+                this.$axios.post(this.GLOBAL.baseRouter + 'system/user/send-message', qs.stringify({tel: this.mobileValidate.phoneNumber}))
+                    .then(res => res.data)
+                    .then(res => {
+                        if (res.err_code === 0 && res.msg) {
+                            this.getAuthCode('mobileAuthCode');
+                            this.messageSuccess(res.msg);
+                        }
+                    })
             },
             // 更改邮箱
             updateEmail() {
@@ -409,6 +443,27 @@
                         }
                     })
             },
+            // 更改手机号
+            updatePhone() {
+                let reg = new RegExp(/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/);
+                if(!reg.test(this.mobileValidate.phoneNumber)){
+                    this.messageError('请输入正确的格式的手机号');
+                    return
+                }
+                this.$axios.post(this.GLOBAL.baseRouter + 'system/user/check-edit-phone-number', qs.stringify({
+                    tel: this.mobileValidate.phoneNumber,
+                    validate: this.mobileValidate.mobileCode
+                }))
+                    .then(res => res.data)
+                    .then(res => {
+                        if (res.err_code === 0) {
+                            this.messageSuccess('修改成功');
+                            this.clearData('mobileValidate');
+                        } else {
+                            this.messageError(res.err_message);
+                        }
+                    })
+            },
             // 提交
             handleSubmit(name) {
                 let fn = ()=>{
@@ -416,7 +471,10 @@
                         if (valid) {
                             if (name === 'emailValidate') {
                                 this.updateEmail();
-                            } else {
+                            }else if(name === 'mobileValidate'){
+                                this.updatePhone()
+                            }
+                            else {
                                 this.passwordCorrelation()
                             }
                         } else {
@@ -451,7 +509,15 @@
                 return new Promise((resolve) => {
                     let encrypt = new JSEncrypt();
                     encrypt.setPublicKey(this.secretKey);
-                    let password = data === 'email' ? encrypt.encrypt(md5(md5(this.emailValidate.ePassword))) : encrypt.encrypt(md5(md5(this.formValidate.currentPassword)));
+                    let password = null;
+                    if(data === 'email'){
+                        password = encrypt.encrypt(md5(md5(this.emailValidate.ePassword)))
+                    }else if(data === 'phone'){
+                        password = encrypt.encrypt(md5(md5(this.mobileValidate.mPassword)))
+                    } else{
+                        password = encrypt.encrypt(md5(md5(this.formValidate.currentPassword)));
+                    }
+
                     this.$axios.post(this.GLOBAL.baseRouter + 'system/user/check-user-by-password', qs.stringify({password: password}))
                         .then(res => res.data)
                         .then(res => {
@@ -543,7 +609,7 @@
     .personalInfo {
         .headPortrait {
             display: flex;
-            padding: 34px 0;
+            padding: 24px 0;
             flex-direction: row;
             border-bottom: 1px solid #ededed;
             .title {

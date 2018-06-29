@@ -1,8 +1,8 @@
 <!-- 任务信息弹窗-->
 <template>
     <div class="taskinfopop">
-        <Tabs type="card">
-            <TabPane label="基本管理">
+        <Tabs type="card" >
+            <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                 <div v-show="isInitTask" class="browsetaskpop">
                     <div class="filebrowse">
                         <filebrowse ref="filebrowse"></filebrowse>
@@ -11,15 +11,16 @@
                         <maintask ref="main"
                                   v-on:sendSubTaskList="sendSubTaskList"
                                   v-on:sendLogData="sendLogData"
+                                  taskManagement="true"
                         >
                         </maintask>
                     </div>
                 </div>
             </TabPane>
-            <TabPane label="子任务">
+            <TabPane label="子任务" style="height: 800px;overflow-y: auto">
                 <subtasklist ref="sublist"></subtasklist>
             </TabPane>
-            <TabPane label="日志">
+            <TabPane label="日志" style="height: 800px;overflow-y: auto">
                 <tasklog ref="log"></tasklog>
             </TabPane>
         </Tabs>
@@ -56,7 +57,7 @@ export default {
     filebrowse
   },
     mounted(){
-      this.initTaskDetail();
+        this.initTaskDetail();
         this.initTaskDetailProjecInfo();
     },
   data() {
@@ -160,22 +161,26 @@ export default {
   methods: {
     //根据任务ID初始化属性
     initTaskDetail() {
+
+        if(!this.$store.state.project.detail.setDetailAll){
+            this.$router.push({path:'/project/task'})
+        }
         let taskData = this.$store.state.project.detail.setDetailAll;
-      this.isInitTask = true;
-      if(taskData){
-          this.$refs.main.initTaskDetailFromID(taskData.id);
-          let filetype = taskData.stage_file ? taskData.stage_file.type:"NULL";
-          this.$refs.filebrowse.initFileBrowse(taskData.id,filetype);
-      }
+        this.isInitTask = true;
+        if (taskData) {
+            this.$refs.main.initTaskDetailFromID(taskData.id);
+            let filetype = taskData.stage_file ? taskData.stage_file.type : "NULL";
+            this.$refs.filebrowse.initFileBrowse(taskData.id, filetype);
+        }
 
 
     },
     //初始化项目信息
     initTaskDetailProjecInfo()
     {
-        let data = this.$store.state.project.detail.projectInfo;
 
-      this.$refs.main.initProjectInfo(data);
+        let data = this.$store.state.project.detail.projectInfo;
+        this.$refs.main.initProjectInfo(data);
     },
     //子任务子组件传参
     sendSubTaskList(data)
@@ -320,6 +325,12 @@ export default {
 @import "../style/taskModal.css";
 @gray:#E6EAEB;
 .taskinfopop{
+  .taskbrowse{
+    float:left;
+    width:540px !important;
+    padding-right: 200px;
+    margin:0 12px 0 0;
+  }
   display:inline-block;
   overflow:hidden;
 
@@ -406,7 +417,7 @@ export default {
 
 
     .taskButton{
-        margin-top: 50px;
+
         padding-right: 120px;
         text-align: right;
         button{
@@ -439,14 +450,10 @@ export default {
 .browsetaskpop {
 
 }
-.taskbrowse{
-    float:left;
-    width:540px !important;
-    padding-right: 200px;
-    margin:0 12px 0 0;
-}
+
 .filebrowse{
     float:left;
     width:800px;
+    height: 400px;
 }
 </style>

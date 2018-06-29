@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>任务状态统计<span v-show="flag">{{NameData}}</span></h2>
+        <span v-show="flag">{{NameData}}</span>
         <div id="echartState"></div>
     </div>
 </template>

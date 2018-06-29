@@ -115,9 +115,16 @@ export const appRouter = [
                 component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
             },
             {
+                path: '/project/statisticsDetails/:style',
+                icon: 'ios-paper-outline',
+                name: 'statisticsDetails',
+                title: '统计详情',
+                component: resolve => { require(['@/views/project/proStat/statisticsDetails.vue'], resolve); }
+            },
+            {
                 path: '/project/setting',
                 icon: 'ios-paper-outline',
-                name: 'file',
+                name: 'Psetting',
                 title: '设置',
                 component:resolve=>{ require (['@/views/projectSet/projectTiemSet.vue'],resolve)}
             },
@@ -194,15 +201,13 @@ export const appRouter = [
                 name: 'imPlementer',
                 title: '实施人员',
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
-            },
-            {
+            }, {
                 path: '/epibol/ProjectWork',
                 icon: 'ios-paper-outline',
                 name: 'workbench',
                 title: '工作台',
                 component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
-            },
-            {
+            }, {
                 path: '/epibol/3D',
                 icon: 'ios-paper-outline',
                 name: '3D',
@@ -215,6 +220,12 @@ export const appRouter = [
                 name: 'contractDetails',
                 title: '合同详情',
                 component: resolve => { require(['@/views/epibol/contractManage/component/contractDetails.vue'], resolve); }
+            }, {
+                path: '/epibol/list',
+                icon: 'ios-paper-outline',
+                name: 'list',
+                title: 'list',
+                component: resolve => { require(['@/views/page/list.vue'], resolve); }
             }
         ]
     }, {

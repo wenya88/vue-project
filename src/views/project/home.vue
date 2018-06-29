@@ -1,8 +1,7 @@
 <template>
-    <div class="homePage">
+    <div class="ProjectHomePage">
         <!-- 首页头部 -->
         <div class="pageHeader">
-
         </div>
         <!-- 首页内容 -->
         <div class="pageContent">
@@ -10,34 +9,26 @@
             <div class="companyInfo">
                 <!-- LOGO -->
                 <div class="companyLog">
-                   LOGO
+                   <img :src="proData.picture" alt="">
                 </div>
                 <!-- content -->
                 <div class="contentRow">
                     <p>
-                        <span>能力范围</span>
-                        <em>人物原画、场景原画、3D模型、3D场景、动作、特效、次世代场景</em>
-                        <div class="clear"></div>
+                        <span>负责人</span>
+                        <em>{{proData.leader_name!=null?proData.leader_name:'暂无'}}&nbsp;</em>
                     </p>
                     <p>
-                        <span>满意率</span>
-                        <em>100%</em>
-                        <div class="clear"></div>
+                        <span>项目时间</span>
+                        <em>{{proData.start_time}}~{{proData.end_time}}</em>
+                        <em>{{proData.day_num}} 工作日</em>
                     </p>
                     <p>
-                        <span>质量</span>
-                        <em>4.96</em>
-                        <div class="clear"></div>
+                        <span>甲方公司</span>
+                        <em>{{proData.demand_company==null?'暂无':proData.demand_company.company_name}}</em>
                     </p>
                     <p>
-                        <span>速度</span>
-                        <em>4.96</em>
-                        <div class="clear"></div>
-                    </p>
-                    <p>
-                        <span>服务</span>
-                        <em>4.96</em>
-                        <div class="clear"></div>
+                        <span>甲方对接人</span>
+                        <em>{{proData.demand_company==null?'暂无':proData.demand_company.company_people}}</em>
                     </p>
                 </div>
             </div>
@@ -47,9 +38,10 @@
                  <!-- 头部 -->
                 <div class="contentHeader">
                     <div class="companyTitle">
-                        <h4>成都义美游信息技术有限公司</h4>
+                        <h4>{{proData.name}}&nbsp;</h4>
+                        <h5>{{proData.description!=null?proData.description:'项目描述和备注'}}</h5>
                     </div>
-                    <div class="companySet">
+                    <div class="companySet" @click="companySet">
                         <span>设置</span>
                     </div>
                     <div class="clear"></div>
@@ -57,23 +49,48 @@
                 
                 <!-- 内容 -->
                 <div class="contentRow">
-                    <div class="project">
-                        <i class="iconfont icon-xiangmu"></i>
-                        <span>项目</span>
+                    <div class="ManageRow">
+                        <div class="task" @click="task">
+                             <span class="iconfont icon-renwu"></span>
+                             任务
+                             <p>制定计划并管理任务或需求</p>
+                        </div>
+                        <div class="resouer">
+                            <div class="title">
+                                资源管理 <span>浏览和审核资源</span>
+                            </div>
+                            <div class="content">
+                                <span class="iconfont icon-921caidan_hezi" style="font-size:10em;color:#a9a9a9;width:112px;"></span>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
                     </div>
-                    <div class="bid">
-                        <span>招标</span>
+                    <div class="MenuRow">
+                        <dl>
+                            <dd>
+                                <p>
+                                    沟通<br/>
+                                    <span>沟通关于项目的一切</span>
+                                </p>
+                                <span class="iconfont icon-goutong"></span>
+                            </dd>
+                            <dd @click="group">
+                                <p>
+                                    团队<br/>
+                                    <span>管理项目团队</span>
+                                </p>
+                                <span class="iconfont icon-tuandui1"></span>
+                            </dd>
+                            <dd @click="statistics">
+                                <p>
+                                    统计<br/>
+                                    <span>获取你需要的数据</span>
+                                </p>
+                                <span class="iconfont icon-tongji"></span>
+                            </dd>
+                            <div class="clear"></div>
+                        </dl>
                     </div>
-                    <div class="contract">
-                        <span>合同</span>
-                    </div>
-                    <div class="group">
-                        <span>团队</span>
-                    </div>
-                    <div class="statis">
-                        <span>统计</span>
-                    </div>
-                    <!-- <div class="clear"></div> -->
                 </div>
 
             </div>
@@ -82,8 +99,50 @@
     </div>
 </template>
 <script>
+var qs=require('querystring')
 export default {
-    
+    data(){
+        return{
+            proData:[],
+        }
+    },
+    mounted(){
+        this.get();
+    },
+    methods:{
+        companySet(){
+            this.$router.push('/project/setting');
+        },
+        task(){
+            this.$router.push('/project/task');
+        },
+        group(){
+            this.$router.push('/project/projectMember');
+        },
+        statistics(){
+            this.$router.push('/project/statistics');
+        },
+        get(){
+            let _this=this;
+            let url=_this.GLOBAL.baseRouter+'task/project/project-info';
+            let params={
+                id:sessionStorage.projectID
+            }
+            _this.$Loading.start();
+            _this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                _this.$Loading.finish();
+                if(msg.data.err_code==0){
+                    _this.proData=msg.data
+                }else{
+                    _this.$Message.error(msg.data.err_message)
+                }
+            },()=>{
+                _this.$Loading.error();
+                _this.$Message.error('请求失败!')
+            })
+
+        },
+    }
 }
 </script>
 <style lang="less">

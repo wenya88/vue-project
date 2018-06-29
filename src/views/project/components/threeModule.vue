@@ -32,8 +32,6 @@
 //       console.log(THREE);
 //   });
 var qs = require("querystring");
-var lab = require("lab");
-console.log(lab)
 // require("../../../js/labjs.min.js");
 // var lab = require('lab');
 // var Zlib = require('zlib');
