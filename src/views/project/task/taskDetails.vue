@@ -9,7 +9,7 @@
             </FormItem>
             <FormItem  label="负责人">
                 <Select v-model="principalName"  placeholder="">
-                    <Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>
+                    <Option v-for="item in principal" :value="item.member_id" :key="item.user_id">{{ item.remark_name }}</Option>
                 </Select>
             </FormItem>
             <!--<FormItem  v-else label="负责人">-->
@@ -195,7 +195,7 @@ export default{
                         this.getTaskTypeRequire(res.tasktype_id);
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
-                        this.principalName = res.member_id+'';
+                        this.principalName = res.member_id;
                         this.$emit('subtask',res)
                     }
                 )
@@ -469,10 +469,11 @@ export default{
         //点击参与人下拉
         clickMenberDropdown()
         {
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/company/member-page',qs.stringify({company_id: 1}))
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/company/joined-members',qs.stringify({project_id: this.projectId}))
                 .then( res => res.data)
                 .then( res => {
                     this.principal = res.data;
+                  console.log(33,this.principal)
                     // console.log('负责人',res.data)
 //                        this.principal=[];
 //                        this.principalName="";
@@ -548,6 +549,13 @@ export default{
             }
             return check;
         },
+        clearAllData(){
+            this.editData = {};
+            this.principalName = '';
+            this.getTimeRange = '';
+            this.referenceFileName = [];
+            this.taskTypeInfo = [];
+        }
     }
 };
 </script>

@@ -146,23 +146,22 @@
                                       <dt><Icon type="social-buffer-outline"></Icon> 待反馈({{ListFeedBack.length}})</dt>
                                       <dd>
                                           <GeminiScrollbar>
-                                          <Timeline>
-                                              <div v-if="ListFeedBack==''" class="notData">暂无数据</div>
-                                              <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
-                                              <Timeline-item color='lightgray' v-for="(Litem,index) in ListFeedBack" :key="index">
-                                                  <Icon type="record" slot="dot"></Icon>
-                                                  <span><em>{{Litem.create_time|fromatDate}}</em> 上传</span>
-                                                  <span>{{Litem.task_name}}</span>
-                                                  <span><em>{{Litem.run_uname}}</em> 审核</span>
-                                                  <span @click="taskDetaInfo(
-                                                  Litem.task_id,
-                                                  Litem.stage_file.type,
-                                                  Litem.stage_file.file,
-                                                  Litem.stage_file.task_id
-                                                  )">查看</span>
-                                              </Timeline-item>
-                                              
-                                          </Timeline>
+                                            <Timeline>
+                                                <div v-if="ListFeedBack==''" class="notData">暂无数据</div>
+                                                <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
+                                                <Timeline-item color='lightgray' v-for="(Litem,index) in ListFeedBack" :key="index">
+                                                    <Icon type="record" slot="dot"></Icon>
+                                                    <span><em>{{Litem.create_time|fromatDate}}</em> 上传</span>
+                                                    <span>{{Litem.task_name}}</span>
+                                                    <span><em>{{Litem.run_uname}}</em> 审核</span>
+                                                    <span @click="taskDetaInfo(
+                                                    Litem.task_id,
+                                                    Litem.stage_file.type,
+                                                    Litem.stage_file.file,
+                                                    Litem.stage_file.task_id
+                                                    )">查看</span>
+                                                </Timeline-item>
+                                            </Timeline>
                                           </GeminiScrollbar>
                                       </dd>
                                   </dl>

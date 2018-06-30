@@ -4,7 +4,7 @@
         <Tabs type="card" >
             <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                 <div v-show="isInitTask" class="browsetaskpop">
-                    <div class="filebrowse">
+                    <div class="filebrowse" :class="$route.query.type === 'taskManagement'?'filebrowseContainer':''"  >
                         <filebrowse ref="filebrowse"></filebrowse>
                     </div>
                     <div   :class="$route.query.type === 'taskManagement'?'taskManagement':'taskbrowse'" >
@@ -202,7 +202,7 @@ export default {
       //保存子任务
       this.$refs.sublist.saveSubTasks();
 
-
+      this.$Message.success('保存成功');
       return true;
     },
     //单击编辑Modal中子任务列表，数据添加至右侧form表单
@@ -464,4 +464,8 @@ export default {
     width:800px;
     height: 400px;
 }
+    .filebrowseContainer{
+        width: 1200px !important;
+        margin: 60px;
+    }
 </style>

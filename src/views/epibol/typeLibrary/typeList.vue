@@ -234,41 +234,43 @@ export default {
         title: "新建任务类型",
         expand: true,
         selected: true,
-        category_id: data.pId
+        category_id: data.pId,//大类ID
+        id:data.id//小ID
       };
+      console.log(data);
+      
       this.kNodes[data.nodeKey].children.push(newType);
 
       // document.getElementById("addClassTaskBtn").click();
       // this.$set(data, "children", children);
-      // this.targriClass(this.kNodes[data.nodeKey].children, newType, newType);
+      this.targriClass(this.kNodes[data.nodeKey].children, node, newType);
     },
     //点击左边列表增加标识
     targriClass(root, node, data) {
-      console.log(root, node, data);
-      root.forEach(r => {
-        this.$set(r.node, "actClass", "#fff");
-      });
-      this.$set(data, "actClass", "#d5e8fc");
+      // console.log(root, node, data);
+      // root.forEach(r => {
+      //   this.$set(r.node, "actClass", "#fff");
+      // });
+      // this.$set(data, "actClass", "#d5e8fc");
       //向父组件传递数据
       if (!data.id) {
         let clicktype = {
           isInit: true,
           id: data.id,
-          category_id: data.category_id
+          category_id: data.category_id//大类ID
         };
         this.$emit("getListId", clicktype);
       } else {
-        let _this = this;
         // this.calssType.forEach(tre => {
         //   _this.treData = tre;
         // });
         let clicktype = {
           isInit: false,
           id: data.id,
-          category_id: data.category_id,
+          category_id: data.category_id,//大类ID
           liName: data.title
         };
-        _this.$emit("getListId", clicktype);
+        this.$emit("getListId", clicktype);
       }
     },
 

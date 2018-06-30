@@ -32,7 +32,7 @@
                         {{item.name}}
                         <span class="numStyle">{{item.member_count}}</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end">
+                        <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1">
                             <span>...</span>
                             <div class="api" slot="content">
                                 <!-- <slot name="fmore"></slot> -->
@@ -120,6 +120,9 @@ export default {
         },
         delDept(id) {
             this.$emit('deptDel', id)
+        },
+        delDuty(id) {
+            this.$emit('dutyDel', id)
         },
         open2Table(index,comId,dutyId) {
             this.SMenuIndex = index

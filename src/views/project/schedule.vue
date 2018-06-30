@@ -29,7 +29,7 @@
       <!--</div>-->
 
       <!-- 项目进度左侧 -->
-      <div class="projectPlanLeft" style="height: 700px;overflow: auto;" >
+      <div class="projectPlanLeft" style="height: 882px;overflow: auto;" >
         <div class="projectPlanList">
             <Row>
                 <Col span="16">

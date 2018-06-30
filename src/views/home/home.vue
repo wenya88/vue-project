@@ -20,7 +20,7 @@ export default {
         };
     },
     created() {
-        this.userInfo();
+        // this.userInfo();
         let invateCode = Cookies.get('invate_code');
         if(invateCode) {
             // console.log(invateCode)
@@ -45,7 +45,7 @@ export default {
             .then( res => {
                 if(res.err_code == 0){
                     // console.log(res)
-                    // sessionStorage.userId = res.user.id
+                    sessionStorage.userId = res.user.id
                     Cookies.set('post_id', res.company.post_id)
                 }
                 this.$store.commit('updateMenulist');

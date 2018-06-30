@@ -1,6 +1,6 @@
 <template>
   <div class="pigeonhole">
-    <div class="handleBox">
+    <div class="sortBg">
       <Row type="flex" justify="space-between" class="code-row-bg">
         <Col span="16">
         <Button type="primary" @click="downloadFile('',projectID)">全部下载</Button>
@@ -22,31 +22,33 @@
           v-model="searchInput" 
           icon="search" 
           placeholder="任务 / 负责人" 
-          style="width: 200px;float: right;margin-right: 20px;margin-top: 3px;"
+          style="width: 200px;float: right;margin-right: 20px;"
           @keyup.enter.native="fetchData()"></Input>
         </Col>
       </Row>
       <!-- <my-input :placeholder="text" @enter="fetchData()"></my-input> -->
     </div>
-    <Row type="flex" justify="start" class="code-row-bg">
-      <Col span="8" v-for="(item,index) in fileData" :key="index">
-      <div class="card">
-        <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file)">
-          <!-- <Icon type="heart" color="red" v-if=""></Icon>
-          <Icon type="pause" v-else-if=""></Icon> -->
-          <img class="card-box-pic" :src="item.image[0]"/>
+    <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
+      <Row type="flex" justify="start" class="code-row-bg">
+        <Col span="4" v-for="(item,index) in fileData" :key="index">
+        <div class="card">
+          <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file)">
+            <!-- <Icon type="heart" color="red" v-if=""></Icon>
+            <Icon type="pause" v-else-if=""></Icon> -->
+            <img class="card-box-pic" :src="item.image[0]"/>
+          </div>
+          <table class="card-table">
+            <tr>
+              <td class="w40"><span class="tag">{{item.tasktype_name}}</span></td>
+              <td class="w40">{{item.name}}</td>
+              <td class="w10"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
+              <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>
+            </tr>
+          </table>
         </div>
-        <table class="card-table">
-          <tr>
-            <td class="w40"><span class="tag">{{item.tasktype_name}}</span></td>
-            <td class="w40">{{item.name}}</td>
-            <td class="w10"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
-            <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>
-          </tr>
-        </table>
-      </div>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </div>
       <!-- <div slot="three">
         <ImgEditor v-if="imgConponent"></ImgEditor>
         <VidEditor v-if="vidConponent"></VidEditor>
@@ -89,6 +91,7 @@ export default {
       selTaskType: '',
       taskType: '',
       subpId: null,
+      boxHeight: 300,
       status: '4',
       projectID: sessionStorage.projectID,
       followList: [

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div class="sortBg">
       <div class="screen">
         <Row type="flex" justify="space-between" class="code-row-bg">
           <Col span="4"> 状态:
@@ -32,7 +32,7 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="8" v-for="(item,index) in listData" :key="index">
+        <Col span="4" v-for="(item,index) in listData" :key="index">
         <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
           <div class="card-box">
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />

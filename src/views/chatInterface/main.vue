@@ -65,7 +65,7 @@ export default {
   background: rgb(24,191,164);
   position:fixed;
   cursor: pointer;
-  bottom: 50%;
+  bottom: 200px;
   right: 20px;
   margin-bottom: -25px;
   box-shadow: 0px 2px 19px rgb(231,231,231);

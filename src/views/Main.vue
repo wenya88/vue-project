@@ -29,8 +29,8 @@
                 </Row>
             </div>
             <message-tip v-model="mesCount"></message-tip>
-            <div class="navicon-con">
-                <Dropdown style="margin-left: 20px" trigger="click" @on-click="handleClickUserDropdown">
+            <div class="navicon-con" style="float: left; margin-left: 20px;">
+                <Dropdown trigger="click" @on-click="handleClickUserDropdown">
                     <a href="javascript:void(0)" style="padding-top: 8px;display: block;">
                         <!-- 菜单(居中) -->
                         <Icon type="navicon" color='#2d2d2d' size="32"></Icon>
@@ -189,6 +189,7 @@ export default {
         },
         init() {
             this.userName = Cookies.get('user');
+            this.fetchUserMesg();
         },
         linkTo(url, params) {
             if (params) {
@@ -201,6 +202,18 @@ export default {
         toggleClick() {
             this.shrink = !this.shrink;
         },
+        fetchUserMesg() {
+            this.$axios.get(this.GLOBAL.baseRouter+'/system/login/info')
+            .then( res => res.data )
+            .then( res => {
+                if(res.err_code == 0){
+                    // console.log(res)
+                    sessionStorage.userId = res.user.id
+                    Cookies.set('post_id', res.company.post_id)
+                    this.avatorPath = res.user.headimage
+                }
+            })
+        },
         handleClickUserDropdown(name) {
             if(name == 'loginout') {
                 this.$axios.get(this.GLOBAL.baseRouter+'/system/login/info')
@@ -210,9 +223,11 @@ export default {
                         Cookies.remove('user');
                         localStorage.removeItem('token');
                         this.$router.push('/login');
-                        webSocket.close();
                         this.$store.state.msgShow = false;
+                        this.$store.state.useList = []
                         localStorage.removeItem('msgShow');
+                        localStorage.removeItem('useList');
+                        webSocket.close();
                     }
                 })
             }else if(name === 'ownSpace'){
@@ -279,6 +294,8 @@ export default {
     padding: 0 18px;
     padding-top: 119px;
     float: left;
+    background: #f5f7f6;
+    height: 100%;
 }
 .menu li a {
     display: block;

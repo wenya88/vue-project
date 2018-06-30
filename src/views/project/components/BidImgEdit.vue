@@ -12,10 +12,10 @@
                 <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
             </span>
             <span class="EditSub">
-                <button class="actionPost">需修改</button>
+                <button class="actionPost" @click="commitEidt('edit')">需修改</button>
             </span>
             <span class="EditSub">
-                <button class="subPass">通过</button>
+                <button class="subPass" @click="commitEidt('ok')">通过</button>
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
           </div>
@@ -59,16 +59,11 @@
         liIndex:0,
         FeedbackValue:'',
         onload:true,
-        IMGID:0,
         fileID:0,
+        stageID:0,
         bidFileStatus:null
       }
-    },
-    watch:{
-      FeedbackValue(val){
-        sessionStorage.FeedbackValue=val;
-      }
-    },    
+    },   
     mounted(){
       this.loadWH();
     },
@@ -162,6 +157,7 @@
                 $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
                 var mes={left:cX-11,top:cY-29,message:text};
                 Data[Data.length]=mes;
+                sessionStorage.ImgData=JSON.stringify(Data);
                 
               }
             });//确认编辑
@@ -192,6 +188,7 @@
             for(var i=0;i<Data.length;i++){
               if(Data[i].left==left&&Data[i].top==top){
                 Data.splice(i,1);
+                sessionStorage.ImgData=JSON.stringify(Data);
                 break;
               }else{
                 continue;
@@ -213,55 +210,40 @@
                }
            
           }//载入数据
-
-          function AjaxFun(url,ImgData){
-              $.ajax({
-                cache:false,
-                type:'post',
-                url:url,
-                data:ImgData,
-                async:true,
-                dataType:"json",
-                success:function(msg){
-                  if(msg.err_code>0){
-                    alert(msg.err_message);
-                  }else{
-                    sessionStorage.removeItem("FeedbackValue");
-                    document.getElementById('InfoRefresh').dispatchEvent(new Event('click'));
-                    alert("提交成功！");
-                  }
-              },
-              error:function(){
-                alert(' 提交失败!')
-              }
-              })
-          };
-          
-          // 标注
-          $(".actionPost").unbind('click').click(function(){
-            // var url='/task/task/inside-audit';
-            var url=baseUrl+'index.php?r=task/company/bid-tag';
-            var ImgData={
-                    "id": BID,
-                    "tag":JSON.stringify(Data),
-                    "examine_description":sessionStorage.FeedbackValue
-                }
-                AjaxFun(url,ImgData)
-          });
-
-          // 审核通过
-          $(".subPass").unbind('click').click(function(){
-               var url=baseUrl+'index.php?r=task/company/examine-bid';
-               var ImgData={
-                    "status":1,
-                    "id": BID,
-                    "examine_description":sessionStorage.FeedbackValue
-                }
-            AjaxFun(url,ImgData)
-          });
-
         })(jQuery);
-      },     
+      },
+       //需要修改
+      commitEidt(type){
+        let Okparams={
+            "id": this.stageID,
+            "status": 1,
+            "examine_description": this.FeedbackValue,
+        }
+        let EDITparams={
+            "id": this.stageID,
+            "tag":JSON.stringify(sessionStorage.ImgData),
+            "examine_description": this.FeedbackValue,
+        }
+        if(type=='edit'){
+            let url=this.GLOBAL.baseRouter+'task/company/bid-tag'
+            this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
+               this.$Message.success(msg.data.err_message);
+               this.Editget();
+               sessionStorage.removeItem('ImgData');
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }else{
+            let url=this.GLOBAL.baseRouter+'task/company/examine-bid'
+            this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
+               this.Editget();
+               this.$Message.success(msg.data.err_message);
+               sessionStorage.removeItem('ImgData');
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }
+      }, 
       imgdef(){
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
@@ -284,6 +266,7 @@
           _this.data=bidFile.tag;
           _this.url=bidFile.file;
           _this.Biddata=bidFile;
+          _this.stageID=bidFile.id;
           _this.defue(bidFile.id,bidFile.status);
           _this.imgdef();
       },

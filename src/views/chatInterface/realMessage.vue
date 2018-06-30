@@ -4,7 +4,7 @@
        <ul class="header_navigation">
          <li v-for='(item, index) in headerList' :key="index" @click="getOpen(item)" :class="item.itemStyle">
            <span class="object_name">{{item.name}}</span>
-           <span v-show="item.num !== 0" class="message_style">{{item.num}}</span>
+           <span v-show="nums[`project_${item.id}`]" class="message_style">{{nums[`project_${item.id}`]}}</span>
            </li>
        </ul>
     </div>
@@ -21,8 +21,10 @@ export default {
     return {
       headerList: [],
       list: {
-        id: ''
-      }
+        id: '',
+        absold: false
+      },
+      nums: {}
     }
   },
   components: {
@@ -30,14 +32,23 @@ export default {
   },
   created () {
     this.getObject()
-    // this.$nextTick(() => {
-    //   this.filterObj()
-    // })
+  },
+  computed : {
+    getList () {
+      var obj = this.$store.state.useList
+      this.submitMsg(obj)
+    }
+  },
+  watch: {
+    getList(e) {
+      console.log('数据', e)
+    },
   },
   methods: {
     // 界面初始话
     filterObj () {
       const obj = this.headerList[0]
+      // console.log('数据', obj)
       this.list.id = `project_${obj.id}`
       
     },
@@ -49,17 +60,23 @@ export default {
       }
       let that = this
       this.$axios.get(url, qs.stringify(items)).then(data => {
-        console.log('返回数据', data.data.project)
+        // console.log('返回数据', data.data.project)
         const list = data.data.project
-        list.forEach((elemens, index) => {
-          elemens.itemStyle = 'clearfix'
-          elemens.num = 0
-          if (index === 0) {
-            elemens.itemStyle =  'clearfix ymy_is_active'
+        if (list.length !== 0) {
+          list.forEach((elemens, index) => {
+            elemens.itemStyle = 'clearfix'
+            elemens.num = 0
+            if (index === 0) {
+             elemens.itemStyle =  'clearfix ymy_is_active'
           }
-        })
-        that.headerList = list
-        this.filterObj()
+         })
+         that.headerList = list
+         console.log('左边数据', list)
+         this.filterObj()
+          this.list.absold = true
+        } else {
+          this.list.absold = false
+        }
       }, error => {
         console.log('返回报错', error)
       })
@@ -86,12 +103,57 @@ export default {
       this.list = {
         id: `project_${item.id}`
       }
-      // const groupId = `project_${item.id}`
-      // const msgDatas = JSON.stringify({
-      //   action:'group-chat',
-      //   group_id: groupId,
-      //   msg:'你好呀'
-      // })
+      if (localStorage.nums) {
+        const nums = JSON.parse(localStorage.nums)
+        const numList = JSON.parse(localStorage.numList)
+        nums[`project_${item.id}`] = numList[`project_${item.id}`]
+        localStorage.nums = nums
+      }
+    },
+    // 显示还有多少未读
+    submitMsg(obj) {
+      const list = Array.from(obj)
+      const headerList = this.headerList
+      var numList = {}
+      var index = 0
+      if (!localStorage.numList) {
+        if (headerList.length !== 0) {
+          headerList.forEach(item => {
+            const projectName =  `project_${item.id}`
+            list.forEach(elements => {
+            if (projectName === elements.group_id) {
+              index++
+              numList[projectName] = index
+            }
+            })
+          })
+          localStorage.numList = JSON.stringify(numList)
+          this.nums = numList
+          localStorage.nums = JSON.stringify(numList)
+        }
+      } else {
+        const numberList = JSON.parse(localStorage.numList)
+        headerList.forEach(item => {
+          const projectName =  `project_${item.id}`
+          list.forEach(elements => {
+          if (projectName === elements.group_id) {
+            index++
+            numList[projectName] = index
+           }
+          })
+        })
+        for (let i in numList) {
+          for (let k in numberList) {
+            if (i === k) {
+              this.nums[k] = numList[i] - numberList[k]
+            }
+          }
+        }
+        this.$nextTick(() => {
+          localStorage.nums = JSON.stringify(this.nums)
+        })
+       localStorage.numList = JSON.stringify(numList)
+      }
     }
   }
 }

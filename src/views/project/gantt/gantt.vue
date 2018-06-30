@@ -156,6 +156,7 @@ require([
     "./ganttGridEditor.js",
     "./ganttMaster.js"
     ]);
+
 export default {
     
 }

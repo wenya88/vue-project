@@ -356,13 +356,13 @@ export default {
       return true;
     },
     //遍历主任务列表数据
-    initTaskListFromId(data,type) {
+    initTaskListFromId(data,type,item) {
         if(data == null)
             data={}
          if(data === 'all'){
             this.getTaskList(data);
         }else if(type === 'member'){
-            this.getTaskList(data.run_uid,'member');
+            this.getTaskList(data.run_uid,'member',item);
         }else{
             let msg = {}
             if(!data.project_child_id)//主项目
@@ -384,12 +384,13 @@ export default {
       this.loading = true;
       this.getTaskList(this.currentMsg);
     },
-    getTaskList(msg,type)
+    getTaskList(msg,type,item)
     {
         if(msg === 'all'){
             msg = {project_id:this.projectId}
         }else if(type === 'member'){
-            msg = {user_id:msg}
+            let child_id = item.child_id ? item.child_id : '';
+            msg = {user_id:msg,project_id:this.projectId,project_child_id:child_id}
         }
 
         this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
@@ -492,7 +493,7 @@ export default {
 @import "../../../styles/task/task.css";
 
 .taskListContainer {
-    height: 850px;
+   height: 100%;
     padding-left: 10px;
     overflow: auto;
         .WaitingToStart,.perform,.complete,.suspended{

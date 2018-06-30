@@ -228,6 +228,9 @@ export default {
                             localStorage.token = res.token
                             this.$store.state.msgShow = true
                             localStorage.msgShow = true
+                            if (localStorage.useList) {
+                              this.$store.state.useList = JSON.parse(localStorage.useList)
+                            }
                             axios.defaults.headers.common['token'] = res.token;
                             this.$router.push('/home/home')
                         } else {

@@ -1,11 +1,11 @@
 <template>
-    <div id="membermanager">
+    <div class="membermanager">
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
         <Tabs size="small">
             <TabPane label="成员管理">
                 <Layout>
                     <Sider>
-                        <membertype title="成都有限公司" number="41" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyEdit="editDuty">
+                        <membertype title="成都有限公司" number="41" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
                             <div slot="addDept">
                                 <div class="addDept" @click="addDept()">
                                     <Icon type="plus" color="#31BB9F" size="16"></Icon>增加部门</div>
@@ -34,9 +34,9 @@
                     </Layout>
                 </Layout>
             </TabPane>
-            <TabPane label="权限设置">
+            <!-- <TabPane label="权限设置">
 
-            </TabPane>
+            </TabPane> -->
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
@@ -46,6 +46,9 @@
         </Modal>
         <Modal v-model="dutyModel" :title="dutyStatus == 'add' ? '新增职能' : '编辑职能'" @on-ok="okDuty(dutyStatus)" @on-cancel="cancel">
             <Input v-model="dutyName" placeholder="请输入职能名称" style="width: 300px"></Input>
+        </Modal>
+        <Modal v-model="delDutyModal" title="确认删除职能？" @on-ok="delDutyOk" @on-cancel="cancel">
+            <p>删除职能后成员将移入“自定义角色”</p>
         </Modal>
     </div>
 </template>
@@ -83,6 +86,7 @@ export default {
             deptName: '',
             deptId: 0,
             delModal: false,
+            delDutyModal: false,
             dutyModel: false,
             dutyStatus: 'add',
             dutyId: 0,
@@ -224,6 +228,25 @@ export default {
                         this.$Message.success('删除部门成功');
                     } else {
                         this.$Message.error('删除部门失败');
+                    }
+                })
+        },
+        delDuty(id) {
+            this.delDutyModal = true;
+            this.dutyId = id;
+        },
+        delDutyOk() {
+            let data = {
+                id: this.dutyId
+            }
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/post/delete', qs.stringify(data))
+                .then(res => res.data)
+                .then(res => {
+                    if (res.err_code == 0) {
+                        this.dutyListData();
+                        this.$Message.success('删除职能成功');
+                    } else {
+                        this.$Message.error('删除职能失败');
                     }
                 })
         },
@@ -416,18 +439,50 @@ export default {
 .ivu-layout-header {
     background: #fff;
 }
-
 .addBtn {
     position: absolute;
     right: 10px;
     z-index: 10;
+    margin-top: 15px;
 }
-
 .addDept {
     color: #31BB9F;
     font-size: 14px;
     line-height: 50px;
     padding: 0 20px;
     cursor: pointer;
+}
+</style>
+<style lang="less">
+// .membermanager{
+     .ivu-tabs-nav-wrap{
+        height: 60px;
+        line-height: 40px;
+        margin-top: 15px;
+        .ivu-tabs-nav{
+            border-bottom: 2px solid #dcdedd;
+            .ivu-tabs-ink-bar{
+                background: transparent;
+            }
+            .ivu-tabs-tab{
+                font-size: 16px;
+            }
+            .ivu-tabs-tab-active{
+                color: #4ac4b5;
+            }
+        }
+    }
+.membermanager{
+    .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-nav-wrap{
+        height: 34px;
+        line-height: 17px;
+        margin-top: 0;
+    }
+    .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
+        margin-right: 0;
+        border: none;
+        width: 100px;
+        text-align: center;
+    }
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
     <div>
-        <div v-if="filetype === 'NULL'" class="notIMG">
+        <div v-if="filetype == 'NULL'" class="notIMG">
             暂未上传任务文件
         </div>
-        <div v-if="filetype === 'IMG'">
+        <div v-if="filetype == 'IMG'">
             <imgeditor ref="imgeditor"></imgeditor>
         </div>
-        <div v-if="filetype === 'VIDEO'">
+        <div v-if="filetype == 'VIDEO'">
             <videoeditor ref="videoeditor"></videoeditor>
         </div>
-        <div v-if="filetype === '3d'">
+        <div v-if="filetype == '3d'">
             <modeleditor ref="modeleditor"></modeleditor>
         </div>
     </div>
@@ -24,7 +24,7 @@ var qs = require("querystring");
 export default {
     mounted(){
         this.$bus.on('closeModel',()=>{
-            this.filetype="NULL"
+            this.filetype="NULL";
         })
     },
     components: {

@@ -15,17 +15,20 @@
         },
         created() {
         //  console.log('数据', localStorage.token)
-         if (localStorage.token) {
-          const msgData = JSON.stringify({
-            action: 'login',
-            token: localStorage.token
-          })
-          this.$connectSoket.connectSocket(msgData)
-         }
         },
         computed: {
           getishow () {
             this.ishow = this.$store.state.msgShow
+            if (localStorage.token) {
+              const msgData = JSON.stringify({
+              action: 'login',
+              token: localStorage.token
+            })
+            this.$connectSoket.connectSocket(msgData)
+            }
+            if (localStorage.useList) {
+              this.$store.state.useList = JSON.parse(localStorage.useList)
+            }
           }
         },
         watch: {

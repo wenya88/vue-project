@@ -12,7 +12,9 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
 	state: {
-       msgShow: !localStorage.msgShow ? false : true
+       msgShow: !localStorage.msgShow ? false : true,
+       useList: [],
+       absold: true
     },
     mutations: {
         //

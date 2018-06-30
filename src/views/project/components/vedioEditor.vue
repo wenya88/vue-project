@@ -38,10 +38,10 @@
                 <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
             </span>
             <span class="EditSub">
-                <button class="actionPost">需修改</button>
+                <button class="actionPost" @click="commitEidt('edit')">需修改</button>
             </span>
             <span class="EditSub" v-if="data==null?true:false">
-                <button class="subPass">通过</button>
+                <button class="subPass"  @click="commitEidt('ok')">通过</button>
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
         </div>
@@ -57,8 +57,10 @@
     </div>
 </template>
 <script>
+
 var Data=[];
 import {baseUrl, deletetaskData} from '../../../config/env.js';
+var qs=require('querystring');
 export default {
     data(){
         return{
@@ -78,8 +80,8 @@ export default {
             cliUid:0,
             liIndex:0,
             VideoURL:'',
-            IMGID:0,
             fileID:0,
+            stageID:0,
             FeedbackValue:''
         }
     },
@@ -100,11 +102,16 @@ export default {
             }
       }
     },
+    mounted(){
+         $LAB
+        .script("http://vjs.zencdn.net/6.6.3/video.js").wait(()=>{
+            this.Vdefault();
+            this.vedioLoad();
+        });
+        this.VedioGet();
+    },
     created(){
         this.AddVedioJS();
-    },
-    mounted(){
-        this.VedioGet();
     },
     computed:{
       storeTaskID(){
@@ -129,10 +136,10 @@ export default {
          this.insUid=insUid;
          this.cliUid=cliUid;
          this.liIndex=index;
-         let fileID=taskID;
-         let fID=fid;
+         this.fileID=fid;
+         this.stageID=taskID;
          this.changeState(this.StateFeedBack);
-         this.Vdefault(fileID,fID);
+         this.AddVedioJS();
          this.vedioLoad();
         //  切换视频初始化播放器
          let myPlayer = videojs('my-video');
@@ -148,7 +155,7 @@ export default {
             script.classList.add("video_js")
             head.appendChild(script);
         },
-        Vdefault(fileID,fID){
+        Vdefault(){
                  var btiem
                  var myPlayer = videojs('my-video');
                     videojs("my-video").ready(function(){
@@ -170,13 +177,12 @@ export default {
                     }
 
                     myPlayer.on('pause',function(){
-                        myPlayer.on('timeupdate',function(){
-                            if($('.V_signIndex')==undefined){
-                                console.loe("无")
-                            }else{
-                                console.log("有")
-                            }
-                        })
+                        $(".V_signIndex").hide();
+                        // myPlayer.on('timeupdate',function(){
+                        //     if($('.V_signIndex')!=undefined){
+                        //        console.log('有')
+                        //     }
+                        // })
                         PauPlay();
                     });
                     
@@ -250,6 +256,7 @@ export default {
                                 $('#Ts'+indexId).css({"left":cX-11,"top":cY-29,"display":"block"});
                                 var mes={left:cX-11,top:cY-29,message:text,btiem:btiem,leftX:domWidth};
                                 Data[Data.length]=mes;
+                                sessionStorage.ImgData=JSON.stringify(Data);
                         }
                         });//确认编辑
                         $(document).on('mouseenter','[id*=Ts]',function(e){
@@ -280,6 +287,7 @@ export default {
                         for(var i=0;i<Data.length;i++){
                             if(Data[i].left==left&&Data[i].top==top){
                                 Data.splice(i,1);
+                                sessionStorage.ImgData=JSON.stringify(Data);
                                 break;
                             }else{
                                 continue;
@@ -302,60 +310,6 @@ export default {
                     indexId=l;
                     }
                 }//载入数据
-
-                function AjaxFun(url,VedData){
-                    $.ajax({
-                        cache:false,
-                        type:'post',
-                        url:url,
-                        data:VedData,
-                        async:true,
-                        dataType:"json",
-                        success:function(msg){
-                        if(msg.err_code>0){
-                            alert(msg.err_message);
-                        }else{
-                            sessionStorage.removeItem("FeedbackValue");
-                            document.getElementById('InfoRefresh').dispatchEvent(new Event('click'));
-                            alert("提交成功！")
-                        }
-                    },
-                    error:function(){
-                        alert(' 提交失败!')
-                    }
-                    })
-                };
-
-                // 标注
-                $(".actionPost").unbind('click').click(function(){
-                    // var url='/task/task/inside-audit';
-                    var url=baseUrl+'index.php?r=task/task/inside-audit';
-                    var VedData={
-                        "stage_id": fileID,
-                        "audit": 2,
-                        "feedback": sessionStorage.FeedbackValue,
-                        "file": [{
-                            "file_id": fID,
-                            "tag":Data
-                        }]
-                        }
-                        AjaxFun(url,VedData)
-                });
-
-                // 审核通过
-                $(".subPass").unbind('click').click(function(){
-                    var url=baseUrl+'index.php?r=task/task/inside-audit';
-                    var VedData={
-                        "stage_id": fileID,
-                        "audit": 1,
-                        "feedback":'',
-                        "file": [{
-                            "file_id": fID,
-                            "tag":[]
-                        }]
-                        }
-                    AjaxFun(url,VedData)
-                });
 
 
                 $(document).on('click','.V_signIndex',function(){
@@ -381,6 +335,46 @@ export default {
                     myPlayer.currentTime(thisTiem);
                 }
         },
+
+      //需要修改
+      commitEidt(type){
+        let url=this.GLOBAL.baseRouter+'task/task/inside-audit'
+        let Okparams={
+          "stage_id": this.stageID,
+          "audit": 1,//1为通过审核,2为不通过
+          "feedback":'',
+          "file": [JSON.stringify({
+                    "file_id": this.fileID,
+                    "tag":[]
+          })]
+        }
+        let EDITparams={
+            "stage_id": this.stageID,
+            "audit": 2,
+            "feedback": this.FeedbackValue,
+            "file": JSON.stringify([{
+              "file_id": this.fileID,
+              "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]'
+            }])
+        }
+        if(type=='edit'){
+            this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
+               this.$Message.success(msg.data.err_message);
+               this.VedioGet();
+               sessionStorage.removeItem('ImgData');
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }else{
+            this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
+               this.$Message.success(msg.data.err_message);
+               this.VedioGet();
+               sessionStorage.removeItem('ImgData');
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }
+      },   
         vedioLoad(){
             $.sign.bindSign('.V_markVjs');
             $.sign.loadingSign(this.data);
@@ -407,6 +401,7 @@ export default {
         VedioGet(){
              let _this=this;
              _this.VideoURL=_this.storeFileURl;
+             sessionStorage.removeItem('ImgData')
              //  列表高度
              $(".stageListRow").height(480)
             //  获取视频的标注信息
@@ -429,17 +424,14 @@ export default {
                         _this.insUid=val.insUid;
                         _this.cliUid=val.cliUid;
                         _this.liIndex=index;
-                        _this.IMGID=val.file.id;
-                        _this.fileID=val.file.stage_id;
+                        _this.fileID=val.file.id;
+                        _this.stageID=val.file.stage_id;
                     }
                 })
                 _this.changeState(_this.StateFeedBack)
+                _this.Vdefault();
+                _this.vedioLoad();
                 // 把StageID传到提交
-                let fileID = _this.fileID;
-                let fID=_this.IMGID;
-                    // 加载Video控件
-                    _this.Vdefault(fileID,fID);
-                    _this.vedioLoad();
                 }else{
                 return
                 }          

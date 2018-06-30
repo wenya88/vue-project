@@ -3,17 +3,17 @@
      <GeminiScrollbar class="crollbar">
       <div class="realTime_interface">
          <div v-for="(item, index) in dataList" :key="index" class="ko">
-         <div v-if ='item.own_id != nowId'>
+         <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
-             <img :src="item.imgUrl">
-             <p class="realTime_time_text">{{item.name}}</p>
-             <p class="realTime_time">{{item.time}}</p>
+             <img src="../../images/meinv.jpg">
+             <p class="realTime_time_text">{{item.remark_name}}</p>
+             <p class="realTime_time">{{item.date}}</p>
            </div>
            <div>
              <p class="triangle_type"></p>
              <p>
              <span class="Send_content is_own_no">
-               {{item.content}}
+               {{item.message}}
              </span>
              </p>
            </div>
@@ -21,15 +21,15 @@
          <!-- 第二个 -->
          <div class="clearfix ko" v-else>
            <div class="realTime_message_own">
-             <img :src="item.imgUrl">
-             <p class="realTime_time_text">{{item.name}}</p>
-             <p class="realTime_time">{{item.time}}</p>
+             <img src="../../images/meinv.jpg">
+             <p class="realTime_time_text">我</p>
+             <p class="realTime_time">{{item.date}}</p>
            </div>
            <div class="is_own_float">
              <p class="triangle_type_own"></p>
              <p>
              <span class="Send_content is_own">
-               {{item.content}}
+               {{item.message}}
              </span>
              </p>
            </div>
@@ -39,7 +39,7 @@
        </GeminiScrollbar>
       <form class="send_information_box">
          <div class="send_message_remind">
-           <div class="send_input" contenteditable="true" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
+           <div class="send_input" :contenteditable="data.absold" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
            <div class="clearfix send_message_children" v-show="isShowMessage">
              <p>有<span class="message_num" v-show="isLook">1</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
              <p @click="closeMessage">x</p>
@@ -80,7 +80,6 @@ export default {
   data () {
     return {
       value: '',
-      nowId: 1,
       messageNum: 0,
       nowName: '陈莉莉',
       sendShow: false,
@@ -92,6 +91,7 @@ export default {
         left: '',
         top: ''
       },
+      userMsg: {},
       lastSelection: {},
       useList: [
         {
@@ -110,128 +110,48 @@ export default {
           name: '所有人'
         }
       ],
-      dataList: [
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我爱你@陈莉莉',
-          time: '2018/12/10 10:20:56',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '边去',
-          time: '2018/12/10 10:20:58',
-          name: '我',
-          own_id: 1
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我也爱你[嘻嘻]',
-          time: '2018/12/10 10:21:02',
-          name: '王者',
-          own_id: 3
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我要做你的太阳',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我很帅',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '有我帅?',
-          time: '2018/12/10 10:22:02',
-          name: '霸气',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我是富二代',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我是一代',
-          time: '2018/12/10 10:22:02',
-          name: '龟仙人',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '我很有实力',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '来来来，比比',
-          time: '2018/12/10 10:22:02',
-          name: '索隆',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '你好呀你好呀',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '大哥们我错了',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '都这么棒',
-          time: '2018/12/10 10:22:02',
-          name: '我',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '你好呀你好呀@陈莉莉',
-          time: '2018/12/10 10:22:02',
-          name: '李佳',
-          own_id: 2
-        },
-        {
-          imgUrl: '../../../pic/meinv.jpg',
-          content: '等死吧你',
-          time: '2018/12/10 10:22:03',
-          name: '我',
-          own_id: 1
-        }
-      ]
-    }
-  },
-  watch: {
-    data: function (e) {
-      console.log('变换', e)
+      dataList: []
     }
   },
   mounted () {
+    // localStorage.removeItem('useList')
+    // console.log(this.data.absold)
+    if (!this.data.absold) {
+      this.dataList = []
+      // this.$store.state.useList = []
+      // localStorage.removeItem('useList')
+    }
+    this.userMsge()
     this.init()
     screenshot()
     // this.isLogin()
     this.scrollToBottom()
     this.getName()
   },
+  computed : {
+    getList () {
+      var obj = this.$store.state.useList
+      //    console.log('true', obj)
+      // if (obj.length !== 0) {
+      //   console.log('true', obj)
+      //  obj = JSON.parse(obj)
+      // }
+      this.submitMsg(obj)
+    }
+  },
+  watch: {
+    getList(e) {
+      console.log('数据', e)
+    },
+     data: function (e) {
+      console.log('变换', e)
+    }
+  },
   methods: {
+    // 获取用户信息
+    userMsge () {
+      this.userMsg= JSON.parse(localStorage.userMsg)
+    },
     init () {
       $('.pace').bind(
         {
@@ -245,11 +165,11 @@ export default {
             }
           }
         })
-      $('.Send_content').each(function () {
-        const elements = $(this).html()
-        // console.log(elements)
-        $(this).html(elements).parseEmotion()
-      })
+      // $('.Send_content').each(function () {
+      //   const elements = $(this).html()
+      //   // console.log(elements)
+      //   $(this).html(elements).parseEmotion()
+      // })
     }, // 显示表情
     // 滚动到底模块
     // 滚动到底
@@ -289,8 +209,9 @@ export default {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
           const offset = ele.caret('offset')
           console.log('offset', offset)
+          const lefts = offset.left - 600
           this.personPosi = {
-            left: offset.left - 750 + 'px',
+            left: lefts + 'px',
             top: offset.top - contentsHeight + 'px'
           }
         })
@@ -349,12 +270,12 @@ export default {
     },
     // @查找
     getName () {
-      const list = this.dataList
+      const list = Array.from(this.dataList)
       var nameArray = []
       list.forEach((element, index) => {
-        const isShow = element.content.indexOf('@') !== -1 // 查找是否含有@
+        const isShow = element.message.indexOf('@') !== -1 // 查找是否含有@
         if (isShow) {
-          const nameList = element.content.split('@')
+          const nameList = element.message.split('@')
           const name = this.nowName
           if (nameList[1] === name) {
             // const dome = document.getElementsByClassName('Send_content')[index]
@@ -405,31 +326,72 @@ export default {
       $('.send_input').find('div').remove()
       this.sendShow = false // 发送关闭@框
       const elements = $('.send_input').html()
-      const texts = {
-        imgUrl: '../../../pic/meinv.jpg',
-        content: elements,
-        time: '2018/12/10 10:22:03',
-        name: '我',
-        own_id: 1
-      }
-      // alert(elements)
-      this.dataList.push(texts)
-      // $('.Send_content').each(function () {
-      //   let elemnts = $(this).html()
+      const sendTime = this.getTime()
+      var list = this.$store.state.useList
       const shuju = JSON.stringify({
         action:'group-chat',
         group_id: this.data.id,
-        msg: elements
+        msg: elements,
       })
+      const shuju2 = {
+        action:'group-chat',
+        group_id: this.data.id,
+        message: elements,
+        user_id: this.userMsg.id,
+        remark_name: this.data.remark_name,
+        date: sendTime
+      }
+      list.push(shuju2)
+      this.$store.state.useList = list
+      localStorage.useList = JSON.stringify(list)
       this.$nextTick(() => {
         // this.threadPoxi(shuju)
+        console.log('发送数据', shuju)
         webSocket.send(shuju)
         // this.$connectSoket.websocksend(shuju)
-        $('.Send_content').last().html(elements).parseEmotion()
+        // $('.Send_content').last().html(elements).parseEmotion()
         this.scrollToBottom()
       })
       // })
       $('.send_input').text('')
+    },
+    // 获取时间
+    getTime () {
+      const now = new Date(Date.now());
+      var year = now.getFullYear()
+      var month = now.getMonth() + 1
+      month = month < 10 ? ('0' + month) : month
+      var date = now.getDate()
+      date = date < 10 ? ('0' + date) : date
+      var hour = now.getHours()
+      hour = hour < 10 ? ('0' + hour) : hour
+      var minute = now.getMinutes()
+      var second = now.getSeconds()
+      minute = minute < 10 ? ('0' + minute) : minute
+      second = second < 10 ? ('0' + second) : second
+      return year + '/' + month + '/' + date + ' ' + hour + ':' + minute + ':' + second
+    },
+    submitMsg(obj) {
+      const list = Array.from(obj)
+      var newList = []
+      // const id = this.data.id
+      // console.log('11111', list[0])
+      list.forEach(elements => {
+        const str = this.data.id
+        // console.log('11111',str, elements.group_id)
+        if (str === elements.group_id) {
+           newList.push(elements)
+          //  console.log('11111', elements)
+        }
+      })
+      this.dataList = newList
+      this.$nextTick(() => {
+        $('.Send_content').each(function () {
+          const elements = $(this).html()
+          // console.log(elements)
+          $(this).html(elements).parseEmotion()
+        })
+      })
     },
     isLogin () {
       if (localStorage.token) {
@@ -439,53 +401,6 @@ export default {
         })
         // this.threadPoxi(msgData)
       }
-    },
-    threadPoxi (msgData) { // 实际调用
-      // var msgData = JSON.stringify(msgDatas)
-      if (this.websock) {
-        console.log('进入')
-        if (this.websock.readyState === 1 ) {
-          this.websocksend(msgData)
-          // this.websockonmessage()
-          console.log('开启', msgData)
-        } else if (this.websock.readyState === 0) { // 若是正在开启，则等待300秒
-          let that = this
-          var times = setTimeout(() => {
-            that.websocksend(msgData)
-            clearTimeout(times)
-          }, 300)
-          console.log('等待开启')
-        }
-      } else { // 若未开启 则等待500毫秒
-        this.initWebsock()
-        let that = this
-        var times = setTimeout(() => {
-          that.websocksend(msgData)
-          clearTimeout(times)
-        }, 500)
-      }
-    },
-    initWebsock () { // 初始化websoket
-      // ws 地址
-      // const wsurl = process.env.WS_API + ''
-      const wsurl = 'ws://192.168.2.20:8282'
-      var sockets = new WebSocket(wsurl)
-      // console.log('soket', JSON.stringify(new WebSocket(wsurl)))
-      this.websock = sockets
-      this.websock.onmessage = this.websockonmessage
-      this.websock.onclose = this.websockclose
-    },
-    websockonmessage (e) { // 数据接收
-      // const redata = JSON.parse(e)
-      console.log('websoket数据', e)
-    },
-    websocksend (data) { // 数据发送
-      this.websock.send(data)
-      // console.log('websoketsend', data)
-    },
-    websockclose (e) { // 关闭websocket
-      console.log('websoketClose', e)
-      // this.websock.close()
     },
   },
   beforeDestroy () {

@@ -13,7 +13,6 @@
 <script>
 import maintask from "./taskDetails";
 import filebrowse from "../components/fileBrowseManager.vue";
-
 export default {
     components:{
         maintask,

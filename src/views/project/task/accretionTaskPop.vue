@@ -36,6 +36,9 @@ export default {
             // this.$refs.sublist.saveSubTasks();
             return true;
         },
+        clearAllData(){
+            this.$refs.add.clearAllData()
+        }
     }
 }
 </script>

@@ -267,6 +267,7 @@ export default {
       var clock = new THREE.Clock();//时钟
       var mixers = [];
       init(this.storeFileURl);//初始化
+      // init();
       animate();//动画
       function init(url) {
         //获得div并添加容器
@@ -274,10 +275,10 @@ export default {
         document.getElementById("maind").appendChild(container);
         //设置相机(视角,纵横比,近距离,远距离)
         camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 2000);
-        camera.position.set(100, 200, 300);
+        camera.position.set(0, 200, 300);
         //轨道控制插件
         controls = new THREE.OrbitControls(camera);
-        controls.target.set(0, 100, 0);
+        controls.target.set(0, -50, 0);
         controls.update();
         //场景
         scene = new THREE.Scene();
@@ -314,7 +315,7 @@ export default {
         // let url = '../src/views/project/components/threeFile/M_atk.fbx';
         // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-        
+        // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
         
         loader.load(url, function(object) {
           // console.log(url2);

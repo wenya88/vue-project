@@ -206,7 +206,7 @@ export default {
     //保存所有临时的子任务
     saveSubTasks()
     {
-        console.log(333,'子任务')
+        // console.log(333,'子任务')
         //处理仅仅添加子任务后离开页面直接保存的情况
         if(this.subTaskListData.length > this.initAmount)
         {
@@ -318,7 +318,7 @@ export default {
                         this.subtaskInfoArr[items.id] = res.data;
                     })
             })
-            console.log(33,this.subtaskInfoArr)
+            // console.log(33,this.subtaskInfoArr)
 
         }
     }

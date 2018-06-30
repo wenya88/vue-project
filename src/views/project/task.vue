@@ -13,86 +13,71 @@
       <div class="taskMainContainer">
           <!--&lt;!&ndash;项目进度&ndash;&gt;-->
           <div class="projectPlanRight">
+              <!--头部-->
               <div class="rightTitle">
                   <Icon type="android-apps" style="vertical-align: top" size="20"></Icon>&nbsp;项目进度
                   <span class="editBtn">
-                      <Icon @click.native="editMode" type="edit" style="vertical-align: top" size="20"></Icon>
+                      <Icon v-show="editShow" @click.native="editMode" type="edit" style="vertical-align: top" size="20"></Icon>
+                      <Icon v-show="!editShow" @click.native="editMode" type="arrow-left-a" style="vertical-align: top" size="20"></Icon>
                   </span>
               </div>
+              <!--显示列表-->
               <div v-if="editShow" class="rightRow">
-                  <div style="background: #39f;color: #fff" @click="changeTaskListData('all')">全部</div>
-                  <div class="line" v-for="item in ChildMsgData">
-                      <div class="title headTitle">
-                          <template v-if="!item.realname">
-                              <span  @click="changeTaskListData(item)" style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap; cursor: pointer;">{{item.child_project_name }}</span>
-                              <Avatar style="margin-top: -30px;"  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                       size="small"/>&nbsp;&nbsp;
-                              <span style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" >{{item.leader_name}}</span>
+                  <div class="Listall"  @click="changeTaskListData('all')">全部</div>
+                  <div class="line" v-for="(item,index) in ChildMsgData">
+                     <section class="titleList"  @click="changeTaskListData(item,null,'alone',item)"    :class="[{'activeTask':item.run_uid === aloneActive},{'activeTask':item.child_id === itemActive}]"  :key="index" >
+                         <div class=" headTitle">
+                                 <!--子项目头部-->
+                                 <template v-if="!item.realname">
+                                     <span class="iconfont icon-xiangmuxiaoxi"></span>&nbsp;&nbsp;
+                                     <span  class="titleText">{{item.child_project_name }}</span>
+                                     <span class="iconfont icon-xiangmufuzeren"></span>
+                                     <span style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" >{{item.leader_name}}</span>
+                                 </template>
+                                 <!--单独的成员-->
+                                 <div v-else class="alone" >
+                                     <div style="margin: 0"  @click="">{{item.realname}}</div>
+                                 </div>
+                         </div>
+                         <!--子项目和单独成员的进度条-->
+                         <div    class="lineRow showPlan" :class="item.realname?'':'showPlanColor'">
+                             <Progress  hide-info :percent="Number(item.progress)">
 
-                          </template>
-                        <div v-else class="alone" >
-                            <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                    size="small"/>&nbsp;&nbsp;
-                            <div v-if="item.realname">{{item.realname}}</div>
-                        </div>
+                             </Progress>
+                         </div>
+                         <div class="ratio">{{item.complete}}/{{item.total}}</div>
+                     </section>
 
-                      </div>
-                      <div  class="lineRow showPlan" :class="item.realname?'':'showPlanColor'">
-                          <Progress  :percent="Number(item.progress)">
-                              <span>{{item.complete}}/{{item.total}}</span>
-                          </Progress>
-                      </div>
-                      <div class="clear"></div>
-                      <div v-if="!item.realname" style="background: #e4e4e4;position: relative;padding-left: 30px;border-radius: 0 0 6px 6px;">
-                            <!--<Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"-->
-                                     <!--size="small"/>&nbsp;&nbsp;-->
-                            <!--<span >{{item.leader_name}}</span>-->
-                          <!--<Icon class="flag" type="flag"></Icon>-->
-                      </div>
-                      <!--<Select v-model="item.leader"    style="width:100px">-->
-                      <!--<Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.nickname }}</Option>-->
-                      <!--</Select>-->
-                      <div  style="padding-left: 43px;">
-                          <div class="line" v-for="member in item.child_project">
-                              <div class="title">
-                                  <div class="demo-avatar">
-                                      <Avatar  src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                               size="small"/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"  @click="changeTaskListData(member,'member')">{{member.user}}</span>
-                                  </div>
-                              </div>
-                              <div class="lineRow">
-                                  <!--<Progress :percent="Number(member.progress)"><span>{{member.complete}}/{{member.total}}</span>-->
-                                  <!--</Progress>-->
-                                  <p style="text-align: right;padding-right: 23px;">{{member.complete}}/{{member.total}}</p>
-                              </div>
-                              <div class="clear"></div>
-                          </div>
-                      </div>
+                      <!--有项目的成员-->
+                      <section @click="changeTaskListData(member,'member','team',item)"  :class="member.run_uid === teamActive?'activeTask':''" class="projectMemberList" v-for="(member,index) in item.child_project" :key="index">
+                          <p class="memberTitle"  >{{member.user}}</p>
+                          <p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>
+                      </section>
+
                   </div>
               </div>
+              <!--编辑-->
               <div v-else class="rightRow">
-
-                  <div class="line" v-for="item in ChildMsgData">
-                      <div  class="editList" v-if="item.child_project">
-                       <div>
-                           <Input type="text" @on-blur="changeName(item,$event)"
-                                  :value="item.child_project_name || item.realname" class="title"></Input>
-                           <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
-                                   size="small"/>&nbsp;&nbsp;
-                           <Select v-model="item.leader"   @on-change="changePrincipal(item,item.leader)"    style="width:100px">
-                               <Option v-for="leader in companyMember"   :value="leader.user_id" :key="leader.value">{{ leader.realname}}</Option>
-                           </Select>
-                       </div>
-                          <Icon @click.native="delProject(item)" type="trash-b" size="14"></Icon>
-
-
-                      </div>
+                  <div class="line editList" v-for="(item,index) in ChildMsgData" :key="index">
+                      <template v-if="item.child_project">
+                          <div>
+                              <Input style="width: 100px;" type="text" @on-blur="changeName(item,$event)"
+                                     :value="item.child_project_name || item.realname" class="title"></Input>
+                              <Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
+                                      size="small"/>&nbsp;&nbsp;
+                              <Select v-model="item.leader" @on-change="changePrincipal(item,item.leader)"
+                                      style="width:100px">
+                                  <Option v-for="(leader,index) in companyMember" :value="leader.user_id"
+                                          :key="index">{{ leader.realname}}
+                                  </Option>
+                              </Select>
+                          </div>
+                          <div @click.native="delProject(item)" style="padding: 0px 10px; cursor: pointer;" >
+                              <Icon  style="line-height: 32px;" type="trash-b" size="16"></Icon>
+                          </div>
+                      </template>
                   </div>
                   <div class="projectPlanButton">
-                      <Select v-model="subProjectManager" style="width:100px">
-                          <Option v-for="item in companyMember" :value="item.user_id" :key="item.value">{{ item.realname}}
-                          </Option>
-                      </Select>
                       <Input v-model="subProjectName" placeholder="项目名称" style="width: 200px"></Input>
                       <Icon @click.native="addButton()" type="plus-round" style="vertical-align: middle"
                             size="20"></Icon>
@@ -123,15 +108,15 @@
 
            <!--主视图:列表/甘特图 -->
           <Tabs  class="task-tab">
-              <Tab-pane label="列表模式"  icon="ios-list-outline">
+              <Tab-pane label="看板"  >
                   <tasklist style="padding-left: 450px;" ref="list" v-on:showTaskDetails='showTaskDetails'
                             v-on:delTask="closeTaskDetails"></tasklist>
               </Tab-pane>
-              <Tab-pane  label="甘特图模式" icon="podium" >
+              <Tab-pane  label="甘特图"  >
                   <iframe style="padding-left: 450px;" id="show-iframe" frameborder=0  name="showHere" scrolling=auto
                           src="../../../src/views/project/gantt/gantt.html"></iframe>
               </Tab-pane>
-              <Tab-pane   label="进度" icon="podium"   >
+              <Tab-pane   label="进度管理"   >
                   <v-schedule-plan  style="padding-left: 450px;" ></v-schedule-plan>
               </Tab-pane>
           </Tabs>
@@ -208,6 +193,9 @@ export default {
   },
   data() {
     return {
+        aloneActive:'',
+        teamActive:'',
+        itemActive:'',
         haha:'74',
         editShow: true,
         ChildMsgData: null,
@@ -249,11 +237,33 @@ export default {
         sessionStorage.TaskID = 0;
       },
       //改变任务列表
-      changeTaskListData(subType,type){
-            if(subType !== 'all'){
-                subType.project_child_id = subType.child_id;
-            }
-            this.$refs.list.initTaskListFromId(subType,type);
+      changeTaskListData(subType,type,member,item){
+
+
+          this.teamActive = '';
+          this.aloneActive = '';
+          this.itemActive = '';
+          if(subType.run_uid && member === 'alone'){
+              this.aloneActive = subType.run_uid;
+
+          }else if(subType.run_uid && member === 'team'){
+              this.teamActive = subType.run_uid;
+
+          }else if(!subType.run_uid && member === 'alone'){
+              this.itemActive = subType.child_id
+          }
+
+          if (Object.keys(subType)[0] === 'run_uid') {
+              type = 'member'
+
+          }
+          if (subType !== 'all') {
+              subType.project_child_id = subType.child_id;
+          }
+
+
+console.log(1.1,item)
+            this.$refs.list.initTaskListFromId(subType,type,item);
 
       },
       //刷新当前任务列表
@@ -303,12 +313,13 @@ export default {
       saveAccretionTaskPop()
       {
         let result = this.$refs.add.saveTaskDetail();
+
         if(result)
         {
           this.isSaveLoading = false;
           this.isAccretionTask = false;
-
           this.$Message.success('创建任务成功');
+          this.$refs.add.clearAllData()
         }
         else
         {
@@ -376,10 +387,8 @@ export default {
           if (!this.companyMember) {
               this._ajax('task/company/joined-members', {project_id: this.projectId})
                   .then(({data}) => {
-                  console.log(1,data)
                       if (data.err_code === 0) {
                           this.companyMember = data.data
-
                       }
                   })
           }
@@ -402,11 +411,10 @@ export default {
       },
       // 更改负责人
       changePrincipal(data,leader){
-         if(leader){
+         if(data.leader){
              let id = data.child_id;
              let name = data.child_project_name;
-
-             this._ajax('task/project/child-update',{id:id,name:name,leader:leader})
+             this._ajax('task/project/child-update',{id:id,name:name,leader:data.leader})
                  .then(({data})=>{
                      if(data.err_code === 0){
                          this.projectPlan();
@@ -448,6 +456,7 @@ export default {
 </script>
 
 <style lang="less" >
+    @green:#00FDA3;
 .task{
   position:relative;
     height: 100%;
@@ -455,27 +464,108 @@ export default {
         position: relative;
         display: flex;
         padding-top: 20px;
+        .ivu-tabs-bar{
+
+        }
+        .ivu-tabs-tab{
+            padding: 8px 41px;
+            font-size: 18px;
+            &:hover{
+                color: #48c5b5;
+            }
+        }
+        .ivu-tabs-tab-active{
+            color:  #48c5b5;
+        }
         .projectPlanRight{
             position: absolute;
-            top:35px;
+            top:77px;
             left: -11px;
             width: 457px;
-            height: 800px;
+            height: 916px;
             padding: 10px 23px;
             z-index: 333;
-            background: #fff;
-            overflow-y: auto;
-            .title{
-                width: 120px !important;
-                padding: 0 !important;
-                /*overflow:hidden;*/
-                /*text-overflow:ellipsis;*/
-                /*white-space:nowrap*/
+            background: #f5f7f6;
+            .Listall{
+                height: 30px;
+                padding-left: 5px;
+                line-height: 30px;
+                background: @green;color: #fff;
+                cursor: pointer;
             }
-            .headTitle{
-                height: 40px;
-                line-height: 40px;
+            .titleList{
+                display: flex;
+                padding-left: 5px;
+                margin: 10px 0;
+                background: #fff;
+                /*border: 1px solid red;*/
+                justify-content: space-between;
+                cursor: pointer;
+                .showPlan{
+                   width: 174px;
+                    padding: 5px ;
+                    margin-top: 3px;
+                }
+                .headTitle{
+                    flex: 1;
+                    padding: 5px 0;
+
+                    .titleText {
+                        display: inline-block;
+                        width: 40px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        cursor: pointer;
+
+                    }
+                    span{
+                        vertical-align: middle;
+                    }
+                    .iconfont:nth-of-type(2){
+                     vertical-align: middle;
+                    }
+                }
+                .showPlanColor{
+                    margin: 0;
+                }
+                .ratio{
+                    width: 40px;
+                    padding: 5px 0;
+                    text-align: center;
+                    color: #fff;
+                    background: @green;
+                }
             }
+            .projectMemberList{
+                display: flex;
+                height: 30px;
+                margin: 10px 0 10px 30px;
+                padding-left: 5px;
+                line-height: 30px;
+                justify-content: space-between;
+                background: #fff;
+                cursor: pointer;
+                .memberTitle {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                .memberRatio{
+                    width: 40px;
+                    text-align: center;
+                    color: #fff;
+                    background: @green;
+                }
+                &:hover{
+                    border: 1px solid #48c5b5;
+                }
+            }
+            .editList{
+                display: flex;
+                justify-content: space-between;
+            }
+
             .flag{
                 position: absolute;
                 top:0;
@@ -492,18 +582,7 @@ export default {
                     cursor: pointer;
                 }
             }
-            .showPlanColor{
-                padding-top: 10px;
-                padding-bottom: 10px;
-                background: #e4e4e4;
-                border-radius: 6px 6px 0 0;
-            }
-            .showPlan{
-                padding-left: 150px !important;
-                /*margin-left: 0 !important;*/
-                /*padding-left: 133px;*/
-                /*margin-left: 131px !important;*/
-            }
+
             .editShowPlan{
                 margin-left: 355px !important;
             }
@@ -518,6 +597,9 @@ export default {
                 padding-right: 10px;
                 justify-content: space-between;
             }
+        }
+        .activeTask{
+           border: 1px solid #48c5b5;
         }
     }
     .projectPlanButton{
@@ -534,6 +616,7 @@ export default {
 }
 .task-operation{
     position:absolute;
+    top:39px;
     width:220px;
     height:60px;
     /* text-align:right; */

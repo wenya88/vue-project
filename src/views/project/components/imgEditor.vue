@@ -38,10 +38,10 @@
                 <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
             </span>
             <span class="EditSub">
-                <button class="actionPost">需修改</button>
+                <button class="actionPost" @click="commitEidt('edit')">需修改</button>
             </span>
             <span class="EditSub" v-if="data==null?true:false">
-                <button class="subPass">通过</button>
+                <button class="subPass" @click="commitEidt('ok')">通过</button>
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
           </div>
@@ -87,13 +87,8 @@
         liIndex:0,
         FeedbackValue:'',
         onload:true,
-        IMGID:0,
-        fileID:0
-      }
-    },
-    watch:{
-      FeedbackValue(val){
-        sessionStorage.FeedbackValue=val;
+        fileID:0,
+        stageID:0
       }
     },
     filters:{
@@ -138,7 +133,7 @@
         this.url=this.storeFileURl;
         this.get();
         this.onLoad();
-        sessionStorage.removeItem("FeedbackValue");
+        sessionStorage.removeItem('ImgData');
       },
       onLoad(){
           let el=document.getElementById("ImgOnlod");
@@ -172,15 +167,15 @@
          this.insUid=insUid;
          this.cliUid=cliUid;
          this.liIndex=index;
-         let fileID=taskID;
-         let fID=fid;
+         let stageID=taskID;
+         let fileID=fid;
          this.changeState(this.StateFeedBack);
-         this.defue(fileID,fID);
+         this.defue(stageID,fileID);
          this.imgdef();
          Data=[];
          this.onLoad();
       },
-      defue(fileID,fID){
+      defue(stageID,fileID){
         (function($){
           var cX,cY,indexId=0,removeId,DOM;
           var Rleft,Rtop;//需要删除的坐标
@@ -245,6 +240,7 @@
                 $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
                 var mes={left:cX-11,top:cY-29,message:text};
                 Data[Data.length]=mes;
+                sessionStorage.ImgData=JSON.stringify(Data);
               }
             });//确认编辑
             $(document).on('mouseenter','[id*=Ts]',function(e){
@@ -274,6 +270,7 @@
             for(var i=0;i<Data.length;i++){
               if(Data[i].left==left&&Data[i].top==top){
                 Data.splice(i,1);
+                sessionStorage.ImgData=JSON.stringify(Data);
                 break;
               }else{
                 continue;
@@ -296,62 +293,47 @@
            
           }//载入数据
 
-          function AjaxFun(url,ImgData){
-              $.ajax({
-                cache:false,
-                type:'post',
-                url:url,
-                data:ImgData,
-                async:true,
-                dataType:"json",
-                success:function(msg){
-                  if(msg.err_code>0){
-                    alert(msg.err_message);
-                  }else{
-                    sessionStorage.removeItem("FeedbackValue");
-                    document.getElementById('InfoRefresh').dispatchEvent(new Event('click'));
-                    alert("提交成功！");
-                  }
-              },
-              error:function(){
-                alert(' 提交失败!')
-              }
-              })
-          };
-
-          // 标注
-          $(".actionPost").unbind('click').click(function(){
-            // var url='/task/task/inside-audit';
-            var url=baseUrl+'index.php?r=task/task/inside-audit';
-            var ImgData={
-                  "stage_id": fileID,
-                  "audit": 2,
-                  "feedback": sessionStorage.FeedbackValue,
-                  "file": [{
-                    "file_id": fID,
-                    "tag":Data
-                  }]
-                }
-                AjaxFun(url,ImgData)
-          });
-
-          // 审核通过
-          $(".subPass").unbind('click').click(function(){
-               var url=baseUrl+'index.php?r=task/task/inside-audit';
-               var ImgData={
-                  "stage_id": fileID,
-                  "audit": 1,
-                  "feedback":'',
-                  "file": [{
-                    "file_id": fID,
-                    "tag":[]
-                  }]
-                }
-               AjaxFun(url,ImgData)
-          });
-
         })(jQuery);
-      },     
+      },
+      //需要修改
+      commitEidt(type){
+        let url=this.GLOBAL.baseRouter+'task/task/inside-audit'
+        let Okparams={
+          "stage_id": this.stageID,
+          "audit": 1,//1为通过审核,2为不通过
+          "feedback":'',
+          "file": [JSON.stringify({
+                    "file_id": this.fileID,
+                    "tag":[]
+          })]
+        }
+        let EDITparams={
+            "stage_id": this.stageID,
+            "audit": 2,
+            "feedback": this.FeedbackValue,
+            "file": JSON.stringify([{
+              "file_id": this.fileID,
+              "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]'
+            }])
+        }
+        if(type=='edit'){
+            this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
+               this.$Message.success(msg.data.err_message);
+               this.initImgEditor();
+               sessionStorage.removeItem('ImgData');
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }else{
+            this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
+               this.$Message.success(msg.data.err_message);
+               sessionStorage.removeItem('ImgData');
+               this.initImgEditor();
+            }, ()=>{
+               this.$Message.error(msg.data.err_message);
+            })
+        }
+      },    
       imgdef(){
         $.sign.bindSign('#signx');
         $.sign.loadingSign(this.data);
@@ -398,15 +380,15 @@
                      _this.insUid=val.insUid;
                      _this.cliUid=val.cliUid;
                      _this.liIndex=index;
-                     _this.IMGID=val.file.id;
-                     _this.fileID=val.file.stage_id;
+                     _this.fileID=val.file.id;
+                     _this.stageID=val.file.stage_id;
                    }
                 })
               _this.changeState(_this.StateFeedBack);
               // 把StageID传到提交
-              let fileID = _this.fileID;
-              let fID=_this.IMGID;
-              _this.defue(fileID,fID);
+              let stageID = _this.stageID;
+              let fileID=_this.fileID;
+              _this.defue(stageID,fileID);
               _this.imgdef();
               }else{
                 return

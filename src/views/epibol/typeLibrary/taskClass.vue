@@ -2,7 +2,7 @@
   <Content :style="{minHeight: '280px', background: '#fff'}">
     <!-- <Row> -->
       <Col span="4">
-          <type-list :listData="formLeft" @getListId="change"></type-list>
+          <type-list :listData="formLeft" @getListId="getListId"></type-list>
       </Col>
       <Col span="18">
         <Content :style="{padding: '0 0 60px', minHeight: '280px', background: '#fff'}">
@@ -169,7 +169,6 @@ export default {
       let csbObj = {};
       //类型属性
       
-      
       csbObj.id = this.clsId;
       csbObj.category_id = this.category_id ? this.category_id : 0;
       csbObj.name = this.listN;
@@ -222,6 +221,7 @@ export default {
         address = "task/task-type/update";
       }
       
+      console.log(csbObj);
       
       this.$axios
         .post(this.GLOBAL.baseRouter + address, qs.stringify(csbObj))
@@ -354,11 +354,13 @@ export default {
       );
     },
     //从左边列表组件中获取id,name
-    change(clicktype) {
+    getListId(clicktype) {
       this.isInit = clicktype.isInit;
       this.category_id = clicktype.category_id;
       this.listN = clicktype.liName;
       this.clsId = clicktype.id;
+      console.log(clicktype);
+      
       if (clicktype.isInit) {
         //新增文件類型-頁面
         this.initPage();

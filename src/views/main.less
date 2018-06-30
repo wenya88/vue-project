@@ -54,6 +54,7 @@ html,body{
         }
         &-header-con{
             box-sizing: border-box;
+            box-shadow: 2px 5px 5px #e8e8e8;
             position: fixed;
             display: block;
             padding-left: 0;
@@ -297,6 +298,7 @@ html,body{
             position: relative;
         }
         &-header-con{
+            box-shadow: 2px 5px 5px #e8e8e8;
             box-sizing: border-box;
             position: fixed;
             display: block;
@@ -484,8 +486,8 @@ html,body{
             }
             &-avator{
                 position: absolute;
-                right: 0;
-                width: 240px;
+                right: 20px;
+                width: auto;
                 height: 64px;
                 line-height: 64px;
             }
@@ -548,7 +550,8 @@ html,body{
     width: 300px;
     height: auto;
     background: #fff;
-    z-index: 1;
+    box-shadow: 2px 2px 8px #656262;
+    z-index: 999;
     ul{
         li{
             width: 150px;
@@ -556,6 +559,7 @@ html,body{
             float: left;
             a{
                 margin: 10px 50px;
+                display: block;
             }
             .name{
                 display: inline-block;
