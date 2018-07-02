@@ -101,7 +101,8 @@ export default {
         }
       })
       this.list = {
-        id: `project_${item.id}`
+        id: `project_${item.id}`,
+        absold: true
       }
       if (localStorage.nums) {
         const nums = JSON.parse(localStorage.nums)

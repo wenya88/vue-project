@@ -20,7 +20,7 @@
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
       // localStorage.remove('useList')
-      // console.log('dddd', data)
+      console.log('dddd', data)
       if (data.action === 'ping') {
         // console.log('ping', data)
         const data = JSON.stringify({
@@ -66,7 +66,7 @@
        }
       }
       if (data.action === 'group-chat') {
-        // console.log('推送数据', data)
+        console.log('推送数据', data)
         // localStorage.removeItem('useList')
         // const list = Array.from(JSON.parse(localStorage.useList)) || [];
         var list = store.state.useList

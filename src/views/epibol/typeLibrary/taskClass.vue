@@ -1,9 +1,11 @@
 <template>
   <Content :style="{minHeight: '280px', background: '#fff'}">
-    <!-- <Row> -->
+    <!-- <Row>
+    <!--左边树-->
       <Col span="4">
           <type-list :listData="formLeft" @getListId="getListId"></type-list>
       </Col>
+    <!--右边列表-->
       <Col span="18">
         <Content :style="{padding: '0 0 60px', minHeight: '280px', background: '#fff'}">
           <Row>

@@ -21,7 +21,7 @@
          <!-- 第二个 -->
          <div class="clearfix ko" v-else>
            <div class="realTime_message_own">
-             <img src="../../images/meinv.jpg">
+             <img :src="userMsg.headimage">
              <p class="realTime_time_text">我</p>
              <p class="realTime_time">{{item.date}}</p>
            </div>
@@ -39,7 +39,7 @@
        </GeminiScrollbar>
       <form class="send_information_box">
          <div class="send_message_remind">
-           <div class="send_input" :contenteditable="data.absold" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
+           <div :class="`send_input ${data.absold ? '' : 'disable'}`" contenteditable="true" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
            <div class="clearfix send_message_children" v-show="isShowMessage">
              <p>有<span class="message_num" v-show="isLook">1</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
              <p @click="closeMessage">x</p>
@@ -58,17 +58,17 @@
          <div class="clearfix send_Function_button">
            <div>
               <span class="pace">
-                <i class="iconfont icon-biaoqing"/>
+                <i class="iconfont icon-biaoqing1"/>
               </span>
               <span class="file_class_father">
-                <i class="iconfont icon-10"/>
+                <i class="iconfont icon-tupian1"/>
                 <input type="file" class="file_class"/>
               </span>
               <span>
-                <i class="iconfont icon-wenjian"/>
+                <i class="iconfont icon-wenjianjia"/>
               </span>
            </div>
-           <p class="button_send" @click="submit">回车发送</p>
+           <p :class="`button_send ${data.absold ? '' : 'disable'}`" @click="submit">回车发送</p>
          </div>
       </form>
    </div>
@@ -141,9 +141,11 @@ export default {
   },
   watch: {
     getList(e) {
-      console.log('数据', e)
+      // console.log('数据', e)
     },
      data: function (e) {
+      var obj = this.$store.state.useList
+      this.submitMsg(obj)
       console.log('变换', e)
     }
   },
@@ -207,11 +209,11 @@ export default {
         this.sendShow = true
         this.$nextTick(() => {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
-          const offset = ele.caret('offset')
+          const offset = ele.caret('position')
           console.log('offset', offset)
-          const lefts = offset.left - 600
+          // const lefts = offset.left - 600
           this.personPosi = {
-            left: lefts + 'px',
+            left: offset.left + 'px',
             top: offset.top - contentsHeight + 'px'
           }
         })
@@ -426,6 +428,7 @@ export default {
 }
 .send_information_box,
 .send_information_emoji{
+  position: relative;
   width: 100%;
   height: 100px;
 }
@@ -488,7 +491,16 @@ export default {
  width: 100%;
  height: 100px;
  overflow-y: auto;
+ text-indent: 2em;
+ line-height: 20px;
  background: rgba(231,231,231,1);
+}
+.send_input:empty:before{
+    content: '请输入沟通内容（@可指定接受消息人员）';
+    color:#bbb;
+}
+.send_input:focus:before{
+    content:none;
 }
 .send_Function_button{
  width: 100%;
@@ -503,8 +515,13 @@ export default {
   color: #ffffff;
   border-radius: 4px;
   cursor: pointer;
+  /* pointer-events: none; */
   margin: 10px 10px 0 0;
   background: rgba(24,191,164,.8)
+}
+.disable{
+  pointer-events: none;
+  background: rgba(231,231,231,.5);
 }
 .button_send:hover{
   background: rgba(24,191,164,1)

@@ -25,7 +25,7 @@
               <div v-if="editShow" class="rightRow">
                   <div class="Listall"  @click="changeTaskListData('all')">全部</div>
                   <div class="line" v-for="(item,index) in ChildMsgData">
-                     <section class="titleList"  @click="changeTaskListData(item,null,'alone',item)"    :class="[{'activeTask':item.run_uid === aloneActive},{'activeTask':item.child_id === itemActive}]"  :key="index" >
+                     <section  class="titleList"  @click="changeTaskListData(item,null,'alone',item)"    :class="[{'activeTask':item.run_uid === aloneActive},{'activeTask':item.child_id === itemActive}]"  :key="index" >
                          <div class=" headTitle">
                                  <!--子项目头部-->
                                  <template v-if="!item.realname">
@@ -41,24 +41,25 @@
                          </div>
                          <!--子项目和单独成员的进度条-->
                          <div    class="lineRow showPlan" :class="item.realname?'':'showPlanColor'">
-                             <Progress  hide-info :percent="Number(item.progress)">
-
-                             </Progress>
+                             <Progress  hide-info :percent="Number(item.progress)"></Progress>
                          </div>
                          <div class="ratio">{{item.complete}}/{{item.total}}</div>
                      </section>
 
                       <!--有项目的成员-->
-                      <section @click="changeTaskListData(member,'member','team',item)"  :class="member.run_uid === teamActive?'activeTask':''" class="projectMemberList" v-for="(member,index) in item.child_project" :key="index">
-                          <p class="memberTitle"  >{{member.user}}</p>
-                          <p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>
+                      <section v-for="(member,index) in item.child_project"  :key="index" @click="changeTaskListData(member,'member','team',item)"
+                               :class="member.run_uid === teamActive && item.child_id === memberItemActive ? 'activeTask':''" class="projectMemberList"  >
+                            <template  v-if="member.run_uid">
+                                <p class=" memberTitle"  >{{member.user}}</p>
+                                <p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>
+                            </template>
                       </section>
 
                   </div>
               </div>
               <!--编辑-->
               <div v-else class="rightRow">
-                  <div class="line editList" v-for="(item,index) in ChildMsgData" :key="index">
+                  <div class="line editList"  v-for="(item,index) in ChildMsgData" :key="index">
                       <template v-if="item.child_project">
                           <div>
                               <Input style="width: 100px;" type="text" @on-blur="changeName(item,$event)"
@@ -72,12 +73,16 @@
                                   </Option>
                               </Select>
                           </div>
-                          <div @click.native="delProject(item)" style="padding: 0px 10px; cursor: pointer;" >
+                          <div @click="delProject(item)" style="padding: 0px 10px; cursor: pointer;" >
                               <Icon  style="line-height: 32px;" type="trash-b" size="16"></Icon>
                           </div>
                       </template>
                   </div>
                   <div class="projectPlanButton">
+                      <Select v-model="subProjectManager" style="width:100px">
+                      <Option v-for="item in companyMember" :value="item.user_id" :key="item.value">{{ item.realname}}
+                      </Option>
+                      </Select>
                       <Input v-model="subProjectName" placeholder="项目名称" style="width: 200px"></Input>
                       <Icon @click.native="addButton()" type="plus-round" style="vertical-align: middle"
                             size="20"></Icon>
@@ -195,6 +200,7 @@ export default {
     return {
         aloneActive:'',
         teamActive:'',
+        memberItemActive:'',
         itemActive:'',
         haha:'74',
         editShow: true,
@@ -248,6 +254,7 @@ export default {
 
           }else if(subType.run_uid && member === 'team'){
               this.teamActive = subType.run_uid;
+              this.memberItemActive = item.child_id;
 
           }else if(!subType.run_uid && member === 'alone'){
               this.itemActive = subType.child_id
@@ -395,6 +402,7 @@ console.log(1.1,item)
       },
       // 删除项目
       delProject(data){
+          console.log('删除',data)
           let id = null;
           if (data.child_id) {
               id = data.child_id
@@ -464,12 +472,16 @@ console.log(1.1,item)
         position: relative;
         display: flex;
         padding-top: 20px;
+        .ivu-tabs-nav-container{
+            height: 60px!important;
+        }
         .ivu-tabs-bar{
 
         }
         .ivu-tabs-tab{
             padding: 8px 41px;
             font-size: 18px;
+            line-height: 32px;
             &:hover{
                 color: #48c5b5;
             }

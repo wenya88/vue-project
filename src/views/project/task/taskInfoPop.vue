@@ -345,6 +345,15 @@ export default {
   }
   display:inline-block;
   overflow:hidden;
+    .ivu-tabs-bar{
+        .ivu-tabs-nav-container{
+            height: 55px !important;
+        }
+       .ivu-tabs-tab{
+           height: 32px !important;
+            line-height: 32px !important;
+        }
+    }
 
     .ivu-form-item{
         /*&:hover{*/

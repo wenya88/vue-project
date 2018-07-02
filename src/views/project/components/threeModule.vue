@@ -273,12 +273,12 @@ export default {
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
-        //设置相机(视角,纵横比,近距离,远距离)
-        camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 2000);
-        camera.position.set(0, 200, 300);
+        //设置相机(可视角度,canvas宽高比,近距离,远距离)
+        camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 2000);    
+        camera.position.set(80, 80, 500);
         //轨道控制插件
         controls = new THREE.OrbitControls(camera);
-        controls.target.set(0, -50, 0);
+        controls.target.set(400, -50, -300);
         controls.update();
         //场景
         scene = new THREE.Scene();
