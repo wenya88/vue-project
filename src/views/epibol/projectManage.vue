@@ -264,19 +264,20 @@ export default {
     },
     // 编辑项目
     editPro(item){
+        console.log(item)
         this.modal=true;
         this.Prostatus="editPro";
         let EditProObj={
             EPid:item.id,
             EPname:item.name,
-            EPleader:item.leader,
+            EPleader:item.realname,
             EPcontract:item.contract,
             EPtag:item.tag,
-            EPstartTime:item.startTime,
-            EPendTime:item.endTime,
+            EPstartTime:item.start_date,
+            EPendTime:item.end_date,
             EPstatus:item.status,
             EPpicture:item.picture,
-            EpmanangeName:item.Mname==null||item.Mname==" "?{"name":"NotName"}:{"name":item.Mname}
+            EpmanangeName:item.realname==null||item.realname==" "?{"name":"NotName"}:{"name":item.realname}
         };
         this.$bus.emit("EditProData",EditProObj);
     },

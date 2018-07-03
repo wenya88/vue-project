@@ -1,5 +1,5 @@
 <template>
-  <div class="defaultH">
+  <div class="ImgEditor">
       <div class="imgEditorCom">
           <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
           <div class="stageListRow" @mouseleave="hideStageList">
@@ -30,7 +30,7 @@
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
           <div class="imgFocus" id="signx">
-              <img :src="url" id="ImgOnlod"/>
+                <img :src="url" class="ImgOnlod"/>
           </div>
           <!-- 标注提交 -->
           <div v-if="AllowEditRow" class="AllowEdit">
@@ -42,7 +42,6 @@
             </span>
             <span class="EditSub" v-if="data==null?true:false">
                 <button class="subPass" @click="commitEidt('ok')">通过</button>
-                <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
           </div>
           
@@ -122,9 +121,7 @@
 
     },
     methods:{
-      // addClass(){
-      //      $('.AllowEdit').css('margin-top','520px')
-      // },
+      //关闭窗口
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
@@ -136,25 +133,24 @@
         sessionStorage.removeItem('ImgData');
       },
       onLoad(){
-          let el=document.getElementById("ImgOnlod");
+          let el=document.getElementsByClassName("ImgOnlod")[0];
           let el2=document.getElementById("onload");
           // el2.style.display="block";
           el.onload=function(){
               el2.style.display="none";
-              let imgH=$("#ImgOnlod").height()
-              let divH=$(".browsetaskpop").height()
-              $('.stageListRow').css('height',imgH)
-              if(imgH>divH){
-                $(".browsetaskpop").css('height',imgH+88)
-              }
+              let imgFocus=$(".imgFocus").height();
+              $(".stageListRow").css('height',imgFocus)
+              // let imgH=$(".ImgOnlod").height();
+              // let divH=$(".browsetaskpop").height();
+              // $('.stageListRow').css('height',imgH)
+              // if(imgH>divH){
+              //   $(".browsetaskpop").css('height',imgH+88)
+              // }
           }
       },
       loadWH(){
           $('.stageListRow,.imgEditorCom').height($(window).height()-500);
           $(".imgEditorCom").width($(".filebrowse").width());
-          //$('.imgFocus img').height($(window).height()-500);
-          $(".defaultH").height($(window).height()-400);
-          //$(".imgFocus").width($(".filebrowse").width());    
       },
       changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
          this.url=file;
@@ -324,11 +320,11 @@
             }, ()=>{
                this.$Message.error(msg.data.err_message);
             })
-        }else{
+        }else if(type=='ok'){
             this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
                this.$Message.success(msg.data.err_message);
-               sessionStorage.removeItem('ImgData');
                this.initImgEditor();
+               sessionStorage.removeItem('ImgData');
             }, ()=>{
                this.$Message.error(msg.data.err_message);
             })
@@ -340,11 +336,11 @@
       },
       changeState(state){
         //  控制图片是否可标注
-              if(state==1||state==2){
+              if(state=='1'||state=='2'){
                 sessionStorage.AllowEdit="Allow";//允许标注
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
-              }else if(state==3||state==4||state==5){
+              }else if(state=='3'||state=='4'||state=='5'){
                 sessionStorage.AllowEdit="NotAllow";//不允许标注
                   this.AllowEditRow=false
                   this.SataeInfo=true;
@@ -356,6 +352,7 @@
       },
       get(){
           //  获取图片的标注信息
+          
            let TaskID=this.storeTaskID
            if(TaskID == 0)
            {
@@ -366,17 +363,19 @@
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
+             
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
+                
                 _this.IMGlist.forEach((val,index)=>{
                    if(val.file.file==_this.storeFileURl){
                     // 设置初始化值
                      _this.data=val.file.tag;
                      _this.StateFeedBack=val.status;
-                     _this.insTime=val.insTime;
-                     _this.cliTiem=val.cliTiem;
-                     _this.insDate=val.insDate;
-                     _this.cliDate=val.cliDate;
+                     _this.insTime=val.inside_audit_time;
+                     _this.cliTiem=val.client_audit_time;
+                     _this.insDate=val.inside_audit_date;
+                     _this.cliDate=val.client_audit_date;
                      _this.insUid=val.insUid;
                      _this.cliUid=val.cliUid;
                      _this.liIndex=index;

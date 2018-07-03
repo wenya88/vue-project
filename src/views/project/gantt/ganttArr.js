@@ -2,7 +2,7 @@ window.onload=function(){
   function getGantt(num){
     $.ajax({
       type:"get",
-      url:"http://192.168.2.19/index.php?r=task/task/list&project_id="+num,
+      url:ganttURL+"task/task/list&project_id="+num,
       async:true,
       dataType:"json",
       success:function(msg){
@@ -53,7 +53,7 @@ window.onload=function(){
             $.ajax({
               type:"get",
               async:false,
-              url:"http://192.168.2.19/index.php?r=task/project/child-list&id="+projectID,
+              url:ganttURL+"task/project/child-list&id="+projectID,
               dataType:"json",
               success:function(data){
                 proChild=data.data

@@ -9,7 +9,8 @@ function resolve(dir) {
 }
 module.exports = {
     entry: {
-        main: '@/main',
+        // main: '@/main',
+        main: ["babel-polyfill", "@/main"],
         'vender-base': '@/vendors/vendors.base.js',
         'vender-exten': '@/vendors/vendors.exten.js',
         'lab': '@/js/labjs.min.js'
@@ -101,8 +102,7 @@ module.exports = {
             'jsencrypt': '@/js/jsencrypt.min.js',
             'md5': '@/js/md5.min.js',
             'shim': '@/js/shim.min.js',
-            'xlsx': '@/js/xlsx.full.min.js',
-            'lab': '@/js/labjs.min.js'
+            'xlsx': '@/js/xlsx.full.min.js'
         }
     }
 };

@@ -229,7 +229,7 @@ export default {
     //增加子节点
     addClassTask(root, node, data, $event) {
       $event.cancelBubble = true;
-      // let children = data.children || [];
+       let children = data.children || [];
       let newType = {
         title: "新建任务类型",
         expand: true,
@@ -237,13 +237,14 @@ export default {
         category_id: data.pId,//大类ID
         id:data.id//小ID
       };
+        children.push(newType)
       console.log(data);
-      
-      this.kNodes[data.nodeKey].children.push(newType);
+
+//      this.kNodes[data.nodeKey].children.push(newType);
 
       // document.getElementById("addClassTaskBtn").click();
       // this.$set(data, "children", children);
-      this.targriClass(this.kNodes[data.nodeKey].children, node, newType);
+      this.targriClass(children, node, newType);
     },
     //点击左边列表增加标识
     targriClass(root, node, data) {

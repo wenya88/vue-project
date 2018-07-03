@@ -128,6 +128,7 @@
 
 <script>
 var qs = require("querystring");
+import {mapMutations} from 'vuex';
 export default{
     props:{
         taskManagement:{
@@ -173,7 +174,7 @@ export default{
         this.getTaskTypeList();
     },
     computed:{
-        getTimeRange: function(){
+        getTimeRange(){
             return [this.editData.expect_start_date,this.editData.expect_end_date]
         },
         fileup(){
@@ -181,6 +182,7 @@ export default{
         },
     },
     methods:{
+
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
             // console.log('详情',id,fatherFunctions)
@@ -196,7 +198,6 @@ export default{
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
                         this.principalName = res.member_id;
-                        this.$emit('subtask',res)
                     }
                 )
                 .catch(error => {
@@ -211,6 +212,7 @@ export default{
         {
             this.editData = data;
             this.formatLocalData();
+            this.haha();
         },
         //设置能否编辑-DONE
         setEditDisabled(forbidEdit)
@@ -220,7 +222,6 @@ export default{
         //新增任务初始化-DONE
         initTaskDetailFromNew(projectInfo)
         {
-
             this.isNewTask = true;
             this.initProjectInfo(projectInfo);
             this.clickMenberDropdown();
@@ -229,7 +230,9 @@ export default{
         //初始化项目相关信息-DONE
         initProjectInfo(projectInfo)
         {
-            this.editData.project_id = projectInfo.id;
+            if(projectInfo){
+                this.editData.project_id = projectInfo.id;
+            }
 //            this.childProjectsList = projectInfo.child;
         },
         //外部获得任务数据-DONE
@@ -247,6 +250,7 @@ export default{
                 .then( res => {
                         this.taskTypeInfo=[];
                         this.taskTypeInfo = res.file;
+
                         // res.file.forEach((res)=>
                         // {
                         //     console.log(res);
@@ -306,6 +310,7 @@ export default{
                     }
                 );
             }
+            console.log('编辑',this.editData)
         },
         //用于父组件通信-DONE
         callFatherFunction(fatherfunctions)
@@ -323,8 +328,12 @@ export default{
                 );
             }
         },
+        haha(){
+            console.log('haha',this.editData)
+        },
         //主任务保存编辑数据
-        saveTaskDetails(link) {
+        saveTaskDetails(link,id) {
+
             let dataForm = {};
                 dataForm.id = this.editData.id;
                 dataForm.father = this.editData.father ? this.editData.father : 0;
@@ -339,7 +348,10 @@ export default{
                 dataForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
                 dataForm.run_member_id = this.principalName;
                 dataForm.remark_name = this.principalName;
-                console.log(dataForm.run_member_id);
+                if(id){
+                    dataForm.father = id;
+                }
+
 
             return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm,link);
         },
@@ -435,7 +447,7 @@ export default{
         },
         // 获得子项目
         getChildProject(){
-            // console.log(33)
+
             this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
                 .then(({data})=>{
                 // console.log(33,data)
@@ -473,7 +485,6 @@ export default{
                 .then( res => res.data)
                 .then( res => {
                     this.principal = res.data;
-                  console.log(33,this.principal)
                     // console.log('负责人',res.data)
 //                        this.principal=[];
 //                        this.principalName="";
@@ -552,7 +563,6 @@ export default{
         clearAllData(){
             this.editData = {};
             this.principalName = '';
-            this.getTimeRange = '';
             this.referenceFileName = [];
             this.taskTypeInfo = [];
         }

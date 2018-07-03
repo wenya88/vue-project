@@ -9,6 +9,7 @@ import 'iview/dist/styles/iview.css';
 import './theme/dist/iview.css';
 import vueEventCalendar from '../src/views/main-components/calend/vue-event-calendar/dist/index'
 import Bus from './config/bus.js'
+import 'babel-polyfill'  //处理IE11打开空白问题
 import notice from './notice/index.js' // 通知类
 import './notice/style.css' // 全局通知样式
 import './views/chatInterface/jquery-sina-emotion.min.js' // 新浪表情js
@@ -19,8 +20,8 @@ import './views/chatInterface/realTime.css' // 聊天框样式
 import soket from './views/chatInterface/websoket.js'
 import config from './config/config.js'
 import global from './components/Global'//引用全局变量文件
-axios.defaults.baseURL = 'http://106.14.150.55';
-// axios.defaults.baseURL = 'http://192.168.2.19';
+// axios.defaults.baseURL = 'http://106.14.150.55';
+axios.defaults.baseURL = 'http://192.168.2.19';
 axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
 Vue.prototype.GLOBAL = global

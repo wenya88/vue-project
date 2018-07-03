@@ -227,6 +227,8 @@ export default {
                         this.$store.state.useList = []
                         localStorage.removeItem('msgShow');
                         localStorage.removeItem('useList');
+                        localStorage.removeItem('numList');
+                        localStorage.removeItem('nums');
                         webSocket.close();
                     }
                 })

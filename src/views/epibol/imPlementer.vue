@@ -143,19 +143,18 @@
                               <!--待反馈-->
                               <div class="stayFeedBack">
                                   <dl>
-                                      <dt><Icon type="social-buffer-outline"></Icon> 待反馈({{ListFeedBack.length}})</dt>
+                                      <dt><Icon type="social-buffer-outline"></Icon> 待反馈({{AuditData.length}})</dt>
                                       <dd>
                                           <GeminiScrollbar>
                                             <Timeline>
-                                                <div v-if="ListFeedBack==''" class="notData">暂无数据</div>
-                                                <!-- <Timeline-item :color="[Litem.stage_id==ListFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Litem in ListFeedBack"> -->
-                                                <Timeline-item color='lightgray' v-for="(Litem,index) in ListFeedBack" :key="index">
+                                                <div v-if="AuditData==''" class="notData">暂无数据</div>
+                                                <Timeline-item color='lightgray' v-for="(Litem,index) in AuditData" :key="index">
                                                     <Icon type="record" slot="dot"></Icon>
-                                                    <span><em>{{Litem.create_time|fromatDate}}</em> 上传</span>
-                                                    <span>{{Litem.task_name}}</span>
+                                                    <span><em>{{Litem.upload_day==0?'今天上传':Math.abs(Litem.upload_day)+' 前上传'}}</em></span>
+                                                    <span>{{Litem.name}}</span>
                                                     <span><em>{{Litem.run_uname}}</em> 审核</span>
                                                     <span @click="taskDetaInfo(
-                                                    Litem.task_id,
+                                                    Litem.stage_file.stage_id,
                                                     Litem.stage_file.type,
                                                     Litem.stage_file.file,
                                                     Litem.stage_file.task_id
@@ -169,19 +168,19 @@
                               <!--已反馈-->
                               <div class="alrFeedBack">
                                   <dl>
-                                      <dt><Icon type="social-buffer"></Icon> 已反馈({{AlrFeedBack.length}})</dt>
+                                      <dt><Icon type="social-buffer"></Icon> 已反馈({{DispData.length}})</dt>
                                       <dd>
                                           <Timeline>
-                                              <div v-if="AlrFeedBack==''" class="notData">暂无数据</div>
-                                              <Timeline-item color="lightgray" v-for="(Aitem,index) in AlrFeedBack" :key="index">
+                                              <div v-if="DispData==''" class="notData">暂无数据</div>
+                                              <Timeline-item color="lightgray" v-for="(Aitem,index) in DispData" :key="index">
                                              <!-- <Timeline-item :color="[Aitem.stage_id==AlrFeedBack[0].stage_id?'darkorange':'lightgray']" v-for="Aitem in AlrFeedBack"> -->
                                                   <Icon type="record" slot="dot"></Icon>
-                                                  <span><em>{{Aitem.create_time|fromatDate}}</em> 上传</span>
-                                                  <span>{{Aitem.task_name}}</span>
-                                                  <span><s>{{Aitem.tag_count}}处修改</s></span>
-                                                  <span><Icon type="chatbox-working"></Icon> {{Aitem.feedback}}</span>
+                                                  <span><em>{{Aitem.upload_day==0?'今天上传':Math.abs(Aitem.upload_day)+' 前上传'}}</em></span>
+                                                  <span>{{Aitem.name}}</span>
+                                                  <span><s>2处修改</s></span>
+                                                  <span><Icon type="chatbox-working"></Icon> 12</span>
                                                   <span @click="taskDetaInfo(
-                                                  Aitem.task_id,
+                                                  Aitem.stage_file.stage_id,
                                                   Aitem.stage_file.type,
                                                   Aitem.stage_file.file,
                                                   Aitem.stage_file.task_id
@@ -236,7 +235,9 @@
         accomMore:true,
         ile:null,
         UpLoadValue:'',
-        userID:sessionStorage.userId
+        userID:sessionStorage.userId,
+        AuditData:[],
+        DispData:[]
       }
     },
     components:{Calend,UploadM,CalendInfo,browsetask},
@@ -268,26 +269,10 @@
     this.$bus.on("UpValue",(val)=>{
         this.UpLoadValue=val
     })
-    //   任务完成滚动条加载
+    //   任务完成滚动条加载i
       this.ScrollLoad();
     },
     filters:{
-      fromatDate(value){
-        let unTime=value;
-        let nuTimeSt = new Date(unTime* 1000);
-        let ndtody=new Date();
-        let TimeD=parseInt((ndtody-nuTimeSt)/1000/60/60)
-
-        if(TimeD<=24){
-          return value=TimeD+"小时前";
-        }else if(TimeD<=48){
-          return value="1天前";
-        }else if(TimeD<=96){
-          return value="2天前";
-        }else{
-          return value="几天前";
-        }
-      },
       startTiem(value){
           let tTime=value;
           let tTimeSt = new Date(tTime* 1000);
@@ -331,19 +316,6 @@
           }
       }
     },
-    computed:{
-        ListFeedBack(){
-          return this.dataFeedBack.filter((item)=>{
-            return item.status==1||item.status==2
-          })
-        },
-        AlrFeedBack(){
-          return this.dataFeedBack.filter((Aitem)=>{
-            return Aitem.status==3||Aitem.status==4
-          })
-        }
-    },
-
     methods:{
         //关闭窗口
         InfoRefresh(){
@@ -409,21 +381,29 @@
     //   反馈和待反馈数据请求
       get(){
         let _this=this;
-        let url=this.GLOBAL.baseRouter+'task/task/stage-page&is_my=1';
-        _this.$axios.get(url).then((data)=>{
-            let MsData=data.data.data;
-            MsData.forEach((element)=>{
-                if(JSON.stringify(element.stage_file) == "{}"){
-                    element.stage_file.id=null;
-                    element.stage_file.type='NotType',
-                    element.stage_file.file=null,
-                    element.stage_file.task_id=null
-                }
-                _this.dataFeedBack.push(element);
-            })
+        // let url=this.GLOBAL.baseRouter+'task/task/stage-page&is_my=1';
+        let awaiaudit=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/need-review-task-file&people_type=1') //需要审核
+        let fbackdisp=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/wait-action-task-file&people_type=1') //反馈待处理
+        _this.$axios.all([awaiaudit,fbackdisp]).then(([Auditmsg,Dispmsg])=>{
+            if(Auditmsg.data.err_code==0){
+                _this.AuditData=Auditmsg.data.data;
+                _this.DispData=Dispmsg.data.data;
+            }
+
+            // let MsData=data.data.data;
+            // _this.dataFeedBack=[]
+            // MsData.forEach((element)=>{
+            //     if(JSON.stringify(element.stage_file) == "{}"){
+            //         element.stage_file.id=null;
+            //         element.stage_file.type='NotType',
+            //         element.stage_file.file=null,
+            //         element.stage_file.task_id=null
+            //     }
+            //     _this.dataFeedBack.push(element);
+            // })
              
         },()=>{
-          alert("请求失败!")
+            _this.$Message.error('请求失败')
         })
       },
 
@@ -462,6 +442,7 @@
           let url=this.GLOBAL.baseRouter+'task/task/page&run_uid='+_this.userID;
           _this.$axios.get(url).then((msg)=>{
             // 获取数据
+              _this.dataWait=[];
               let MsgData=msg.data.data;
               MsgData.forEach(function(element) {
                   if(element.status==1){
@@ -481,6 +462,7 @@
           let params={};
           _this.$axios.get(url,params).then((msg)=>{
                let MsgData=msg.data.data;
+               _this.dataAccom=[];
                 MsgData.forEach(function(element) {
                  if(element.status==4){
                       //已完成数据

@@ -2,7 +2,7 @@
    <div class="real_time_box">
      <GeminiScrollbar class="crollbar">
       <div class="realTime_interface">
-         <div v-for="(item, index) in dataList" :key="index" class="ko">
+         <div v-for="(item, index) in datalist" :key="index" class="ko">
          <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
              <img src="../../images/meinv.jpg">
@@ -12,7 +12,7 @@
            <div>
              <p class="triangle_type"></p>
              <p>
-             <span class="Send_content is_own_no">
+             <span :class="`Send_content is_own_no ${item.group_id}`">
                {{item.message}}
              </span>
              </p>
@@ -28,7 +28,7 @@
            <div class="is_own_float">
              <p class="triangle_type_own"></p>
              <p>
-             <span class="Send_content is_own">
+             <span class="Send_content is_own ${item.group_id}">
                {{item.message}}
              </span>
              </p>
@@ -80,6 +80,7 @@ export default {
   data () {
     return {
       value: '',
+      datalist: [],
       messageNum: 0,
       nowName: '陈莉莉',
       sendShow: false,
@@ -110,14 +111,13 @@ export default {
           name: '所有人'
         }
       ],
-      dataList: []
     }
   },
   mounted () {
     // localStorage.removeItem('useList')
     // console.log(this.data.absold)
     if (!this.data.absold) {
-      this.dataList = []
+      this.datalist= []
       // this.$store.state.useList = []
       // localStorage.removeItem('useList')
     }
@@ -128,31 +128,34 @@ export default {
     this.scrollToBottom()
     this.getName()
   },
+  updated () {
+    this.geyEmoji()
+  },
   computed : {
     getList () {
-      var obj = this.$store.state.useList
-      //    console.log('true', obj)
-      // if (obj.length !== 0) {
-      //   console.log('true', obj)
-      //  obj = JSON.parse(obj)
-      // }
-      this.submitMsg(obj)
+      return this.$store.state.useList
     }
   },
   watch: {
     getList(e) {
-      // console.log('数据', e)
+      this.submitMsg(e)
+      // console.log('数据s', e)
     },
      data: function (e) {
       var obj = this.$store.state.useList
       this.submitMsg(obj)
-      console.log('变换', e)
+      // console.log('变换', e)
     }
   },
+  // updated () {
+  //   this.geyEmoji()
+  // },
   methods: {
     // 获取用户信息
     userMsge () {
       this.userMsg= JSON.parse(localStorage.userMsg)
+      const obj = this.$store.state.useList
+      this.submitMsg(obj)
     },
     init () {
       $('.pace').bind(
@@ -167,11 +170,6 @@ export default {
             }
           }
         })
-      // $('.Send_content').each(function () {
-      //   const elements = $(this).html()
-      //   // console.log(elements)
-      //   $(this).html(elements).parseEmotion()
-      // })
     }, // 显示表情
     // 滚动到底模块
     // 滚动到底
@@ -210,7 +208,7 @@ export default {
         this.$nextTick(() => {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
           const offset = ele.caret('position')
-          console.log('offset', offset)
+          // console.log('offset', offset)
           // const lefts = offset.left - 600
           this.personPosi = {
             left: offset.left + 'px',
@@ -272,7 +270,7 @@ export default {
     },
     // @查找
     getName () {
-      const list = Array.from(this.dataList)
+      const list = Array.from(this.datalist)
       var nameArray = []
       list.forEach((element, index) => {
         const isShow = element.message.indexOf('@') !== -1 // 查找是否含有@
@@ -327,7 +325,8 @@ export default {
     submit () { // 提交内容
       $('.send_input').find('div').remove()
       this.sendShow = false // 发送关闭@框
-      const elements = $('.send_input').html()
+      const elements = $('.send_input').html().replace(/&nbsp;/g,"")
+      // console.log('1111', elements)
       const sendTime = this.getTime()
       var list = this.$store.state.useList
       const shuju = JSON.stringify({
@@ -346,12 +345,9 @@ export default {
       list.push(shuju2)
       this.$store.state.useList = list
       localStorage.useList = JSON.stringify(list)
+      const dataList = this.datalist
       this.$nextTick(() => {
-        // this.threadPoxi(shuju)
-        console.log('发送数据', shuju)
         webSocket.send(shuju)
-        // this.$connectSoket.websocksend(shuju)
-        // $('.Send_content').last().html(elements).parseEmotion()
         this.scrollToBottom()
       })
       // })
@@ -376,23 +372,19 @@ export default {
     submitMsg(obj) {
       const list = Array.from(obj)
       var newList = []
-      // const id = this.data.id
-      // console.log('11111', list[0])
-      list.forEach(elements => {
+      list.forEach((elements, index) => {
         const str = this.data.id
-        // console.log('11111',str, elements.group_id)
         if (str === elements.group_id) {
            newList.push(elements)
           //  console.log('11111', elements)
         }
       })
-      this.dataList = newList
-      this.$nextTick(() => {
-        $('.Send_content').each(function () {
-          const elements = $(this).html()
-          // console.log(elements)
-          $(this).html(elements).parseEmotion()
-        })
+      this.$set(this, 'datalist', newList)
+    },
+    geyEmoji () {
+      $('.Send_content').each(function(){
+        const elems = $(this).html()
+        $(this).html(elems).parseEmotion()
       })
     },
     isLogin () {

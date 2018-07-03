@@ -1,7 +1,7 @@
 <template>
     <div>
         <div slot="header" style="height:30px;">
-            <b class="font16">新建/编辑项目</b>
+            <b class="font16">{{projectTitle}}</b>
         </div>
         
         <div class="addRow">
@@ -67,8 +67,8 @@
                     <Button icon="ios-plus-empty" type="dashed" size="small" @click.stop="Addlabel">
                         增加
                         <div class="addLabel" v-show="addLabDIV">
-                            <Input v-model="LabelVal" placeholder="请输入标签" style="width: 100px;" @keyup.13.native="submitLabel($event)"></Input>
-                            <Button type="primary" size="small" @click.native.stop="submitLabel">添加</Button>&nbsp;
+                            <Input v-model="LabelVal" placeholder="请输入标签" style="width: 100px;" @keyup.13.native="submitLabel($event)" autofocus></Input>
+                            <Button type="primary" size="small" @click.native.stop="submitLabel" @on-enter="submitLabel">添加</Button>&nbsp;
                             <Button size="small" @click.stop="closeAddDIV">取消</Button>
                         </div>
                     </Button>
@@ -113,6 +113,8 @@ export default {
             addLabDIV:false,
             addManageDIV:false,
             manageData:[],
+            FocusLabelVal:false,
+            projectTitle:'新建项目'
         }
     },
     computed:{
@@ -145,6 +147,7 @@ export default {
         submitLabel(){
             this.count.push(this.LabelVal);
             this.addLabDIV=false;
+            this.FocusLabelVal=true;
         },
         closeAddDIV(){
             this.addLabDIV=false;
@@ -263,6 +266,8 @@ export default {
            this.uploadurl=val.EPpicture;
            this.state=val.EPstatus==2?false:true;
            this.MangageVal=val.EPleader;
+           this.projectTitle="编辑项目";
+           console.log(val)
 
            if(val.EpmanangeName.name!="NotName"){//管理人员姓名
                this.manageCount.push(val.EpmanangeName);

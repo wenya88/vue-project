@@ -104,7 +104,7 @@ export default {
     },
     mounted(){
          $LAB
-        .script("http://vjs.zencdn.net/6.6.3/video.js").wait(()=>{
+        .script("/src/js/video.js").wait(()=>{
             this.Vdefault();
             this.vedioLoad();
         });
@@ -417,10 +417,10 @@ export default {
                         // 设置初始化值
                         _this.data=val.file.tag;
                         _this.StateFeedBack=val.status;
-                        _this.insTime=val.insTime;
-                        _this.cliTiem=val.cliTiem;
-                        _this.insDate=val.insDate;
-                        _this.cliDate=val.cliDate;
+                        _this.insTime=val.inside_audit_time;
+                        _this.cliTiem=val.client_audit_time;
+                        _this.insDate=val.inside_audit_date;
+                        _this.cliDate=val.client_audit_date;
                         _this.insUid=val.insUid;
                         _this.cliUid=val.cliUid;
                         _this.liIndex=index;

@@ -74,6 +74,7 @@ const state = {
   taskType: [],
   subProjectList: [],
     detail:{},
+    primaryMission:null,      // 主任务id
 }
 
 const getters = {
@@ -118,6 +119,9 @@ const mutations = {
   },
   setDetailAll(state, data) {
       Vue.set(state.detail, 'setDetailAll', data)
+  } ,
+  setPrimaryMission(state, data) {
+      state.primaryMission = data;
   }
 
 };

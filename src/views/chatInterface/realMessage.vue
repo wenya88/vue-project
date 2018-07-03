@@ -2,14 +2,14 @@
   <div class="clearfix real_time_room">
     <div class="header_realTime_room">
        <ul class="header_navigation">
-         <li v-for='(item, index) in headerList' :key="index" @click="getOpen(item)" :class="item.itemStyle">
+         <li v-for='(item, index) in headerList' :key="index" @click="getOpen(item, index)" :class="item.itemStyle">
            <span class="object_name">{{item.name}}</span>
-           <span v-show="nums[`project_${item.id}`]" class="message_style">{{nums[`project_${item.id}`]}}</span>
+           <span class="message_style" v-if="nums[`project_${item.id}`]">{{nums[`project_${item.id}`]}}</span>
            </li>
        </ul>
     </div>
     <div class="body_realTime_room">
-       <real-ymy :data='list'></real-ymy>
+       <real-ymy :data='list' v-for="(item, idx) in headerList" :key="idx" v-if="index === idx"></real-ymy>
     </div>
   </div>
 </template>
@@ -20,6 +20,7 @@ export default {
   data () {
     return {
       headerList: [],
+      index: 0,
       list: {
         id: '',
         absold: false
@@ -32,23 +33,25 @@ export default {
   },
   created () {
     this.getObject()
+    // console.log('刷新', JSON.stringify(localStorage.nums))
+    if (localStorage.nums) {
+      const nums =  JSON.parse(localStorage.nums)
+    }
   },
   computed : {
     getList () {
-      var obj = this.$store.state.useList
-      this.submitMsg(obj)
+      return this.$store.state.useList
     }
   },
   watch: {
     getList(e) {
-      console.log('数据', e)
+      this.submitMsg(e)
     },
   },
   methods: {
     // 界面初始话
     filterObj () {
       const obj = this.headerList[0]
-      // console.log('数据', obj)
       this.list.id = `project_${obj.id}`
       
     },
@@ -71,7 +74,7 @@ export default {
           }
          })
          that.headerList = list
-         console.log('左边数据', list)
+        //  console.log('左边数据', list)
          this.filterObj()
           this.list.absold = true
         } else {
@@ -90,7 +93,8 @@ export default {
     //   })
     //   this.threadPoxi(msgDatas)
     // },
-    getOpen (item) {
+    getOpen (item, index) {
+      this.index = index
       const list = this.headerList
       list.forEach(elements => {
         elements.itemStyle = ''
@@ -107,53 +111,82 @@ export default {
       if (localStorage.nums) {
         const nums = JSON.parse(localStorage.nums)
         const numList = JSON.parse(localStorage.numList)
-        nums[`project_${item.id}`] = numList[`project_${item.id}`]
-        localStorage.nums = nums
+        nums[`project_${item.id}`] = 0
+        this.nums[`project_${item.id}`] = 0
+        localStorage.nums = JSON.stringify(nums)
+        this.$store.state.nums = nums
       }
     },
     // 显示还有多少未读
     submitMsg(obj) {
-      const list = Array.from(obj)
-      const headerList = this.headerList
-      var numList = {}
-      var index = 0
-      if (!localStorage.numList) {
-        if (headerList.length !== 0) {
+      const list = Array.from(obj)  // 获取总的消息
+      const headerList = this.headerList // 获取项目消息
+      var numList = {} // 定义一个对象
+      var nums = {} // 定义一个对象储存
+      const currentPoject = this.list.id // 获取当前显示的项目
+      if (!localStorage.numList) { // 初始化,没有消息时
+        const numForm = {}
+        if (headerList.length !== 0) { // 项目不为空，才有意义
           headerList.forEach(item => {
-            const projectName =  `project_${item.id}`
+            const projectName =  `project_${item.id}` // 获取项目id
             list.forEach(elements => {
-            if (projectName === elements.group_id) {
-              index++
-              numList[projectName] = index
-            }
+              numForm[projectName] = []
+              if (elements.group_id === projectName) { // 不在当前显示的，开始计数
+                const lists = numForm[projectName].push(elements)
+                // console.log('出书化', lists)
+                numList[projectName] = lists // 获取当前每个项目消息总数
+                if (currentPoject !== elements.group_id) { // 如果不是当前显示的项目
+                  nums[projectName] = lists
+                } else {
+                  nums[projectName] = 0 // 当前显示项目为
+                }
+              }
             })
           })
-          localStorage.numList = JSON.stringify(numList)
-          this.nums = numList
-          localStorage.nums = JSON.stringify(numList)
+          localStorage.numList = JSON.stringify(numList) // 储每个项目消息总数
+          this.nums = nums
+          localStorage.nums = JSON.stringify(nums) // 储存未显示消息
+          this.$store.state.nums = nums
         }
       } else {
-        const numberList = JSON.parse(localStorage.numList)
-        headerList.forEach(item => {
+        const numForm = {}
+        const numberList = JSON.parse(localStorage.numList) // 获取上次储存的每个项目消息
+        const numed = JSON.parse(localStorage.nums) // 获取未读消息
+        headerList.forEach(item => {  // 项目数
           const projectName =  `project_${item.id}`
+          numForm[projectName] = []
           list.forEach(elements => {
-          if (projectName === elements.group_id) {
-            index++
-            numList[projectName] = index
-           }
+            if (projectName === elements.group_id) {
+               const lists = numForm[projectName].push(elements)
+              //  console.log('长度', lists)
+               numList[projectName] = lists // 获取现在每个消息的总数
+            }
           })
         })
-        for (let i in numList) {
-          for (let k in numberList) {
+        // console.log('项目0', numList)
+        for (let i in numList) { // 循环现在消息总数
+          for (let k in numberList) { // 获取上一个消息总数
             if (i === k) {
-              this.nums[k] = numList[i] - numberList[k]
+              if (currentPoject === i) {
+                numed[i] = 0
+                // console.log(222222, i)
+              } else {
+                //  console.log(222, i, numList[i], k, numberList[k], numbers)
+                 const numbers = Number(numList[i]) - Number(numberList[k])
+                 if (numbers!==0) {
+                   numed[i]+=numbers
+                 }
+              }
             }
           }
         }
         this.$nextTick(() => {
-          localStorage.nums = JSON.stringify(this.nums)
+          // console.log('项目', numed)
+          this.nums = numed
+          localStorage.nums = JSON.stringify(numed)
+          this.$store.state.nums = numed
         })
-       localStorage.numList = JSON.stringify(numList)
+        localStorage.numList = JSON.stringify(numList)
       }
     }
   }

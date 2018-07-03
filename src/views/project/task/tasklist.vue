@@ -13,52 +13,54 @@
         <!--@on-current-change="changeTaskListItem"-->
         <!--&gt;-->
       <!--</Table>-->
-
-          <section  class="WaitingToStart">
-              <p class="title">未开始({{dataList_type.start.length}})</p>
-              <div class="list"  @click.stop ="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start" :key="index"  >
-                  <p class="title">{{items.name}}</p>
-               <div class="BottomInfo">
-                   <span>{{items.expect_work_day}}工作日</span>
-                   <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
-                   <span>{{items.remark_name}}</span>
-               </div>
-                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-              </div>
-          </section>
-          <section  class="perform">
-              <p class="title">进行中({{dataList_type.underWay.length}})</p>
-              <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay" :key="index"  >
-                 <template v-if="items.status ==='3'" >
-                     <p class="pause">暂停中</p>
-                     <p class="sign" ></p>
+         <template>
+             <section  class="WaitingToStart">
+                 <p class="title">未开始({{dataList_type.start.length}})</p>
+                 <template v-if="dataList_type.start.length>1">
+                     <div class="list"  @click.stop ="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start" :key="index"  >
+                         <p class="title">{{items.name}}</p>
+                         <div class="BottomInfo">
+                             <span>{{items.expect_work_day}}工作日</span>
+                             <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                             <span>{{items.remark_name}}</span>
+                         </div>
+                         <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+                     </div>
                  </template>
-                  <p class="title">{{items.name}}</p>
-                  <div class="BottomInfo">
-                      <span>{{items.expect_work_day}}工作日</span>
-                      <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
-                      <span>{{items.remark_name}}</span>
-                  </div>
-                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-
-              </div>
-
-          </section>
-          <section  class="complete">
-              <p class="title">已完成({{dataList_type.end.length}})</p>
-              <div class="list"  @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end" :key="index">
-                  <p class="title">{{items.name}}</p>
-                  <div class="BottomInfo">
-                      <span>{{items.expect_work_day}}工作日</span>
-                      <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
-                      <span>{{items.remark_name}}</span>
-                  </div>
-                  <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-
-              </div>
-          </section>
-
-
+             </section>
+             <section  class="perform">
+                 <p class="title">进行中({{dataList_type.underWay.length}})</p>
+                 <template v-if="dataList_type.underWay.length>1">
+                     <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay" :key="index"  >
+                         <template  >
+                             <p class="pause">暂停中</p>
+                             <p class="sign" ></p>
+                         </template>
+                         <p class="title">{{items.name}}</p>
+                         <div class="BottomInfo">
+                             <span>{{items.expect_work_day}}工作日</span>
+                             <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                             <span>{{items.remark_name}}</span>
+                         </div>
+                         <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+                     </div>
+                 </template>
+             </section>
+             <section  class="complete">
+                 <p class="title">已完成({{dataList_type.end.length}})</p>
+                 <template v-if="dataList_type.end.length>1" >
+                     <div class="list"  @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end" :key="index">
+                         <p class="title">{{items.name}}</p>
+                         <div class="BottomInfo">
+                             <span>{{items.expect_work_day}}工作日</span>
+                             <span>{{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}}</span>
+                             <span>{{items.remark_name}}</span>
+                         </div>
+                         <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+                     </div>
+                 </template>
+             </section>
+         </template>
 
 
 
@@ -79,8 +81,15 @@
 <script>
 var qs = require("querystring");
 import tasklistline from "./taskListLine";
+import {mapMutations,mapState} from 'vuex'
 
 export default {
+    props:{
+        subtask:{
+            type:String,
+            default:'',
+        }
+    },
   components: {
   },
   data() {
@@ -276,6 +285,7 @@ export default {
     })
   },
   methods: {
+      ...mapMutations(['setPrimaryMission']),
       delButton(items){
           this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:items.id}))
               .then(res => {
@@ -296,10 +306,13 @@ export default {
     //点击切换任务项
     changeTaskListItem(currentRow,oldRow)
     {
-      if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
+        if(this.subtask === 'true'){
+            this.$emit('editWindow',currentRow)
+        }else if(currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
       {
         this.$emit('showTaskDetails',currentRow);
 //        this.$refs.table.clearCurrentRow();
+          this.setPrimaryMission(currentRow)
       }
     },
     //删除
@@ -375,7 +388,6 @@ export default {
             }
             this.currentMsg = msg;
             this.getTaskList(msg);
-
         }
     },
     //刷新当前列表
@@ -386,28 +398,39 @@ export default {
     },
     getTaskList(msg,type,item)
     {
+
         if(msg === 'all'){
             msg = {project_id:this.projectId}
         }else if(type === 'member'){
             let child_id = item.child_id ? item.child_id : '';
             msg = {user_id:msg,project_id:this.projectId,project_child_id:child_id}
+        }else if(this.primaryMission && this.subtask) {
+            // 子任务 只需要father 其余都不要
+//            this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info', qs.stringify({id: this.primaryMission.id}))
+//                .then(({data}) => {
+//                    this.dataList = data.child
+//                    this.typeSelection();
+//                    console.log(this.dataList)
+//                })
+//            this.dataList = this.primaryMission.child;
+             msg = {father:this.primaryMission.id}
         }
-
-        this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
+            // 进入任务详情，只展示子任务
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list',qs.stringify(msg))
                 .then( res => res.data)
                 .then( res => {
-                      this.dataList = res.data;
-                      this.formatTaskList(this.dataList.reverse());//颠倒顺序
-                    this.typeSelection();
-                      this.loading = false;
-                      this.dataList_del=[];
-                      this.dataList.forEach(
-                        (element) => {
-                          this.dataList_del.push({
-                            name:"删除",
-                            id:element.id
-                          });
-                      });
+                        this.dataList = res.data;
+                        this.formatTaskList(this.dataList);//颠倒顺序
+                        this.typeSelection();
+                        this.loading = false;
+                        this.dataList_del=[];
+                        this.dataList.forEach(
+                            (element) => {
+                                this.dataList_del.push({
+                                    name:"删除",
+                                    id:element.id
+                                });
+                            });
                     }
                 )
                 .catch(error => {
@@ -415,20 +438,28 @@ export default {
                     return true;
                     this.$Message.error("获取任务列表失败，请重试！");
                 });
-        return true;
+            return true;
+
     },
-    //格式化后端数据
+    // 排序
     formatTaskList(taskData)
     {
-      for (var i = 0; i < taskData.length; i++) {
-          this.setTaskStatus(taskData[i]);
-          taskData[i].update_date = this.TimeFormatMinute(taskData[i].update_date);
-          taskData[i].expect_end_date = this.TimeFormatDay(taskData[i].expect_end_date);
-
-          // if (taskData[i].child != null) {
-          //   taskData[i]._expanded = true;
-          // }
+        if(Array.isArray(taskData)){
+            taskData.map((item,index,arr) => {
+                arr[index].createStamp = new Date(item.create_time).getTime()
+            });
         }
+
+        this.sortDataList(this.dataList)
+//      for (var i = 0; i < taskData.length; i++) {
+//          this.setTaskStatus(taskData[i]);
+//          taskData[i].update_date = this.TimeFormatMinute(taskData[i].update_date);
+//          taskData[i].expect_end_date = this.TimeFormatDay(taskData[i].expect_end_date);
+//
+//          // if (taskData[i].child != null) {
+//          //   taskData[i]._expanded = true;
+//          // }
+//        }
     },
     TimeFormatDay(str)
     {  
@@ -463,30 +494,45 @@ export default {
                underWay:[],
                end:[],
            };
+           if(Array.isArray(this.dataList)){
+               this.dataList.map((items)=>{
+                   switch (items.status)
+                   {
+                       case '1':
+                           this.dataList_type.start.push(items);
+                           break;
+                       case '2':
+                           this.dataList_type.underWay.push(items);
+                           break;
+                       case '3':
+                           this.dataList_type.underWay.push(items);
+                           break;
+                       case '4':
+                           this.dataList_type.end.push(items);
+                           break;
+                   }
 
-          this.dataList.map((items)=>{
-            switch (items.status)
-            {
-                case '1':
-                    this.dataList_type.start.push(items);
-                    break;
-                case '2':
-                    this.dataList_type.underWay.push(items);
-                    break;
-                case '3':
-                    this.dataList_type.underWay.push(items);
-                    break;
-                case '4':
-                    this.dataList_type.end.push(items);
-                    break;
-            }
-
-        })
+               })
+           }
+           console.log('最终数组',this.dataList_type)
       },
       timeType(time){
        return  time.split(' ')[0].split('-').join('/')
+      },
+      sortDataList(time){
+       time = time.sort((a, b) => {
+              return b.createStamp - a.createStamp;
+          })
+
       }
   },
+    computed:{
+        ...mapState({
+            primaryMission(data){
+                return data.project.primaryMission
+            }
+        })
+    }
 };
 </script>
 <style lang="less">

@@ -3,7 +3,7 @@
     padding-left:0px!important;
 }
 .contDetails{
-   
+   margin-top:20px;
     .ivu-breadcrumb{
         .ivu-breadcrumb-item-link{
             color:#666;cursor:pointer;
@@ -23,7 +23,7 @@
         }
         margin-top:10px;
         .contractInfo{
-            float:left;width:400px;border:1px solid #ddd;border-top:0px;overflow:auto;
+            background:@rowBG;float:left;width:400px;border:1px solid #ddd;border-top:0px;overflow:auto;
             dt{
                 background:#f1f1f1;padding:0px 10px;display:block;line-height:30px;font-weight:bold;font-size:14px;border-bottom:1px solid #ddd;border-top:1px solid #ddd;
             }
@@ -54,7 +54,10 @@
             }
         }
         .contractSched{
-            margin-left:420px;border:1px solid #ddd;border-top:0px;
+            margin-left:420px;border:1px solid #ddd;border-top:0px;background:@rowBG;
+            .ivu-timeline-item-head{
+                background:@rowBG;
+            }
             dt{
                 &:extend(.contDetails .detailsRow .contractInfo dt);
             }

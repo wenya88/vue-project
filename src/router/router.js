@@ -139,6 +139,12 @@ export const appRouter = [
                 path:'/project/projectMember',
                 titie:'项目成员',
                 component: resolve => { require(['@/views/projectSet/projectTiemSet/component/peopleSet.vue'], resolve);},
+            },
+            {
+                path:'/project/imgEditorTwo',
+                name:'imgEditorTwo',
+                title:'2D显示标注2.0',
+                component:resolve =>{require(['@/views/project/components/imgEditorTwo.vue'],resolve);}
             }
         ]
     },

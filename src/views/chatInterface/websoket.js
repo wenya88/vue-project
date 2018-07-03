@@ -19,19 +19,14 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      // localStorage.remove('useList')
-      console.log('dddd', data)
       if (data.action === 'ping') {
-        // console.log('ping', data)
         const data = JSON.stringify({
           action: 'ping'
         })
         webSocket.send(data)
       }
       if (data.action === 'login') {
-        // data.action === 'login'
         localStorage.userMsg = JSON.stringify(data)
-        // console.log('ping', data)
       } 
       if (data.action === 'notice') {
         // 浏览器是否支持Notification
@@ -66,7 +61,7 @@
        }
       }
       if (data.action === 'group-chat') {
-        console.log('推送数据', data)
+        // console.log('推送数据', data)
         // localStorage.removeItem('useList')
         // const list = Array.from(JSON.parse(localStorage.useList)) || [];
         var list = store.state.useList

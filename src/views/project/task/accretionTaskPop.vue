@@ -28,10 +28,12 @@ export default {
             this.$refs.add.initTaskDetailFromNew(projectInfo);
         },
         //保存所有的任务信息，包含子任务
-        saveTaskDetail()
+        saveTaskDetail(id)
         {
-            //保存父任务
-            this.$refs.add.saveTaskDetails();
+            if(id){
+                //保存父任务
+                this.$refs.add.saveTaskDetails(null,id);
+            }
             //保存子任务
             // this.$refs.sublist.saveSubTasks();
             return true;

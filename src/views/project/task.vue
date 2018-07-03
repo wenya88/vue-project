@@ -1,11 +1,6 @@
 <!-- 项目-任务页面-->
 <template>
   <div class="task">
-    <!--<taskclasses ref="classes"-->
-                 <!--v-on:changeTaskListData = 'changeTaskListData'-->
-                 <!--v-on:setProjectInfo = 'setProjectInfo'-->
-                 <!--&gt;-->
-    <!--</taskclasses>-->
     <div class="task-operation">
       <Button type="success" size="large" @click="showAccretionTask">新增任务</Button>
       <Button type="primary" size="large" @click="showExcelTask">Excle导入</Button>
@@ -30,9 +25,9 @@
                                  <!--子项目头部-->
                                  <template v-if="!item.realname">
                                      <span class="iconfont icon-xiangmuxiaoxi"></span>&nbsp;&nbsp;
-                                     <span  class="titleText">{{item.child_project_name }}</span>
+                                     <span  class="titleText" :title="item.child_project_name" >{{item.child_project_name }}</span>
                                      <span class="iconfont icon-xiangmufuzeren"></span>
-                                     <span style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" >{{item.leader_name}}</span>
+                                     <span style="display: inline-block;width:40px;  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" :title="item.leader_name" >{{item.leader_name}}</span>
                                  </template>
                                  <!--单独的成员-->
                                  <div v-else class="alone" >
@@ -47,9 +42,9 @@
                      </section>
 
                       <!--有项目的成员-->
-                      <section v-for="(member,index) in item.child_project"  :key="index" @click="changeTaskListData(member,'member','team',item)"
+                      <section v-if="member.run_uid"  v-for="(member,index) in item.child_project"  :key="index" @click="changeTaskListData(member,'member','team',item)"
                                :class="member.run_uid === teamActive && item.child_id === memberItemActive ? 'activeTask':''" class="projectMemberList"  >
-                            <template  v-if="member.run_uid">
+                            <template  >
                                 <p class=" memberTitle"  >{{member.user}}</p>
                                 <p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>
                             </template>
@@ -88,33 +83,13 @@
                             size="20"></Icon>
                   </div>
               </div>
-
-
-              <!--<div class="rightTitle" style="border-top:0px;margin-top:15px;">-->
-                  <!--<Icon type="android-apps" size="20"></Icon>-->
-                  <!--成员进度-->
-              <!--</div>-->
-              <!--<div class="rightRow">-->
-                  <!--<div class="line" v-for="item in memberMsgData">-->
-                      <!--<div class="title">-->
-                          <!--<div class="demo-avatar">-->
-                              <!--<Avatar src="https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"-->
-                                      <!--size="small"/>&nbsp;&nbsp;{{item.realname}}-->
-                          <!--</div>-->
-                      <!--</div>-->
-                      <!--<div class="lineRow">-->
-                          <!--<Progress :percent="Number(item.progress)"><span>{{item.complete}}/{{item.task_num}}</span>-->
-                          <!--</Progress>-->
-                      <!--</div>-->
-                      <!--<div class="clear"></div>-->
-                  <!--</div>-->
-              <!--</div>-->
           </div>
 
            <!--主视图:列表/甘特图 -->
           <Tabs  class="task-tab">
               <Tab-pane label="看板"  >
-                  <tasklist style="padding-left: 450px;" ref="list" v-on:showTaskDetails='showTaskDetails'
+                  <tasklist style="padding-left: 450px;" ref="list"
+                            v-on:showTaskDetails='showTaskDetails'
                             v-on:delTask="closeTaskDetails"></tasklist>
               </Tab-pane>
               <Tab-pane  label="甘特图"  >
@@ -162,6 +137,7 @@
                         >
       </accretiontaskpop>
     </Modal>
+
     <!-- excel解析组件 -->
     <Modal v-model="isExcelTask" width="1200" @on-cancel="excelCancel">
       <p slot="header">
@@ -244,8 +220,6 @@ export default {
       },
       //改变任务列表
       changeTaskListData(subType,type,member,item){
-
-
           this.teamActive = '';
           this.aloneActive = '';
           this.itemActive = '';
@@ -269,7 +243,6 @@ export default {
           }
 
 
-console.log(1.1,item)
             this.$refs.list.initTaskListFromId(subType,type,item);
 
       },
@@ -277,19 +250,10 @@ console.log(1.1,item)
       refreshCurrentTaskList()
       {
         this.$refs.list.refreshTaskList();
-        this.$refs.classes.getProjectChildInfo();
       },
-      //显示任务详情
+      //进入任务详情
       showTaskDetails(data)
       {
-//        this.isShowTaskDetails = true;
-//        this.isSaveLoading = true;
-//        this.taskId = parseInt(data.task_id);
-
-//        this.$refs.details.initTaskDetailProjecInfo(this.projectInfo);
-//        this.$refs.details.initTaskDetail(data);
-
-        this.setProjectInfoDetails(this.projectInfo);
         this.setDetailAll(data);
         this.$router.push({path:'/project/details',query:{type:'taskManagement'}})
       },
@@ -297,7 +261,7 @@ console.log(1.1,item)
       closeTaskDetails() {
         this.isShowTaskDetails = false;
       },
-      //保存编辑任务信息弹窗
+      //保存编辑任务信息弹窗  !已改成跳转页面
       saveTaskInfoPop()
       {
         let result = this.$refs.details.saveTaskDetail();
@@ -346,6 +310,7 @@ console.log(1.1,item)
       showAccretionTask(index) {
         this.isAccretionTask = true;
         this.$refs.add.accretionTaskPop(this.projectInfo);
+
       },
       //初始化任务列表的项目信息
       setProjectInfo(projectInfo)
@@ -354,36 +319,10 @@ console.log(1.1,item)
       },
       // 项目进度初始化接口
       projectPlan() {
-          let projectID=sessionStorage.projectID;
-//          let ProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
-//          let ChlidProjectProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
-//          let MemberProgess=this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID);
-//          this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
-//              // 项目进度
-//              let MsData=msg.data.data;
-////              this.proPanData=Math.round(MsData.project_progress);
-////              this.ProTiemDate=Math.round(MsData.time_progress);
-////              this.ProFinhData=Math.round(MsData.will_finish);
-////              this.ProSytsData=Math.ceil(MsData.syts);
-////              this.ProTaskData=MsData.tasking_num;
-////              this.ProPauseNum=MsData.pause_num;
-//
-//              console.log(11,childMsg.data.data)
-//              console.log(22,memberMsg.data.data)
-//
-//              // 子项目进度
-////              this.ChildMsgData=childMsg.data.data;
-//
-//              // 成员进度
-//              this.memberMsgData=memberMsg.data.data;
-//          },()=>{
-//              console.log("请求失败")
-//          })
           this.$axios.post(this.GLOBAL.baseRouter+'/task/total/member-child-project-total',qs.stringify({project_id:this.projectId}))
               .then(({data})=>{
                   if(data.err_code === 0){
                       this.ChildMsgData = data.data;
-                      console.log(11,data.data)
                   }
               })
 
@@ -444,7 +383,6 @@ console.log(1.1,item)
                       }
                   })
           }
-
       },
       // 添加项目
       addButton(){
@@ -504,6 +442,9 @@ console.log(1.1,item)
                 line-height: 30px;
                 background: @green;color: #fff;
                 cursor: pointer;
+                &:hover{
+                    border: 1px solid #48c5b5;
+                }
             }
             .titleList{
                 display: flex;
@@ -547,6 +488,9 @@ console.log(1.1,item)
                     text-align: center;
                     color: #fff;
                     background: @green;
+                }
+                &:hover{
+                    border: 1px solid #48c5b5;
                 }
             }
             .projectMemberList{

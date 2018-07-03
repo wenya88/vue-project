@@ -3,7 +3,7 @@
    <div class="msg_button_fix" @click="geMsg">消息</div>
    <div class="real_all" v-if="isShow">
      <div class="clearfix real_header_box">
-        <p class="header_project project_is_actice" @click="getReal(0)">项目沟通(15)</p>
+        <p class="header_project project_is_actice" @click="getReal(0)">项目沟通<span v-if="nums">({{nums}})</span></p>
         <p class="header_project" @click="getReal(1)">消息提醒(10)</p>
         <p class="close_all" @click="closeMsg">x</p>
      </div>
@@ -20,14 +20,29 @@ export default {
   data () {
     return {
       isShow: false,
-      isMsg: false
+      isMsg: false,
+      nums: 0,
     }
   },
   components: {
     realMessage,
     remind
   },
+  computed: {
+    getList () {
+      return this.$store.state.nums
+    }
+  },
   watch: {
+    getList (e) {
+      const nums = e
+      var index = 0
+      for (let i in nums) {
+        index+= Number(nums[i])
+      }
+      this.nums = index
+      console.log('数据显示剩余', e)
+    }
   },
   methods: {
     // 关闭信息
@@ -112,6 +127,8 @@ export default {
   float: left;
   font-size: 16px;
   height: 48px;
+  text-align: center;
+  width: 100px;
   line-height: 48px;
   margin-left: 20px;
   cursor: pointer;

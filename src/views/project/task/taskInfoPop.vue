@@ -12,21 +12,21 @@
                                   v-on:sendSubTaskList="sendSubTaskList"
                                   v-on:sendLogData="sendLogData"
                                   taskManagement="true"
-                                  v-on:subtask='getSubtaskInfo'
                         >
                         </maintask>
                     </div>
                 </div>
             </TabPane>
             <TabPane label="子任务" style="height: 800px;overflow-y: auto">
-                <subtasklist :subtaskInfoData="subtaskInfo" ref="sublist"></subtasklist>
+                <subtasklist ></subtasklist>
             </TabPane>
             <TabPane label="日志" style="height: 800px;overflow-y: auto">
                 <tasklog ref="log"></tasklog>
             </TabPane>
         </Tabs>
         <div class="taskButton">
-            <router-link to="/project/task" tag="button" >返回</router-link>
+            <!--<router-link to="/project/task" tag="button" >返回</router-link>-->
+            <button @click="leaveInfo" >返回</button>
             <button @click="saveTaskDetail" style="background: #39f;color: #fff">保存</button>
         </div>
     </div>
@@ -36,6 +36,7 @@
   <!-- </transition> -->
 </template>
 <script>
+import {mapMutations} from 'vuex'
 var qs = require("querystring");
 import maintask from "./taskDetails";
 import subtasklist from "./subTask";
@@ -161,6 +162,7 @@ export default {
     };
   },
   methods: {
+      ...mapMutations(['setPrimaryMission']),
     //根据任务ID初始化属性
     initTaskDetail() {
 
@@ -169,8 +171,9 @@ export default {
         }
         let taskData = this.$store.state.project.detail.setDetailAll;
         this.isInitTask = true;
+
         if (taskData) {
-            this.$refs.main.initTaskDetailFromID(taskData.id);
+            this.$refs.main.initTaskDetailFromID(taskData.id); // 加载表单数据
             let filetype = taskData.stage_file ? taskData.stage_file.type : "NULL";
             this.$refs.filebrowse.initFileBrowse(taskData.id, filetype);
         }
@@ -187,7 +190,7 @@ export default {
     //子任务子组件传参
     sendSubTaskList(data)
     {
-      this.$refs.sublist.initSubTaskListData(data);
+//      this.$refs.sublist.initSubTaskListData(data);
     },
     //日志子组件传参
     sendLogData(data)
@@ -200,7 +203,7 @@ export default {
       //保存父任务
       this.$refs.main.saveTaskDetails(true);
       //保存子任务
-      this.$refs.sublist.saveSubTasks();
+//      this.$refs.sublist.saveSubTasks();
 
       this.$Message.success('保存成功');
       return true;
@@ -254,8 +257,8 @@ export default {
           this.$Message.error("新增任务失败，请重试！");
         });
     },
-    
-    
+
+
     //参与人选项卡
     memberList(index) {
       this.num = index;
@@ -320,9 +323,10 @@ export default {
       );
       this.subData.splice(index, 1);
     },
-      getSubtaskInfo(data){
-        console.log(313,data)
-          this.subtaskInfo = data
+      // 清除进入详情页获得的任务数据
+      leaveInfo(){
+          this.setPrimaryMission(null)
+          this.$router.push({path: '/project/task'});
       }
   }
 };
