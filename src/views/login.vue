@@ -157,8 +157,10 @@ export default {
     },
     mounted() {
         this.fetchKey();
+        console.log('6666666')
     },
     methods: {
+        // 链接websoket
         changeMode(mode) {
             if (mode == 'login') {
                 this.isRegister = true;

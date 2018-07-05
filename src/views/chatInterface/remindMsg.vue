@@ -22,16 +22,23 @@ import setRmind from './setramind.vue'
 export default {
   data () {
     return {
-      isSet: false
+      isSet: false,
+      tabNum: 2
     }
   },
   components: {
     remindChildren,
     setRmind
   },
+  mounted () {
+   this.getClick(2)
+  },
   methods: {
     // 点击事件
     getClick (index) {
+      // this.project_id = index
+      // this.$set(this, 'project_id', index)
+      this.$store.state.tabNum = index
       const doucments = document.getElementsByClassName('remind_message_ul')[0]
       const children = Array.from(doucments.children)
       children.forEach(elments => {

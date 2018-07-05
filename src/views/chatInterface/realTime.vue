@@ -5,7 +5,7 @@
          <div v-for="(item, index) in datalist" :key="index" class="ko">
          <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
-             <img src="../../images/meinv.jpg">
+             <img :src="item.headimage">
              <p class="realTime_time_text">{{item.remark_name}}</p>
              <p class="realTime_time">{{item.date}}</p>
            </div>
@@ -51,7 +51,7 @@
          <div class="send_information_person" :style="personPosi" v-show="sendShow">
            <!-- <GeminiScrollbar class="scollr_person"> -->
            <ul class="send_ul_style">
-             <li v-for='(item, index) in useList' :key="index" @click="personDone(item.name)">{{item.name}}</li>
+             <li v-for='(item, index) in useList' :key="index" @click="personDone(item.remark_name)">{{item.remark_name}}</li>
            </ul>
            <!-- </GeminiScrollbar> -->
          </div>
@@ -75,6 +75,7 @@
 </template>
 <script>
 import {screenshot} from './screenshot.js'
+var qs = require('querystring')
 export default {
   props: ['data'],
   data () {
@@ -94,28 +95,13 @@ export default {
       },
       userMsg: {},
       lastSelection: {},
-      useList: [
-        {
-          name: '李佳'
-        },
-        {
-          name: '王者'
-        },
-        {
-          name: '霸气'
-        },
-        {
-          name: '索隆'
-        },
-        {
-          name: '所有人'
-        }
-      ],
+      useList: [],
     }
   },
   mounted () {
     // localStorage.removeItem('useList')
     // console.log(this.data.absold)
+    this.getPjUser()
     if (!this.data.absold) {
       this.datalist= []
       // this.$store.state.useList = []
@@ -151,6 +137,19 @@ export default {
   //   this.geyEmoji()
   // },
   methods: {
+    // 获取项目成员
+    getPjUser() {
+       const url = this.GLOBAL.baseRouter+"/task/company/joined-members"
+       const projectId = this.data.id.split('_') 
+       const items = {
+         project_id: Number(projectId[1])
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         this.useList = data.data.data
+       }, error => {
+         console.log('错误', error)
+       })
+    },
     // 获取用户信息
     userMsge () {
       this.userMsg= JSON.parse(localStorage.userMsg)
@@ -325,7 +324,7 @@ export default {
     submit () { // 提交内容
       $('.send_input').find('div').remove()
       this.sendShow = false // 发送关闭@框
-      const elements = $('.send_input').html().replace(/&nbsp;/g,"")
+      const elements = $('.send_input').text().replace(/&nbsp;/g,"")
       // console.log('1111', elements)
       const sendTime = this.getTime()
       var list = this.$store.state.useList

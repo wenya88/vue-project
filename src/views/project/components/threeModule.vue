@@ -64,6 +64,7 @@ export default {
       var camera, scene, renderer, light;//相机、场景、渲染、灯光
       var clock = new THREE.Clock();//时钟
       var mixers = [];
+      var divHeight = 100%
       // init(this.storeFileURl);//初始化
       init();
       animate();//动画
@@ -73,10 +74,10 @@ export default {
         document.getElementById("maind").appendChild(container);
         //设置相机(可视角度,canvas宽高比,近距离,远距离)
         camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 2000);    
-        camera.position.set(80, 80, 500);
+        camera.position.set(0, 200, 300);
         //轨道控制插件
         controls = new THREE.OrbitControls(camera);
-        controls.target.set(400, -50, -300);
+        controls.target.set(0, 100, 0);
         controls.update();
         //场景
         scene = new THREE.Scene();
@@ -132,7 +133,8 @@ export default {
         //渲染
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        // renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(document.getElementById("maind").offsetWidth, window.innerHeight/2+20);
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);

@@ -6,9 +6,9 @@
        <i class="iconfont icon-sousuo"/>
       </div>
       <div class="msg_title_all">
-        <div class="msg_title" v-for="(itme, index) in objList" :key="index">
-          <p>{{itme.obj}}</p>
-          <p v-show="itme.msg!==0">{{itme.msg}}</p>
+        <div class="msg_title" v-for="(itme, index) in objList" :key="index" @click="getObj(index)">
+          <p :class="itme.bojectStyle">{{itme.name}}</p>
+          <p v-show="itme.msg">{{itme.msg}}</p>
         </div>
       </div>
     </div>
@@ -18,8 +18,8 @@
      </div>
      <div class="clearfix msg_sign" v-for="(items, index) in msgList" :key="index">
         <div class="msg_sign_box">
-          <p>{{items.msg}}</p>
-          <p>{{items.times}}</p>
+          <p>{{items.message}}</p>
+          <p>{{items.date}}</p>
         </div>
         <div class="msg_sign_button">
           <p class="read_sign" v-show="items.isRead">已读</p>
@@ -31,24 +31,15 @@
   </div>
 </template>
 <script>
+var qs = require('querystring')
 export default {
   data () {
     return {
       msgRmind: '',
-      objList: [
-        {
-          obj: '外包项目',
-          msg: 10
-        },
-        {
-          obj: '金刚皮肤',
-          msg: 0
-        },
-        {
-          obj: '娃哈哈小哪吒',
-          msg: 5
-        }
-      ],
+      typeName: '',
+      indexed: 0,
+      objList: [],
+      userMsg: {},
       msgList: [
         {
           msg: '你有一封邮件',
@@ -73,18 +64,169 @@ export default {
       ]
     }
   },
+  computed: {
+     getTabNum () {
+       return this.$store.state.tabNum
+     },
+     getList() {
+      return this.$store.state.noticeList
+    }
+  },
+  watch: {
+    getTabNum(e) {
+      // console.log('点击11', e)
+      if (e === 2) {
+        this.getHead()
+        this.typeName = 'project'
+      } else if (e === 3) {
+        this.getTask()
+        this.typeName = 'task'
+      }
+    },
+     getList (e) {
+      const list = this.objList
+      const type = this.typeName
+      const index = this.indexed
+      const project_id = list[index].project_id
+      this.getMsg(type, project_id)
+    }
+  },
+  created () {
+    this.getHead()
+    this.getObj(0)
+  },
   methods: {
+    // 切换项目或任务
+    getObj (index) {
+      const list = this.objList
+      const type = this.typeName
+      const project_id = list[index].project_id
+      for (let i = 0; i<list.length; i++) {
+        list[i].bojectStyle = ''
+        if (i == index) {
+          list[i].bojectStyle = 'onwStyle'
+        }
+      }
+      this.$nextTick(() => {
+        this.objList = list
+        this.indexed = index
+        this.getMsg(type, project_id)
+        console.log('项目', index, this.objList)
+      })
+    },
+    // 获取项目
+    getHead () {
+      if (localStorage.headerList) {
+        const headlist = JSON.parse(localStorage.headerList)
+        this.objList = headlist
+        console.log('headList', headlist)
+      } else {
+        this.objList = []
+      }
+    },
+    // 获取消息
+    getMsg (type, project_id) {
+      const msgList = [] // 构建消息list
+      const typeList = [] // 构建类型list
+      if (localStorage.noticeList) {
+        const list = JSON.parse(localStorage.noticeList) // 获取推送消息的总条数
+        list.forEach(items => {
+          if (items.isRead !== undefined) {
+            items.isRead = false //  增加标记，如果没有就添加
+          }
+          if (type === items.type) {
+            typeList.push(items)
+          }
+        })
+        typeList.forEach(elemens => {
+          if (project_id === elemens.project_id) {
+            msgList.push(elemens)
+          }
+        })
+      }
+      this.msgList = msgList
+      this.getMsgNum()
+    },
+    // 获取msg
+    getMsgNum () {
+      const headForm = {}
+      const headList = this.objList
+      if (localStorage.noticeList) {
+        const list = JSON.parse(localStorage.noticeList)
+          headlist.forEach(elems => {
+            const formName = `project_${elems.id}`
+            headForm[formName] = []
+            list.forEach(items => {
+            if (items.project_id === elems._id) {
+              if (!items.isRead) {
+                  headForm[formName].push(items)
+              }
+            }
+          })
+        })
+        for (let i in headForm) {
+          headList.forEach(items => {
+             const formName = `project_${items.id}`
+             if (i == formName) {
+               items.msg = headForm[i].length
+             }
+          })
+        }
+        this.objList = headList
+      }
+    },
+    // 获取任务
+    getTask () {
+      const useMsg = JSON.parse(localStorage.userMsg)
+      this.userMsg= useMsg
+      let url = this.GLOBAL.baseRouter+"task/task/list"
+      const items = {
+        project_id: '',
+        project_child_id: '',
+        user_id: useMsg.id
+      }
+      this.$axios.get(url, qs.stringify(items)).then(data => {
+        this.objList = data.data.data
+      }, error => {
+        console.log('请求错误')
+      })
+    },
     // 全部标记已读
     setSign () {
       const list = this.msgList
+      const types = list[index].type
+      const project_id = list[index].project_id
       list.forEach(elemens => {
         elemens.isRead = true
       })
+      const allList = JSON.parse(localStorage.noticeList)
+      allList.forEach(items => {
+        if (items.type === types) {
+          if (items.project_id === project_id) {   
+              items.isRead = true
+          }
+        }
+      })
+      localStorage.noticeList = JSON.stringify(allList)
     },
     // 单个标记已读
     setSigned (index) {
       const list = this.msgList
       list[index].isRead = true
+      const types = list[index].type
+      const times = list[index].times
+      const project_id = list[index].project_id
+      const allList = JSON.parse(localStorage.noticeList)
+      allList.forEach(items => {
+        if (items.type === types) {
+          if (items.project_id === project_id) {
+            if (items.times === times) {
+              items.isRead = true
+            }
+          }
+        }
+      })
+      localStorage.noticeList = JSON.stringify(allList)
     }
   }
 }
@@ -100,6 +242,9 @@ export default {
   height: 100%;
   padding: 0 10px;
   float: left;
+}
+.onwStyle{
+  font-weight: bold;
 }
 .message_remind_right{
  box-sizing: border-box;

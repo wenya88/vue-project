@@ -65,6 +65,7 @@ export default {
       this.$axios.get(url, qs.stringify(items)).then(data => {
         // console.log('返回数据', data.data.project)
         const list = data.data.project
+        localStorage.headerList = JSON.stringify(list)
         if (list.length !== 0) {
           list.forEach((elemens, index) => {
             elemens.itemStyle = 'clearfix'
