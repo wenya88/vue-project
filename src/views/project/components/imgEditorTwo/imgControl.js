@@ -28,6 +28,7 @@ const canvasControl=()=>{
                 return oEvent;
             }
         
+            
         let addWheelEvent=(obj, callback)=>{
                 if (window.navigator.userAgent.toLowerCase().indexOf('firefox') != -1) {
                     addEvent(obj, 'DOMMouseScroll', wheel);
