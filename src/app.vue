@@ -40,6 +40,7 @@
         //   console.log('数据2', this.$store.state.msgShow)
         },
         beforeDestroy () {
+          localStorage.removeItem('msgShow')
         },
         methods: {
         }

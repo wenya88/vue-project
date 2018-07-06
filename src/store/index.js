@@ -14,8 +14,10 @@ const store = new Vuex.Store({
 	state: {
        msgShow: !localStorage.msgShow ? false : true,
        useList: [],
+       noticeList: [],
        absold: true,
        nums: 0,
+       tabNum: 2,
     },
     mutations: {
         //
