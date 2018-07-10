@@ -12,9 +12,10 @@
                   </canvas>
                   <!-- 控件层 -->
                   <div class="oControl"></div>
+                  <!-- 图片层 -->
+                  <img :src="url" class="ImgOnlod" id="oImg"/>
                 </div>
-                <!-- 图片层 -->
-                <img :src="url" class="ImgOnlod" id="oImg"/>
+                
           </div>
           <!-- 工具条 -->
           <div class="toolBar">
@@ -108,6 +109,9 @@
       this.initImgEditor();
       this.loadWH();
     },
+    destroyed(){
+        this.clearSession();
+    },
     computed:{
       storeTaskID(){
         return this.$store.state.ImgVedioStatus.TaskID
@@ -120,6 +124,11 @@
       },
     },
     methods:{
+      // 清除缓存
+      clearSession(){
+        sessionStorage.removeItem('ImgData');//存图片标注信息
+        //sessionStorage.removeItem('addUpDelta');//存图片放大缩小信息
+      },
       // 清除画布
       clearCanvas(){
         this.$Modal.confirm({
@@ -163,11 +172,11 @@
       },
       initImgEditor()
       {
-        this.url='http://c.hiphotos.baidu.com/image/pic/item/72f082025aafa40f99d4e82aa764034f78f01932.jpg';
+        this.url='http://h.hiphotos.baidu.com/image/pic/item/342ac65c103853434cc02dda9f13b07eca80883a.jpg';
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
-        sessionStorage.removeItem('ImgData');
+        this.clearSession();
       },
       onLoad(cControl="false"){
           let el=document.getElementsByClassName("ImgOnlod")[0];
@@ -188,8 +197,10 @@
               // 画布层
                canID.width=canvasW;
                canID.height=canvasH;
+
                imgCanvas(cControl,canvasW,canvasH);
                canvasControl();
+              
           }
       },
       loadWH(){

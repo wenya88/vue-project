@@ -3,6 +3,7 @@ const imgCanvas=(action,canvasW,canvasH)=>{
     var cavs,cavT;
     var iMouse=false;
     var startT={x:0,y:0};
+    
     function cavsTo(x,y){
         var cbox=cavs.getBoundingClientRect();
         return {x:x-cbox.left,y:y-cbox.top}
@@ -26,10 +27,17 @@ const imgCanvas=(action,canvasW,canvasH)=>{
         cavs.onmousedown=function(e){
             iMouse=true;
             startT=cavsTo(e.clientX,e.clientY);
+            
+            // startT.x=startT.x/1.1;
+            // startT.y=startT.y/1.1;
         }
         cavs.onmousemove=function(e){
             if(iMouse){
                 var stopT=cavsTo(e.clientX,e.clientY);
+
+                // stopT.x=stopT.x/1.1;
+                // stopT.y=stopT.y/1.1;
+
                 cavT.beginPath();
                 cavT.lineWidth="3";
                 cavT.strokeStyle="#e43";

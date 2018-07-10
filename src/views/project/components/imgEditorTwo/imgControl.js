@@ -1,5 +1,4 @@
 const canvasControl=()=>{
-       
         let oSign = document.getElementById("signx");
         let oCanvas=document.getElementById("cav");
         let oImg=document.getElementById("oImg");
@@ -61,9 +60,9 @@ const canvasControl=()=>{
                 // oCanvas.style.left = l +'px';
                 // oCanvas.style.top = t +'px';
 
-                // imageMove
-                oImg.style.left = l +'px';
-                oImg.style.top = t +'px';
+                // // imageMove
+                // oImg.style.left = l +'px';
+                // oImg.style.top = t +'px';
     
                 // divMove
                 oSign.style.left = l +'px';
@@ -86,21 +85,48 @@ const canvasControl=()=>{
             addEvent(oParent, 'mouseup', endMove);
             return false;
         });
-       
+        let restrict=1.1;
+        let totalNum=0;
         addWheelEvent(controlDiv, function(delta) {
             let ratioL = (this.clientX - oSign.offsetLeft) / oSign.offsetWidth;
             let ratioT = (this.clientY - oSign.offsetTop) / oSign.offsetHeight;
-            let ratioDelta = !delta ? 1 + 0.1 : 1 - 0.1;
-            let w = parseInt(oSign.offsetWidth * ratioDelta);
-            let h = parseInt(oSign.offsetHeight * ratioDelta);
+            let sginDiv=document.getElementsByClassName('signIndex');
+            // let ratioDelta = !delta ? 1 + 0.1 : 1 - 0.1;
+            let w,h
+            if(!delta){
+                totalNum++
+                w = Math.round(oSign.offsetWidth * restrict);
+                h = Math.round(oSign.offsetHeight * restrict);
+                if(sginDiv.length>0){
+                    for(let i=0;i<sginDiv.length;i++){
+                        sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)*restrict)+1+'px';
+                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)*restrict)+2+'px';
+                    }
+                }
+            }else{
+                totalNum--
+                w = Math.round(oSign.offsetWidth / restrict);
+                h = Math.round(oSign.offsetHeight / restrict);
+                if(sginDiv.length>0){
+                    for(let i=0;i<sginDiv.length;i++){
+                        sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)/restrict)-1+'px';
+                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)/restrict)-2+'px';
+                    }
+                }
+            }
+            // let w = Math.ceil(oSign.offsetWidth * ratioDelta);
+            // let h = Math.ceil(oSign.offsetHeight * ratioDelta);
+            
             let l = Math.round(this.clientX - (w * ratioL));
             let t = Math.round(this.clientY - (h * ratioT));
-            // console.log("w:"+w,"h:"+h,"l:"+l,"t:"+t)
+           
+            // console.log("w:"+w,"h:"+h,"l:"+l,"t:"+t,"totalNum:"+totalNum);
             // imgChange
-            oImg.style.transform=w +'px';
+
+            oImg.style.width=w +'px';
             oImg.style.height=h +'px';
-            oImg.style.left=l +'px';
-            oImg.style.top=t +'px';
+            // oImg.style.left=l +'px';
+            // oImg.style.top=t +'px';
             
             // divChange
             oSign.style.width=w +'px';
@@ -113,6 +139,9 @@ const canvasControl=()=>{
             oCanvas.style.height=h +'px';
             // oCanvas.style.left=l +'px';
             // oCanvas.style.top=t +'px';
+
+            controlDiv.style.width=w +'px';
+            controlDiv.style.height=h +'px';
 
         });
         
