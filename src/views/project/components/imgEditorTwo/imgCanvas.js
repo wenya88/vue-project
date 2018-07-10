@@ -1,11 +1,11 @@
 //canvas
 const imgCanvas=(action,canvasW,canvasH)=>{
-    var cavs,cavT;
-    var iMouse=false;
-    var startT={x:0,y:0};
+    let cavs,cavT;
+    let iMouse=false;
+    let startT={x:0,y:0};
     
     function cavsTo(x,y){
-        var cbox=cavs.getBoundingClientRect();
+        let cbox=cavs.getBoundingClientRect();
         return {x:x-cbox.left,y:y-cbox.top}
     }
    
@@ -27,17 +27,40 @@ const imgCanvas=(action,canvasW,canvasH)=>{
         cavs.onmousedown=function(e){
             iMouse=true;
             startT=cavsTo(e.clientX,e.clientY);
-            
-            // startT.x=startT.x/1.1;
-            // startT.y=startT.y/1.1;
+            let QAQ=sessionStorage.totalNum;
+            let i=1.1;
+            if(QAQ>0){
+                // 放大
+                for(let k=0;k<QAQ;k++){
+                    startT.x=startT.x/i;
+                    startT.y=startT.y/i;
+                }
+            }else if(QAQ<0){
+                //缩小
+                for(let k=0;k<Math.abs(QAQ);k++){
+                    startT.x=startT.x*i;
+                    startT.y=startT.y*i;
+                }
+            }
         }
         cavs.onmousemove=function(e){
             if(iMouse){
-                var stopT=cavsTo(e.clientX,e.clientY);
-
-                // stopT.x=stopT.x/1.1;
-                // stopT.y=stopT.y/1.1;
-
+                let stopT=cavsTo(e.clientX,e.clientY);
+                let QAQ=sessionStorage.totalNum;
+                let i=1.1;
+                if(QAQ>0){
+                    // 放大
+                    for(let k=0;k<QAQ;k++){
+                        stopT.x=stopT.x/i;
+                        stopT.y=stopT.y/i;
+                    }
+                }else if(QAQ<0){
+                    //缩小
+                    for(let k=0;k<Math.abs(QAQ);k++){
+                        stopT.x=stopT.x*i;
+                        stopT.y=stopT.y*i;
+                    }
+                }
                 cavT.beginPath();
                 cavT.lineWidth="3";
                 cavT.strokeStyle="#e43";

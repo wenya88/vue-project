@@ -127,7 +127,7 @@
       // 清除缓存
       clearSession(){
         sessionStorage.removeItem('ImgData');//存图片标注信息
-        //sessionStorage.removeItem('addUpDelta');//存图片放大缩小信息
+        sessionStorage.removeItem('totalNum');//存图片放大缩小信息
       },
       // 清除画布
       clearCanvas(){

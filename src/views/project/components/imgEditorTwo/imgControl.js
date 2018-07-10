@@ -114,6 +114,7 @@ const canvasControl=()=>{
                     }
                 }
             }
+            sessionStorage.totalNum=totalNum;
             // let w = Math.ceil(oSign.offsetWidth * ratioDelta);
             // let h = Math.ceil(oSign.offsetHeight * ratioDelta);
             

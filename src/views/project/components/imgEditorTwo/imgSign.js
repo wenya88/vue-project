@@ -2,7 +2,7 @@ const imgSign=function(AllowEdit){
     var Data=[];
     (function($){
         var cX,cY,indexId=0,removeId,DOM;
-        var Rleft,Rtop;//需要删除的坐标
+        var Rleft,Rtop,TVT;//需要删除的坐标
         jQuery.sign={
           bindSign:function(dom){
             DOM=dom;
@@ -60,28 +60,45 @@ const imgSign=function(AllowEdit){
               indexId++;
               var text=$.trim($('.signbox').text());
               $('.inputSignBox').remove();
-              $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"'>"+"<div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
+              $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"' data-index='"+indexId+"'>"+"<div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
               $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
-              var mes={left:cX-11,top:cY-29,message:text};
-              Data[Data.length]=mes;
-              sessionStorage.ImgData=JSON.stringify(Data);
+              var mes={left:cX-11,top:cY-29,message:text,index:indexId};
+              var ToT=sessionStorage.totalNum;
+              var TuT=1.1;
+              if(ToT>0){
+                //放大
+                 for(let k=0;k<ToT;k++){
+                    mes.left=Math.round(mes.left/TuT);
+                    mes.top=Math.round(mes.top/TuT);
+                 }
+                Data[Data.length]=mes;
+              }else if(ToT==undefined||ToT==0){
+                //原始尺寸
+                Data[Data.length]=mes;
+              }else if(ToT<0){
+                //缩小
+                for(let k=0;k<Math.abs(ToT);k++){
+                    mes.left=Math.round(mes.left*TuT);
+                    mes.top=Math.round(mes.top*TuT);
+                }
+                Data[Data.length]=mes;
+             }
+              sessionStorage.ImgData=JSON.stringify(Data)
             }
           });//确认编辑
           $(document).on('mouseenter','[id*=Ts]',function(e){
             var m=$(this).attr('id').replace(/[^0-9]/ig, "");
-            // if(e.which==3){
               e.stopPropagation();
               removeId=m;
               $('.chooseBox').remove();
               Rleft=$(this).css("left").replace(/[^0-9]/ig, "");
               Rtop=$(this).css("top").replace(/[^0-9]/ig, "");
-            //   var l=e.clientX-$(dom).offset().left,t=e.clientY-$(dom).offset().top;
-              $(this).append("<div class='chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
+              TVT=$(this).attr('data-index');
+              $(this).append("<div class='chooseBox'><ul><li id='deleteSign'></li></ul></div>");
               $('.chooseBox').css({"left":45,"top":-20});
-            // }
           });//弹出取消标记
           $(document).on('click','#deleteSign',function(){
-            deleteData(Rleft,Rtop);
+            deleteData(TVT);
             $('#Ts'+removeId).remove();
           });//删除标记
         
@@ -90,9 +107,9 @@ const imgSign=function(AllowEdit){
           });
           //点击消失
         }
-        function deleteData(left,top){
+        function deleteData(TVT){
           for(var i=0;i<Data.length;i++){
-            if(Data[i].left==left&&Data[i].top==top){
+            if(Data[i].index==TVT){
               Data.splice(i,1);
               sessionStorage.ImgData=JSON.stringify(Data);
               break;
