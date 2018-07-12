@@ -4,7 +4,7 @@
         <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
         <div class="stageListRow" @mouseleave="hideStageList">
                 <ul>
-                    <li v-for="(item,index) in IMGlist" @click="changCont(
+                    <li v-for="(item,index) in IMGlist" :key="index" @click="changCont(
                             item.file.file,
                             item.file.tag,
                             item.status,
@@ -28,6 +28,7 @@
                 </ul>
         </div>
         <div class='V_markVjs' style="display:none;top:0px;left:0px;"></div>
+        <!-- 进度条 -->
         <div class="V_progressBar" style="top:0px;left:0px;"></div>
         <video id="my-video" class="video-js" controls preload="auto" width="810" height="480" data-setup="{}">
             <source :src="VideoURL" type="video/mp4">
@@ -59,7 +60,6 @@
 <script>
 
 var Data=[];
-import {baseUrl, deletetaskData} from '../../../config/env.js';
 var qs=require('querystring');
 export default {
     data(){
@@ -146,6 +146,7 @@ export default {
          myPlayer.load(this.VideoURL);
          myPlayer.play();
        },
+       //追加video.js文件
         AddVedioJS(){
             $(".video_js").remove();
             let head = document.getElementsByTagName('head')[0];  
@@ -155,6 +156,7 @@ export default {
             script.classList.add("video_js")
             head.appendChild(script);
         },
+        // videojs控制
         Vdefault(){
                  var btiem
                  var myPlayer = videojs('my-video');
@@ -164,30 +166,25 @@ export default {
                         $(".vjs-volume-panel,.vjs-fullscreen-control").hide();
                         var myPWidth=myPlayer.width();
                         var myPHeigth=myPlayer.height()-36;
-                        $(".V_markVjs").css({'width':myPWidth,'height':myPHeigth});
-                        $(".V_progressBar").css({'width':myPWidth-119,'top':myPHeigth+2,'left':58});
+                        $(".V_markVjs").css({'width':myPWidth,'height':myPHeigth});//设置标记层
+                        $(".V_progressBar").css({'width':myPWidth-119,'top':myPHeigth+2,'left':58});//设置进度条
                     });
                     
-                    function PauPlay(){
+                    function PauPlay(){ //暂停方法
                         $(".V_markVjs").show()
-                        var domWidth=document.getElementsByClassName("vjs-play-progress")[0].style.width;
-                        var Ftiem=myPlayer.currentTime();
-                            btiem=Number(Ftiem).toFixed(2);
+                        var domWidth=document.getElementsByClassName("vjs-play-progress")[0].style.width;//获取正在播放进度条的宽度
+                        var Ftiem=myPlayer.currentTime();//获取时间
+                            btiem=Number(Ftiem).toFixed(2);//保留2位小数
                         return domWidth
                     }
 
-                    myPlayer.on('pause',function(){
+                    myPlayer.on('pause',function(){//暂停播放
                         $(".V_signIndex").hide();
-                        // myPlayer.on('timeupdate',function(){
-                        //     if($('.V_signIndex')!=undefined){
-                        //        console.log('有')
-                        //     }
-                        // })
                         PauPlay();
                     });
                     
-                    myPlayer.on('play',function(){
-                       $(".V_markVjs,.V_signIndex").hide();
+                    myPlayer.on('play',function(){ //开始播放
+                       $(".V_markVjs,.V_signIndex").hide();  //标记层和标记隐藏
                     });
 
                     // -----------------图片标识-----------------
@@ -210,7 +207,7 @@ export default {
                         e.preventDefault();
                     };
                     function defined(dom){
-                        if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){
+                        if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){  //是否允许标记
                             return
                         }
                         $(document).on("mousedown",dom,function(e){
@@ -312,12 +309,12 @@ export default {
                 }//载入数据
 
 
-                $(document).on('click','.V_signIndex',function(){
+                $(document).on('click','.V_signIndex',function(){  //点击标记
                     var thisTiem=$.trim($(this).attr('data-btiem'));
                     myFun(thisTiem);
                 });
 
-                $(document).on('click','.V_progressBar .V_barSpan',function(){
+                $(document).on('click','.V_progressBar .V_barSpan',function(){ // 点击进度条上面的标记
                     myPlayer.pause();
                     $(".V_signIndex").hide();
                     var thisTiem=$.trim($(this).text());
@@ -331,7 +328,7 @@ export default {
                 $(document).on('click','.V_markVjs',function(){
                         $(".V_inputSignBox").hide();
                 })
-                function myFun(thisTiem){
+                function myFun(thisTiem){ //时间跳转
                     myPlayer.currentTime(thisTiem);
                 }
         },

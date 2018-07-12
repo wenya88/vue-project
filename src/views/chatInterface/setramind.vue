@@ -6,59 +6,178 @@
          <p>勾选后相关消息将会弹窗通知</p>
        </div>
        <div class="set_msg_switch">
-         <i-switch v-model="checkForm.switch" size="large">
+         <i-switch v-model="checkForm.switch" size="large"  @on-change="getChange">
             <span slot="open">允许</span>
             <span slot="close">禁止</span>
         </i-switch>
        </div>
     </div>
     <div class="set_radmin_checkbox">
-      <div>
-        <p>投标</p>
+      <div v-for="(item, index) in userCheck" :key="index">
+        <p>{{item.name}}</p>
         <div>
-          <CheckboxGroup v-model="checkForm.checkAllGroup">
-           <Checkbox label="报名成功"></Checkbox>
-           <Checkbox label="上传作品"></Checkbox>
-           <Checkbox label="审核反馈"></Checkbox>
-           <Checkbox label="投标反馈"></Checkbox>
+          <CheckboxGroup v-model="checkForm[item.group]">
+           <Checkbox v-for="(items, idx) in item.children" :key="idx" :label="items.name">{{items.name}}</Checkbox>
           </CheckboxGroup>
         </div>
       </div>
-      <div>
-        <p>合同</p>
-        <div>
-           <CheckboxGroup v-model="checkForm.checkAllGroup1">
-           <Checkbox label="三方合同"></Checkbox>
-           <Checkbox label="尾款合同"></Checkbox>
-           <Checkbox label="人才培养计划合同"></Checkbox>
-           <Checkbox label="劳务合同"></Checkbox>
-          </CheckboxGroup>
-        </div>
-      </div>
-      <div>
-        <p>项目</p>
-        <div>
-           <CheckboxGroup v-model="checkForm.checkAllGroup2">
-           <Checkbox label="第一项目"></Checkbox>
-           <Checkbox label="第二项目"></Checkbox>
-           <Checkbox label="第三项目"></Checkbox>
-           <Checkbox label="第四项目"></Checkbox>
-           <Checkbox label="第五项目"></Checkbox>
-          </CheckboxGroup>
-        </div>
-      </div>
+      <div class="button_msg">
+      <p class="close_button" @click="closeFun">取消</p>
+      <p class="soure_button" @click="soureFun">保存</p>
+    </div>
     </div>
   </div>
 </template>
 <script>
+var qs = require('querystring')
 export default {
   data () {
     return {
       checkForm: {
         switch: true,
-        checkAllGroup: [],
-        checkAllGroup1: [],
-        checkAllGroup2: []
+        task: [],
+        project: [],
+        contract: [],
+        bid: [],
+        system: []
+      },
+      userCheck: {}
+    }
+  },
+  mounted () {
+    this.getMsg()
+  },
+  created() {
+  },
+  methods: {
+    // 获取用户消息
+    getMsg () {
+      const url = this.GLOBAL.baseRouter+"system/user/get-user-notice-config"
+      const item = {
+      }
+      const msgList = {}
+      this.$axios.get(url, qs.stringify(item)).then(data => {
+        const userMsgs = data.data.data
+        const listFrom= this.checkForm
+        for (let i in listFrom) {
+          if (i !== 'switch') {
+            userMsgs.forEach(element => {
+              if (element.group === i) {
+                if (!msgList[i]) {
+                  var name = ''
+                  if (i === 'bid') {
+                    name = '投标'
+                  } else if (i === 'system') {
+                    name = '系统'
+                  } else if (i === 'project') {
+                    name = '项目'
+                  } else if (i === 'task') {
+                    name = '任务'
+                  } else {
+                    name = '合同'
+                  }
+                  msgList[i] = {
+                    name: name,
+                    group: i,
+                    children: []
+                  }
+                }
+                if (element.value === '1') {
+                  if (!listFrom[i]) {
+                    listFrom[i] = []
+                  }
+                  listFrom[i].push(element.name)
+                }
+                msgList[i].children.push(element)
+              }
+            })
+          }
+        }
+        this.userCheck = msgList 
+      }, error => {
+        console.log('错误', error)
+      })
+    },
+    // 设置用户消息
+    setMsg (list) {
+      const url = this.GLOBAL.baseRouter+"/system/user/set-user-notice-config"
+      const lists = JSON.stringify(list)
+      const items = {
+        config: lists
+      }
+      this.$axios.post(url, qs.stringify(items)).then(data => {
+        this.$Message.success('设置成功');
+      }, error => {
+        console.log('错误', error)
+      })
+    },
+    // 提交
+    soureFun () {
+      const checkForm = this.checkForm
+      const useMsg = this.userCheck
+      var list = {}
+      for (let i in checkForm) {
+        if (i !== 'switch') {
+          // var list = []
+          if (checkForm[i]) {
+            const lists = useMsg[i].children
+            const obj = checkForm[i]
+            lists.forEach(items => {
+              list[items.config_id] = '0'
+               obj.forEach(elements => {
+                  for (let i in list) {
+                    if (items.name === elements) {
+                      if (items.config_id === i) {
+                        list[i] = '1'
+                      }
+                    }
+                  }
+               })
+            })
+          }
+        }
+      }
+      this.setMsg(list)
+    },
+    // 开关
+    getChange(e) {
+      if (!e) {
+        this.checkForm = {
+           switch: true,
+           task: [],
+           project: [],
+           contract: [],
+           bid: [],
+           system: []
+        }
+      } else {
+        const checkForm = this.checkForm
+        const userCheck = this.userCheck
+        for (let i in checkForm) {
+          for (let k in userCheck) {
+            if (i === k) {
+              const userNameList = userCheck[i].children
+              userNameList.forEach(items => {
+                checkForm[i].push(items.name)
+              })
+            }
+          }
+        }
+      }
+    },
+    // // 改变
+    // getChange(e) {
+    //   console.log('改变', e)
+    // },
+    // 取消
+    closeFun () {
+      this.checkForm = {
+        switch: true,
+        task: [],
+        project: [],
+        contract: [],
+        bid: [],
+        system: []
       }
     }
   }
@@ -75,6 +194,7 @@ export default {
  height: 80px;
  padding: 10px 10px;
  border-bottom: 1px solid rgb(174,174,174);
+ position: relative;
 }
 .set_msg_title{
   width: calc(100% - 150px);
@@ -116,5 +236,37 @@ export default {
  line-height: 30px;
  font-size: 16px;
  font-weight: bold;
+}
+.button_msg{
+  position: absolute;
+  width: 200px!important;
+  height: 30px!important;
+  right: 10px;
+  bottom: 10px; 
+}
+.close_button,
+.soure_button{
+ width: 80px!important;
+ height: 30px!important;
+ line-height: 30px;
+ text-align: center;
+ display: inline-block;
+ cursor: pointer;
+ border-radius: 4px;
+ font-weight: normal!important;
+}
+.close_button{
+  background: rgba(215,215,215,1);
+}
+.close_button:hover{
+  background: rgba(215,215,215,.8)
+}
+.soure_button{
+ background: rgba(24,191,164,.8);
+ color: #ffffff;
+ margin-left: 10px;
+}
+.soure_button:hover{
+  background: rgba(24,191,164,.5);
 }
 </style>

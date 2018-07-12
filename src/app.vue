@@ -10,7 +10,9 @@
       data () {
             return {
                 theme: this.$store.state.app.themeColor,
-                ishow: false
+                ishow: false,
+                positionX: 0,
+                positionY: 0
             };
         },
         created() {
@@ -43,6 +45,15 @@
           localStorage.removeItem('msgShow')
         },
         methods: {
+          down (e) {
+            console.log('down', e)
+          },
+          move (e) {
+            console.log('move', e)
+          },
+          up (e) {
+            console.log('up', e)
+          }
         }
     };
 </script>
@@ -54,6 +65,7 @@ html,body{
     height: 100%;
     background: #f0f0f0;
     overflow: hidden;
+    position: relative;
 }
 .app-main{
     width: 100%;

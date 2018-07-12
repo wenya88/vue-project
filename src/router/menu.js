@@ -56,14 +56,14 @@ export const menu = [
                 path: '/epibol/statistics',
                 name: 'eStatistics',
                 title: '统计',
-            }, {
-                path: '/epibol/3D',
-                name: '3D',
-                title: '3D',
             // }, {
-            //     path: '/epibol/list',
-            //     name: 'list',
-            //     title: 'list'
+            //     path: '/project/imgEditorTwo',
+            //     name: '2D',
+            //     title: '2D',
+            }, {
+                path:'/project/vedioEditor',
+                name:'vedioEditor',
+                title:'视频标注',
             }
         ]
     }, {

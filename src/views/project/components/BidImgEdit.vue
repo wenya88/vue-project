@@ -36,7 +36,6 @@
   var Data=[];
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
-  import {baseUrl} from '../../../config/env.js';
   export default {
     components:{
       OnLoad

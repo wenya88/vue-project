@@ -55,13 +55,18 @@
                              任务
                              <p>制定计划并管理任务或需求</p>
                         </div>
-                        <div class="resouer">
-                            <div class="title">
-                                资源管理 <span>浏览和审核资源</span>
+                        <div class="resouer" ref="resouer">
+                            <div style="margin-bottom: 10px;">
+                                <span style="padding: 0 25px;font-size: 20px;">资源管理</span><span>浏览和审核资源</span>
                             </div>
-                            <div class="content">
-                                <span class="iconfont icon-921caidan_hezi" style="font-size:10em;color:#a9a9a9;width:112px;"></span>
-                            </div>
+                            <v-flare :width="width"></v-flare>
+
+                            <!--<div class="title">-->
+                                <!--资源管理 <span>浏览和审核资源</span>-->
+                            <!--</div>-->
+                            <!--<div class="content">-->
+                                <!--<span class="iconfont icon-921caidan_hezi" style="font-size:10em;color:#a9a9a9;width:112px;"></span>-->
+                            <!--</div>-->
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -94,20 +99,22 @@
                 </div>
 
             </div>
-
         </div>
     </div>
 </template>
 <script>
 var qs=require('querystring')
+import vFlare from '@/components/d3flare'
 export default {
     data(){
         return{
             proData:[],
+            width:null
         }
     },
     mounted(){
         this.get();
+            this.flare();
     },
     methods:{
         companySet(){
@@ -142,6 +149,14 @@ export default {
             })
 
         },
+        flare(){
+            this.$nextTick(() => {
+                this.width = this.$refs.resouer.offsetWidth+'';
+            })
+        }
+    },
+    components:{
+        vFlare
     }
 }
 </script>

@@ -19,7 +19,7 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      // console.log('推送消息00', evt.data)
+      console.log('推送消息00', evt.data)
       if (data.action === 'ping') {
         const data = JSON.stringify({
           action: 'ping'
@@ -35,7 +35,6 @@
           list = Array.from(JSON.parse(localStorage.noticeList))
         }
         list.push(data);
-        console.log('提示数据', JSON.stringify(list))
         store.state.noticeList = list
         localStorage.noticeList = JSON.stringify(list)
         // 浏览器是否支持Notification
@@ -58,14 +57,6 @@
                 })
               }
            })
-         } else {
-          notice.ymNotice({
-            title: '提示',
-            message: data.message,
-            position: 'right-top',
-            remindtype: '5',
-            imgUrl: '../../images/3d.jpg',
-          })
          }
        }
       }

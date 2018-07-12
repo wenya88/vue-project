@@ -62,7 +62,6 @@ var jsencrypt = require('jsencrypt');
 var md5 = require('md5');
 import axios from 'axios'
 import Cookies from 'js-cookie';
-import { authLogin } from "../config/env.js";
 import src from '../images/close_eyes.png'
 import src2 from '../images/open_eyes.png'
 // import { getPublicKey } from '../server/index'
@@ -157,7 +156,8 @@ export default {
     },
     mounted() {
         this.fetchKey();
-        console.log('6666666')
+        localStorage.removeItem('msgShow')
+        this.$store.state.msgShow = false
     },
     methods: {
         // 链接websoket

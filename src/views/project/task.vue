@@ -85,7 +85,7 @@
               </div>
           </div>
 
-           <!--主视图:列表/甘特图 -->
+           <!--&lt;!&ndash;主视图:列表/甘特图 &ndash;&gt;-->
           <Tabs  class="task-tab">
               <Tab-pane label="看板"  >
                   <tasklist style="padding-left: 450px;" ref="list"
@@ -158,7 +158,7 @@ import {mapMutations} from 'vuex'
 import qs from 'querystring'
 import taskclasses from "./task/taskClasses";
 import tasklist from "./task/taskList";
-import taskinfopop from "./task/taskInfoPop";
+import taskinfopop from "./task/taskInfoPop/taskInfoPop";
 import accretiontaskpop from "./task/accretionTaskPop";
 import ExcelModal from "./components/excel"
 import vSchedulePlan from "./schedule"
@@ -409,7 +409,9 @@ export default {
     .taskMainContainer{
         position: relative;
         display: flex;
+        height: 100%;
         padding-top: 20px;
+
         .ivu-tabs-nav-container{
             height: 60px!important;
         }
@@ -566,8 +568,8 @@ export default {
     position:absolute;
     width:100%;
     z-index:1;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    /*overflow-x: hidden !important;*/
+    /*overflow-y: auto !important;*/
 
 }
 .task-operation{

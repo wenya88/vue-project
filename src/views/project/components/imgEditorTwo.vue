@@ -3,15 +3,47 @@
       <div class="imgEditorCom">
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
-          <div class="imgFocus" id="signx">
-                <img :src="url" class="ImgOnlod"/>
+          <div class="imgFocus">
+                <!-- 控制canvas -->
+                <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
+                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
+                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
+                </div>
+                <!-- 标注层 -->
+                <div class="sginCanvas" id="signx">
+                  
+                  <!-- 修改编辑层 -->
+                  <div class="editSginDiv">
+                    <div class='editSignbox'>X</div>
+                    <textarea id="sginText"></textarea>
+                    <div class="sginEditCommit">修改</div>
+                  </div>
+                  <!-- 画布层 -->
+                  <canvas id="cav" width="1400" height="750" v-show="canvasSign">
+                     <span>浏览器不支持画布标注！o(╯□╰)o</span>
+                  </canvas>
+                  <!-- 控件层 -->
+                  <div class="oControl"></div>
+                  <!-- 图片层 -->
+                  <img :src="url" class="ImgOnlod" id="oImg"/>                  
+                </div>
+                
           </div>
           <!-- 工具条 -->
           <div class="toolBar">
-              1
+              <span :class="[canvasSign?'barLeft barselet':'barLeft']" @click="canvasHidden">
+                  <Icon type="edit" class="add"></Icon>{{barText}}
+              </span>
+              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清空画布</span>
+              <span class="barRight">
+                  <s><i class="iconfont icon-qimai-guanjiancizhishuduibi"></i>查看上次反馈</s>
+                  <s @click="sginHidden"><i class="iconfont icon-yincang"></i>{{hiddenSignText}}</s>
+              </span>
+              <div class="clear"></div>
           </div>
           <!-- 标注提交 -->
           <div v-if="AllowEditRow" class="AllowEdit">
+            <span class="EditIcon"></span>
             <span class="EditInput">
                 <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue" AUTOCOMPLETE="off">
             </span>
@@ -35,6 +67,8 @@
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
   import {imgSign} from './imgEditorTwo/imgSign.js'
+  import {imgCanvas} from './imgEditorTwo/imgCanvas.js'
+  import {canvasControl} from './imgEditorTwo/imgControl.js'
   export default {
     components:{
       OnLoad:OnLoad
@@ -47,7 +81,6 @@
         TID:80,
         TaskID:0,
         IMGlist:[],
-        AllowEdit:String,
         AllowEditRow:false,
         SataeInfo:false,
         StateFeedBack:0,
@@ -59,7 +92,12 @@
         FeedbackValue:'',
         onload:true,
         fileID:0,
-        stageID:0
+        stageID:0,
+        AllowEdit:false,//是否允许标注
+        barText:'显示画布',
+        hiddenSign:true,
+        canvasSign:false,
+        hiddenSignText:'隐藏标注'
       }
     },
     filters:{
@@ -83,50 +121,118 @@
       this.initImgEditor();
       this.loadWH();
     },
+    destroyed(){
+        this.clearSession();
+    },
     computed:{
       storeTaskID(){
         return this.$store.state.ImgVedioStatus.TaskID
       },
       storeFileURl(){
         return this.$store.state.ImgVedioStatus.FileURl
-      }
-
+      },
+      fileup(){
+        return this.$store.state.paySkip.fileUpload
+      },
     },
     methods:{
+      // 清除缓存
+      clearSession(){
+        sessionStorage.removeItem('ImgData');//存图片标注信息
+        sessionStorage.removeItem('totalNum');//存图片放大缩小信息
+      },
+      // 清除画布
+      clearCanvas(){
+        this.$Modal.confirm({
+            title: "清除画布",
+            content: "是否确定清除画布上面的内容,清除后将无法撤消！",
+            onOk: () => {
+              this.$Message.info('清除成功！└(^o^)┘');
+              imgCanvas("true");
+            },
+        });
+      },
+      // 隐藏标注
+      canvasHidden(){
+          if(this.canvasSign){
+            this.barText="显示画布"
+            this.canvasSign=!this.canvasSign;
+          }else{
+            this.barText="隐藏画布"
+            this.canvasSign=!this.canvasSign;
+          }
+      },
+      sginHidden(){
+        if(this.hiddenSign){
+          if($(".signIndex").length==0){
+             this.$Message.warning('你还没有标记,快去标记吧 !  O(∩_∩)O~')
+             return
+          }
+           $(".signIndex").css("display","none");
+           this.hiddenSign=!this.hiddenSign;
+           this.hiddenSignText="显示标记"
+        }else{
+           $(".signIndex").css("display","block");
+           this.hiddenSign=!this.hiddenSign;
+           this.hiddenSignText="隐藏标记"
+        }
+        
+      },
       //关闭窗口
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
       initImgEditor()
       {
-        this.url='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530620594590&di=c6b4e74808ace02b3f26ffe1a9336206&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20171103%2F436c2c052eb345d8b12601536fcb6fc6.jpeg';
+        this.url='http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg';
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
-        sessionStorage.removeItem('ImgData');
+        this.clearSession();
       },
-      onLoad(){
+      onLoad(cControl="false"){
           let el=document.getElementsByClassName("ImgOnlod")[0];
           let el2=document.getElementById("onload");
+          let sgin=document.getElementsByClassName("sginCanvas")[0];
+          let controlDiv=document.getElementsByClassName("oControl")[0];
           el.onload=function(){
               el2.style.display="none";
+               let canvasW=el.width;
+               let canvasH=el.height;
+               let canID=document.getElementById("cav");
+
+              //  标记层
+               sgin.style.width=canvasW+"px";
+               sgin.style.height=canvasH+"px";
+
+              //  控制层
+               controlDiv.style.width=canvasW+"px";
+               controlDiv.style.height=canvasH+"px";
+              // 画布层
+               canID.width=canvasW;
+               canID.height=canvasH;
+
+               imgCanvas(cControl,canvasW,canvasH);
+               canvasControl();
+              
           }
       },
       loadWH(){
-          let sw=$(".single-page-con").width()-400;
-          let sh=$(".single-page-con").height()-140;
-          $(".imgFocus").height(sh)
-          $(".imgEditorCom").width(sw);
+          let sw=$(".single-page-con").width()-300;
+          let sh=$(".single-page-con").height()-160;
+          $(".imgFocus").height(sh);
+          $(".imgEditorCom,.imgFocus").width(sw);
+          $(".toolBar").css("margin-top",sh+5)
          
       },
       defue(){
         // 标注
-        imgSign();
+        imgSign(this.AllowEdit);
 
       },
       //需要修改
       commitEidt(type){
-        let url=this.GLOBAL.baseRouter+'task/task/inside-audit'
+        let url=this.GLOBAL.baseRouter+'task/task/inside-audit';
         let Okparams={
           "stage_id": this.stageID,
           "audit": 1,//1为通过审核,2为不通过
@@ -139,6 +245,7 @@
         let EDITparams={
             "stage_id": this.stageID,
             "audit": 2,
+            "files":[],
             "feedback": this.FeedbackValue,
             "file": JSON.stringify([{
               "file_id": this.fileID,
@@ -146,13 +253,40 @@
             }])
         }
         if(type=='edit'){
-            this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
-               this.$Message.success(msg.data.err_message);
-               this.initImgEditor();
-               sessionStorage.removeItem('ImgData');
-            }, ()=>{
-               this.$Message.error(msg.data.err_message);
+            // canvas upload
+            let canvas=document.getElementById("cav");
+            let canvasImg=canvas.toDataURL();
+            let getBlobBydataURI=(dataURI,type)=>{ 
+                let binary = atob(dataURI.split(',')[1]); 
+                let array = []; 
+                for(var i = 0; i < binary.length; i++) { 
+                  array.push(binary.charCodeAt(i)); 
+                } 
+                return new Blob([new Uint8Array(array)], {type:type }); 
+              }
+            let $Blob= getBlobBydataURI(canvasImg,'image/jpeg'); 
+            let formData = new FormData(); 
+            formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
+            this.$axios.post(this.fileup,formData).then(msg=>{
+              if(msg.data.err_code==0){
+                  //EDITparams.push(msg.data.files);
+                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  // Sgin upload
+                  this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
+                     this.$Message.success(msg.data.err_message);
+                     this.initImgEditor();
+                     sessionStorage.removeItem('ImgData');
+                  }, ()=>{
+                     this.$Message.error(msg.data.err_message);
+                  })
+               }else{
+                  this.$Message.error(msg.data.err_message)
+               }
+            },()=>{
+               this.$Message.error("请求失败!")
             })
+
+            
         }else if(type=='ok'){
             this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
                this.$Message.success(msg.data.err_message);
@@ -164,21 +298,19 @@
         }
       },    
       imgdef(){
-        $.sign.bindSign('#signx');
+        $.sign.bindSign('.sginCanvas');
         $.sign.loadingSign(this.data);
       },
       changeState(state){
         //  控制图片是否可标注
               if(state=='1'||state=='2'){
-                sessionStorage.AllowEdit="Allow";//允许标注
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
+                  this.AllowEdit=true;
               }else if(state=='3'||state=='4'||state=='5'){
-                sessionStorage.AllowEdit="NotAllow";//不允许标注
                   this.AllowEditRow=false
                   this.SataeInfo=true;
               }else{
-                sessionStorage.AllowEdit="Other";//不显示下面和不允许标注
                   this.AllowEditRow=false;
                   this.SataeInfo=false;
               }

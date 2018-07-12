@@ -34,10 +34,6 @@
     </div>
 </template>
 <script>
-import {
-  projectList,
-  getChildList
-} from "@/config/env.js";
 var qs = require("querystring");
 
 export default {

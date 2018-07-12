@@ -2,16 +2,16 @@
   <div class="remind_all">
     <div class="remind_message">
       <ul class="remind_message_ul">
-        <li @click="getClick(0)" class="remind_active">投标<span>(2)</span></li>
-        <li @click="getClick(1)">合同<span></span></li>
-        <li @click="getClick(2)">项目<span>(1)</span></li>
-        <li @click="getClick(3)">任务<span>(2)</span></li>
-        <li @click="getClick(4)">系统<span>(3)</span></li>
+        <li @click="getClick(0)" class="remind_active">投标<span v-show="froms.bid">({{froms.bid}})</span></li>
+        <li @click="getClick(1)">合同<span v-show="froms.contract">({{froms.contract}})</span></li>
+        <li @click="getClick(2)">项目<span v-show="froms.project">({{froms.project}})</span></li>
+        <li @click="getClick(3)">任务<span v-show="froms.task">({{froms.task}})</span></li>
+        <li @click="getClick(4)">系统<span v-show="froms.system">({{froms.system}})</span></li>
       </ul>
       <span @click="setMsg">设置</span>
    </div>
    <div class="remind_children">
-     <remind-children v-show="!isSet"></remind-children>
+     <remind-children v-show="!isSet" @listform = 'getlist'></remind-children>
      <set-rmind v-show="isSet"></set-rmind>
    </div>
   </div>
@@ -23,7 +23,8 @@ export default {
   data () {
     return {
       isSet: false,
-      tabNum: 2
+      tabNum: 2,
+      froms: {}
     }
   },
   components: {
@@ -47,7 +48,33 @@ export default {
       children[index].classList.add('remind_active')
     },
     setMsg () {
-      this.isSet = true
+      this.isSet = !this.isSet
+    },
+    // 获取消息
+    getlist(e) {
+      const froms = e
+      if (!froms.bid) {
+        froms.bid = 0
+      }
+      if (!froms.task) {
+        froms.task = 0
+      }
+      if (!froms.contract) {
+        froms.contract = 0
+      }
+      if (!froms.project) {
+        froms.project = 0
+      }
+      if (!froms.system) {
+        froms.system = 0
+      }
+      this.froms = froms
+      var index = 0
+      for (let i in froms) {
+        index+= froms[i]
+      }
+      this.$store.state.msgNum = JSON.stringify(index)
+      localStorage.msgNum = JSON.stringify(index)
     }
   }
 }

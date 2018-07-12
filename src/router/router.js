@@ -133,7 +133,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'file',
                 title: '任务管理详情',
-                component:resolve=>{ require (['@/views/project/task/taskInfoPop.vue'],resolve)}
+                component:resolve=>{ require (['@/views/project/task/taskInfoPop/taskInfoPop.vue'],resolve)}
             },
             {
                 path:'/project/projectMember',
@@ -145,6 +145,12 @@ export const appRouter = [
                 name:'imgEditorTwo',
                 title:'2D显示标注2.0',
                 component:resolve =>{require(['@/views/project/components/imgEditorTwo.vue'],resolve);}
+            },
+            {
+                path:'/project/vedioEditor',
+                name:'vedioEditor',
+                title:'视频标注',
+                component:resolve =>{require(['@/views/project/components/vedioEditor.vue'],resolve);}
             }
         ]
     },
