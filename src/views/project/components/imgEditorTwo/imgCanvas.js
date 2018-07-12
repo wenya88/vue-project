@@ -12,8 +12,8 @@ const imgCanvas=(action,canvasW,canvasH)=>{
    function canvasRun(){
         cavs=document.getElementById("cav");
         cavT=cavs.getContext("2d");
-        cavT.fillStyle='rgba(0,0,0,0.5)';
-        cavT.fillRect(0,0,canvasW,canvasH);
+        // cavT.fillStyle='rgba(0,0,0,0.5)';
+        // cavT.fillRect(0,0,canvasW,canvasH);
         if(action=="true"){
             cavT.clearRect(0,0,10000,10000);
         }

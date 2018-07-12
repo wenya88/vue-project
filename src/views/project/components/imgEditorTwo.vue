@@ -4,8 +4,20 @@
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
           <div class="imgFocus">
+                <!-- 控制canvas -->
+                <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
+                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
+                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
+                </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
+                  
+                  <!-- 修改编辑层 -->
+                  <div class="editSginDiv">
+                    <div class='editSignbox'>X</div>
+                    <textarea id="sginText"></textarea>
+                    <div class="sginEditCommit">修改</div>
+                  </div>
                   <!-- 画布层 -->
                   <canvas id="cav" width="1400" height="750" v-show="canvasSign">
                      <span>浏览器不支持画布标注！o(╯□╰)o</span>
@@ -13,7 +25,7 @@
                   <!-- 控件层 -->
                   <div class="oControl"></div>
                   <!-- 图片层 -->
-                  <img :src="url" class="ImgOnlod" id="oImg"/>
+                  <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
                 
           </div>
@@ -82,7 +94,7 @@
         fileID:0,
         stageID:0,
         AllowEdit:false,//是否允许标注
-        barText:'显示画布标记',
+        barText:'显示画布',
         hiddenSign:true,
         canvasSign:false,
         hiddenSignText:'隐藏标注'
@@ -143,10 +155,10 @@
       // 隐藏标注
       canvasHidden(){
           if(this.canvasSign){
-            this.barText="显示画布标记"
+            this.barText="显示画布"
             this.canvasSign=!this.canvasSign;
           }else{
-            this.barText="隐藏画布标记"
+            this.barText="隐藏画布"
             this.canvasSign=!this.canvasSign;
           }
       },
@@ -188,9 +200,11 @@
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
+
               //  标记层
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
+
               //  控制层
                controlDiv.style.width=canvasW+"px";
                controlDiv.style.height=canvasH+"px";

@@ -133,7 +133,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'file',
                 title: '任务管理详情',
-                component:resolve=>{ require (['@/views/project/task/taskInfoPop.vue'],resolve)}
+                component:resolve=>{ require (['@/views/project/task/taskInfoPop/taskInfoPop.vue'],resolve)}
             },
             {
                 path:'/project/projectMember',
@@ -226,8 +226,13 @@ export const appRouter = [
                 name: 'contractDetails',
                 title: '合同详情',
                 component: resolve => { require(['@/views/epibol/contractManage/component/contractDetails.vue'], resolve); }
+            }, {
+                path: '/epibol/list',
+                icon: 'ios-paper-outline',
+                name: 'list',
+                title: 'list',
+                component: resolve => { require(['@/views/page/list.vue'], resolve); }
             }
-          
         ]
     }, {
         path: '/customer',

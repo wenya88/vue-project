@@ -54,16 +54,8 @@ const canvasControl=()=>{
                 let oEvent = ev || window.event,
                 l = oEvent.clientX - disX,
                 t = oEvent.clientY - disY;
-                // console.log("l:"+l,"t:"+t)
-                
-                // oCanvasMove
-                // oCanvas.style.left = l +'px';
-                // oCanvas.style.top = t +'px';
+                // console.log(l,t)
 
-                // // imageMove
-                // oImg.style.left = l +'px';
-                // oImg.style.top = t +'px';
-    
                 // divMove
                 oSign.style.left = l +'px';
                 oSign.style.top = t +'px';
@@ -100,7 +92,7 @@ const canvasControl=()=>{
                 if(sginDiv.length>0){
                     for(let i=0;i<sginDiv.length;i++){
                         sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)*restrict)+1+'px';
-                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)*restrict)+2+'px';
+                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)*restrict)+3+'px';
                     }
                 }
             }else{
@@ -110,7 +102,7 @@ const canvasControl=()=>{
                 if(sginDiv.length>0){
                     for(let i=0;i<sginDiv.length;i++){
                         sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)/restrict)-1+'px';
-                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)/restrict)-2+'px';
+                        sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)/restrict)-3+'px';
                     }
                 }
             }
