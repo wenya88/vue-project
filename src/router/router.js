@@ -226,12 +226,6 @@ export const appRouter = [
                 name: 'contractDetails',
                 title: '合同详情',
                 component: resolve => { require(['@/views/epibol/contractManage/component/contractDetails.vue'], resolve); }
-            }, {
-                path: '/epibol/list',
-                icon: 'ios-paper-outline',
-                name: 'list',
-                title: 'list',
-                component: resolve => { require(['@/views/page/list.vue'], resolve); }
             }
         ]
     }, {
