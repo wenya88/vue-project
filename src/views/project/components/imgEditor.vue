@@ -1,55 +1,62 @@
 <template>
-  <div class="ImgEditor">
+  <div class="newImgEditor">
       <div class="imgEditorCom">
-          <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
-          <div class="stageListRow" @mouseleave="hideStageList">
-              <ul>
-                <li v-for="(item,index) in IMGlist" @click="changCont(
-                        item.file.file,
-                        item.file.tag,
-                        item.status,
-                        item.inside_audit_time,
-                        item.client_audit_time,
-                        item.inside_audit_date,
-                        item.client_audit_date,
-                        item.inside_audit_uid,
-                        item.client_audit_uid,
-                        index,
-                        item.file.stage_id,
-                        item.file.id
-                    )" :class="{showBg:index==liIndex}"> 
-                    <span>{{index+1}}<br/>{{item.stage_name}}</span>
-                    <em>
-                      {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
-                      {{item.status | filtStat}}
-                    </em>
-                    <div class="clear"></div>
-                </li>
-              </ul>
-          </div>
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
-          <div class="imgFocus" id="signx">
-                <img :src="url" class="ImgOnlod"/>
+          <div class="imgFocus">
+                <!-- 控制canvas -->
+                <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
+                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
+                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
+                </div>
+                <!-- 标注层 -->
+                <div class="sginCanvas" id="signx">
+                  
+                  <!-- 修改编辑层 -->
+                  <div class="editSginDiv">
+                    <div class='editSignbox'>X</div>
+                    <textarea id="sginText"></textarea>
+                    <div class="sginEditCommit">修改</div>
+                  </div>
+                  <!-- 画布层 -->
+                  <canvas id="cav" width="1400" height="750">
+                     <span>浏览器不支持画布标注！o(╯□╰)o</span>
+                  </canvas>
+                  <!-- 控件层 -->
+                  <div class="oControl"></div>
+                  <!-- 图片层 -->
+                  <img :src="url" class="ImgOnlod" id="oImg"/>                  
+                </div>
+                
+          </div>
+          <!-- 工具条 -->
+          <div class="toolBar">
+              <span :class="[canvasSign?'barLeft barselet':'barLeft']" @click="canvasHidden">
+                  <Icon type="edit" class="add"></Icon>{{barText}}
+              </span>
+              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清空画布</span>
+              <span class="barRight">
+                  <s><i class="iconfont icon-qimai-guanjiancizhishuduibi"></i>查看上次反馈</s>
+                  <s @click="sginHidden"><i class="iconfont icon-yincang"></i>{{hiddenSignText}}</s>
+              </span>
+              <div class="clear"></div>
           </div>
           <!-- 标注提交 -->
           <div v-if="AllowEditRow" class="AllowEdit">
+            <span class="EditIcon"></span>
             <span class="EditInput">
-                <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
+                <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue" AUTOCOMPLETE="off">
             </span>
             <span class="EditSub">
-                <button class="actionPost" @click="commitEidt('edit')">需修改</button>
-            </span>
-            <span class="EditSub" v-if="data==null?true:false">
-                <button class="subPass" @click="commitEidt('ok')">通过</button>
+                <button @click="commitEidt('edit')">需修改</button>
+                <button @click="commitEidt('ok')">通过</button>
             </span>
           </div>
-          
           <!-- 反馈信息 -->
           <div v-if="SataeInfo" class="feedbackInfo">
             <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
             <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
-            <span><p>审核人</p><br/>{{insTime>cliTiem?insUid:cliUid}}</span>
+            <span><p>审核人</p><br/></span>
             <div class="clear"></div>
           </div>
       </div>
@@ -57,13 +64,14 @@
   </div>
 </template>
 <script>
-  var Data=[];
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
-  import {baseUrl} from '../../../config/env.js';
+  import {imgSign} from './imgEditorTwo/imgSign.js'
+  import {imgCanvas} from './imgEditorTwo/imgCanvas.js'
+  import {canvasControl} from './imgEditorTwo/imgControl.js'
   export default {
     components:{
-      OnLoad
+      OnLoad:OnLoad
     },
     data () {
       return {
@@ -73,7 +81,6 @@
         TID:80,
         TaskID:0,
         IMGlist:[],
-        AllowEdit:String,
         AllowEditRow:false,
         SataeInfo:false,
         StateFeedBack:0,
@@ -81,13 +88,16 @@
         cliTiem:0,
         insDate:0,
         cliDate:0,
-        insUid:0,
-        cliUid:0,
         liIndex:0,
         FeedbackValue:'',
         onload:true,
         fileID:0,
-        stageID:0
+        stageID:0,
+        AllowEdit:false,//是否允许标注
+        barText:'显示画布',
+        hiddenSign:true,
+        canvasSign:false,
+        hiddenSignText:'隐藏标注'
       }
     },
     filters:{
@@ -108,8 +118,11 @@
       }
     },
     mounted(){
-      // this.initImgEditor();
+      this.initImgEditor();
       this.loadWH();
+    },
+    destroyed(){
+        this.clearSession();
     },
     computed:{
       storeTaskID(){
@@ -117,10 +130,57 @@
       },
       storeFileURl(){
         return this.$store.state.ImgVedioStatus.FileURl
-      }
-
+      },
+      fileup(){
+        return this.$store.state.paySkip.fileUpload
+      },
     },
     methods:{
+      // 清除缓存
+      clearSession(){
+        sessionStorage.removeItem('ImgData');//存图片标注信息
+        sessionStorage.removeItem('totalNum');//存图片放大缩小信息
+      },
+      // 清除画布
+      clearCanvas(){
+        this.$Modal.confirm({
+            title: "清除画布",
+            content: "是否确定清除画布上面的内容,清除后将无法撤消！",
+            onOk: () => {
+              this.$Message.info('清除成功！└(^o^)┘');
+              imgCanvas("true");
+            },
+        });
+      },
+      // 隐藏标注
+      canvasHidden(){
+          let cav=document.getElementById("cav")
+          if(this.canvasSign){
+            this.barText="显示画布";
+            cav.style.zIndex="12";
+            this.canvasSign=!this.canvasSign;
+          }else{
+            this.barText="隐藏画布";
+            cav.style.zIndex="14";
+            this.canvasSign=!this.canvasSign;
+          }
+      },
+      sginHidden(){
+        if(this.hiddenSign){
+          if($(".signIndex").length==0){
+             this.$Message.warning('你还没有标记,快去标记吧 !  O(∩_∩)O~')
+             return
+          }
+           $(".signIndex").css("display","none");
+           this.hiddenSign=!this.hiddenSign;
+           this.hiddenSignText="显示标记"
+        }else{
+           $(".signIndex").css("display","block");
+           this.hiddenSign=!this.hiddenSign;
+           this.hiddenSignText="隐藏标记"
+        }
+        
+      },
       //关闭窗口
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
@@ -130,170 +190,53 @@
         this.url=this.storeFileURl;
         this.get();
         this.onLoad();
-        sessionStorage.removeItem('ImgData');
+        this.clearSession();
       },
-      onLoad(){
+      onLoad(cControl="false"){
           let el=document.getElementsByClassName("ImgOnlod")[0];
           let el2=document.getElementById("onload");
-          // el2.style.display="block";
+          let sgin=document.getElementsByClassName("sginCanvas")[0];
+          let controlDiv=document.getElementsByClassName("oControl")[0];
           el.onload=function(){
               el2.style.display="none";
-              let imgFocus=$(".imgFocus").height();
-              $(".stageListRow").css('height',imgFocus)
-              // let imgH=$(".ImgOnlod").height();
-              // let divH=$(".browsetaskpop").height();
-              // $('.stageListRow').css('height',imgH)
-              // if(imgH>divH){
-              //   $(".browsetaskpop").css('height',imgH+88)
-              // }
+               let canvasW=el.width;
+               let canvasH=el.height;
+               let canID=document.getElementById("cav");
+
+              //  标记层
+               sgin.style.width=canvasW+"px";
+               sgin.style.height=canvasH+"px";
+
+              //  控制层
+               controlDiv.style.width=canvasW+"px";
+               controlDiv.style.height=canvasH+"px";
+              // 画布层
+               canID.width=canvasW;
+               canID.height=canvasH;
+
+               imgCanvas(cControl,canvasW,canvasH);
+               canvasControl();
+              
           }
       },
       loadWH(){
-          $('.stageListRow,.imgEditorCom').height($(window).height()-500);
-          $(".imgEditorCom").width($(".filebrowse").width());
+          let sw=$(".single-page-con").width()-300;
+          let sh=$(".single-page-con").height()-160;
+          // $(".imgFocus").height(sh);//先注解
+          $(".imgFocus").height(470);
+          // $(".imgEditorCom,.imgFocus").width(sw);//先注解
+          $(".imgEditorCom,.imgFocus").width(815)  //临时方法
+          // $(".toolBar").css("margin-top",sh+5)//先注解
+           $(".toolBar").css("margin-top",480)//临时方法
       },
-      changCont(file,tag,status,insTime,cliTiem,insDate,cliDate,insUid,cliUid,index,taskID,fid){
-         this.url=file;
-         this.data=tag;
-         this.StateFeedBack=status;
-         this.insTime=insTime;
-         this.cliTiem=cliTiem;
-         this.insDate=insDate;
-         this.cliDate=cliDate;
-         this.insUid=insUid;
-         this.cliUid=cliUid;
-         this.liIndex=index;
-         let stageID=taskID;
-         let fileID=fid;
-         this.changeState(this.StateFeedBack);
-         this.defue(stageID,fileID);
-         this.imgdef();
-         Data=[];
-         this.onLoad();
-      },
-      defue(stageID,fileID){
-        (function($){
-          var cX,cY,indexId=0,removeId,DOM;
-          var Rleft,Rtop;//需要删除的坐标
-          jQuery.sign={
-            bindSign:function(dom){
-              DOM=dom;
-              defined(dom);
-            },
-            loadingSign:function(data){
-              loading(data);
-              Data.concat(data);
-            }
-          };
-          document.oncontextmenu = function(e){
-            e.preventDefault();
-          };//阻止鼠标右键默认事件
-          $(document).on('click','.imgFocus img',function(e){
-              $(".inputSignBox").hide();
-              e.stopPropagation;
-          });
+      defue(){
+        // 标注
+        imgSign(this.AllowEdit);
 
-          function defined(dom){
-            //是否显示标记
-            if(sessionStorage.AllowEdit=="NotAllow"||sessionStorage.AllowEdit=="Other"){
-                return
-            }
-            //鼠标右键
-            $(document).on("mousedown",dom,function(e){
-              e.preventDefault();
-              if(e.which==3){
-                $(".inputSignBox").remove();
-                var l=e.clientX-$(dom).offset().left;
-                var t=e.clientY-$(dom).offset().top;
-                cX=l;
-                cY=t;
-                $(dom).append("<div class='inputSignBox'></div>");
-                $('.inputSignBox').append("<div class='outSignbox'>X</div>");
-                $('.inputSignBox').append("<div class='signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>");
-                $('.inputSignBox').append("<div class='sureSign'>标注</div>");
-                $('.inputSignBox').css({"left":cX,"top":cY});
-                e.stopPropagation();
-              }
-            });
-            //添加编辑
-            $(document).on('click','#inputText',function(){
-              $(this).focus();
-              $('.signbox em').remove();
-            });//编辑框聚焦
-            $(document).on('click','.outSignbox',function(){
-              $('.inputSignBox').remove();
-            });//退出编辑
-            $(document).on('click','.sureSign',function(){
-              if($('.signbox em').length>0){
-                $('.inputSignBox').remove();
-              }else if($('.signbox').text().length<=0){
-                $('.inputSignBox').remove();
-              }else{
-                indexId++;
-                var text=$.trim($('.signbox').text());
-                $('.inputSignBox').remove();
-                $(dom).append("<div class='signIndex' id='Ts"+indexId+"' theSign='"+text+"'>"+"<div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>");
-                $('#Ts'+indexId).css({"left":cX-11,"top":cY-29});
-                var mes={left:cX-11,top:cY-29,message:text};
-                Data[Data.length]=mes;
-                sessionStorage.ImgData=JSON.stringify(Data);
-              }
-            });//确认编辑
-            $(document).on('mouseenter','[id*=Ts]',function(e){
-              var m=$(this).attr('id').replace(/[^0-9]/ig, "");
-              // if(e.which==3){
-                e.stopPropagation();
-                removeId=m;
-                $('.chooseBox').remove();
-                Rleft=$(this).css("left").replace(/[^0-9]/ig, "");
-                Rtop=$(this).css("top").replace(/[^0-9]/ig, "");
-                var l=e.clientX-$(dom).offset().left,t=e.clientY-$(dom).offset().top;
-                $(this).append("<div class='chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
-                $('.chooseBox').css({"left":45,"top":-20});
-              // }
-            });//弹出取消标记
-            $(document).on('click','#deleteSign',function(){
-              deleteData(Rleft,Rtop);
-              $('#Ts'+removeId).remove();
-            });//删除标记
-          
-            $(document).click(function(){
-              $('.chooseBox').remove();
-            });
-            //点击消失
-          }
-          function deleteData(left,top){
-            for(var i=0;i<Data.length;i++){
-              if(Data[i].left==left&&Data[i].top==top){
-                Data.splice(i,1);
-                sessionStorage.ImgData=JSON.stringify(Data);
-                break;
-              }else{
-                continue;
-              }
-             
-            }
-          }//删除数据
-          function loading(data){
-             $(".signIndex").remove();
-               if(data!=null){
-                 var l=Data.length;
-                  for(var i=0;i<data.length;i++){
-                    indexId++
-                    $(DOM).append("<div class='signIndex' id='Ts"+l+"' theSign='"+data[i].message+"'>"+"<div class='hintBox'"+"title="+data[i].message+">"+data[i].message+"</div>"+"</div>");
-                    $('#Ts'+l).css({"left":Number(data[i].left),"top":Number(data[i].top)});
-                    l++;
-                  }
-                indexId=l;
-               }
-           
-          }//载入数据
-
-        })(jQuery);
       },
       //需要修改
       commitEidt(type){
-        let url=this.GLOBAL.baseRouter+'task/task/inside-audit'
+        let url=this.GLOBAL.baseRouter+'task/task/inside-audit';
         let Okparams={
           "stage_id": this.stageID,
           "audit": 1,//1为通过审核,2为不通过
@@ -306,6 +249,7 @@
         let EDITparams={
             "stage_id": this.stageID,
             "audit": 2,
+            "files":[],
             "feedback": this.FeedbackValue,
             "file": JSON.stringify([{
               "file_id": this.fileID,
@@ -313,13 +257,40 @@
             }])
         }
         if(type=='edit'){
-            this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
-               this.$Message.success(msg.data.err_message);
-               this.initImgEditor();
-               sessionStorage.removeItem('ImgData');
-            }, ()=>{
-               this.$Message.error(msg.data.err_message);
+            // canvas upload
+            let canvas=document.getElementById("cav");
+            let canvasImg=canvas.toDataURL();
+            let getBlobBydataURI=(dataURI,type)=>{ 
+                let binary = atob(dataURI.split(',')[1]); 
+                let array = []; 
+                for(var i = 0; i < binary.length; i++) { 
+                  array.push(binary.charCodeAt(i)); 
+                } 
+                return new Blob([new Uint8Array(array)], {type:type }); 
+              }
+            let $Blob= getBlobBydataURI(canvasImg,'image/jpeg'); 
+            let formData = new FormData(); 
+            formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
+            this.$axios.post(this.fileup,formData).then(msg=>{
+              if(msg.data.err_code==0){
+                  //EDITparams.push(msg.data.files);
+                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  // Sgin upload
+                  this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
+                     this.$Message.success(msg.data.err_message);
+                     this.initImgEditor();
+                     sessionStorage.removeItem('ImgData');
+                  }, ()=>{
+                     this.$Message.error(msg.data.err_message);
+                  })
+               }else{
+                  this.$Message.error(msg.data.err_message)
+               }
+            },()=>{
+               this.$Message.error("请求失败!")
             })
+
+            
         }else if(type=='ok'){
             this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
                this.$Message.success(msg.data.err_message);
@@ -331,35 +302,32 @@
         }
       },    
       imgdef(){
-        $.sign.bindSign('#signx');
+        $.sign.bindSign('.sginCanvas');
         $.sign.loadingSign(this.data);
       },
       changeState(state){
         //  控制图片是否可标注
               if(state=='1'||state=='2'){
-                sessionStorage.AllowEdit="Allow";//允许标注
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
+                  this.AllowEdit=true;
               }else if(state=='3'||state=='4'||state=='5'){
-                sessionStorage.AllowEdit="NotAllow";//不允许标注
                   this.AllowEditRow=false
                   this.SataeInfo=true;
               }else{
-                sessionStorage.AllowEdit="Other";//不显示下面和不允许标注
                   this.AllowEditRow=false;
                   this.SataeInfo=false;
               }
       },
       get(){
           //  获取图片的标注信息
-          
            let TaskID=this.storeTaskID
            if(TaskID == 0)
            {
               return false;
            }
            let _this=this;
-           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
+           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
@@ -376,8 +344,6 @@
                      _this.cliTiem=val.client_audit_time;
                      _this.insDate=val.inside_audit_date;
                      _this.cliDate=val.client_audit_date;
-                     _this.insUid=val.insUid;
-                     _this.cliUid=val.cliUid;
                      _this.liIndex=index;
                      _this.fileID=val.file.id;
                      _this.stageID=val.file.stage_id;
@@ -387,7 +353,7 @@
               // 把StageID传到提交
               let stageID = _this.stageID;
               let fileID=_this.fileID;
-              _this.defue(stageID,fileID);
+              _this.defue();
               _this.imgdef();
               }else{
                 return
@@ -396,18 +362,10 @@
             _this.$Message.error('请求失败')
           })
       },
-      showStageList(){
-          document.getElementsByClassName('controlListRow')[0].style.display='none';
-          document.getElementsByClassName('stageListRow')[0].style.display='block';
-      },
-      hideStageList(){
-          document.getElementsByClassName('controlListRow')[0].style.display='block';
-          document.getElementsByClassName('stageListRow')[0].style.display='none';
-      }
     }
 
   }
 </script>
 <style lang='less'>
-@import '../../../styles/imgEditor.less';
+@import './imgEditorTwo/style/imgEditor.less';
 </style>
