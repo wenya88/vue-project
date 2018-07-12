@@ -10,13 +10,9 @@
       data () {
             return {
                 theme: this.$store.state.app.themeColor,
-<<<<<<< HEAD
                 ishow: false,
                 positionX: 0,
                 positionY: 0
-=======
-                ishow: false
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             };
         },
         created() {
@@ -46,7 +42,6 @@
         //   console.log('数据2', this.$store.state.msgShow)
         },
         beforeDestroy () {
-<<<<<<< HEAD
           localStorage.removeItem('msgShow')
         },
         methods: {
@@ -59,10 +54,6 @@
           up (e) {
             console.log('up', e)
           }
-=======
-        },
-        methods: {
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         }
     };
 </script>
@@ -74,10 +65,7 @@ html,body{
     height: 100%;
     background: #f0f0f0;
     overflow: hidden;
-<<<<<<< HEAD
     position: relative;
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 }
 .app-main{
     width: 100%;

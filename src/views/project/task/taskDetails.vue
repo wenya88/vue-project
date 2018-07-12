@@ -1,11 +1,7 @@
 <!-- 任务详情组件 -->
 <template>
     <div>
-<<<<<<< HEAD
         <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
-=======
-        <Form :label-position="taskManagement?'top':'left'" :label-width="60" >
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             <FormItem   label="任务名称">
                 <Input   v-model="editData.name"  :disabled="editDisabled">
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>

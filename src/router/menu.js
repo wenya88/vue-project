@@ -57,15 +57,6 @@ export const menu = [
                 name: 'eStatistics',
                 title: '统计',
             // }, {
-<<<<<<< HEAD
-            //     path: '/project/imgEditorTwo',
-            //     name: '2D',
-            //     title: '2D',
-            }, {
-                path:'/project/vedioEditor',
-                name:'vedioEditor',
-                title:'视频标注',
-=======
             //     path: '/epibol/3D',
             //     name: '3D',
             //     title: '3D',
@@ -73,7 +64,6 @@ export const menu = [
             //     path: '/epibol/list',
             //     name: 'list',
             //     title: 'list'
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             }
         ]
     }, {

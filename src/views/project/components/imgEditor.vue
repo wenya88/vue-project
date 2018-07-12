@@ -245,16 +245,7 @@
                     "tag":[]
           })]
         }
-        let EDITparams={
-            "stage_id": this.stageID,
-            "audit": 2,
-            "files":[],
-            "feedback": this.FeedbackValue,
-            "file": JSON.stringify([{
-              "file_id": this.fileID,
-              "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]'
-            }])
-        }
+        
         if(type=='edit'){
             // canvas upload
             let canvas=document.getElementById("cav");
@@ -272,8 +263,17 @@
             formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
             this.$axios.post(this.fileup,formData).then(msg=>{
               if(msg.data.err_code==0){
-                  //EDITparams.push(msg.data.files);
-                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  //  EDITparams;
+                  let EDITparams={
+                      "stage_id": this.stageID,
+                      "audit": 2,
+                      "feedback": this.FeedbackValue,
+                      "file": JSON.stringify([{
+                        "file_id": this.fileID,
+                        "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]',
+                        "label":msg.data.files.url
+                      }])
+                  }
                   // Sgin upload
                   this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
                      this.$Message.success(msg.data.err_message);

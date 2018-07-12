@@ -87,7 +87,6 @@
   }
   .clearfix{
     zoom:1;
-<<<<<<< HEAD
   }
   .file_upload{
     min-width: 120px;
@@ -109,6 +108,4 @@
   }
   .file_upload_ltext:hover{
     color: rgba(24,191,164,.5);
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
   }

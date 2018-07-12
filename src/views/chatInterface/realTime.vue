@@ -1,6 +1,5 @@
 <template>
    <div class="real_time_box">
-<<<<<<< HEAD
      <div class="load_real">
       <div v-if='loading' class="chat_load">
           <span>加载中...</span>
@@ -11,27 +10,14 @@
          <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
              <img :src="item.headimage">
-=======
-     <GeminiScrollbar class="crollbar">
-      <div class="realTime_interface">
-         <div v-for="(item, index) in datalist" :key="index" class="ko">
-         <div v-if ='item.user_id !== userMsg.id'>
-           <div class="clearfix realTime_message">
-             <img src="../../images/meinv.jpg">
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
              <p class="realTime_time_text">{{item.remark_name}}</p>
              <p class="realTime_time">{{item.date}}</p>
            </div>
            <div>
              <p class="triangle_type"></p>
              <p>
-<<<<<<< HEAD
              <span :class="`Send_content is_own_no ${item.group_id}`" v-html="item.message">
                <!-- {{item.message}} -->
-=======
-             <span :class="`Send_content is_own_no ${item.group_id}`">
-               {{item.message}}
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
              </span>
              </p>
            </div>
@@ -46,13 +32,8 @@
            <div class="is_own_float">
              <p class="triangle_type_own"></p>
              <p>
-<<<<<<< HEAD
              <span class="Send_content is_own ${item.group_id}" v-html="item.message">
                <!-- {{item.message}} -->
-=======
-             <span class="Send_content is_own ${item.group_id}">
-               {{item.message}}
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
              </span>
              </p>
            </div>
@@ -60,19 +41,12 @@
          </div>
       </div>
        </GeminiScrollbar>
-<<<<<<< HEAD
        </div>
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       <form class="send_information_box">
          <div class="send_message_remind">
            <div :class="`send_input ${data.absold ? '' : 'disable'}`" contenteditable="true" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
            <div class="clearfix send_message_children" v-show="isShowMessage">
-<<<<<<< HEAD
              <p>有<span class="message_num" v-show="isLook">{{readNum}}</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
-=======
-             <p>有<span class="message_num" v-show="isLook">1</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
              <p @click="closeMessage">x</p>
              <p @click="getSee" v-if="!isLook">查看</p>
              <p @click="getSeed" v-else>下一条</p>
@@ -82,37 +56,21 @@
          <div class="send_information_person" :style="personPosi" v-show="sendShow">
            <!-- <GeminiScrollbar class="scollr_person"> -->
            <ul class="send_ul_style">
-<<<<<<< HEAD
              <li v-for='(item, index) in useList' :key="index" @click="personDone(item)">{{item.remark_name}}</li>
-=======
-             <li v-for='(item, index) in useList' :key="index" @click="personDone(item.name)">{{item.name}}</li>
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
            </ul>
            <!-- </GeminiScrollbar> -->
          </div>
          <div class="clearfix send_Function_button">
-<<<<<<< HEAD
            <div id='file_id'>
-=======
-           <div>
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
               <span class="pace">
                 <i class="iconfont icon-biaoqing1"/>
               </span>
               <span class="file_class_father">
-<<<<<<< HEAD
                 <i class="iconfont icon-tupian1" id="file" @click='getImage'/>
                 <!-- <input type="file" class="file_class"/> -->
               </span>
               <span>
                 <i class="iconfont icon-wenjianjia" id="wenjian" @click='getFiles'/>
-=======
-                <i class="iconfont icon-tupian1"/>
-                <input type="file" class="file_class"/>
-              </span>
-              <span>
-                <i class="iconfont icon-wenjianjia"/>
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
               </span>
            </div>
            <p :class="`button_send ${data.absold ? '' : 'disable'}`" @click="submit">回车发送</p>
@@ -122,10 +80,7 @@
 </template>
 <script>
 import {screenshot} from './screenshot.js'
-<<<<<<< HEAD
 var qs = require('querystring')
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export default {
   props: ['data'],
   data () {
@@ -133,16 +88,10 @@ export default {
       value: '',
       datalist: [],
       messageNum: 0,
-<<<<<<< HEAD
       sendShow: false,
       isLook: false,
       loading: false,
       readNum: 0,
-=======
-      nowName: '陈莉莉',
-      sendShow: false,
-      isLook: false,
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       websock: null,
       isShowMessage: false,
       scollArray: [],
@@ -152,7 +101,6 @@ export default {
       },
       userMsg: {},
       lastSelection: {},
-<<<<<<< HEAD
       useList: [],
       configure:{}
     }
@@ -162,34 +110,6 @@ export default {
     this.getOss()
     if (!this.data.absold) {
       this.datalist= []
-=======
-      useList: [
-        {
-          name: '李佳'
-        },
-        {
-          name: '王者'
-        },
-        {
-          name: '霸气'
-        },
-        {
-          name: '索隆'
-        },
-        {
-          name: '所有人'
-        }
-      ],
-    }
-  },
-  mounted () {
-    // localStorage.removeItem('useList')
-    // console.log(this.data.absold)
-    if (!this.data.absold) {
-      this.datalist= []
-      // this.$store.state.useList = []
-      // localStorage.removeItem('useList')
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
     this.userMsge()
     this.init()
@@ -204,7 +124,6 @@ export default {
   computed : {
     getList () {
       return this.$store.state.useList
-<<<<<<< HEAD
     },
     getImg () {
       return this.$store.state.img
@@ -215,14 +134,10 @@ export default {
     // getBob () {
     //   return this.$store.state.blob
     // }
-=======
-    }
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
   },
   watch: {
     getList(e) {
       this.submitMsg(e)
-<<<<<<< HEAD
       // this.getName()
     },
     // getBob(e) {
@@ -247,21 +162,12 @@ export default {
     data: function (e) {
       var obj = this.$store.state.useList
       this.submitMsg(obj)
-=======
-      // console.log('数据s', e)
-    },
-     data: function (e) {
-      var obj = this.$store.state.useList
-      this.submitMsg(obj)
-      // console.log('变换', e)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
   },
   // updated () {
   //   this.geyEmoji()
   // },
   methods: {
-<<<<<<< HEAD
     // 发送
     getSong (obj) {
       var list = []
@@ -408,8 +314,6 @@ export default {
          console.log('错误', error)
        })
     },
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     // 获取用户信息
     userMsge () {
       this.userMsg= JSON.parse(localStorage.userMsg)
@@ -467,11 +371,6 @@ export default {
         this.$nextTick(() => {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
           const offset = ele.caret('position')
-<<<<<<< HEAD
-=======
-          // console.log('offset', offset)
-          // const lefts = offset.left - 600
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
           this.personPosi = {
             left: offset.left + 'px',
             top: offset.top - contentsHeight + 'px'
@@ -498,13 +397,9 @@ export default {
       }
     },
     // @人员选择
-<<<<<<< HEAD
     personDone (e) {
       const person = e.remark_name
       const personId = `person_${e.user_id}`
-=======
-    personDone (person) {
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       this.sendShow = false
       document.getElementById('testInput').focus() // 可编辑div获取光标
       // 获取之前保留下来的信息
@@ -521,10 +416,7 @@ export default {
       const spanNode1 = document.createElement('span')
       spanNode.setAttribute('style', 'color:rgba(49,187,159,1);')
       spanNode.className = 'at-text'
-<<<<<<< HEAD
       spanNode.id = personId
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       spanNode.innerHTML = '@' + person
       spanNode1.innerHTML = '&nbsp;'
       // 将生成内容打包放在 Fragment 中，并获取生成内容的最后一个节点，也就是空格。
@@ -542,7 +434,6 @@ export default {
     },
     // @查找
     getName () {
-<<<<<<< HEAD
       // const list = Array.from(this.datalist)
       // var nameArray = []
       if (this.messageNum !== 0) {
@@ -554,35 +445,10 @@ export default {
         
       // })
       // this.scollArray = nameArray
-=======
-      const list = Array.from(this.datalist)
-      var nameArray = []
-      list.forEach((element, index) => {
-        const isShow = element.message.indexOf('@') !== -1 // 查找是否含有@
-        if (isShow) {
-          const nameList = element.message.split('@')
-          const name = this.nowName
-          if (nameList[1] === name) {
-            // const dome = document.getElementsByClassName('Send_content')[index]
-            // const documents = document.getElementsByClassName('realTime_interface')[0]
-            // const dome = $('.Send_content').eq(index).offset().top
-            nameArray.push(index)
-            this.messageNum = nameArray.length
-            if (nameArray.length !== 0) {
-              this.isShowMessage = true
-            }
-            // alert(nameArray.length)
-          }
-          // alert(nameList[1])
-        }
-      })
-      this.scollArray = nameArray
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     // 查看
     getSee () {
       this.isLook = true
-<<<<<<< HEAD
       this.getLook()
     },
     getSeed () {
@@ -612,29 +478,6 @@ export default {
           this.isShowMessage = false
           this.readNum = 0
       }
-=======
-      this.getLook(0)
-    },
-    getSeed () {
-      const index = this.messageNum
-      var num = 1
-      if (num < index) {
-        this.getLook(num)
-      }
-    },
-    getLook (index) {
-      const list = Array.from(this.scollArray)
-      // const firstScoll = list[index].offset
-      const num = list[index]
-      const firstScoll = $('.Send_content').eq(num).offset().top
-      const dcment = document.getElementsByClassName('gm-scroll-view')[0]
-      dcment.scrollTop = firstScoll
-      this.$nextTick(() => {
-        if ((index + 1) === list.length) {
-          this.isShowMessage = false
-        }
-      })
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     // 关闭标签
     closeMessage () {
@@ -643,7 +486,6 @@ export default {
     submit () { // 提交内容
       $('.send_input').find('div').remove()
       this.sendShow = false // 发送关闭@框
-<<<<<<< HEAD
       const personTxt = document.getElementById('testInput').getElementsByClassName('at-text')
       for (let i = 0; i < personTxt.length; i++) {
         const personTxts = personTxt[i].innerText
@@ -666,10 +508,6 @@ export default {
       // } else {
        const elements =  $('.send_input').html().replace(/&nbsp;/g,"")
       // }
-=======
-      const elements = $('.send_input').html().replace(/&nbsp;/g,"")
-      // console.log('1111', elements)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       const sendTime = this.getTime()
       var list = this.$store.state.useList
       const shuju = JSON.stringify({
@@ -714,7 +552,6 @@ export default {
     },
     submitMsg(obj) {
       const list = Array.from(obj)
-<<<<<<< HEAD
       var listLocal = []
       if (localStorage.useList) {
          listLocal = JSON.parse(localStorage.useList)
@@ -775,17 +612,6 @@ export default {
             pos = str.indexOf(subStr, pos + 1);
         }
         return positions
-=======
-      var newList = []
-      list.forEach((elements, index) => {
-        const str = this.data.id
-        if (str === elements.group_id) {
-           newList.push(elements)
-          //  console.log('11111', elements)
-        }
-      })
-      this.$set(this, 'datalist', newList)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     geyEmoji () {
       $('.Send_content').each(function(){
@@ -799,19 +625,10 @@ export default {
           action: 'login',
           token: localStorage.token
         })
-<<<<<<< HEAD
-=======
-        // this.threadPoxi(msgData)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       }
     },
   },
   beforeDestroy () {
-<<<<<<< HEAD
-=======
-    // alert(1)
-    // this.websock.close()
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
   }
 }
 </script>
@@ -820,7 +637,6 @@ export default {
  width: 100%;
  height: 100%;
 }
-<<<<<<< HEAD
 .chat_load{
  width: 100%;
  height: 50px;
@@ -849,17 +665,6 @@ export default {
 }
 .crollbar{
  /* height: calc(100% - 150px); */
-=======
-.realTime_interface{
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0 10px;
-  height: 100%;
-  /* overflow-y: auto; */
-}
-.crollbar{
- height: calc(100% - 150px);
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 }
 .send_information_box,
 .send_information_emoji{

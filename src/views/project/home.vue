@@ -55,7 +55,6 @@
                              任务
                              <p>制定计划并管理任务或需求</p>
                         </div>
-<<<<<<< HEAD
                         <div class="resouer" ref="resouer">
                             <div style="margin-bottom: 10px;">
                                 <span style="padding: 0 25px;font-size: 20px;">资源管理</span><span>浏览和审核资源</span>
@@ -68,15 +67,6 @@
                             <!--<div class="content">-->
                                 <!--<span class="iconfont icon-921caidan_hezi" style="font-size:10em;color:#a9a9a9;width:112px;"></span>-->
                             <!--</div>-->
-=======
-                        <div class="resouer">
-                            <div class="title">
-                                资源管理 <span>浏览和审核资源</span>
-                            </div>
-                            <div class="content">
-                                <span class="iconfont icon-921caidan_hezi" style="font-size:10em;color:#a9a9a9;width:112px;"></span>
-                            </div>
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -109,35 +99,22 @@
                 </div>
 
             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         </div>
     </div>
 </template>
 <script>
 var qs=require('querystring')
-<<<<<<< HEAD
 import vFlare from '@/components/d3flare'
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export default {
     data(){
         return{
             proData:[],
-<<<<<<< HEAD
             width:null
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         }
     },
     mounted(){
         this.get();
-<<<<<<< HEAD
             this.flare();
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     methods:{
         companySet(){
@@ -172,7 +149,6 @@ export default {
             })
 
         },
-<<<<<<< HEAD
         flare(){
             this.$nextTick(() => {
                 this.width = this.$refs.resouer.offsetWidth+'';
@@ -181,8 +157,6 @@ export default {
     },
     components:{
         vFlare
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
 }
 </script>

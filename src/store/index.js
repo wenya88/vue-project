@@ -14,7 +14,6 @@ const store = new Vuex.Store({
 	state: {
        msgShow: !localStorage.msgShow ? false : true,
        useList: [],
-<<<<<<< HEAD
        noticeList: [],
        absold: true,
        nums: 0,
@@ -23,10 +22,6 @@ const store = new Vuex.Store({
        blob: false,
        file: {},
        msgNum: !localStorage.msgNum ? "0" : localStorage.msgNum,
-=======
-       absold: true,
-       nums: 0,
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     mutations: {
         //

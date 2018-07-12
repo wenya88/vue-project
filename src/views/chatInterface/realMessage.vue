@@ -33,10 +33,6 @@ export default {
   },
   created () {
     this.getObject()
-<<<<<<< HEAD
-=======
-    // console.log('刷新', JSON.stringify(localStorage.nums))
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     if (localStorage.nums) {
       const nums =  JSON.parse(localStorage.nums)
     }
@@ -49,7 +45,6 @@ export default {
   watch: {
     getList(e) {
       this.submitMsg(e)
-<<<<<<< HEAD
       this.getNewList(e)
     },
   },
@@ -73,11 +68,6 @@ export default {
       })
       this.$set(this, 'headerList', list)
     },
-=======
-    },
-  },
-  methods: {
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     // 界面初始话
     filterObj () {
       const obj = this.headerList[0]
@@ -92,13 +82,8 @@ export default {
       }
       let that = this
       this.$axios.get(url, qs.stringify(items)).then(data => {
-<<<<<<< HEAD
         const list = data.data.project
         localStorage.headerList = JSON.stringify(list)
-=======
-        // console.log('返回数据', data.data.project)
-        const list = data.data.project
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         if (list.length !== 0) {
           list.forEach((elemens, index) => {
             elemens.itemStyle = 'clearfix'
@@ -108,16 +93,10 @@ export default {
           }
          })
          that.headerList = list
-<<<<<<< HEAD
          this.filterObj()
          this.list.absold = true
          const projectList = this.$store.state.useList
          this.submitMsg(projectList)
-=======
-        //  console.log('左边数据', list)
-         this.filterObj()
-          this.list.absold = true
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         } else {
           this.list.absold = false
         }
@@ -145,13 +124,10 @@ export default {
           elements.itemStyle = ''
         }
       })
-<<<<<<< HEAD
       const clickObj = list.slice(index, index+1)
       list.splice(index, 1)
       list.unshift(clickObj[0])
       this.$set(this, 'headerList', list)
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       this.list = {
         id: `project_${item.id}`,
         absold: true
@@ -172,18 +148,12 @@ export default {
       var numList = {} // 定义一个对象
       var nums = {} // 定义一个对象储存
       const currentPoject = this.list.id // 获取当前显示的项目
-<<<<<<< HEAD
       // console.log('当前id', currentPoject)
       if (!localStorage.numList) { // 初始化,没有消息时
-=======
-      if (!localStorage.numList) { // 初始化,没有消息时
-        const numForm = {}
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         if (headerList.length !== 0) { // 项目不为空，才有意义
           headerList.forEach(item => {
             const projectName =  `project_${item.id}` // 获取项目id
             list.forEach(elements => {
-<<<<<<< HEAD
               if (elements.group_id === projectName) { // 不在当前显示的，开始计数
                 if (!numList[projectName]) {
                   numList[projectName] = 0
@@ -199,18 +169,6 @@ export default {
                   nums[group_id] = 0
                 }
                 nums[group_id]+= 1
-=======
-              numForm[projectName] = []
-              if (elements.group_id === projectName) { // 不在当前显示的，开始计数
-                const lists = numForm[projectName].push(elements)
-                // console.log('出书化', lists)
-                numList[projectName] = lists // 获取当前每个项目消息总数
-                if (currentPoject !== elements.group_id) { // 如果不是当前显示的项目
-                  nums[projectName] = lists
-                } else {
-                  nums[projectName] = 0 // 当前显示项目为
-                }
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
               }
             })
           })
@@ -220,16 +178,11 @@ export default {
           this.$store.state.nums = nums
         }
       } else {
-<<<<<<< HEAD
         // const numForm = {}
-=======
-        const numForm = {}
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         const numberList = JSON.parse(localStorage.numList) // 获取上次储存的每个项目消息
         const numed = JSON.parse(localStorage.nums) // 获取未读消息
         headerList.forEach(item => {  // 项目数
           const projectName =  `project_${item.id}`
-<<<<<<< HEAD
           list.forEach(elements => {
             if (projectName == elements.group_id) {
                if (!numList[projectName]) {
@@ -240,30 +193,12 @@ export default {
           })
         })
         // console.log('帅', numList)
-=======
-          numForm[projectName] = []
-          list.forEach(elements => {
-            if (projectName === elements.group_id) {
-               const lists = numForm[projectName].push(elements)
-              //  console.log('长度', lists)
-               numList[projectName] = lists // 获取现在每个消息的总数
-            }
-          })
-        })
-        // console.log('项目0', numList)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         for (let i in numList) { // 循环现在消息总数
           for (let k in numberList) { // 获取上一个消息总数
             if (i === k) {
               if (currentPoject === i) {
                 numed[i] = 0
-<<<<<<< HEAD
               } else {
-=======
-                // console.log(222222, i)
-              } else {
-                //  console.log(222, i, numList[i], k, numberList[k], numbers)
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
                  const numbers = Number(numList[i]) - Number(numberList[k])
                  if (numbers!==0) {
                    numed[i]+=numbers

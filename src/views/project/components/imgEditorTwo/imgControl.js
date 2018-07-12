@@ -1,8 +1,4 @@
 const canvasControl=()=>{
-<<<<<<< HEAD
-=======
-       
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         let oSign = document.getElementById("signx");
         let oCanvas=document.getElementById("cav");
         let oImg=document.getElementById("oImg");
@@ -31,10 +27,7 @@ const canvasControl=()=>{
                 return oEvent;
             }
         
-<<<<<<< HEAD
             
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         let addWheelEvent=(obj, callback)=>{
                 if (window.navigator.userAgent.toLowerCase().indexOf('firefox') != -1) {
                     addEvent(obj, 'DOMMouseScroll', wheel);
@@ -61,21 +54,8 @@ const canvasControl=()=>{
                 let oEvent = ev || window.event,
                 l = oEvent.clientX - disX,
                 t = oEvent.clientY - disY;
-<<<<<<< HEAD
                 // console.log(l,t)
 
-=======
-                // console.log("l:"+l,"t:"+t)
-                
-                // oCanvasMove
-                // oCanvas.style.left = l +'px';
-                // oCanvas.style.top = t +'px';
-
-                // imageMove
-                oImg.style.left = l +'px';
-                oImg.style.top = t +'px';
-    
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
                 // divMove
                 oSign.style.left = l +'px';
                 oSign.style.top = t +'px';
@@ -97,7 +77,6 @@ const canvasControl=()=>{
             addEvent(oParent, 'mouseup', endMove);
             return false;
         });
-<<<<<<< HEAD
         let restrict=1.1;
         let totalNum=0;
         addWheelEvent(controlDiv, function(delta) {
@@ -141,23 +120,6 @@ const canvasControl=()=>{
             oImg.style.height=h +'px';
             // oImg.style.left=l +'px';
             // oImg.style.top=t +'px';
-=======
-       
-        addWheelEvent(controlDiv, function(delta) {
-            let ratioL = (this.clientX - oSign.offsetLeft) / oSign.offsetWidth;
-            let ratioT = (this.clientY - oSign.offsetTop) / oSign.offsetHeight;
-            let ratioDelta = !delta ? 1 + 0.1 : 1 - 0.1;
-            let w = parseInt(oSign.offsetWidth * ratioDelta);
-            let h = parseInt(oSign.offsetHeight * ratioDelta);
-            let l = Math.round(this.clientX - (w * ratioL));
-            let t = Math.round(this.clientY - (h * ratioT));
-            // console.log("w:"+w,"h:"+h,"l:"+l,"t:"+t)
-            // imgChange
-            oImg.style.transform=w +'px';
-            oImg.style.height=h +'px';
-            oImg.style.left=l +'px';
-            oImg.style.top=t +'px';
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             
             // divChange
             oSign.style.width=w +'px';
@@ -171,12 +133,9 @@ const canvasControl=()=>{
             // oCanvas.style.left=l +'px';
             // oCanvas.style.top=t +'px';
 
-<<<<<<< HEAD
             controlDiv.style.width=w +'px';
             controlDiv.style.height=h +'px';
 
-=======
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         });
         
 }

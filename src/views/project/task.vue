@@ -85,11 +85,7 @@
               </div>
           </div>
 
-<<<<<<< HEAD
            <!--&lt;!&ndash;主视图:列表/甘特图 &ndash;&gt;-->
-=======
-           <!--主视图:列表/甘特图 -->
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
           <Tabs  class="task-tab">
               <Tab-pane label="看板"  >
                   <tasklist style="padding-left: 450px;" ref="list"
@@ -162,11 +158,7 @@ import {mapMutations} from 'vuex'
 import qs from 'querystring'
 import taskclasses from "./task/taskClasses";
 import tasklist from "./task/taskList";
-<<<<<<< HEAD
 import taskinfopop from "./task/taskInfoPop/taskInfoPop";
-=======
-import taskinfopop from "./task/taskInfoPop";
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 import accretiontaskpop from "./task/accretionTaskPop";
 import ExcelModal from "./components/excel"
 import vSchedulePlan from "./schedule"
@@ -417,13 +409,9 @@ export default {
     .taskMainContainer{
         position: relative;
         display: flex;
-<<<<<<< HEAD
         height: 100%;
         padding-top: 20px;
 
-=======
-        padding-top: 20px;
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         .ivu-tabs-nav-container{
             height: 60px!important;
         }
@@ -580,13 +568,8 @@ export default {
     position:absolute;
     width:100%;
     z-index:1;
-<<<<<<< HEAD
     /*overflow-x: hidden !important;*/
     /*overflow-y: auto !important;*/
-=======
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 
 }
 .task-operation{
