@@ -18,10 +18,11 @@ import GeminiScrollbar from 'vue-gemini-scrollbar' // 美化滚动条
 import 'jquery.caret/dist/jquery.caret.min.js' // caret插件
 import './views/chatInterface/realTime.css' // 聊天框样式
 import soket from './views/chatInterface/websoket.js'
-import config from './config/config.js'
+// import config from './config/config.js'
 import global from './components/Global'//引用全局变量文件
+axios.defaults.baseURL = 'http://192.168.2.19';
 // axios.defaults.baseURL = 'http://106.14.150.55';
-axios.defaults.baseURL = 'http://59.111.95.148';
+// axios.defaults.baseURL = 'http://59.111.95.148';
 axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
 Vue.prototype.GLOBAL = global

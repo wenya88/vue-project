@@ -19,7 +19,7 @@
                     <div class="sginEditCommit">修改</div>
                   </div>
                   <!-- 画布层 -->
-                  <canvas id="cav" width="1400" height="750" v-show="canvasSign">
+                  <canvas id="cav" width="1400" height="750">
                      <span>浏览器不支持画布标注！o(╯□╰)o</span>
                   </canvas>
                   <!-- 控件层 -->
@@ -154,11 +154,14 @@
       },
       // 隐藏标注
       canvasHidden(){
+          let cav=document.getElementById("cav")
           if(this.canvasSign){
-            this.barText="显示画布"
+            this.barText="显示画布";
+            cav.style.zIndex="12";
             this.canvasSign=!this.canvasSign;
           }else{
-            this.barText="隐藏画布"
+            this.barText="隐藏画布";
+            cav.style.zIndex="14";
             this.canvasSign=!this.canvasSign;
           }
       },
@@ -184,7 +187,7 @@
       },
       initImgEditor()
       {
-        this.url='http://h.hiphotos.baidu.com/image/pic/item/342ac65c103853434cc02dda9f13b07eca80883a.jpg';
+        this.url='http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg';
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
