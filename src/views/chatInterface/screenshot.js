@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 import store  from '@/store/index'
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 // 截屏粘贴功能模块
 const screenshot = function () {
   var imgReader = function (item) {
     const blob = item.getAsFile()
     const reader = new FileReader()
+<<<<<<< HEAD
     const temp = randomChar(6) + '.png'
     uploader.addFile(blob, temp)
     store.state.blob = true
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     reader.onload = function (e) {
       const img = new Image()
       img.src = e.target.result
@@ -39,6 +45,7 @@ const screenshot = function () {
     }
   }, false)
 }
+<<<<<<< HEAD
 function randomChar(l)  {
   const  x="0123456789qwertyuioplkjhgfdsazxcvbnm"
   var  tmp=""
@@ -48,6 +55,8 @@ function randomChar(l)  {
   }
   return  timestamp+tmp
 }
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export {
   screenshot
 }

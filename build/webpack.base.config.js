@@ -84,7 +84,10 @@ module.exports = {
             id: 'happybabel',
             loaders: ['babel-loader'],
             threadPool: happyThreadPool,
+<<<<<<< HEAD
             cache: true,
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             verbose: true
         }),
         new webpack.ProvidePlugin({
@@ -102,7 +105,12 @@ module.exports = {
             'jsencrypt': '@/js/jsencrypt.min.js',
             'md5': '@/js/md5.min.js',
             'shim': '@/js/shim.min.js',
+<<<<<<< HEAD
             'xlsx': '@/js/xlsx.full.min.js'
+=======
+            'xlsx': '@/js/xlsx.full.min.js',
+            'lab': '@/js/labjs.min.js'
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         }
     }
 };

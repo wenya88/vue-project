@@ -1,10 +1,18 @@
 <template >
 <div>
+<<<<<<< HEAD
    <div class="msg_button_fix" id='drag_msg' @mousedown="downs">消息<span class="showNumbers" v-if="allNum">{{allNum}}</span></div>
    <div class="real_all" v-if="isShow">
      <div class="clearfix real_header_box">
         <p class="header_project project_is_actice" @click="getReal(0)">项目沟通<span v-if="nums">({{nums}})</span></p>
         <p class="header_project" @click="getReal(1)">消息提醒<span v-show="MsgIdx">({{MsgIdx}})</span></p>
+=======
+   <div class="msg_button_fix" @click="geMsg">消息</div>
+   <div class="real_all" v-if="isShow">
+     <div class="clearfix real_header_box">
+        <p class="header_project project_is_actice" @click="getReal(0)">项目沟通<span v-if="nums">({{nums}})</span></p>
+        <p class="header_project" @click="getReal(1)">消息提醒(10)</p>
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         <p class="close_all" @click="closeMsg">x</p>
      </div>
      <real-message v-if="!isMsg"></real-message>
@@ -15,16 +23,23 @@
 <script>
 import realMessage from './realMessage.vue'
 import remind from './remindMsg.vue'
+<<<<<<< HEAD
 var qs = require('querystring')
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export default {
   // props:['visidy'],
   data () {
     return {
       isShow: false,
       isMsg: false,
+<<<<<<< HEAD
       allNum: 0,
       nums: 0,
       MsgIdx: 0
+=======
+      nums: 0,
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
   },
   components: {
@@ -34,6 +49,7 @@ export default {
   computed: {
     getList () {
       return this.$store.state.nums
+<<<<<<< HEAD
     },
     getNum () {
       return this.$store.state.msgNum
@@ -43,6 +59,8 @@ export default {
     },
     getNotic () {
       return this.$store.state.noticeList
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
   },
   watch: {
@@ -53,6 +71,7 @@ export default {
         index+= Number(nums[i])
       }
       this.nums = index
+<<<<<<< HEAD
     },
     getUseList (e) {
       this.getAllMsg()
@@ -172,6 +191,15 @@ export default {
     geMsg () {
       this.isShow = true
       this.allNum = 0
+=======
+      console.log('数据显示剩余', e)
+    }
+  },
+  methods: {
+    // 关闭信息
+    geMsg () {
+      this.isShow = true
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     },
     getReal (index) {
       const elements = document.getElementsByClassName('header_project')
@@ -202,8 +230,13 @@ export default {
   font-size: 16px;
   line-height: 50px;
   background: rgb(24,191,164);
+<<<<<<< HEAD
   cursor: pointer;
   position:fixed;
+=======
+  position:fixed;
+  cursor: pointer;
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
   bottom: 200px;
   right: 20px;
   margin-bottom: -25px;
@@ -237,7 +270,11 @@ export default {
  right: 0;
  height: 100%;
  width: 600px;
+<<<<<<< HEAD
  z-index: 99;
+=======
+ z-index: 9999;
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
  background: #ffffff;
  border-right: 2px solid rgba(49,187,159);
  border-left: 2px solid rgba(49,187,159);
@@ -274,6 +311,7 @@ export default {
   cursor: pointer;
   background: rgba(255,0,0);
 }
+<<<<<<< HEAD
 .showNumbers{
   display: block;
   height: 30px;
@@ -287,4 +325,6 @@ export default {
   top: -13px;
   right: -13px;
 }
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 </style>

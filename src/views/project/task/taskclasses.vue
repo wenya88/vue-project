@@ -34,6 +34,13 @@
     </div>
 </template>
 <script>
+<<<<<<< HEAD
+=======
+import {
+  projectList,
+  getChildList
+} from "@/config/env.js";
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 var qs = require("querystring");
 
 export default {

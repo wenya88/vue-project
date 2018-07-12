@@ -6,13 +6,18 @@
          <p>勾选后相关消息将会弹窗通知</p>
        </div>
        <div class="set_msg_switch">
+<<<<<<< HEAD
          <i-switch v-model="checkForm.switch" size="large"  @on-change="getChange">
+=======
+         <i-switch v-model="checkForm.switch" size="large">
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             <span slot="open">允许</span>
             <span slot="close">禁止</span>
         </i-switch>
        </div>
     </div>
     <div class="set_radmin_checkbox">
+<<<<<<< HEAD
       <div v-for="(item, index) in userCheck" :key="index">
         <p>{{item.name}}</p>
         <div>
@@ -25,16 +30,56 @@
       <p class="close_button" @click="closeFun">取消</p>
       <p class="soure_button" @click="soureFun">保存</p>
     </div>
+=======
+      <div>
+        <p>投标</p>
+        <div>
+          <CheckboxGroup v-model="checkForm.checkAllGroup">
+           <Checkbox label="报名成功"></Checkbox>
+           <Checkbox label="上传作品"></Checkbox>
+           <Checkbox label="审核反馈"></Checkbox>
+           <Checkbox label="投标反馈"></Checkbox>
+          </CheckboxGroup>
+        </div>
+      </div>
+      <div>
+        <p>合同</p>
+        <div>
+           <CheckboxGroup v-model="checkForm.checkAllGroup1">
+           <Checkbox label="三方合同"></Checkbox>
+           <Checkbox label="尾款合同"></Checkbox>
+           <Checkbox label="人才培养计划合同"></Checkbox>
+           <Checkbox label="劳务合同"></Checkbox>
+          </CheckboxGroup>
+        </div>
+      </div>
+      <div>
+        <p>项目</p>
+        <div>
+           <CheckboxGroup v-model="checkForm.checkAllGroup2">
+           <Checkbox label="第一项目"></Checkbox>
+           <Checkbox label="第二项目"></Checkbox>
+           <Checkbox label="第三项目"></Checkbox>
+           <Checkbox label="第四项目"></Checkbox>
+           <Checkbox label="第五项目"></Checkbox>
+          </CheckboxGroup>
+        </div>
+      </div>
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     </div>
   </div>
 </template>
 <script>
+<<<<<<< HEAD
 var qs = require('querystring')
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export default {
   data () {
     return {
       checkForm: {
         switch: true,
+<<<<<<< HEAD
         task: [],
         project: [],
         contract: [],
@@ -178,6 +223,11 @@ export default {
         contract: [],
         bid: [],
         system: []
+=======
+        checkAllGroup: [],
+        checkAllGroup1: [],
+        checkAllGroup2: []
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       }
     }
   }
@@ -194,7 +244,10 @@ export default {
  height: 80px;
  padding: 10px 10px;
  border-bottom: 1px solid rgb(174,174,174);
+<<<<<<< HEAD
  position: relative;
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 }
 .set_msg_title{
   width: calc(100% - 150px);
@@ -237,6 +290,7 @@ export default {
  font-size: 16px;
  font-weight: bold;
 }
+<<<<<<< HEAD
 .button_msg{
   position: absolute;
   width: 200px!important;
@@ -269,4 +323,6 @@ export default {
 .soure_button:hover{
   background: rgba(24,191,164,.5);
 }
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 </style>

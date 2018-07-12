@@ -4,6 +4,7 @@
           <!-- 加载动画 -->
           <OnLoad id="onload"></OnLoad>
           <div class="imgFocus">
+<<<<<<< HEAD
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
                      <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
@@ -18,16 +19,26 @@
                     <textarea id="sginText"></textarea>
                     <div class="sginEditCommit">修改</div>
                   </div>
+=======
+                <!-- 标注层 -->
+                <div class="sginCanvas" id="signx">
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
                   <!-- 画布层 -->
                   <canvas id="cav" width="1400" height="750" v-show="canvasSign">
                      <span>浏览器不支持画布标注！o(╯□╰)o</span>
                   </canvas>
                   <!-- 控件层 -->
                   <div class="oControl"></div>
+<<<<<<< HEAD
                   <!-- 图片层 -->
                   <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
                 
+=======
+                </div>
+                <!-- 图片层 -->
+                <img :src="url" class="ImgOnlod" id="oImg"/>
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
           </div>
           <!-- 工具条 -->
           <div class="toolBar">
@@ -94,7 +105,11 @@
         fileID:0,
         stageID:0,
         AllowEdit:false,//是否允许标注
+<<<<<<< HEAD
         barText:'显示画布',
+=======
+        barText:'显示画布标记',
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         hiddenSign:true,
         canvasSign:false,
         hiddenSignText:'隐藏标注'
@@ -121,9 +136,12 @@
       this.initImgEditor();
       this.loadWH();
     },
+<<<<<<< HEAD
     destroyed(){
         this.clearSession();
     },
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     computed:{
       storeTaskID(){
         return this.$store.state.ImgVedioStatus.TaskID
@@ -136,11 +154,14 @@
       },
     },
     methods:{
+<<<<<<< HEAD
       // 清除缓存
       clearSession(){
         sessionStorage.removeItem('ImgData');//存图片标注信息
         sessionStorage.removeItem('totalNum');//存图片放大缩小信息
       },
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       // 清除画布
       clearCanvas(){
         this.$Modal.confirm({
@@ -155,10 +176,17 @@
       // 隐藏标注
       canvasHidden(){
           if(this.canvasSign){
+<<<<<<< HEAD
             this.barText="显示画布"
             this.canvasSign=!this.canvasSign;
           }else{
             this.barText="隐藏画布"
+=======
+            this.barText="显示画布标记"
+            this.canvasSign=!this.canvasSign;
+          }else{
+            this.barText="隐藏画布标记"
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             this.canvasSign=!this.canvasSign;
           }
       },
@@ -184,11 +212,19 @@
       },
       initImgEditor()
       {
+<<<<<<< HEAD
         this.url='http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg';
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
         this.clearSession();
+=======
+        this.url='http://c.hiphotos.baidu.com/image/pic/item/72f082025aafa40f99d4e82aa764034f78f01932.jpg';
+        // this.url=this.storeFileURl;
+        this.get();
+        this.onLoad();
+        sessionStorage.removeItem('ImgData');
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
       },
       onLoad(cControl="false"){
           let el=document.getElementsByClassName("ImgOnlod")[0];
@@ -200,21 +236,32 @@
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
+<<<<<<< HEAD
 
               //  标记层
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
 
+=======
+              //  标记层
+               sgin.style.width=canvasW+"px";
+               sgin.style.height=canvasH+"px";
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
               //  控制层
                controlDiv.style.width=canvasW+"px";
                controlDiv.style.height=canvasH+"px";
               // 画布层
                canID.width=canvasW;
                canID.height=canvasH;
+<<<<<<< HEAD
 
                imgCanvas(cControl,canvasW,canvasH);
                canvasControl();
               
+=======
+               imgCanvas(cControl,canvasW,canvasH);
+               canvasControl();
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
           }
       },
       loadWH(){

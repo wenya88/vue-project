@@ -6,7 +6,11 @@ const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
+<<<<<<< HEAD
 fs.open('./env.js', 'w', function (err, fd) {
+=======
+fs.open('./env.js', 'w','0777', function (err, fd) {
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     const buf = 'export default "development";';
     fs.write(fd, buf, 0, buf.length, 0, function (err, written, buffer) { });
 });
@@ -68,6 +72,7 @@ module.exports = merge(webpackBaseConfig, {
             //     pathRewrite: { '^/system': '' },
             //     changeOrigin: true
             // },
+<<<<<<< HEAD
             // '/file': {
             //     // 文件
             //     target: 'http://file.yhc_plat.com',
@@ -77,6 +82,17 @@ module.exports = merge(webpackBaseConfig, {
             //     pathRewrite: { '^/file': '' },
             //     changeOrigin: true
             // }
+=======
+            '/file': {
+                // 文件
+                target: 'http://file.yhc_plat.com',
+                // target: 'http://59.111.95.148/index.php?r=file',
+                // target: 'http://plat.yhcgame.com/index.php?r=file',
+                // 路径重写
+                pathRewrite: { '^/file': '' },
+                changeOrigin: true
+            }
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         }
     }
 });

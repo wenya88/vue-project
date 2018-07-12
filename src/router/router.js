@@ -133,7 +133,11 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'file',
                 title: '任务管理详情',
+<<<<<<< HEAD
                 component:resolve=>{ require (['@/views/project/task/taskInfoPop/taskInfoPop.vue'],resolve)}
+=======
+                component:resolve=>{ require (['@/views/project/task/taskInfoPop.vue'],resolve)}
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             },
             {
                 path:'/project/projectMember',
@@ -145,12 +149,15 @@ export const appRouter = [
                 name:'imgEditorTwo',
                 title:'2D显示标注2.0',
                 component:resolve =>{require(['@/views/project/components/imgEditorTwo.vue'],resolve);}
+<<<<<<< HEAD
             },
             {
                 path:'/project/vedioEditor',
                 name:'vedioEditor',
                 title:'视频标注',
                 component:resolve =>{require(['@/views/project/components/vedioEditor.vue'],resolve);}
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
             }
         ]
     },
@@ -232,6 +239,7 @@ export const appRouter = [
                 name: 'contractDetails',
                 title: '合同详情',
                 component: resolve => { require(['@/views/epibol/contractManage/component/contractDetails.vue'], resolve); }
+<<<<<<< HEAD
             }, {
                 path: '/epibol/list',
                 icon: 'ios-paper-outline',
@@ -239,6 +247,10 @@ export const appRouter = [
                 title: 'list',
                 component: resolve => { require(['@/views/page/list.vue'], resolve); }
             }
+=======
+            }
+          
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         ]
     }, {
         path: '/customer',

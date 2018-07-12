@@ -6,14 +6,21 @@
        <i class="iconfont icon-sousuo"/>
       </div>
       <div class="msg_title_all">
+<<<<<<< HEAD
         <div class="msg_title" v-for="(itme, index) in objList" :key="index" @click="getObj(index)">
           <p :class="itme.bojectStyle">{{itme.name}}</p>
           <p v-show="itme.msg">{{itme.msg}}</p>
+=======
+        <div class="msg_title" v-for="(itme, index) in objList" :key="index">
+          <p>{{itme.obj}}</p>
+          <p v-show="itme.msg!==0">{{itme.msg}}</p>
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         </div>
       </div>
     </div>
     <div class="message_remind_right">
      <div class="message_sign">
+<<<<<<< HEAD
        <p @click="setSign" v-show="msgList.length">标识全部已读</p>
      </div>
      <div class="clearfix msg_sign" v-for="(items, index) in msgList" :key="index">
@@ -25,17 +32,34 @@
           <p class="read_sign" v-show="items.state == '1'">已读</p>
           <p v-show="items.state == '0'" @click="setSigned(index)">标识已读</p>
           <p v-show="items.state == '0'">查看</p>
+=======
+       <p @click="setSign">标识全部已读</p>
+     </div>
+     <div class="clearfix msg_sign" v-for="(items, index) in msgList" :key="index">
+        <div class="msg_sign_box">
+          <p>{{items.msg}}</p>
+          <p>{{items.times}}</p>
+        </div>
+        <div class="msg_sign_button">
+          <p class="read_sign" v-show="items.isRead">已读</p>
+          <p v-show="!items.isRead" @click="setSigned(index)">标识已读</p>
+          <p v-show="!items.isRead">查看</p>
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
         </div>
      </div>
     </div>
   </div>
 </template>
 <script>
+<<<<<<< HEAD
 var qs = require('querystring')
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 export default {
   data () {
     return {
       msgRmind: '',
+<<<<<<< HEAD
       typeName: '',
       indexed: 0,
       objList: [],
@@ -220,6 +244,58 @@ export default {
          this.getMsgInterface()
         console.log('请求错误')
       })
+=======
+      objList: [
+        {
+          obj: '外包项目',
+          msg: 10
+        },
+        {
+          obj: '金刚皮肤',
+          msg: 0
+        },
+        {
+          obj: '娃哈哈小哪吒',
+          msg: 5
+        }
+      ],
+      msgList: [
+        {
+          msg: '你有一封邮件',
+          times: '2018/05/27',
+          isRead: false
+        },
+        {
+          msg: '你有一封邮件1',
+          times: '2018/05/27',
+          isRead: false
+        },
+        {
+          msg: '你有一封邮件2',
+          times: '2018/05/27',
+          isRead: true
+        },
+        {
+          msg: '你有一封邮件3',
+          times: '2018/05/27',
+          isRead: false
+        }
+      ]
+    }
+  },
+  methods: {
+    // 全部标记已读
+    setSign () {
+      const list = this.msgList
+      list.forEach(elemens => {
+        elemens.isRead = true
+      })
+    },
+    // 单个标记已读
+    setSigned (index) {
+      const list = this.msgList
+      list[index].isRead = true
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
     }
   }
 }
@@ -236,9 +312,12 @@ export default {
   padding: 0 10px;
   float: left;
 }
+<<<<<<< HEAD
 .onwStyle{
   font-weight: bold;
 }
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 .message_remind_right{
  box-sizing: border-box;
  width: calc(100% - 200px);
@@ -297,7 +376,10 @@ export default {
   height: 20px;
   padding: 0 10px;
   border-radius: 10px;
+<<<<<<< HEAD
   line-height: 20px;
+=======
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
   background: rgb(255,153,0);
   color: #ffffff;
   margin-top: 5px;
@@ -326,7 +408,11 @@ export default {
  border-bottom: 1px solid rgb(215,215,215);
 }
 .msg_sign_box{
+<<<<<<< HEAD
  width: calc(100% - 150px);
+=======
+ width: calc(100% - 200px);
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
  height: 100%;
  float: left;
 }
@@ -342,7 +428,11 @@ export default {
   color: rgb(215,215,215);
 }
 .msg_sign_button{
+<<<<<<< HEAD
  width: 150px;
+=======
+ width: 200px;
+>>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
  height: 100%;
  float: left;
 }
