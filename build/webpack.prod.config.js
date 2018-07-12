@@ -8,15 +8,9 @@ const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const path = require('path');
 const package = require('../package.json');
-<<<<<<< HEAD
-fs.open('./build/env.js', 'w', function(err, fd) {
-    const buf = 'export default "production";';
-    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
-=======
 fs.open('./build/env.js', 'w','0777',function(err, fd) {
     const buf = 'export default "production";';
     fs.write(fd, buf, 0, buf.length,0, function(err, written, buffer) {});
->>>>>>> f130195071cc2d236642970d18c0f3f6f893b3a0
 });
 module.exports = merge(webpackBaseConfig, {
     output: {

@@ -384,13 +384,13 @@ export default {
          size: 5, //  需要返回的数量
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const oldList = data.data.data
+         const oldList = data.data.data.reverse()
          console.log('获取的数据', oldList)
          oldList.forEach(items => {
            items.isRead = true
          })
-         this.$store.state.useList = list.concat(oldList)
-         localStorage.useList = JSON.stringify(list.concat(oldList))
+         this.$store.state.useList = oldList.concat(list)
+         localStorage.useList = JSON.stringify(oldList.concat(list))
        }, error => {
          console.log('错误', error)
        })
