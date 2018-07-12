@@ -66,11 +66,13 @@
                 <i class="iconfont icon-biaoqing1"/>
               </span>
               <span class="file_class_father">
-                <i class="iconfont icon-tupian1" id="file" @click='getImage'/>
+                <i class="iconfont icon-tupian1"/>
+                <uploader :uploadObj='uploadobj' :ids='file'></uploader>
                 <!-- <input type="file" class="file_class"/> -->
               </span>
               <span>
-                <i class="iconfont icon-wenjianjia" id="wenjian" @click='getFiles'/>
+                <i class="iconfont icon-wenjianjia"/>
+                <uploader :uploadObj='uploadobj' :ids="wenjian"></uploader>
               </span>
            </div>
            <p :class="`button_send ${data.absold ? '' : 'disable'}`" @click="submit">回车发送</p>
@@ -92,6 +94,8 @@ export default {
       isLook: false,
       loading: false,
       readNum: 0,
+      file: 'file',
+      wenjian: 'wenjian',
       websock: null,
       isShowMessage: false,
       scollArray: [],
@@ -102,17 +106,18 @@ export default {
       userMsg: {},
       lastSelection: {},
       useList: [],
-      configure:{}
+      configure:{},
+      uploadobj:{}
     }
   },
   mounted () {
     this.getPjUser()
-    this.getOss()
     if (!this.data.absold) {
       this.datalist= []
     }
     this.userMsge()
     this.init()
+    this.getOss()
     screenshot()
     // this.isLogin()
     this.scrollToBottom()
@@ -162,6 +167,7 @@ export default {
     data: function (e) {
       var obj = this.$store.state.useList
       this.submitMsg(obj)
+      this.getOss()
     }
   },
   // updated () {
@@ -201,33 +207,34 @@ export default {
     },
     // 获取凭证
     getOss () {
-      let url =  this.GLOBAL.baseRouter+"/file/oss/oss"
-      const items = {
+      // let url =  this.GLOBAL.baseRouter+"/file/oss/oss"
+      this.uploadobj = {
         type: 'group-chat',
         group: `${this.data.id}`
       }
-      this.$axios.post(url, qs.stringify(items)).then(data => {
-        const obj = data.data
-        const configure = {
-          'key' : obj.dir + obj.random,
-          'policy': obj.policy,
-          'OSSAccessKeyId': obj.accessid, 
-          'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
-          'callback' : obj.callback,
-          'signature': obj.signature,
+      // this.$axios.post(url, qs.stringify(items)).then(data => {
+      //   const obj = data.data
+      //   const configure = {
+      //     'key' : obj.dir + obj.random,
+      //     'policy': obj.policy,
+      //     'OSSAccessKeyId': obj.accessid, 
+      //     'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+      //     'callback' : obj.callback,
+      //     'signature': obj.signature,
  
-        }
-        this.configure = {
-          'url': obj.host,
-          'multipart_params': configure
-        }
-        this.initial()
-      }, error => {
-        console.log('报错', error)
-      })
+      //   }
+      //   this.configure = {
+      //     'url': obj.host,
+      //     'multipart_params': configure
+      //   }
+      //   this.initial()
+      // }, error => {
+      //   console.log('报错', error)
+      // })
     },
     getFiles() {
       this.$store.state.blob = false
+      // this.getOss()
     },
     getImage() {
       this.$store.state.blob = false
@@ -235,13 +242,13 @@ export default {
     // 上传
     initial () {
       // this.pluploads()
-      this.pluploads({
-        severUrl: this.configure.url,
-        size: '10mb',
-        button: ['file', 'wenjian'],
-        upContainer: 'file_id',
-        data: this.configure
-      })
+      // this.pluploads({
+      //   severUrl: this.configure.url,
+      //   size: '10mb',
+      //   button: ['file', 'wenjian'],
+      //   upContainer: 'file_id',
+      //   data: this.configure
+      // })
     },
     // down事件 实现下拉功能
     down (e) {
@@ -290,13 +297,13 @@ export default {
          size: 5, //  需要返回的数量
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const oldList = data.data.data
-         console.log('获取的数据', oldList)
+         const oldList = data.data.data.reverse()
+        //  console.log('获取的数据', oldList)
          oldList.forEach(items => {
            items.isRead = true
          })
-         this.$store.state.useList = list.concat(oldList)
-         localStorage.useList = JSON.stringify(list.concat(oldList))
+         this.$store.state.useList = oldList.concat(list)
+         localStorage.useList = JSON.stringify(oldList.concat(list))
        }, error => {
          console.log('错误', error)
        })
@@ -346,8 +353,9 @@ export default {
       const currentDistance = scrollHeights - cententHeught
       // 当前滚动条距离顶部的距离
       var currentScrollY = dcment.scrollTop
+      console.log('底部', currentDistance, currentScrollY)
       if (currentDistance > 0 && currentDistance > currentScrollY) {
-        // console.log('底部', currentDistance, currentScrollY)
+        console.log('底部', currentDistance, currentScrollY)
         currentScrollY = Math.ceil((currentDistance - currentScrollY)) + currentScrollY
         currentScrollY = currentScrollY > currentDistance ? currentDistance : currentScrollY
         dcment.scrollTop = currentScrollY
@@ -500,14 +508,8 @@ export default {
         })
        personTxt[i].innerHTML = name_call
       }
-      // const kkkkk = this.searchSubStr(elementss, '<img>')
-      // const blob = this.$store.state.blob
-      // var elements = ''
-      // if (!blob) {
-      //   elements = $('.send_input').text().replace(/&nbsp;/g,"")
-      // } else {
-       const elements =  $('.send_input').html().replace(/&nbsp;/g,"")
-      // }
+      const blob = this.$store.state.blob
+      const elements =  $('.send_input').html().replace(/&nbsp;/g,"")
       const sendTime = this.getTime()
       var list = this.$store.state.useList
       const shuju = JSON.stringify({
@@ -768,8 +770,8 @@ export default {
 }
 .send_Function_button i{
   font-size: 18px;
-  line-height: 50px;
-  margin-left: 5px;
+  line-height: 20px;
+  /* margin-left: 5px; */
   cursor: pointer;
 }
 .send_Function_button>div{
@@ -792,6 +794,15 @@ export default {
   right:0;
   margin: auto;
   cursor: pointer;
+}
+#file_id span{
+ display: block;
+ width: 20px;
+ height: 20px;
+ float: left;
+ margin-top: 15px;
+ margin-left: 15px;
+ position: relative;
 }
 .send_information_person{
   position: absolute;

@@ -11,21 +11,20 @@
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
-                  
-                  <!-- 修改编辑层 -->
-                  <div class="editSginDiv">
-                    <div class='editSignbox'>X</div>
-                    <textarea id="sginText"></textarea>
-                    <div class="sginEditCommit">修改</div>
-                  </div>
-                  <!-- 画布层 -->
-                  <canvas id="cav" width="1400" height="750" v-show="canvasSign">
-                     <span>浏览器不支持画布标注！o(╯□╰)o</span>
-                  </canvas>
-                  <!-- 控件层 -->
-                  <div class="oControl"></div>
-                  <!-- 图片层 -->
-                  <img :src="url" class="ImgOnlod" id="oImg"/>                  
+                    <!-- 修改编辑层 -->
+                    <div class="editSginDiv">
+                      <div class='editSignbox'>X</div>
+                      <textarea id="sginText"></textarea>
+                      <div class="sginEditCommit">修改</div>
+                    </div>
+                    <!-- 画布层 -->
+                    <canvas id="cav" width="1400" height="750">
+                      <span>浏览器不支持画布标注！o(╯□╰)o</span>
+                    </canvas>
+                    <!-- 控件层 -->
+                    <div class="oControl"></div>
+                    <!-- 图片层 -->
+                    <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
                 
           </div>
@@ -154,11 +153,14 @@
       },
       // 隐藏标注
       canvasHidden(){
+          let cav=document.getElementById("cav")
           if(this.canvasSign){
-            this.barText="显示画布"
+            this.barText="显示画布";
+            cav.style.zIndex="12";
             this.canvasSign=!this.canvasSign;
           }else{
-            this.barText="隐藏画布"
+            this.barText="隐藏画布";
+            cav.style.zIndex="14";
             this.canvasSign=!this.canvasSign;
           }
       },
@@ -184,7 +186,7 @@
       },
       initImgEditor()
       {
-        this.url='http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg';
+         this.url="http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg"
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
@@ -204,6 +206,8 @@
               //  标记层
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
+              //  sgin.style.marginTop=-(canvasH/2)+"px";
+              //  sgin.style.marginLeft=-(canvasW/2)+"px";
 
               //  控制层
                controlDiv.style.width=canvasW+"px";
@@ -220,10 +224,9 @@
       loadWH(){
           let sw=$(".single-page-con").width()-300;
           let sh=$(".single-page-con").height()-160;
-          $(".imgFocus").height(sh);
-          $(".imgEditorCom,.imgFocus").width(sw);
-          $(".toolBar").css("margin-top",sh+5)
-         
+          $(".imgFocus").height(sh);//先注解
+          $(".imgEditorCom,.imgFocus").width(sw);//先注解
+          $(".toolBar").css("margin-top",sh+5)//先注解
       },
       defue(){
         // 标注
@@ -345,8 +348,8 @@
                      _this.stageID=val.file.stage_id;
                    }
                 })
-              _this.changeState(2);
-            //   _this.changeState(_this.StateFeedBack);
+                 _this.changeState(2);
+              // _this.changeState(_this.StateFeedBack);
               // 把StageID传到提交
               let stageID = _this.stageID;
               let fileID=_this.fileID;

@@ -3,13 +3,8 @@
   function connectSocket(msgData) {
     const wsurl = 'ws://192.168.2.20:8282'
     window.webSocket = new WebSocket(wsurl)
-    // console.log("webSocket连接成功前", wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
-      // console.log("webSocket连接成功")
-    //   let data = {type: 'bind'}
-    //   let json = JSON.stringify(msgData)
-      // console.log("webSocket连接成功...", msgData)
       webSocket.send(msgData)
     }
     /*连接关闭*/
@@ -19,7 +14,7 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      console.log('推送消息00', evt.data)
+      // console.log('推送消息00', evt.data)
       if (data.action === 'ping') {
         const data = JSON.stringify({
           action: 'ping'
@@ -61,9 +56,6 @@
        }
       }
       if (data.action === 'group-chat') {
-        console.log('推送数据', data)
-        // localStorage.removeItem('useList')
-        // const list = Array.from(JSON.parse(localStorage.useList)) || [];
         var list = store.state.useList
         if (localStorage.useList) {
           list = Array.from(JSON.parse(localStorage.useList))
