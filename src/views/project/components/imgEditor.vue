@@ -11,21 +11,20 @@
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
-                  
-                  <!-- 修改编辑层 -->
-                  <div class="editSginDiv">
-                    <div class='editSignbox'>X</div>
-                    <textarea id="sginText"></textarea>
-                    <div class="sginEditCommit">修改</div>
-                  </div>
-                  <!-- 画布层 -->
-                  <canvas id="cav" width="1400" height="750">
-                     <span>浏览器不支持画布标注！o(╯□╰)o</span>
-                  </canvas>
-                  <!-- 控件层 -->
-                  <div class="oControl"></div>
-                  <!-- 图片层 -->
-                  <img :src="url" class="ImgOnlod" id="oImg"/>                  
+                    <!-- 修改编辑层 -->
+                    <div class="editSginDiv">
+                      <div class='editSignbox'>X</div>
+                      <textarea id="sginText"></textarea>
+                      <div class="sginEditCommit">修改</div>
+                    </div>
+                    <!-- 画布层 -->
+                    <canvas id="cav" width="1400" height="750">
+                      <span>浏览器不支持画布标注！o(╯□╰)o</span>
+                    </canvas>
+                    <!-- 控件层 -->
+                    <div class="oControl"></div>
+                    <!-- 图片层 -->
+                    <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
                 
           </div>
@@ -246,16 +245,7 @@
                     "tag":[]
           })]
         }
-        let EDITparams={
-            "stage_id": this.stageID,
-            "audit": 2,
-            "files":[],
-            "feedback": this.FeedbackValue,
-            "file": JSON.stringify([{
-              "file_id": this.fileID,
-              "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]'
-            }])
-        }
+        
         if(type=='edit'){
             // canvas upload
             let canvas=document.getElementById("cav");
@@ -273,8 +263,17 @@
             formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
             this.$axios.post(this.fileup,formData).then(msg=>{
               if(msg.data.err_code==0){
-                  //EDITparams.push(msg.data.files);
-                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  //  EDITparams;
+                  let EDITparams={
+                      "stage_id": this.stageID,
+                      "audit": 2,
+                      "feedback": this.FeedbackValue,
+                      "file": JSON.stringify([{
+                        "file_id": this.fileID,
+                        "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]',
+                        "label":msg.data.files.url
+                      }])
+                  }
                   // Sgin upload
                   this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
                      this.$Message.success(msg.data.err_message);
