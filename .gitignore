@@ -3,7 +3,7 @@ node_modules
 .project
 .vscode
 .history
-.DS_Store
+.DS_Storenp
 \.settings/
 src/config/env.js
 /dist/
