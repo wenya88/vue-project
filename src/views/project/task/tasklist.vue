@@ -3,7 +3,7 @@
     <div class=" taskListContainer">
         <section class="WaitingToStart">
             <p class="title">未开始({{dataList_type.start.length}})</p>
-            <template v-if="dataList_type.start.length>1">
+            <template v-if="dataList_type.start.length>0">
                 <div class="list" @click.stop="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start"
                      :key="index">
                     <p class="title">{{items.name}}</p>
@@ -18,7 +18,7 @@
         </section>
         <section class="perform">
             <p class="title">进行中({{dataList_type.underWay.length}})</p>
-            <template v-if="dataList_type.underWay.length>1">
+            <template v-if="dataList_type.underWay.length>0">
                 <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
                      :key="index">
                     <template>
@@ -37,7 +37,7 @@
         </section>
         <section class="complete">
             <p class="title">已完成({{dataList_type.end.length}})</p>
-            <template v-if="dataList_type.end.length>1">
+            <template v-if="dataList_type.end.length>0">
                 <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end"
                      :key="index">
                     <p class="title">{{items.name}}</p>
@@ -277,6 +277,7 @@
             },
             //点击切换任务项
             changeTaskListItem(currentRow, oldRow) {
+                console.log(1,currentRow)
                 if (this.subtask === 'true') {
                     this.$emit('editWindow', currentRow)
                 } else if (currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据

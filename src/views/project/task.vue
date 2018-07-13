@@ -191,7 +191,9 @@ export default {
         taskId: 0,
         isExcelTask: false,
         isAccretionTask: false,
-        projectInfo: {}
+        projectInfo: {},
+        userID:sessionStorage.userId
+
     };
   },
   mounted() {
@@ -200,10 +202,11 @@ export default {
     this.$bus.on('refreshCurrentTaskList',()=>{
         this.refreshCurrentTaskList();
     });
-    this.projectPlan()
+    this.projectPlan();
+    this.setUserStatus(null)
   },
   methods: {
-      ...mapMutations(['setProjectInfoDetails','setDetailAll']),
+      ...mapMutations(['setProjectInfoDetails','setDetailAll','setUserStatus']),
       excelCancel(){
         this.$bus.emit('clearExcleData')
       },
@@ -254,8 +257,14 @@ export default {
       //进入任务详情
       showTaskDetails(data)
       {
-        this.setDetailAll(data);
-        this.$router.push({path:'/project/details',query:{type:'taskManagement'}})
+          let TaskID = data.stage_file.task_id;
+          let file = data.stage_file.file;
+
+          this.$store.commit('changeComponentTaskID', TaskID);
+          this.$store.commit('changeComponentFileURl', file);
+
+          this.setDetailAll(data);
+          this.$router.push({path: '/project/details', query: {type: 'taskManagement'}})
       },
       //编辑后关闭modal
       closeTaskDetails() {

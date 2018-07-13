@@ -1,4 +1,5 @@
 <template>
+    <!--资源-->
     <div class="resourceContainer">
         <Steps :current="2" direction="vertical">
             <Step title="线条" content="这里是该步骤的描述信息">

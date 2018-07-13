@@ -2,8 +2,8 @@
     <Content class="taskClassLibrary" :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
 
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
-           <!--内容规范-->
-            <slot name="item"  ></slot>
+            <!--内容规范-->
+            <slot name="item"></slot>
             <!--任务类型名称-->
             <h4 :style="{paddingBottom:'10px'}">规范名称</h4>
             <section class="taskTypeName">
@@ -19,28 +19,29 @@
                     <Button @click="addMarkers()" type="text">确认</Button>
                     <Button @click="boxShow = false" type="text">取消</Button>
                 </div>
-                <Input :style="{width:'300px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="listN"></Input>
-                <button @click="showMarkers" class="btn">
-                    <Icon v-if="identification.icon" :type="identification.icon" :style="{color:identification.color}"
-                          style="font-size:30px;"></Icon>
-                    <template v-else>任务标识</template>
-                </button>
+                  <Input   :style="{width:'300px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="typename.typename"></Input>
+                  <button @click="showMarkers" class="btn">
+                      <Icon v-if="identification.icon" :type="identification.icon" :style="{color:identification.color}"
+                            style="font-size:30px;"></Icon>
+                      <template v-else>任务标识</template>
+                  </button>
             </section>
             <h4 :style="{paddingBottom:'10px'}">制作规范</h4>
-            <Row v-for="(item,index) in attrFile" :key="item.config" class="fileAttr">
-                <Col span="5">
-                <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
-                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                </AutoComplete>
-                </Col>
-                <Col span="10">
-                <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
-                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                </AutoComplete>
-                </Col>
-                <Icon @click.native="removeFileat(index)" type="trash-b" class="delIcon"></Icon>
-            </Row>
-
+          <template v-if="pstandard.length>0" >
+              <Row v-for="(item,index) in pstandard" :key="index" class="fileAttr">
+                  <Col span="5">
+                  <AutoComplete v-model="item.key" placeholder="额外属性名称" clearable>
+                      <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                  </AutoComplete>
+                  </Col>
+                  <Col span="10">
+                  <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                      <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                  </AutoComplete>
+                  </Col>
+                  <Icon @click.native="removeFileat(index)" type="trash-b" class="delIcon"></Icon>
+              </Row>
+          </template>
             <!--文件添加-->
             <template v-if="fileShow" :style='{margin:"10px 0"}'>
                 <Col span="5">
@@ -62,8 +63,8 @@
             </Button>
 
             <!--流程规范-->
-            <h4 :style="{paddingBottom:'10px'}">制作流程规范</h4>
             <!--规范增加-->
+            <h4 :style="{paddingBottom:'10px'}">制作流程规范</h4>
             <Button type="primary" @click="modal1 = true">增加标签</Button>
             <Modal
                     v-model="modal1"
@@ -84,27 +85,26 @@
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
                 <div style="flex: 12" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
-                    <Steps :style="{width:'800px'}" :current="current" direction="vertical" size="small">
-                        <Step v-for="(step,index) in stepCount" class="stepContainer" :name="step"
-                              :content="step.stage_name"
-                              :key="step.sage">
+                    <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
+                        <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
                             <!--<Input v-model="step.stage_name" class="title" type="text" :title="step.stage_name"></Input>-->
-                            <div v-model="step.stage_name" class="title">阿萨德</div>
+                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.name}}</div>
+                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.name" class="title" type="text"/>
                             <ul class="stepsUl">
-                                <li class="stepsList">
-                                    <Input v-model="value" placeholder="Enter something..."
+                                <li class="stepsList" v-for="(list,i) in step.childrens" :key="i">
+                                    <Input v-model="list.value" placeholder="Enter something..."
                                            style="width: 400px"></Input>
-                                    <Select v-model="model2" size="small" class="standard">
-                                        <Option v-for="item in stepList" :value="item.value" :key="item.value">
-                                            {{ item.label }}
+                                    <Select v-model="list.normId" size="small" class="standard">
+                                        <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                                            {{ item.name }}
                                         </Option>
                                     </Select>
                                     <div class="priorityContainer">
-                                        <p class="priority" style="border: 1px solid #ccc;">优先级</p>
-                                        <div class="priorityList">
-                                            <p class="priority borderRed">高</p>
-                                            <p class="priority borderOrg">中</p>
-                                            <p class="priority borderYel">低</p>
+                                        <p class="priority"  :class="`priority${list.priority}`" >{{list.priority|priorityValue}}</p>
+                                        <div class="priorityList" >
+                                            <p class="priority priority1">高</p>
+                                            <p class="priority priority2">中</p>
+                                            <p class="priority priority3">低</p>
                                         </div>
                                     </div>
                                     <Icon type="trash-b" class="delIcon"></Icon>
@@ -112,20 +112,21 @@
                             </ul>
                             <!--流程info增加-->
                             <div class="stepsUl">
+                                {{step.show}}
                                 <div v-show="step.show" class="stepsList">
-                                    <Input v-model="stepInfoList.main" placeholder="请输入对该阶段要求"
+                                    <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
                                            style="width: 400px"></Input>
                                     <Select v-model="stepInfoList.type" class="standard" size="small">
-                                        <Option v-for="item in stepList" :value="item.value" :key="item.value">
-                                            {{ item.label }}
+                                        <Option v-for="item in norms" :value="item.id" :key="item.id">
+                                            {{ item.name }}
                                         </Option>
                                     </Select>
                                     <div class="priorityContainer">
-                                        <p class="priority" style="border: 1px solid #ccc;">优先级</p>
+                                        <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.priority}`" >{{stepInfoList.priority|priorityValue}}</p>
                                         <div class="priorityList">
-                                            <p class="priority borderRed">高</p>
-                                            <p class="priority borderOrg">中</p>
-                                            <p class="priority borderYel">低</p>
+                                            <p class="priority priority1" @click="editPriority('1')">高</p>
+                                            <p class="priority priority2" @click="editPriority('2')">中</p>
+                                            <p class="priority priority3" @click="editPriority('3')">低</p>
                                         </div>
                                     </div>
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
@@ -133,7 +134,6 @@
                                 </div>
                                 <Icon v-show="!step.show" @click.native="step.show = !step.show" type="plus"
                                       style="margin-left:10px;font-size: 12px;cursor: pointer"></Icon>
-
                             </div>
                         </Step>
                     </Steps>
@@ -145,16 +145,19 @@
             </div>
 
             <h3 :style="{padding:'20px 0 0px'}">文稿文件规范</h3>
-            <div v-for="(item,index) in otherfile" :key="item.config" class="attachingTask" :style='{margin:"20px 0"}'>
-                <Col span="5">
-                <AutoComplete v-model="item.file_format" placeholder="输入格式，如“max”" clearable></AutoComplete>
-                </Col>
-                <Col span="10">
-                <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable
-                              style="margin-left:20px"></AutoComplete>
-                </Col>
-                <Icon @click.native="delOtherfile" type="trash-b" class="delIcon"></Icon>
-            </div>
+            <template v-if="tstandard.length>0">
+                <div v-for="(item,index) in tstandard" :key="index" class="attachingTask" :style='{margin:"20px 0"}'>
+                    <Col span="5">
+                    <AutoComplete v-model="item.key" placeholder="输入格式，如“max”" clearable></AutoComplete>
+                    </Col>
+                    <Col span="10">
+                    <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable
+                                  style="margin-left:20px"></AutoComplete>
+                    </Col>
+                    <Icon @click.native="delOtherfile" type="trash-b" class="delIcon"></Icon>
+                </div>
+            </template>
+
             <template v-if="OtherfileShow">
                 <Col span="5">
                 <AutoComplete v-model="OtherfileName" placeholder="输入格式，如“max”" clearable></AutoComplete>
@@ -178,6 +181,7 @@
 </template>
 <script>
     import qs from 'querystring'
+    import {newtaskGetNorms} from '@/server/request'
     import {typeInfo} from "../../../config/env.js";
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
@@ -191,6 +195,17 @@
         },
         data() {
             return {
+                fstandard: [],   // 流程规范
+                pstandard: [],   // 制作规范
+                tstandard: [],   // 文件规范
+                typename: {
+                    typename:'',
+                    icon:'',
+                    color:'',
+                },    // 规范名称
+
+                /*调试接口添加*/
+                norms:[],
                 modal1: false,
                 identification: {
                     iconBorder: null,
@@ -206,16 +221,10 @@
                     {color: '#53ccc3', icon: 'ios-bolt-outline'},
 
                 ],
-                stepList: [
-                    {value: '1', label: '内容规范'},
-                    {value: '2', label: '制作规范'},
-                    {value: '3', label: '提交规范'},
-                ],
                 stepInfoList: {
-                    show: false,
-                    name: '',
-                    main: '',
+                    text: '',
                     type: '',
+                    priority: '优先级',
                 },
                 fileShow: false,
                 fileAddName: '',
@@ -227,14 +236,13 @@
                 value: '测试',
                 model2: '1',
 
-                // 以上是后面添加
+                // 以上是后面测试添加
                 current: 0,
                 reqeData: {},
                 reqarn: {},
                 isInit: Boolean,
                 /*--------------------文件类型阶段属性开始------------------------*/
                 formLeft: {},
-                listN: "",
                 fileType: "",
                 stepCount: [
                     {show: false},
@@ -287,16 +295,24 @@
             };
         },
         mounted() {
+            this.newtaskGetNorms();
+            this.$bus.on('typesDetail', (data) => {
+                this.newtaskTypesDetail(data);
+            });
         },
         methods: {
             //hover阶段，删除图标
             dataDetails: function (e) {
                 let el = event.currentTarget.children[0].children[0];
-                el.style.display = "inline-block";
+                if(el){
+                    el.style.display = "inline-block";
+                }
             },
             hiddenDetail: function (e) {
                 let el = event.currentTarget.children[0].children[0];
-                el.style.display = "";
+                if(el){
+                    el.style.display = "";
+                }
             },
             //提交任务类别库表单
             taskClassubmit: function () {
@@ -375,7 +391,7 @@
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.otherfile.push({config_name: this.OtherfileName, value: this.OtherfileMain});
+                this.tstandard.push({key: this.OtherfileName, value: this.OtherfileMain});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
@@ -392,16 +408,14 @@
             //沟通确认阶段
             addSteps() {
                 let aSp = this;
-                if (aSp.stepCount.length >= 100 || aSp.current >= 100) {
+                if (aSp.fstandard.length >= 100 || aSp.current >= 100) {
                     this.$Message.error("最多只能添加6个阶段");
                     aSp.current = 6;
                 } else {
                     aSp.current += 1;
-                    this.stepCount.push({
-                        id: this.stepCount.length + 1,
-                        stage_name: "",
-                        is_inside_audit: false,
-                        tasktype_id: this.category_id
+                    this.fstandard.push({
+                        name:'新建阶段',
+                        childrens:[{value:'',priority:'1'}]
                     });
                 }
             },
@@ -410,7 +424,7 @@
              */
             //增加文件属性
             addFileat() {
-                this.attrFile.push({config_name: this.fileAddName, value: this.fileAddMain});
+                this.pstandard.push({key: this.fileAddName, value: this.fileAddMain});
                 this.fileShow = false
                 this.fileAddName = '';
                 this.fileAddMain = '';
@@ -581,10 +595,22 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                this.stepCount[index].show = false;
+                console.log(11,this.stepInfoList.type)
+                this.fstandard[index].childrens.push({normId:this.stepInfoList.type,value:this.stepInfoList.text,priority:this.stepInfoList.priority});
+                this.$set(this.fstandard[index],'show',false);
+                this.stepInfoList = {
+                    text: '',
+                    type: '',
+                    priority: '1'
+                };
             },
             closeStepList(index) {
-                this.$set(this.stepCount[index], 'show', false)
+                this.$set(this.fstandard[index], 'show', false)
+                this.stepInfoList = {
+                    text: '',
+                    type: '',
+                    priority: '1'
+                };
             },
             // 图标框显示
             showMarkers() {
@@ -604,12 +630,71 @@
                 this.boxShow = false;
                 this.identification.icon = this.identification.iconBorder;
                 this.identification.color = this.identification.iconColor;
+            },
+            newtaskGetNorms() {
+                // 获取规范
+                this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-norms', qs.stringify())
+                    .then(({data})=>{
+                    if(data.err_code === 0){
+                        this.norms = data.data;
+
+                    }else{
+                        this.$Message.error(data.err_message);
+                    }
+                    })
+            },
+            newtaskTypesDetail({id,rank}){
+              if(rank === 2){
+                  this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-types-detail', qs.stringify({tid:id}))
+                      .then(({data})=>{
+                          if(data.err_code === 0){
+                              this.typename = data.data.name;
+                              this.tstandard = data.data.tstandard;
+                              this.pstandard = data.data.pstandard;
+                              if(Array.isArray(data.data.fstandard) && data.data){
+                                  data.data.fstandard.map((item)=>{
+                                      item.show = false;
+                                      item.flowTIlteShow = false;
+                                  })
+                              }
+                              this.fstandard = data.data.fstandard;
+
+                          }else{
+                              this.$Message.error(data.err_message);
+                          }
+                      })
+              }
+
+            },
+            editPriority(type){
+                this.stepInfoList.priority = type
+
+            }
+        },
+        filters:{
+            priorityValue(value){
+                let data = value;
+                switch (value) {
+                    case '1':
+                        data = '高';
+                        break;
+                    case '2':
+                        data = '中';
+                        break;
+                    case '3':
+                        data = '低';
+                        break;
+                }
+                return data
             }
         }
     };
 </script>
 <style lang="less">
-    @gray: #ccc;
+     @gray: #ccc;
+     @yeowll :#ffd66b;
+     @org :orange;
+     @red :red;
     .taskClassLibrary {
 
         .fileAttr.ivu-row {
@@ -637,18 +722,7 @@
         .iconColor {
             border: 1px solid #51c6ff !important;
         }
-        .borderRed {
-            border: 1px solid red !important;
-            color: red;
-        }
-        .borderOrg {
-            border: 1px solid orange !important;
-            color: orange;
-        }
-        .borderYel {
-            border: 1px solid #ffd66b !important;
-            color: #ffd66b;
-        }
+
         .btn {
             width: 221px;
             height: 32px;
@@ -737,7 +811,7 @@
 
             }
             .stepsUl {
-                padding-left: 70px;
+                padding-left: 35px;
                 .stepsList {
                     display: flex;
                     position: relative;
@@ -776,6 +850,18 @@
                             border-radius: 50%;
                             vertical-align: middle;
                             cursor: pointer;
+                        }
+                        .priority3{
+                           border: 1px solid @yeowll !important;
+                            color: @yeowll !important;
+                        }
+                        .priority2{
+                           border: 1px solid @org !important;
+                            color: @org !important;
+                        }
+                        .priority1{
+                           border: 1px solid @red !important;
+                            color: @red !important;
                         }
                         .priorityList {
                             display: none;

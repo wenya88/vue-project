@@ -54,13 +54,11 @@
                                       <div class="beInOper">
                                           <h3>实施中({{dataUnderway.length}})</h3>
                                           <ul>
-                                              <li v-for="(item,index) in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)" 
-                                              @click="taskDetaInfo(
-                                                  item.id,
+                                              <li v-for="(item,index) in dataUnderway" @mouseenter="ShowEm($event)"  @mouseleave="HideEm($event)"
+                                              @click="taskDetaInfo( item.id,
                                                   item.stage_file.type,
                                                   item.stage_file.file,
-                                                  item.id
-                                                  )" :key="index">
+                                                  item.id,item)" :key="index">
                                                   <span>
                                                       <s>{{item.name}}</s>
                                                       <br/><i class="projectRow">{{item.project_name | DefName }}</i>
@@ -99,12 +97,10 @@
                                       <div class="theUpcom">
                                           <h3>即将实施({{dataWait.length}})</h3>
                                           <ul>
-                                              <li v-for="(item,index) in dataWait"  @click="taskDetaInfo(
-                                                  item.id,
+                                              <li v-for="(item,index) in dataWait"  @click="taskDetaInfo( item.id,
                                                   item.stage_file.type,
                                                   item.stage_file.file,
-                                                  item.id
-                                                  )" :key="index">
+                                                  item.id,item)" :key="index">
                                                   <span><s>{{item.name}}</s><br/>
                                                     <p v-if="item.expect_start_time<=Mdate?false:true">{{item.project_name}}</p>
                                                     <p v-if="item.expect_start_time<=Mdate?true:false">
@@ -121,12 +117,10 @@
                                           <h3>已完成({{dataAccom.length}})</h3>
                                           <ul id="CompletedUL">
                                               <li v-for="(item,index) in dataAccom" :key="index"  
-                                              @click="taskDetaInfo(
-                                                  item.id,
+                                              @click="taskDetaInfo( item.id,
                                                   item.stage_file.type,
                                                   item.stage_file.file,
-                                                  item.id
-                                                  )">
+                                                  item.id,item)">
                                                   <span class="spanTop"><Icon type="android-checkbox" color="mediumseagreen" size="18"></Icon></span>
                                                   <span>{{item.name}}</span>
                                                   <em>{{item.end_date}}</em>
@@ -207,6 +201,7 @@
 
 <script>
   var qs = require('querystring')
+  import {mapMutations} from 'vuex'
   import Calend from '../main-components/calend/calend.vue';
   import UploadM from './imPlementer/UpLoadModal.vue';
   import browsetask from '../project/task/browseTaskPop.vue'
@@ -317,6 +312,7 @@
       }
     },
     methods:{
+        ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
         //关闭窗口
         InfoRefresh(){
             this.$bus.on('InfoRefresh',()=>{
@@ -353,19 +349,27 @@
         },
   
     //  打开任务详情
-    taskDetaInfo(id,type,file,TaskID){
-        let _this=this;
+    taskDetaInfo(id,type,file,TaskID,item){
+
+       /* let _this=this;
         _this.isTabModal=true;
         this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
-        this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
+        this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
         // 本地缓存信息
+
+//         sessionStorage.TaskID=TaskID;
+//         sessionStorage.FileURl=file;
+
         this.$store.commit('changeComponentTaskID',TaskID);
         this.$store.commit('changeComponentFileURl',file);
-        // sessionStorage.TaskID=TaskID;
-        // sessionStorage.FileURl=file;
 
         // 是否显示编辑信息
         //sessionStorage.AllowEdit=_this.AllowEdit;
+        this.setPrimaryMission(item);
+        this.setDetailAll(item);
+
+        this.setUserStatus('member')
+        this.$router.push({path:'/project/details'});
     },
     //   关闭Model
     closeTabmodal(){
@@ -412,6 +416,7 @@
           let _this=this;
           let url=this.GLOBAL.baseRouter+'task/task/page&run_uid='+_this.userID;
           _this.$axios.get(url).then((msg)=>{
+              console.log(7878,msg)
             // 获取总页数
               _this.maxPage=msg.data.page.count_page;
             // 获取数据

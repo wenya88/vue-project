@@ -33,9 +33,11 @@ export default {
             if(id){
                 //保存父任务
                 this.$refs.add.saveTaskDetails(null,id);
+            }else{
+                this.$refs.add.saveTaskDetails(null);
+
             }
-            //保存子任务
-            // this.$refs.sublist.saveSubTasks();
+            //保存父任务
             return true;
         },
         clearAllData(){

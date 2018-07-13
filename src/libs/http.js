@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const http = axios.create({
-  baseURL: 'http:/59.111.95.148/index.php?r=',
+  baseURL: 'http://192.168.2.19/index.php?r=',
   timeout: 100000,
   withCredentials: true,
   data: {},

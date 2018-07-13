@@ -279,6 +279,7 @@ export default {
 .msg_title{
  width: 100%;
  height: 30px;
+ font-size: 14px;
  margin-top: 10px;
 }
 .msg_title>p{
@@ -321,7 +322,7 @@ export default {
 .msg_sign{
  box-sizing: border-box;
  width: 100%;
- height: 80px;
+ min-height: 80px;
  padding: 10px 0;
  border-bottom: 1px solid rgb(215,215,215);
 }
@@ -332,7 +333,7 @@ export default {
 }
 .msg_sign_box>p{
  width: 100%;
- height: 30px;
+ /* height: 30px; */
  font-size: 14px;
  line-height: 30px;
 }

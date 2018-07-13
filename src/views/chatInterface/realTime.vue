@@ -1,11 +1,12 @@
 <template>
    <div class="real_time_box">
      <div class="load_real">
-      <div v-if='loading' class="chat_load">
+      <!-- <div v-if='loading' class="chat_load">
           <span>加载中...</span>
-     </div>
+     </div> -->
     <GeminiScrollbar class="crollbar">
-      <div class="realTime_interface" @mousedown="down">
+      <div class="realTime_interface" @mousewheel="getScoller">
+         <span class="chat_load" @click="getMoreMsg">查看更多消息</span>
          <div v-for="(item, index) in datalist" :key="index" class="ko">
          <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
@@ -212,25 +213,6 @@ export default {
         type: 'group-chat',
         group: `${this.data.id}`
       }
-      // this.$axios.post(url, qs.stringify(items)).then(data => {
-      //   const obj = data.data
-      //   const configure = {
-      //     'key' : obj.dir + obj.random,
-      //     'policy': obj.policy,
-      //     'OSSAccessKeyId': obj.accessid, 
-      //     'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
-      //     'callback' : obj.callback,
-      //     'signature': obj.signature,
- 
-      //   }
-      //   this.configure = {
-      //     'url': obj.host,
-      //     'multipart_params': configure
-      //   }
-      //   this.initial()
-      // }, error => {
-      //   console.log('报错', error)
-      // })
     },
     getFiles() {
       this.$store.state.blob = false
@@ -238,55 +220,12 @@ export default {
     },
     getImage() {
       this.$store.state.blob = false
-    },
-    // 上传
-    initial () {
-      // this.pluploads()
-      // this.pluploads({
-      //   severUrl: this.configure.url,
-      //   size: '10mb',
-      //   button: ['file', 'wenjian'],
-      //   upContainer: 'file_id',
-      //   data: this.configure
-      // })
-    },
-    // down事件 实现下拉功能
-    down (e) {
-      let odiv = e.target  // 获取目标元素
-      // 算出鼠标相对元素的位置
-      const firstTime = new Date().getTime() // 定义一个开始时间
-      let disY = e.clientY - odiv.offsetTop
-      const that = this
-      const fun = function (e) {
-        // 鼠标按下并移动的事件
-        // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
-         var top = e.clientY - disY
-         if (top < 0) {
-           odiv.style.top = '0px'
-         } else if (top > 50) {
-           that.loading = true
-         } else if (top > 70) {
-           odiv.style.top = 70 + 'px'
-         }
-      }
-      const upFun = function (e) {
-        // document.onmousemove = null
-        document.removeEventListener('mousemove', fun, false)
-        document.removeEventListener('mouseup', upFun, false)
-        const lastTime = new Date().getTime()
-        if (lastTime - firstTime > 180) {
-          that.getMoreMsg()
-        }
-        odiv.style.top = '0px'
-        that.loading = false
-      }
-      document.addEventListener('mousemove', fun, false)
-      document.addEventListener('mouseup', upFun, false) 
-    },
+    }, 
     // 获取历史信息
     getMoreMsg () {
        const url = this.GLOBAL.baseRouter+"/system/user/get-group-chat-log"
-       const list = this.$store.state.useList
+       const list = this.datalist
+       const lists = this.$store.state.useList
        var leng = 0
        if (list.length) {
          leng = list.length - 1
@@ -296,14 +235,15 @@ export default {
          index: leng, // 本地消息数量-1
          size: 5, //  需要返回的数量
        }
+       console.log('提交数据', items)
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const oldList = data.data.data.reverse()
         //  console.log('获取的数据', oldList)
          oldList.forEach(items => {
            items.isRead = true
          })
-         this.$store.state.useList = oldList.concat(list)
-         localStorage.useList = JSON.stringify(oldList.concat(list))
+         this.$store.state.useList = oldList.concat(lists)
+         localStorage.useList = JSON.stringify(oldList.concat(lists))
        }, error => {
          console.log('错误', error)
        })
@@ -348,18 +288,35 @@ export default {
       // 滚动条长度
       const documents = document.getElementsByClassName('realTime_interface')[0]
       const dcment = document.getElementsByClassName('gm-scroll-view')[0]
-      const cententHeught = documents.clientHeight
+      const cententHeught = dcment.clientHeight
       const scrollHeights = documents.scrollHeight
       const currentDistance = scrollHeights - cententHeught
       // 当前滚动条距离顶部的距离
       var currentScrollY = dcment.scrollTop
-      console.log('底部', currentDistance, currentScrollY)
       if (currentDistance > 0 && currentDistance > currentScrollY) {
-        console.log('底部', currentDistance, currentScrollY)
         currentScrollY = Math.ceil((currentDistance - currentScrollY)) + currentScrollY
         currentScrollY = currentScrollY > currentDistance ? currentDistance : currentScrollY
         dcment.scrollTop = currentScrollY
         // this.scrollToBottom()
+      }
+    },
+    // 鼠标滑轮事件
+    getScoller () {
+      const dcment = document.getElementsByClassName('gm-scroll-view')[0]
+      const documents = document.getElementsByClassName('realTime_interface')[0]
+      const cententHeught = dcment.clientHeight
+      const scrollHeights = documents.scrollHeight
+      const currentDistance = scrollHeights - cententHeught
+      const currentScrollY = dcment.scrollTop
+      if (currentDistance > 0) {
+        //  console.log('滚动条', currentDistance, scrollHeights)
+         if (currentScrollY === 0) {
+           this.getMoreMsg()
+           this.$nextTick(() => {
+             dcment.scrollTop = 200
+           })
+      }
+      // console.log('滑动', currentScrollY)
       }
     },
     // 按下按钮所做的事
@@ -468,12 +425,12 @@ export default {
       // const firstScoll = list[index].offset
       this.readNum+= 1
       const useList = this.$store.state.useList
-      const listLocal = JSON.parse(localStorage.useList)
+      const listLocal = JSON.parse(localStorage.useList) // 获取本地储存数据
       useList.forEach((items, index) => {
-        if (items.isRead == false ) {
-          if (index == (list[this.readNum - 1])) {
-            items.isRead = true
-            listLocal[index].isRead = true
+        if (items.isRead == false ) { // 设有未读的
+          if (index == (list[this.readNum - 1])) { // 当前的数据index和储存@下标相同
+            items.isRead = true // store里面 设为true
+            listLocal[index].isRead = true // localstore 设为true
           }
         }
       })
@@ -484,7 +441,7 @@ export default {
       dcment.scrollTop = firstScoll
       if (this.readNum > list.length - 1) {
           this.isShowMessage = false
-          this.readNum = 0
+          this.readNum = 1
       }
     },
     // 关闭标签
@@ -639,7 +596,7 @@ export default {
  width: 100%;
  height: 100%;
 }
-.chat_load{
+/* .chat_load{
  width: 100%;
  height: 50px;
  line-height: 50px;
@@ -648,6 +605,16 @@ export default {
 }
 .chat_load > p {
  font-size: 16px;
+} */
+.chat_load{
+  display: inline-block;
+  width: 80px;
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  margin-left: -40px;
+  color: rgba(24,191,164,.8);
+  cursor: pointer;
 }
 .load_real{
  width: 100%;
@@ -657,13 +624,10 @@ export default {
 }
 .realTime_interface{
   box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  padding: 0 10px;
+  padding: 20px 10px 10px 10px;
   min-height: 100%;
-  /* overflow-y: auto; */
 }
 .crollbar{
  /* height: calc(100% - 150px); */

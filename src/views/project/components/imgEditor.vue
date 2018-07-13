@@ -26,7 +26,6 @@
                     <!-- 图片层 -->
                     <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
-                
           </div>
           <!-- 工具条 -->
           <div class="toolBar">
@@ -65,9 +64,10 @@
 <script>
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
-  import {imgSign} from './imgEditorTwo/imgSign.js'
-  import {imgCanvas} from './imgEditorTwo/imgCanvas.js'
-  import {canvasControl} from './imgEditorTwo/imgControl.js'
+  import {imgSign} from './imgEditorTwo/imgSign.js';
+  import {imgCanvas} from './imgEditorTwo/imgCanvas.js';
+  import {canvasControl} from './imgEditorTwo/imgControl.js';
+  import {AutoResizeImage} from './imgEditorTwo/autoResizeImage.js';
   export default {
     components:{
       OnLoad:OnLoad
@@ -135,12 +135,12 @@
       },
     },
     methods:{
-      // 清除缓存
+      // clearSession
       clearSession(){
         sessionStorage.removeItem('ImgData');//存图片标注信息
         sessionStorage.removeItem('totalNum');//存图片放大缩小信息
       },
-      // 清除画布
+      // clearCanvas
       clearCanvas(){
         this.$Modal.confirm({
             title: "清除画布",
@@ -151,7 +151,7 @@
             },
         });
       },
-      // 隐藏标注
+      // hideSgin
       canvasHidden(){
           let cav=document.getElementById("cav")
           if(this.canvasSign){
@@ -180,7 +180,7 @@
         }
         
       },
-      //关闭窗口
+      //colseWindow
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
@@ -196,20 +196,36 @@
           let el2=document.getElementById("onload");
           let sgin=document.getElementsByClassName("sginCanvas")[0];
           let controlDiv=document.getElementsByClassName("oControl")[0];
+          let imgFocus=document.getElementsByClassName("imgFocus")[0];
+        
           el.onload=function(){
-              el2.style.display="none";
+               el2.style.display="none";
+               let maxH=parseInt(imgFocus.style.height)
+               let maxW=parseInt(imgFocus.style.width);
+              
+              //  autoZoom
+               if(el.height>maxH&&(el.width-maxW)<100){
+                 AutoResizeImage(0,maxH,el);
+               }else{
+                 AutoResizeImage(maxW,0,el);
+               }
+               if(el.width>maxW&&el.height<maxH){
+                 AutoResizeImage(maxW,0,el);
+               }
+
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
-
-              //  标记层
+              
+              //  sginDiv
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
 
-              //  控制层
+              //  controlDiv
                controlDiv.style.width=canvasW+"px";
                controlDiv.style.height=canvasH+"px";
-              // 画布层
+
+              // canvasDiv
                canID.width=canvasW;
                canID.height=canvasH;
 
@@ -219,21 +235,19 @@
           }
       },
       loadWH(){
-          let sw=$(".single-page-con").width()-300;
-          let sh=$(".single-page-con").height()-160;
-          // $(".imgFocus").height(sh);//先注解
-          $(".imgFocus").height(470);
-          // $(".imgEditorCom,.imgFocus").width(sw);//先注解
-          $(".imgEditorCom,.imgFocus").width(815)  //临时方法
-          // $(".toolBar").css("margin-top",sh+5)//先注解
-           $(".toolBar").css("margin-top",480)//临时方法
+          let sw=$(".single-page-con").width()-500;
+          let sh=$(".single-page-con").height()-200;
+          $(".imgFocus").height(sh);//先注解
+          $(".imgEditorCom,.imgFocus").width(sw);//先注解
+          $(".toolBar").css("margin-top",sh+5)//先注解
       },
       defue(){
-        // 标注
+        // sign
         imgSign(this.AllowEdit);
 
       },
-      //需要修改
+      
+      //edit
       commitEidt(type){
         let url=this.GLOBAL.baseRouter+'task/task/inside-audit';
         let Okparams={
@@ -305,7 +319,7 @@
         $.sign.loadingSign(this.data);
       },
       changeState(state){
-        //  控制图片是否可标注
+        //  controlImgSign
               if(state=='1'||state=='2'){
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
@@ -319,21 +333,21 @@
               }
       },
       get(){
-          //  获取图片的标注信息
+          //  getImgSignInfo
            let TaskID=this.storeTaskID
-           if(TaskID == 0)
+           if(TaskID == 0 || TaskID === null )
            {
-              return false;
+               return false;
            }
            let _this=this;
-           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
+           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
-             
+
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
-                
+
                 _this.IMGlist.forEach((val,index)=>{
                    if(val.file.file==_this.storeFileURl){
                     // 设置初始化值
@@ -356,7 +370,7 @@
               _this.imgdef();
               }else{
                 return
-              }          
+              }
           },()=>{
             _this.$Message.error('请求失败')
           })
