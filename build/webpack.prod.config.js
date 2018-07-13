@@ -46,7 +46,6 @@ module.exports = merge(webpackBaseConfig, {
             filename: '../index.html',
             template: './src/template/index.ejs',
             inject: false,
-            chunks: ['manifest', 'vendor', 'app']
         })
     ]
 });
