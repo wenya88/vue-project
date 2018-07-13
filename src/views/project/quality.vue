@@ -83,24 +83,24 @@
     </Affix> -->
     <!-- <Tabs value="1" :animated="false" v-model="status" @on-click="changeTabs()">
       <TabPane label="归档文件" name="1"> -->
-        <pigeonhole ref="finish" v-if="finish"></pigeonhole> 
+        <pigeonhole ref="finish" v-if="finish"></pigeonhole>
         <resources-list ref="list" v-else :sortShow="sortNumber"></resources-list>
       <!-- </TabPane>
     </Tabs> -->
     <!-- 浏览任务弹窗 -->
-    <!-- <Modal 
-          v-model="isTabModal" 
-          width="1200" 
-          :styles="{top: '100px'}"
-          :closable="false"
-          okText= '保存'
-          cancelText='取消'
-          @on-cancel="closeTabmodal"
-          >
-        <browsetask ref="browsetask"></browsetask>
-        <div slot="footer">
-        </div>
-    </Modal> -->
+   <!--<Modal-->
+          <!--v-model="isTabModal"-->
+          <!--width="1200"-->
+          <!--:styles="{top: '100px'}"-->
+          <!--:closable="false"-->
+          <!--okText= '保存'-->
+          <!--cancelText='取消'-->
+          <!--@on-cancel="closeTabmodal"-->
+          <!--&gt;-->
+        <!--<browsetask ref="browsetask"></browsetask>-->
+        <!--<div slot="footer">-->
+        <!--</div>-->
+    <!--</Modal>-->
   </div>
 </template>
 
@@ -181,12 +181,14 @@ export default {
   },
   methods: {
     finishData(status) {
+        console.log(970)
       this.finish = true
       setTimeout(() => {
         this.$refs.finish.fetchData()
       },0)
     },
     resourcesData(status) {
+
       this.finish = false
       sessionStorage.resourcesStatus = status
       switch (status){
@@ -285,21 +287,22 @@ export default {
      * 阶段id  必传
      * 阶段  非必传
      */
-    // fetchFileData(stageId,type,file,taskId) {
-    //   this.isTabModal = true;
-    //   // sessionStorage.FileURl=file;
-    //   // sessionStorage.TaskID=taskId;
-    //   this.$store.commit('changeComponentTaskID',TaskID);
-    //   this.$store.commit('changeComponentFileURl',file);
-    //   this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
-    //   this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
-
-    //   if(this.status == '1') {
-    //     sessionStorage.AllowEdit='Allow';
-    //   } else {
-    //     sessionStorage.AllowEdit='Other';
-    //   }
-    // },
+     fetchFileData(stageId,type,file,taskId) {
+//       this.isTabModal = true;
+//       // sessionStorage.FileURl=file;
+//       // sessionStorage.TaskID=taskId;
+//
+//       this.$store.commit('changeComponentTaskID',TaskID);
+//       this.$store.commit('changeComponentFileURl',file);
+//       this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
+//       this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
+//
+//       if(this.status == '1') {
+//         sessionStorage.AllowEdit='Allow';
+//       } else {
+//         sessionStorage.AllowEdit='Other';
+//       }
+     },
     loadMore() {
       if (!this.loading) {
         this.loading = true
