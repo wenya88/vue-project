@@ -55,17 +55,19 @@ export default {
       const obj = e[lt]
       const list = this.headerList
       const headOne = list[0]
-      list.forEach((item, index) => {
-        const objName = `project_${item.id}`
-        if (objName === obj.group_id) {
-          if (index > 0) {
-            list.splice(index, 1)
-            list.splice(0, 1)
-            list.unshift(item)
-            list.unshift(headOne)
+      if (obj) {
+        list.forEach((item, index) => {
+          const objName = `project_${item.id}`
+          if (objName === obj.group_id) {
+            if (index > 0) {
+              list.splice(index, 1)
+              list.splice(0, 1)
+              list.unshift(item)
+              list.unshift(headOne)
+            }
           }
-        }
-      })
+        })
+      }
       this.$set(this, 'headerList', list)
     },
     // 界面初始话
