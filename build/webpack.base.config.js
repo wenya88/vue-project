@@ -9,12 +9,7 @@ function resolve(dir) {
 }
 module.exports = {
     entry: {
-<<<<<<< HEAD
-        // main: '@/main',
-        main: ["babel-polyfill", "@/main"],
-=======
         main: '@/main',
->>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
         'vender-base': '@/vendors/vendors.base.js',
         'vender-exten': '@/vendors/vendors.exten.js',
         'lab': '@/js/labjs.min.js'
