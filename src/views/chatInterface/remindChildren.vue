@@ -6,85 +6,220 @@
        <i class="iconfont icon-sousuo"/>
       </div>
       <div class="msg_title_all">
-        <div class="msg_title" v-for="(itme, index) in objList" :key="index">
-          <p>{{itme.obj}}</p>
-          <p v-show="itme.msg!==0">{{itme.msg}}</p>
+        <div class="msg_title" v-for="(itme, index) in objList" :key="index" @click="getObj(index)">
+          <p :class="itme.bojectStyle">{{itme.name}}</p>
+          <p v-show="itme.msg">{{itme.msg}}</p>
         </div>
       </div>
     </div>
     <div class="message_remind_right">
      <div class="message_sign">
-       <p @click="setSign">标识全部已读</p>
+       <p @click="setSign" v-show="msgList.length">标识全部已读</p>
      </div>
      <div class="clearfix msg_sign" v-for="(items, index) in msgList" :key="index">
         <div class="msg_sign_box">
-          <p>{{items.msg}}</p>
-          <p>{{items.times}}</p>
+          <p>{{items.message}}</p>
+          <p>{{items.date}}</p>
         </div>
         <div class="msg_sign_button">
-          <p class="read_sign" v-show="items.isRead">已读</p>
-          <p v-show="!items.isRead" @click="setSigned(index)">标识已读</p>
-          <p v-show="!items.isRead">查看</p>
+          <p class="read_sign" v-show="items.state == '1'">已读</p>
+          <p v-show="items.state == '0'" @click="setSigned(index)">标识已读</p>
+          <p v-show="items.state == '0'">查看</p>
         </div>
      </div>
     </div>
   </div>
 </template>
 <script>
+var qs = require('querystring')
 export default {
   data () {
     return {
       msgRmind: '',
-      objList: [
-        {
-          obj: '外包项目',
-          msg: 10
-        },
-        {
-          obj: '金刚皮肤',
-          msg: 0
-        },
-        {
-          obj: '娃哈哈小哪吒',
-          msg: 5
-        }
-      ],
-      msgList: [
-        {
-          msg: '你有一封邮件',
-          times: '2018/05/27',
-          isRead: false
-        },
-        {
-          msg: '你有一封邮件1',
-          times: '2018/05/27',
-          isRead: false
-        },
-        {
-          msg: '你有一封邮件2',
-          times: '2018/05/27',
-          isRead: true
-        },
-        {
-          msg: '你有一封邮件3',
-          times: '2018/05/27',
-          isRead: false
-        }
-      ]
+      typeName: '',
+      indexed: 0,
+      objList: [],
+      userMsg: {},
+      noticeList: [],
+      msgList: []
     }
   },
+  computed: {
+     getTabNum () {
+       return this.$store.state.tabNum
+     },
+     getList() {
+      return this.$store.state.noticeList
+    }
+  },
+  watch: {
+    getTabNum(e) {
+      // console.log('点击11', e)
+      if (e === 2) {
+        this.getHead()
+        this.typeName = 'project'
+      } else if (e === 3) {
+        this.getTask()
+        this.typeName = 'task'
+      }
+    },
+     getList (e) {
+      const list = this.objList
+      const type = this.typeName
+      const index = this.indexed
+      const project_id = list[index].project_id
+      this.getMsg(type, project_id)
+    }
+  },
+  created () {
+    this.getHead()
+    // this.getObj(0)
+    this.getMsgInterface()
+  },
   methods: {
+    // 获取消息接口
+    getMsgInterface () {
+       const url = this.GLOBAL.baseRouter+"/system/user/get-notice-list"
+       const list = this.$store.state.noticeList
+       var leng = 1
+       if(list.length) {
+         leng = list.length - 1
+       }
+       const items = {
+         index: leng,
+         size: 30,
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         const userList = data.data.data
+         const list = this.$store.state.noticeList
+         var lists = []
+         if (list) {
+           lists = userList.concat(list)
+         }
+         this.noticeList = lists
+         this.getObj(0)
+         this.unreadMsg()
+       }, error => {
+         console.log('错误', error)
+       })
+    },
+    // 切换项目或任务
+    getObj (index) {
+      const list = this.objList
+      const type = this.typeName // 切换项目名
+      const noticeList = Array.from(this.noticeList)
+      const lists = []
+      if (list.length) {
+        const project_id = list[index].id // 获取具体项目的id或任务id
+        for (let i = 0; i<list.length; i++) { // 循环
+          list[i].bojectStyle = '' // 点击样式
+          if (i == index) {
+            list[i].bojectStyle = 'onwStyle'
+            noticeList.forEach(elemens => {
+              if (elemens.type == type) {
+                if (elemens.id == project_id) {
+                  lists.push(elemens)
+                }
+              }
+            })
+          }
+        }
+      }
+      this.$nextTick(() => {
+        this.msgList = lists
+        this.objList = list // 样式控制
+        this.indexed = index // 点击排列顺序
+        this.getMsgNum()
+      })
+    },
+    // 获取未读消息
+    unreadMsg() {
+      const lists = this.noticeList
+      const listFrom = {}
+      lists.forEach(items => {
+        if (items.state === '0') {
+          if (!listFrom[items.type]) {
+            listFrom[items.type] = 0
+          }
+           listFrom[items.type]+= 1
+        }
+      })
+      this.$emit('listform', listFrom)
+    },
+    // 获取项目
+    getHead () {
+      if (localStorage.headerList) {
+        const headlist = JSON.parse(localStorage.headerList)
+        this.objList = headlist
+        this.typeName = 'project'
+        // console.log('headList', headlist)
+      } else {
+        this.objList = []
+      }
+      this.getObj(0)
+    },
+    // 获取消息
+    getMsg (type, project_id) {
+     
+      // this.getMsgNum()
+    },
+    // 获取msg
+    getMsgNum () {
+      const headList = this.objList
+      const list = this.noticeList
+      if (list) {
+        headList.forEach(elemens => {
+          elemens.msg = 0
+          list.forEach(item => {
+            if (item.id == elemens.id) {
+              if (item.state == '0') {
+                elemens.msg+= 1
+              }
+            }
+          })
+        })
+      }
+    },
+    // 获取任务
+    getTask () {
+      const useMsg = JSON.parse(localStorage.userMsg)
+      this.userMsg= useMsg
+      let url = this.GLOBAL.baseRouter+"task/task/list"
+      const items = {
+        project_id: '',
+        project_child_id: '',
+        user_id: useMsg.id
+      }
+      this.typeName = 'task'
+      this.$axios.get(url, qs.stringify(items)).then(data => {
+        this.objList = data.data.data
+        this.getObj(0)
+      }, error => {
+        console.log('请求错误')
+      })
+    },
     // 全部标记已读
     setSign () {
-      const list = this.msgList
-      list.forEach(elemens => {
-        elemens.isRead = true
-      })
+     const list = this.msgList
+     msgList.forEach(items => {
+       if (items.state !== '1') {
+         items.state = '1'
+       }
+     })
     },
     // 单个标记已读
     setSigned (index) {
-      const list = this.msgList
-      list[index].isRead = true
+      const lists = this.msgList[index]
+      const items = {
+        id: lists.msg_id
+      }
+      let url = this.GLOBAL.baseRouter+"/system/user/read-notice"
+      // console.log('标记已读', items)
+      this.$axios.post(url, qs.stringify(items)).then(data => {
+         lists.state = '1'
+         this.getMsgInterface()
+        console.log('请求错误')
+      })
     }
   }
 }
@@ -100,6 +235,9 @@ export default {
   height: 100%;
   padding: 0 10px;
   float: left;
+}
+.onwStyle{
+  font-weight: bold;
 }
 .message_remind_right{
  box-sizing: border-box;
@@ -159,6 +297,7 @@ export default {
   height: 20px;
   padding: 0 10px;
   border-radius: 10px;
+  line-height: 20px;
   background: rgb(255,153,0);
   color: #ffffff;
   margin-top: 5px;
@@ -187,7 +326,7 @@ export default {
  border-bottom: 1px solid rgb(215,215,215);
 }
 .msg_sign_box{
- width: calc(100% - 200px);
+ width: calc(100% - 150px);
  height: 100%;
  float: left;
 }
@@ -203,7 +342,7 @@ export default {
   color: rgb(215,215,215);
 }
 .msg_sign_button{
- width: 200px;
+ width: 150px;
  height: 100%;
  float: left;
 }

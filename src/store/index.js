@@ -18,6 +18,10 @@ const store = new Vuex.Store({
        absold: true,
        nums: 0,
        tabNum: 2,
+       img: '',
+       blob: false,
+       file: {},
+       msgNum: !localStorage.msgNum ? "0" : localStorage.msgNum,
     },
     mutations: {
         //

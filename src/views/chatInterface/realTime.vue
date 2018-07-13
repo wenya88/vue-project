@@ -1,19 +1,23 @@
 <template>
    <div class="real_time_box">
-     <GeminiScrollbar class="crollbar">
-      <div class="realTime_interface">
+     <div class="load_real">
+      <div v-if='loading' class="chat_load">
+          <span>加载中...</span>
+     </div>
+    <GeminiScrollbar class="crollbar">
+      <div class="realTime_interface" @mousedown="down">
          <div v-for="(item, index) in datalist" :key="index" class="ko">
          <div v-if ='item.user_id !== userMsg.id'>
            <div class="clearfix realTime_message">
-             <img src="../../images/meinv.jpg">
+             <img :src="item.headimage">
              <p class="realTime_time_text">{{item.remark_name}}</p>
              <p class="realTime_time">{{item.date}}</p>
            </div>
            <div>
              <p class="triangle_type"></p>
              <p>
-             <span :class="`Send_content is_own_no ${item.group_id}`">
-               {{item.message}}
+             <span :class="`Send_content is_own_no ${item.group_id}`" v-html="item.message">
+               <!-- {{item.message}} -->
              </span>
              </p>
            </div>
@@ -28,8 +32,8 @@
            <div class="is_own_float">
              <p class="triangle_type_own"></p>
              <p>
-             <span class="Send_content is_own ${item.group_id}">
-               {{item.message}}
+             <span class="Send_content is_own ${item.group_id}" v-html="item.message">
+               <!-- {{item.message}} -->
              </span>
              </p>
            </div>
@@ -37,11 +41,12 @@
          </div>
       </div>
        </GeminiScrollbar>
+       </div>
       <form class="send_information_box">
          <div class="send_message_remind">
            <div :class="`send_input ${data.absold ? '' : 'disable'}`" contenteditable="true" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
            <div class="clearfix send_message_children" v-show="isShowMessage">
-             <p>有<span class="message_num" v-show="isLook">1</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
+             <p>有<span class="message_num" v-show="isLook">{{readNum}}</span><span :class="!isLook ? 'message_num':'message_nums' "><span v-show="isLook" class="message_numed">/</span>{{messageNum}}</span>条您的消息未读</p>
              <p @click="closeMessage">x</p>
              <p @click="getSee" v-if="!isLook">查看</p>
              <p @click="getSeed" v-else>下一条</p>
@@ -51,21 +56,23 @@
          <div class="send_information_person" :style="personPosi" v-show="sendShow">
            <!-- <GeminiScrollbar class="scollr_person"> -->
            <ul class="send_ul_style">
-             <li v-for='(item, index) in useList' :key="index" @click="personDone(item.name)">{{item.name}}</li>
+             <li v-for='(item, index) in useList' :key="index" @click="personDone(item)">{{item.remark_name}}</li>
            </ul>
            <!-- </GeminiScrollbar> -->
          </div>
          <div class="clearfix send_Function_button">
-           <div>
+           <div id='file_id'>
               <span class="pace">
                 <i class="iconfont icon-biaoqing1"/>
               </span>
               <span class="file_class_father">
                 <i class="iconfont icon-tupian1"/>
-                <input type="file" class="file_class"/>
+                <uploader :uploadObj='uploadobj' :ids='file'></uploader>
+                <!-- <input type="file" class="file_class"/> -->
               </span>
               <span>
                 <i class="iconfont icon-wenjianjia"/>
+                <uploader :uploadObj='uploadobj' :ids="wenjian"></uploader>
               </span>
            </div>
            <p :class="`button_send ${data.absold ? '' : 'disable'}`" @click="submit">回车发送</p>
@@ -75,6 +82,7 @@
 </template>
 <script>
 import {screenshot} from './screenshot.js'
+var qs = require('querystring')
 export default {
   props: ['data'],
   data () {
@@ -82,9 +90,12 @@ export default {
       value: '',
       datalist: [],
       messageNum: 0,
-      nowName: '陈莉莉',
       sendShow: false,
       isLook: false,
+      loading: false,
+      readNum: 0,
+      file: 'file',
+      wenjian: 'wenjian',
       websock: null,
       isShowMessage: false,
       scollArray: [],
@@ -94,35 +105,19 @@ export default {
       },
       userMsg: {},
       lastSelection: {},
-      useList: [
-        {
-          name: '李佳'
-        },
-        {
-          name: '王者'
-        },
-        {
-          name: '霸气'
-        },
-        {
-          name: '索隆'
-        },
-        {
-          name: '所有人'
-        }
-      ],
+      useList: [],
+      configure:{},
+      uploadobj:{}
     }
   },
   mounted () {
-    // localStorage.removeItem('useList')
-    // console.log(this.data.absold)
+    this.getPjUser()
     if (!this.data.absold) {
       this.datalist= []
-      // this.$store.state.useList = []
-      // localStorage.removeItem('useList')
     }
     this.userMsge()
     this.init()
+    this.getOss()
     screenshot()
     // this.isLogin()
     this.scrollToBottom()
@@ -134,23 +129,198 @@ export default {
   computed : {
     getList () {
       return this.$store.state.useList
-    }
+    },
+    getImg () {
+      return this.$store.state.img
+    },
+    getFile () {
+      return this.$store.state.file
+    },
+    // getBob () {
+    //   return this.$store.state.blob
+    // }
   },
   watch: {
     getList(e) {
       this.submitMsg(e)
-      // console.log('数据s', e)
+      // this.getName()
     },
-     data: function (e) {
+    // getBob(e) {
+    //   // console.log('截屏图片', e)
+    // },
+    getImg (e) {
+      const blob = this.$store.state.blob
+      if (!blob) {
+        const imgs = `<img src = '${e}' style='max-width: 100px; max-height: 100px '></img>`
+        this.getSong(imgs)
+      } 
+      else {
+        const url = e
+        $('.send_input').find('img').last().attr('src', url)
+      }
+    },
+    getFile (e) {
+      const file = e
+      const files = `<p class="file_upload">上传文件${e.fileName}<a href="${e.fileDown}" class="file_upload_ltext">下载</a></p>`
+      this.getSong(files)
+    },
+    data: function (e) {
       var obj = this.$store.state.useList
       this.submitMsg(obj)
-      // console.log('变换', e)
+      this.getOss()
     }
   },
   // updated () {
   //   this.geyEmoji()
   // },
   methods: {
+    // 发送
+    getSong (obj) {
+      var list = []
+      const sendTime = this.getTime()
+      if (localStorage.useList) {
+        list = JSON.parse(localStorage.useList)
+      }
+      const imgMsg = {
+        action:'group-chat',
+        group_id: this.data.id,
+        message: obj,
+        user_id: this.userMsg.id,
+        remark_name: this.data.remark_name,
+        date: sendTime
+      }
+      //  const message = JSON.stringify({
+      //    img: e
+      //  })
+       const imgSend = JSON.stringify({
+        action:'group-chat',
+        group_id: this.data.id,
+        msg: obj,
+        user_id: this.userMsg.id,
+        remark_name: this.data.remark_name,
+        date: sendTime
+      })
+      list.push(imgMsg)
+      webSocket.send(imgSend)
+      this.$store.state.useList = list
+      localStorage.useList = JSON.stringify(list)
+    },
+    // 获取凭证
+    getOss () {
+      // let url =  this.GLOBAL.baseRouter+"/file/oss/oss"
+      this.uploadobj = {
+        type: 'group-chat',
+        group: `${this.data.id}`
+      }
+      // this.$axios.post(url, qs.stringify(items)).then(data => {
+      //   const obj = data.data
+      //   const configure = {
+      //     'key' : obj.dir + obj.random,
+      //     'policy': obj.policy,
+      //     'OSSAccessKeyId': obj.accessid, 
+      //     'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+      //     'callback' : obj.callback,
+      //     'signature': obj.signature,
+ 
+      //   }
+      //   this.configure = {
+      //     'url': obj.host,
+      //     'multipart_params': configure
+      //   }
+      //   this.initial()
+      // }, error => {
+      //   console.log('报错', error)
+      // })
+    },
+    getFiles() {
+      this.$store.state.blob = false
+      // this.getOss()
+    },
+    getImage() {
+      this.$store.state.blob = false
+    },
+    // 上传
+    initial () {
+      // this.pluploads()
+      // this.pluploads({
+      //   severUrl: this.configure.url,
+      //   size: '10mb',
+      //   button: ['file', 'wenjian'],
+      //   upContainer: 'file_id',
+      //   data: this.configure
+      // })
+    },
+    // down事件 实现下拉功能
+    down (e) {
+      let odiv = e.target  // 获取目标元素
+      // 算出鼠标相对元素的位置
+      const firstTime = new Date().getTime() // 定义一个开始时间
+      let disY = e.clientY - odiv.offsetTop
+      const that = this
+      const fun = function (e) {
+        // 鼠标按下并移动的事件
+        // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
+         var top = e.clientY - disY
+         if (top < 0) {
+           odiv.style.top = '0px'
+         } else if (top > 50) {
+           that.loading = true
+         } else if (top > 70) {
+           odiv.style.top = 70 + 'px'
+         }
+      }
+      const upFun = function (e) {
+        // document.onmousemove = null
+        document.removeEventListener('mousemove', fun, false)
+        document.removeEventListener('mouseup', upFun, false)
+        const lastTime = new Date().getTime()
+        if (lastTime - firstTime > 180) {
+          that.getMoreMsg()
+        }
+        odiv.style.top = '0px'
+        that.loading = false
+      }
+      document.addEventListener('mousemove', fun, false)
+      document.addEventListener('mouseup', upFun, false) 
+    },
+    // 获取历史信息
+    getMoreMsg () {
+       const url = this.GLOBAL.baseRouter+"/system/user/get-group-chat-log"
+       const list = this.$store.state.useList
+       var leng = 0
+       if (list.length) {
+         leng = list.length - 1
+       }
+       const items = {
+         id: this.data.id, // 群组id
+         index: leng, // 本地消息数量-1
+         size: 5, //  需要返回的数量
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         const oldList = data.data.data.reverse()
+        //  console.log('获取的数据', oldList)
+         oldList.forEach(items => {
+           items.isRead = true
+         })
+         this.$store.state.useList = oldList.concat(list)
+         localStorage.useList = JSON.stringify(oldList.concat(list))
+       }, error => {
+         console.log('错误', error)
+       })
+    },
+    // 获取项目成员
+    getPjUser() {
+       const url = this.GLOBAL.baseRouter+"/task/company/joined-members"
+       const projectId = this.data.id.split('_') 
+       const items = {
+         project_id: Number(projectId[1])
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         this.useList = data.data.data
+       }, error => {
+         console.log('错误', error)
+       })
+    },
     // 获取用户信息
     userMsge () {
       this.userMsg= JSON.parse(localStorage.userMsg)
@@ -183,8 +353,9 @@ export default {
       const currentDistance = scrollHeights - cententHeught
       // 当前滚动条距离顶部的距离
       var currentScrollY = dcment.scrollTop
+      console.log('底部', currentDistance, currentScrollY)
       if (currentDistance > 0 && currentDistance > currentScrollY) {
-        // console.log('底部', currentDistance, currentScrollY)
+        console.log('底部', currentDistance, currentScrollY)
         currentScrollY = Math.ceil((currentDistance - currentScrollY)) + currentScrollY
         currentScrollY = currentScrollY > currentDistance ? currentDistance : currentScrollY
         dcment.scrollTop = currentScrollY
@@ -208,8 +379,6 @@ export default {
         this.$nextTick(() => {
           const contentsHeight = document.getElementsByClassName('send_information_person')[0].clientHeight
           const offset = ele.caret('position')
-          // console.log('offset', offset)
-          // const lefts = offset.left - 600
           this.personPosi = {
             left: offset.left + 'px',
             top: offset.top - contentsHeight + 'px'
@@ -236,7 +405,9 @@ export default {
       }
     },
     // @人员选择
-    personDone (person) {
+    personDone (e) {
+      const person = e.remark_name
+      const personId = `person_${e.user_id}`
       this.sendShow = false
       document.getElementById('testInput').focus() // 可编辑div获取光标
       // 获取之前保留下来的信息
@@ -253,6 +424,7 @@ export default {
       const spanNode1 = document.createElement('span')
       spanNode.setAttribute('style', 'color:rgba(49,187,159,1);')
       spanNode.className = 'at-text'
+      spanNode.id = personId
       spanNode.innerHTML = '@' + person
       spanNode1.innerHTML = '&nbsp;'
       // 将生成内容打包放在 Fragment 中，并获取生成内容的最后一个节点，也就是空格。
@@ -270,53 +442,50 @@ export default {
     },
     // @查找
     getName () {
-      const list = Array.from(this.datalist)
-      var nameArray = []
-      list.forEach((element, index) => {
-        const isShow = element.message.indexOf('@') !== -1 // 查找是否含有@
-        if (isShow) {
-          const nameList = element.message.split('@')
-          const name = this.nowName
-          if (nameList[1] === name) {
-            // const dome = document.getElementsByClassName('Send_content')[index]
-            // const documents = document.getElementsByClassName('realTime_interface')[0]
-            // const dome = $('.Send_content').eq(index).offset().top
-            nameArray.push(index)
-            this.messageNum = nameArray.length
-            if (nameArray.length !== 0) {
-              this.isShowMessage = true
-            }
-            // alert(nameArray.length)
-          }
-          // alert(nameList[1])
-        }
-      })
-      this.scollArray = nameArray
+      // const list = Array.from(this.datalist)
+      // var nameArray = []
+      if (this.messageNum !== 0) {
+        this.isShowMessage = true
+      } else {
+        this.isShowMessage = false
+      }
+      // list.forEach((element, index) => {
+        
+      // })
+      // this.scollArray = nameArray
     },
     // 查看
     getSee () {
       this.isLook = true
-      this.getLook(0)
+      this.getLook()
     },
     getSeed () {
       const index = this.messageNum
-      var num = 1
-      if (num < index) {
-        this.getLook(num)
-      }
+      this.getLook()
     },
-    getLook (index) {
+    getLook () {
       const list = Array.from(this.scollArray)
       // const firstScoll = list[index].offset
-      const num = list[index]
+      this.readNum+= 1
+      const useList = this.$store.state.useList
+      const listLocal = JSON.parse(localStorage.useList)
+      useList.forEach((items, index) => {
+        if (items.isRead == false ) {
+          if (index == (list[this.readNum - 1])) {
+            items.isRead = true
+            listLocal[index].isRead = true
+          }
+        }
+      })
+      localStorage.useList = JSON.stringify(listLocal)
+      const num = list[this.readNum - 1]
       const firstScoll = $('.Send_content').eq(num).offset().top
       const dcment = document.getElementsByClassName('gm-scroll-view')[0]
       dcment.scrollTop = firstScoll
-      this.$nextTick(() => {
-        if ((index + 1) === list.length) {
+      if (this.readNum > list.length - 1) {
           this.isShowMessage = false
-        }
-      })
+          this.readNum = 0
+      }
     },
     // 关闭标签
     closeMessage () {
@@ -325,8 +494,22 @@ export default {
     submit () { // 提交内容
       $('.send_input').find('div').remove()
       this.sendShow = false // 发送关闭@框
-      const elements = $('.send_input').html().replace(/&nbsp;/g,"")
-      // console.log('1111', elements)
+      const personTxt = document.getElementById('testInput').getElementsByClassName('at-text')
+      for (let i = 0; i < personTxt.length; i++) {
+        const personTxts = personTxt[i].innerText
+        const personTxtId = personTxt[i].getAttribute('id')
+        const persons = personTxts.split('@')[1]
+        const persons_id = personTxtId.split('_')[1]
+        const name_call = JSON.stringify({
+          call_person: persons,
+          call_id: `person_${persons_id}`,
+          call_class: 'at-text',
+          isRead: false
+        })
+       personTxt[i].innerHTML = name_call
+      }
+      const blob = this.$store.state.blob
+      const elements =  $('.send_input').html().replace(/&nbsp;/g,"")
       const sendTime = this.getTime()
       var list = this.$store.state.useList
       const shuju = JSON.stringify({
@@ -371,15 +554,66 @@ export default {
     },
     submitMsg(obj) {
       const list = Array.from(obj)
+      var listLocal = []
+      if (localStorage.useList) {
+         listLocal = JSON.parse(localStorage.useList)
+      }
+      const userID = this.userMsg.id
       var newList = []
+      this.messageNum = 0
+      this.scollArray = []
+      this.nuRead = []
       list.forEach((elements, index) => {
         const str = this.data.id
         if (str === elements.group_id) {
+          const msgTxt = elements.message
+          var msgTxted = null
+          const numberStart = this.searchSubStr(msgTxt, '{')
+          const numberEnd = this.searchSubStr(msgTxt, '}')
+          var startTexts = msgTxt.substring(0, numberStart[0])
+          numberStart.forEach((items, indexs) => {
+            numberEnd.forEach((ited, idx) => {
+              if (indexs == idx) {
+                const ks = JSON.parse(msgTxt.substring(items, ited + 1))
+                const callID = ks.call_id.split('_')[1] // 获取@ 用户名
+                if (userID == callID) {  // 和当前用户相同就显示
+                if (!elements.isRead) { // 是否已读或者没有
+                    this.messageNum+= 1
+                    this.scollArray.push(index)
+                    elements.isRead = false
+                    listLocal[index].isRead = false
+                }
+                  // this.nuRead.push(elements)
+                }
+                const startText = `<span class ='${ks.call_id}' style = 'color:rgba(49,187,159,1);' > @${ks.call_person}</span>`
+                const nextStart = indexs + 1
+                var nextText = ''
+                var endText = ''
+                if ( idx + 1 < numberEnd.length) {
+                  nextText = msgTxt.substring(idx + 1, numberStart[nextStart])
+                } else {
+                  endText = msgTxt.substring(numberEnd[idx] + 1, msgTxt.length)
+                }
+                startTexts+= startText + nextText + endText
+                elements.message = startTexts
+              }
+            })
+          })
            newList.push(elements)
-          //  console.log('11111', elements)
         }
       })
       this.$set(this, 'datalist', newList)
+      this.getName()
+    },
+    // 获取字符串位置
+    searchSubStr (str, subStr){
+        var positions = []
+        var pos = str.indexOf(subStr)
+        while ( pos > -1) {
+            positions.push(pos);
+            pos = str.indexOf(subStr, pos + 1);
+        }
+        return positions
     },
     geyEmoji () {
       $('.Send_content').each(function(){
@@ -393,13 +627,10 @@ export default {
           action: 'login',
           token: localStorage.token
         })
-        // this.threadPoxi(msgData)
       }
     },
   },
   beforeDestroy () {
-    // alert(1)
-    // this.websock.close()
   }
 }
 </script>
@@ -408,15 +639,34 @@ export default {
  width: 100%;
  height: 100%;
 }
+.chat_load{
+ width: 100%;
+ height: 50px;
+ line-height: 50px;
+ text-align: center;
+ color: rgba(24,191,164,.8);
+}
+.chat_load > p {
+ font-size: 16px;
+}
+.load_real{
+ width: 100%;
+ height: calc(100% - 150px);
+ position: relative;
+ overflow: hidden;
+}
 .realTime_interface{
   box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   padding: 0 10px;
-  height: 100%;
+  min-height: 100%;
   /* overflow-y: auto; */
 }
 .crollbar{
- height: calc(100% - 150px);
+ /* height: calc(100% - 150px); */
 }
 .send_information_box,
 .send_information_emoji{
@@ -520,8 +770,8 @@ export default {
 }
 .send_Function_button i{
   font-size: 18px;
-  line-height: 50px;
-  margin-left: 5px;
+  line-height: 20px;
+  /* margin-left: 5px; */
   cursor: pointer;
 }
 .send_Function_button>div{
@@ -544,6 +794,15 @@ export default {
   right:0;
   margin: auto;
   cursor: pointer;
+}
+#file_id span{
+ display: block;
+ width: 20px;
+ height: 20px;
+ float: left;
+ margin-top: 15px;
+ margin-left: 15px;
+ position: relative;
 }
 .send_information_person{
   position: absolute;

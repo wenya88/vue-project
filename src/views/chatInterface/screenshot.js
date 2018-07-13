@@ -1,8 +1,12 @@
+import store  from '@/store/index'
 // 截屏粘贴功能模块
 const screenshot = function () {
   var imgReader = function (item) {
     const blob = item.getAsFile()
     const reader = new FileReader()
+    const temp = randomChar(6) + '.png'
+    uploader.addFile(blob, temp)
+    store.state.blob = true
     reader.onload = function (e) {
       const img = new Image()
       img.src = e.target.result
@@ -34,6 +38,15 @@ const screenshot = function () {
       }
     }
   }, false)
+}
+function randomChar(l)  {
+  const  x="0123456789qwertyuioplkjhgfdsazxcvbnm"
+  var  tmp=""
+  var timestamp = new Date().getTime()
+  for(var i = 0; i < l; i++)  {
+    tmp+=  x.charAt(Math.ceil(Math.random()*100000000)%x.length)
+  }
+  return  timestamp+tmp
 }
 export {
   screenshot

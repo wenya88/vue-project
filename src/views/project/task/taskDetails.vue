@@ -1,14 +1,14 @@
 <!-- 任务详情组件 -->
 <template>
     <div>
-        <Form :label-position="taskManagement?'top':'left'" :label-width="60" >
+        <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
             <FormItem   label="任务名称">
-                <Input   v-model="editData.name"  :disabled="editDisabled">
+                <Input   v-model="editData.name"  :readonly="editDisabled">
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
             <FormItem  label="负责人">
-                <Select v-model="principalName"  placeholder="">
+                <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
                     <Option v-for="item in principal" :value="item.member_id" :key="item.user_id">{{ item.remark_name }}</Option>
                 </Select>
             </FormItem>
@@ -26,7 +26,7 @@
                 :options="startTime"
                 split-panels
 
-                :disabled="editDisabled"
+                :readonly="editDisabled"
                 >
                 </DatePicker>
             </FormItem>
@@ -128,7 +128,7 @@
 
 <script>
 var qs = require("querystring");
-import {mapMutations} from 'vuex';
+import {mapState,mapMutations} from 'vuex';
 export default{
     props:{
         taskManagement:{
@@ -173,7 +173,17 @@ export default{
     created(){
         this.getTaskTypeList();
     },
+    mounted(){
+        if(this.userStatus !== null){
+            this.setEditDisabled(true)
+        }
+    },
     computed:{
+        ...mapState({
+            userStatus(value){
+                return value.project.userStatus
+            }
+        }),
         getTimeRange(){
             return [this.editData.expect_start_date,this.editData.expect_end_date]
         },
@@ -212,7 +222,7 @@ export default{
         {
             this.editData = data;
             this.formatLocalData();
-            this.haha();
+
         },
         //设置能否编辑-DONE
         setEditDisabled(forbidEdit)
@@ -310,7 +320,7 @@ export default{
                     }
                 );
             }
-            console.log('编辑',this.editData)
+
         },
         //用于父组件通信-DONE
         callFatherFunction(fatherfunctions)
@@ -327,9 +337,6 @@ export default{
                     }
                 );
             }
-        },
-        haha(){
-            console.log('haha',this.editData)
         },
         //主任务保存编辑数据
         saveTaskDetails(link,id) {

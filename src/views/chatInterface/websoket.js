@@ -1,15 +1,10 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
   function connectSocket(msgData) {
-    const wsurl = 'ws://106.14.150.55:8282'
+    const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)
-    // console.log("webSocket连接成功前", wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
-      // console.log("webSocket连接成功")
-    //   let data = {type: 'bind'}
-    //   let json = JSON.stringify(msgData)
-      // console.log("webSocket连接成功...", msgData)
       webSocket.send(msgData)
     }
     /*连接关闭*/
@@ -19,6 +14,7 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
+      console.log('推送消息00', evt.data)
       if (data.action === 'ping') {
         const data = JSON.stringify({
           action: 'ping'
@@ -29,6 +25,13 @@
         localStorage.userMsg = JSON.stringify(data)
       } 
       if (data.action === 'notice') {
+        var list = store.state.noticeList
+        if (localStorage.noticeList) {
+          list = Array.from(JSON.parse(localStorage.noticeList))
+        }
+        list.push(data);
+        store.state.noticeList = list
+        localStorage.noticeList = JSON.stringify(list)
         // 浏览器是否支持Notification
         if(!window.Notification) {
           alert("该浏览器不支持桌面通知！")
@@ -49,21 +52,10 @@
                 })
               }
            })
-         } else {
-          notice.ymNotice({
-            title: '提示',
-            message: data.message,
-            position: 'right-top',
-            remindtype: '5',
-            imgUrl: '../../images/3d.jpg',
-          })
          }
        }
       }
       if (data.action === 'group-chat') {
-        // console.log('推送数据', data)
-        // localStorage.removeItem('useList')
-        // const list = Array.from(JSON.parse(localStorage.useList)) || [];
         var list = store.state.useList
         if (localStorage.useList) {
           list = Array.from(JSON.parse(localStorage.useList))

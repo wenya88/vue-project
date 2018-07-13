@@ -1,316 +1,341 @@
 <template>
-  <div>
-    <Tree :data="kNodes" :render="renderContent"></Tree>
-  </div>
+    <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
 </template>
 <script>
-var qs = require("querystring");
-import {
-  cateList,
-  delClass,
-  delClassTask,
-  addClassTask
-} from "../../../config/env.js";
-export default {
-  data() {
-    return {
-      kNodes: [],
-      buttonProps: {
-        type: "ghost",
-        size: "small"
-      },
-      calssType: []
-    };
-  },
-  mounted() {
-    this.ListEach();
-  },
-  methods: {
-    get(url, params, call) {
-      this.$http.get(url, { params: params }).then(
-        function(res) {
-          call(res);
-        },
-        function(error) {
-          this.$Message.error("数据加载出错了！请刷新浏览器");
-        }
-      );
-    },
+    import qs from 'querystring'
 
-    //遍历列表分类数据
-    ListEach() {
-      this.get(cateList, { company_id: 1 }, res => {
-        let getData = res.data.data;
-        let item = [];
-        getData.forEach(req => {
-          let obj = {
-            expand: true,
-            render: (h, { root, node, data }) => {
-              return h(
-                "span",
-                {
-                  style: {
-                    display: "inline-block",
-                    width: "100%",
-                    cursor: "pointer"
-                  },
-                  on: {
-                    click: () => {
-                      this.targriClass(root, node, data);
-                    }
-                  }
-                },
-                [
-                  h(
-                    "span",
+    export default {
+        mounted() {
+            this.$nextTick(() => {
+                this.init();
+            })
+        },
+        data() {
+            return {
+                treeMap: [
                     {
-                      style: {
-                        background: data.actClass
-                      }
-                    },
-                    [
-                      h("Icon", {
-                        props: {
-                          type: "ios-folder-outline"
+                        name: '全部',
+                        rank: 0,
+                        expand: true,
+                        render: (h, {root, node, data}) => {
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    width: '100%'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Icon', {
+                                        props: {
+                                            type: 'ios-folder-outline'
+                                        },
+                                        style: {
+                                            marginRight: '8px'
+                                        }
+                                    }),
+                                    h('span', data.name)
+                                ]),
+                                h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        float: 'right',
+                                        marginRight: '32px'
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: Object.assign({}, this.buttonProps, {
+                                            icon: 'ios-plus-empty',
+                                            type: 'primary'
+                                        }),
+                                        style: {
+                                            width: '52px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.append(data, 'all')
+                                            }
+                                        }
+                                    })
+                                ])
+                            ]);
                         },
-                        style: {
-                          marginRight: "8px"
-                        }
-                      }),
-                      h("span", data.title)
-                    ]
-                  ),
-                  h(
-                    "span",
-                    {
-                      style: {
-                        display: "inline-block",
-                        float: "right",
-                        marginRight: "32px"
-                      }
-                    },
-                    [
-                      h("Button", {
-                        props: Object.assign({}, this.buttonProps, {
-                          icon: "ios-plus-empty"
-                        }),
-                        id: "addbtn",
-                        on: {
-                          click: $event => {
-                            this.addClassTask(root, node, data, $event); //
-                          }
-                        }
-                      }),
-                      // h("Button", {
-                      //   props: Object.assign({}, this.buttonProps, {
-                      //     icon: "trash-b"
-                      //   }),
-                      //   style: {
-                      //     marginLeft: "10px"
-                      //   },
-                      //   on: {
-                      //     click: $event => {
-                      //       this.removeClass(data, $event);
-                      //     }
-                      //   }
-                      // })
-                    ]
-                  )
-                ]
-              );
-            },
-            children: []
-          };
-          obj.title = req.name;
-          obj.pId = req.cate_id;
-          obj.id = req.id;
-          if (req.tasktype != undefined && req.tasktype.length > 0) {
-            obj.id = req.id;
-            obj.children = this.eachLxinfo(req.tasktype);
-          }
-          item.push(obj);
-        });
-        this.kNodes = item;
-      });
-    },
-    renderContent(h, { root, node, data }) {
-      return h(
-        "span",
-        {
-          style: {
-            display: "inline-block",
-            width: "100%",
-            cursor: "pointer"
-          },
-          on: {
-            click: () => {
-              this.targriClass(root, node, data);
+                        children: []
+                    }
+                ],
+                buttonProps: {
+                    type: 'ghost',
+                    size: 'small',
+                }
             }
-          }
         },
-        [
-          h(
-            "span",
-            {
-              style: {
-                background: data.actClass
-              }
+        methods: {
+            init() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/get-types', qs.stringify())
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            let rank = 1, arrData = (data, rank,status) => {
+                                data.map((item) => {
+                                    item.status = status;
+                                    item.rank = rank;
+                                    if (item.children) {
+                                        arrData(item.children, rank + 1,item.status)
+                                    }
+                                })
+                            };
+                            if (data && Array.isArray(data.data)) {
+                                data.data.map((item) => {
+                                    if (item.children) {
+                                        arrData(item.children, rank,item.status)
+                                    }
+                                });
+                            }
+                            this.treeMap[0].children = data.data;
+                        }
+                    })
+
             },
-            [
-              h("Icon", {
-                props: {
-                  type: "ios-paper-outline"
-                },
-                style: {
-                  marginRight: "8px"
+            renderContent(h, {root, node, data}) {
+                let folderButton = '';
+                let iconFile = false;
+                let button =  h('div', {
+                    style: {fontSize: '12px',
+                        padding:'2px 25px',
+                        background:'#e4e4e4'},
+                    on: {
+                        click: () => {
+                            this.append(data)
+                        }
+                    }
+                }, [
+                    h('div', '修改'),
+                ]);
+                let delButton =  h('div', {
+                    style: {fontSize: '12px',
+//
+                        padding:'2px 25px',
+                    background:'#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.append(data)
+                        }
+                    }
+                }, [
+                    h('div', '删除'),
+                ])
+                let textTitle = h('span', data.name ? data.name : data.tasktype_name)
+
+                // 名称可以编辑的
+                if (data.status !== 0) {
+                    textTitle = h('Input',
+                        {
+                            props: {
+                                value: data.name ? data.name : data.tasktype_name
+                            },
+                            style: {
+                                width: '120px'
+                            }
+                        })
                 }
-              }),
-              h("span", data.title)
-            ]
-          ),
-          h(
-            "span",
-            {
-              style: {
-                display: "inline-block",
-                float: "right",
-                marginRight: "32px"
-              }
+
+                // 需要文件夹按钮的
+                if (data.status === 1 && data.rank !== 2) {
+                    folderButton = h('div', {
+                        style: {fontSize: '12px',
+                            padding:'2px 25px',
+                            background:'#e4e4e4'},
+                        on: {
+                            click: () => {
+                                this.append(data)
+                            }
+                        }
+                    }, [
+                        h('div', '新增'),
+                    ])
+                }
+                // 图标为文件夹的
+                if (data.rank !== 2) {
+                    iconFile = true
+                }
+                // 不需要文件按钮的
+                if (true) {
+                    button = ''
+                }
+                // 不需要删除按钮
+                if(data.status === 0){
+                    delButton = '';
+                }
+
+                return h('p', {
+                    style: {
+                        display: 'inline-block',
+                        width: '100%',
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: iconFile ? 'ios-folder-outline' : 'ios-paper-outline'
+                            },
+                            style: {
+                                marginRight: '8px',
+                                fontSize:'20px'
+                            }
+                        }),
+                        h('span', {
+                            style: {
+                                width: '100px',
+                                fontSize:'14px',
+                                cursor:'pointer'
+                            },
+                            on: {
+                                click: () => {
+                                    this.goTaskList(data)
+                                }
+                            }
+
+                        }, [
+                            textTitle
+                        ])
+                    ]),
+//                    h('h1', {
+//                        style: {
+//                            display: 'inline-block',
+//                            float: 'right',
+//                            marginRight: '32px',
+//                            opacity:'0',
+//                        }
+//                    }, [
+//                        folderButton,
+//                        button,
+//                        delButton
+//
+//                    ])
+                    h('span',{
+                        props:{
+                            type:'ios-more'
+                        },
+                        style:{
+                            display: 'inline-block',
+                            float: 'right',
+                            marginRight: '32px',
+                            marginTop: '6px',
+                            fontSize:'20px',
+                            cursor: 'pointer'
+                        },
+                        on: {
+                            click: (e) => {
+                                this.showSetting(data,e)
+                            }
+                        }
+
+                    },[
+                        h('icon', {
+                                props: {
+                                    type: 'ios-more'
+                                },
+                                style: {
+                                    display: 'inline-block',
+                                    float: 'right',
+                                    marginRight: '32px',
+                                    marginTop: '6px',
+                                    fontSize: '20px',
+                                    cursor: 'pointer'
+                                },
+                            }
+                        ),
+                        h('h1', {
+                            style: {
+                                display: 'inline-block',
+                                float: 'right',
+                                marginRight: '32px',
+                                position:'absolute',
+                                top:'0px',
+                                right:'0px'
+//                                opacity: '0',
+                            }
+                        },
+                            data.btnShow?  [folderButton, button, delButton]:''
+                           )
+                    ])
+                ]);
             },
-            [
-              h("Button", {
-                props: Object.assign({}, this.buttonProps, {
-                  icon: "trash-b"
-                }),
-                on: {
-                  click: $event => {
-                    this.remove(data, $event);
-                  }
-                }
-              })
-            ]
-          )
-        ]
-      );
-    },
-    //循环子数据
-    eachLxinfo(data) {
-      let im = [];
-      this.calssType = data;
-      data.forEach(req => {
-        let obj = {};
-        obj.title = req.tasktype_name;
-        obj.id = req.id;
-        obj.category_id = req.category_id;
-        im.push(obj);
-      });
-      return im;
-    },
-    //增加父节点
-    appendClass(data) {
-      let children = data.children || [];
-      children.push({
-        title: "父节点",
-        expand: true
-      });
-      this.$set(data, "children", children);
-      let Clsobj = {};
-      Clsobj.name = "父节点";
-      Clsobj.company_id = 1;
-      this.$axios
-        .post(
-          this.GLOBAL.baseRouter + "task/task-type/cate-add",
-          qs.stringify(Clsobj)
-        )
-        .then(r => {
-          console.log(r);
-        });
-    },
-    //增加子节点
-    addClassTask(root, node, data, $event) {
-      $event.cancelBubble = true;
-       let children = data.children || [];
-      let newType = {
-        title: "新建任务类型",
-        expand: true,
-        selected: true,
-        category_id: data.pId,//大类ID
-        id:data.id//小ID
-      };
-        children.push(newType)
-      console.log(data);
+            append(data, type) {
+                const children = data.children || [];
+                let obj = {
+                    name: '新建文件夹'
+                };
 
-//      this.kNodes[data.nodeKey].children.push(newType);
+                children.push(obj);
+                this.$set(data, 'children', children);
+            },
+            remove(root, node, data) {
+                const parentKey = root.find(el => el === node).parent;
+                const parent = root.find(el => el.nodeKey === parentKey).node;
+                const index = parent.children.indexOf(data);
+                parent.children.splice(index, 1);
+            },
+            loadData(item, callback) {
+                setTimeout(() => {
+                    const data = [
+                        {
+                            title: 'children',
+                            loading: false,
+                            children: []
+                        },
+                        {
+                            title: 'children',
+                            loading: false,
+                            children: []
+                        }
+                    ];
+                    callback(data);
+                }, 1000);
+            },
+            goTaskList(data) {
+                this.$bus.emit('typesDetail',data);
+//                if (data.rank === 2) {
+//                    this.$axios.post(`${this.GLOBAL.baseRouter}newtask/new-task-type/get-types-detail`, qs.stringify({tid: data.id}))
+//                        .then((data) => {
+//                            console.log(2, data)
+//                        })
+//                }
+            },
+            showSetting(data,e){
+                e.stopPropagation();
+                this.$set(data,'btnShow',!data.btnShow)
+                console.log(data,!data.btnShow)
+            },
+            closeSetting(e){
+                console.log(1212)
+                e.stopPropagation();
+                let arrData = (data) => {
+                    data.map((item) => {
+                        item.btnShow = false
+                        if (item.children) {
+                            arrData(item.children)
+                        }
+                    })
+                };
+                arrData(this.treeMap[0].children)
+            }
 
-      // document.getElementById("addClassTaskBtn").click();
-      // this.$set(data, "children", children);
-      this.targriClass(children, node, newType);
-    },
-    //点击左边列表增加标识
-    targriClass(root, node, data) {
-      // console.log(root, node, data);
-      // root.forEach(r => {
-      //   this.$set(r.node, "actClass", "#fff");
-      // });
-      // this.$set(data, "actClass", "#d5e8fc");
-      //向父组件传递数据
-      if (!data.id) {
-        let clicktype = {
-          isInit: true,
-          id: data.id,
-          category_id: data.category_id//大类ID
-        };
-        this.$emit("getListId", clicktype);
-      } else {
-        // this.calssType.forEach(tre => {
-        //   _this.treData = tre;
-        // });
-        let clicktype = {
-          isInit: false,
-          id: data.id,
-          category_id: data.category_id,//大类ID
-          liName: data.title
-        };
-        this.$emit("getListId", clicktype);
-      }
-    },
-
-    // onChange(data) {},
-    removeClass(data, $event) {
-      $event.cancelBubble = true;
-      let cIs = this;
-      let removeData = data.pId;
-      cIs.get(
-        delClass,
-        {
-          id: removeData
         },
-        () => {
-          cIs.ListEach();
-          cIs.$Message.success("删除成功");
-        }
-      );
-    },
-    remove(data, $event) {
-      $event.cancelBubble = true;
-      let cIs = this;
-      let removeCad = data.id;
-      this.get(
-        delClassTask,
-        {
-          id: removeCad
-        },
-        () => {
-          cIs.ListEach();
-          cIs.$Message.success("删除成功");
-        }
-      );
+
     }
-  }
-};
 </script>
-
-
-          
-
- 
+<style lang="less">
+    .treeMapContainer {
+        .ivu-tree-children {
+            p {
+                position: relative;
+                &:hover {
+                    h1 {
+                        opacity: 1 !important;
+                        transition: all .3s;
+                    }
+                }
+            }
+        }
+    }
+</style>

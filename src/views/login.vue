@@ -157,8 +157,11 @@ export default {
     },
     mounted() {
         this.fetchKey();
+        localStorage.removeItem('msgShow')
+        this.$store.state.msgShow = false
     },
     methods: {
+        // 链接websoket
         changeMode(mode) {
             if (mode == 'login') {
                 this.isRegister = true;

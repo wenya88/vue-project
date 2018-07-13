@@ -75,6 +75,7 @@ const state = {
   subProjectList: [],
     detail:{},
     primaryMission:null,      // 主任务id
+    userStatus:null,          //进入工作台任务的状态 成员或者组长
 }
 
 const getters = {
@@ -117,12 +118,18 @@ const mutations = {
         Vue.set(state.detail, 'projectInfo', data)
 
   },
+    /*进入任务详情时获得info*/
   setDetailAll(state, data) {
       Vue.set(state.detail, 'setDetailAll', data)
   } ,
+    /*获取主任务ID*/
   setPrimaryMission(state, data) {
       state.primaryMission = data;
-  }
+  },
+    /*获取工作台任务的身份- 成员或者组长*/
+    setUserStatus(state, data){
+        state.userStatus = data;
+    }
 
 };
 

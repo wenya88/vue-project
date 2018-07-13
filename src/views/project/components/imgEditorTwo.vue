@@ -206,8 +206,6 @@
               //  标记层
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
-              //  sgin.style.marginTop=-(canvasH/2)+"px";
-              //  sgin.style.marginLeft=-(canvasW/2)+"px";
 
               //  控制层
                controlDiv.style.width=canvasW+"px";
@@ -222,8 +220,8 @@
           }
       },
       loadWH(){
-          let sw=$(".single-page-con").width()-300;
-          let sh=$(".single-page-con").height()-160;
+          let sw=$(".single-page-con").width()-500;
+          let sh=$(".single-page-con").height()-200;
           $(".imgFocus").height(sh);//先注解
           $(".imgEditorCom,.imgFocus").width(sw);//先注解
           $(".toolBar").css("margin-top",sh+5)//先注解
