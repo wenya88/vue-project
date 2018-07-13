@@ -148,11 +148,11 @@ export default {
       //动画
       function animate() {
         requestAnimationFrame(animate);
-        if (mixers.length > 0) {
-          for (var i = 0; i < mixers.length; i++) {
-            mixers[i].update(clock.getDelta());
-          }
-        }
+        // if (mixers.length > 0) {
+        //   for (var i = 0; i < mixers.length; i++) {
+        //     mixers[i].update(clock.getDelta());
+        //   }
+        // }
         renderer.render(scene, camera);
       }
     }
