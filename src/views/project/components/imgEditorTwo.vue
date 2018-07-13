@@ -184,9 +184,8 @@
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
-      initImgEditor()
-      {
-         this.url="http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg"
+      initImgEditor(){
+        this.url="http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg";
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
@@ -197,12 +196,19 @@
           let el2=document.getElementById("onload");
           let sgin=document.getElementsByClassName("sginCanvas")[0];
           let controlDiv=document.getElementsByClassName("oControl")[0];
+          let imgFocus=document.getElementsByClassName("imgFocus")[0];
+        
           el.onload=function(){
-              el2.style.display="none";
+               el2.style.display="none";
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
 
+               if(canvasW>imgFocus.style.width){
+                 alert(1)
+                   canvasH=canvasH/2
+                   canvasW=canvasW/2
+               }
               //  标记层
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
@@ -243,16 +249,7 @@
                     "tag":[]
           })]
         }
-        let EDITparams={
-            "stage_id": this.stageID,
-            "audit": 2,
-            "files":[],
-            "feedback": this.FeedbackValue,
-            "file": JSON.stringify([{
-              "file_id": this.fileID,
-              "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]'
-            }])
-        }
+        
         if(type=='edit'){
             // canvas upload
             let canvas=document.getElementById("cav");
@@ -270,8 +267,17 @@
             formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
             this.$axios.post(this.fileup,formData).then(msg=>{
               if(msg.data.err_code==0){
-                  //EDITparams.push(msg.data.files);
-                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  //  EDITparams;
+                  let EDITparams={
+                      "stage_id": this.stageID,
+                      "audit": 2,
+                      "feedback": this.FeedbackValue,
+                      "file": JSON.stringify([{
+                        "file_id": this.fileID,
+                        "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]',
+                        "label":msg.data.files.url
+                      }])
+                  }
                   // Sgin upload
                   this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
                      this.$Message.success(msg.data.err_message);
@@ -319,19 +325,19 @@
       get(){
           //  获取图片的标注信息
            let TaskID=this.storeTaskID
-           if(TaskID == 0)
+           if(TaskID == 0 || TaskID === null )
            {
-              return false;
+               return false;
            }
            let _this=this;
            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
-             
+
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
-                
+
                 _this.IMGlist.forEach((val,index)=>{
                    if(val.file.file==_this.storeFileURl){
                     // 设置初始化值
@@ -346,7 +352,7 @@
                      _this.stageID=val.file.stage_id;
                    }
                 })
-                 _this.changeState(2);
+              _this.changeState(2);
               // _this.changeState(_this.StateFeedBack);
               // 把StageID传到提交
               let stageID = _this.stageID;
@@ -355,7 +361,7 @@
               _this.imgdef();
               }else{
                 return
-              }          
+              }
           },()=>{
             _this.$Message.error('请求失败')
           })
