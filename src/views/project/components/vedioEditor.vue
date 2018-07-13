@@ -58,9 +58,7 @@
     </div>
 </template>
 <script>
-
 var Data=[];
-import {baseUrl, deletetaskData} from '../../../config/env.js';
 var qs=require('querystring');
 export default {
     data(){
