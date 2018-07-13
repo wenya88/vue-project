@@ -3,7 +3,12 @@ node_modules
 .project
 .vscode
 .history
-.DS_Store
+.DS_Storenp
 \.settings/
 src/config/env.js
+<<<<<<< HEAD
 /dist/
+=======
+/dist/
+/.idea
+>>>>>>> a7195bc9375237a4b40b3c37c7afaa39a1567357

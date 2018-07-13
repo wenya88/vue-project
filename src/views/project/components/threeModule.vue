@@ -65,8 +65,8 @@ export default {
       var clock = new THREE.Clock();//时钟
       var mixers = [];
       var divHeight = 100%
-      init(this.storeFileURl);//初始化
-      // init();
+      // init(this.storeFileURl);//初始化
+      init();
       animate();//动画
       function init() {
         //获得div并添加容器
@@ -114,7 +114,7 @@ export default {
         // let url = '../src/views/project/components/threeFile/M_atk.fbx';
         // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-        // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
+        let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
         
         loader.load(url, function(object) {
           // console.log(url2);
