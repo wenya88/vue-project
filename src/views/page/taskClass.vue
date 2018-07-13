@@ -196,7 +196,7 @@
     <!-- <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer> -->
 </template>
 <script>
-    import {typeInfo} from '../../config/env.js';
+
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     export default {

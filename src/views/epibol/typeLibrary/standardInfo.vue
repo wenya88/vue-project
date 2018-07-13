@@ -182,7 +182,7 @@
 <script>
     import qs from 'querystring'
 
-    import {typeInfo} from "../../../config/env.js";
+
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import typeList from "./typeList";
