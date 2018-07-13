@@ -32,7 +32,7 @@
       <Row type="flex" justify="start" class="code-row-bg">
         <Col span="4" v-for="(item,index) in fileData" :key="index">
         <div class="card">
-          <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file)">
+          <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
             <!-- <Icon type="heart" color="red" v-if=""></Icon>
             <Icon type="pause" v-else-if=""></Icon> -->
             <img class="card-box-pic" :src="item.image[0]"/>
@@ -76,7 +76,7 @@
 <script>
 var qs = require('querystring');
 import browsetask from './task/browseTaskPop'
-import { mapGetters } from 'vuex'
+import { mapGetters ,mapMutations} from 'vuex'
 export default {
   name: 'pigeonhole',
   components: {
@@ -123,6 +123,7 @@ export default {
     this.getTaskList();
   },
   methods: {
+      ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
     fetchData() {
       // console.log(this.tasktype)
       let data = {
@@ -180,20 +181,21 @@ export default {
     openTabmodal() {
       this.isTabModal = true;
     },
-    fetchFileData(taskId,type,file) {
-      this.isTabModal = true;
-      // sessionStorage.TaskID=taskId;
-      // sessionStorage.FileURl=file;
-      this.$store.commit('changeComponentTaskID',taskId);
-      this.$store.commit('changeComponentFileURl',file);
-      sessionStorage.AllowEdit=undefined;
-      // console.log(taskId,type);
-      
-      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
-      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
-
-      this.$Loading.start();
-      this.boxHeight = 0;
+    fetchFileData(taskId,type,file,item) {
+//      this.isTabModal = true;
+//      this.$store.commit('changeComponentTaskID',taskId);
+//      this.$store.commit('changeComponentFileURl',file);
+//      sessionStorage.AllowEdit=undefined;
+//      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
+//      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
+        console.log(113,item)
+        this.$store.commit('changeComponentTaskID',taskId);
+        this.$store.commit('changeComponentFileURl',file);
+        this.setPrimaryMission(item);
+        this.setDetailAll(item);
+        this.$router.push({path:'/project/details'});
+        this.$Loading.start();
+        this.boxHeight = 0;
       // this.$axios.post(this.GLOBAL.baseRouter+'task/task/info', qs.stringify(data))
       // .then(res => res.data)
       // .then(res => {

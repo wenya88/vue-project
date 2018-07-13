@@ -41,8 +41,17 @@ const canvasControl=()=>{
                     return false;
                 }
         };
-
+        let osi=0;
         addEvent(controlDiv, 'mousedown', function(ev) {
+            let osiTop=oSign.offsetTop;
+            let osiLeft=oSign.offsetLeft;
+            oSign.style.marginLeft="";
+            oSign.style.marginTop="";
+            if(osi==0){
+                oSign.style.left=osiLeft+"px";
+                oSign.style.top=osiTop+"px";
+                osi++
+            }
             let oEvent = prEvent(ev);
             let oParent = oSign.parentNode;
             let disX = oEvent.clientX - oSign.offsetLeft;
@@ -80,6 +89,15 @@ const canvasControl=()=>{
         let restrict=1.1;
         let totalNum=0;
         addWheelEvent(controlDiv, function(delta) {
+            let osiTop=oSign.offsetTop;
+            let osiLeft=oSign.offsetLeft;
+            oSign.style.marginLeft="";
+            oSign.style.marginTop="";
+            if(osi==0){
+                oSign.style.left=osiLeft+"px";
+                oSign.style.top=osiTop+"px";
+                osi++
+            }
             let ratioL = (this.clientX - oSign.offsetLeft) / oSign.offsetWidth;
             let ratioT = (this.clientY - oSign.offsetTop) / oSign.offsetHeight;
             let sginDiv=document.getElementsByClassName('signIndex');

@@ -37,9 +37,9 @@ const imgSign=function(AllowEdit){
               cX=l;
               cY=t;
               $(dom).append("<div class='inputSignBox'></div>");
-              $('.inputSignBox').append("<div class='outSignbox'>X</div>");
+              $('.inputSignBox').append("<div class='sginBoxIcon'></div>")
               $('.inputSignBox').append("<div class='signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>");
-              $('.inputSignBox').append("<div class='sureSign'>标注</div>");
+              $('.inputSignBox').append("<div class='signButton'><span class='sureSign'>标注</span><span class='outSignbox'>取消</span></div>");
               $('.inputSignBox').css({"left":cX,"top":cY});
               e.stopPropagation();
             }
