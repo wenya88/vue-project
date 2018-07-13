@@ -44,7 +44,6 @@ export default {
   },
   watch: {
     getList(e) {
-      console.log('改变数据', e)
       this.submitMsg(e)
       this.getNewList(e)
     },

@@ -193,7 +193,6 @@ export default {
         isAccretionTask: false,
         projectInfo: {},
         userID:sessionStorage.userId
-
     };
   },
   mounted() {

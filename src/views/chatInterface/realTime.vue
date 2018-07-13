@@ -1,9 +1,6 @@
 <template>
    <div class="real_time_box">
      <div class="load_real">
-      <!-- <div v-if='loading' class="chat_load">
-          <span>加载中...</span>
-     </div> -->
     <GeminiScrollbar class="crollbar">
       <div class="realTime_interface" @mousewheel="getScoller">
          <span class="chat_load" @click="getMoreMsg">查看更多消息</span>
@@ -235,7 +232,6 @@ export default {
          index: leng, // 本地消息数量-1
          size: 5, //  需要返回的数量
        }
-       console.log('提交数据', items)
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const oldList = data.data.data.reverse()
         //  console.log('获取的数据', oldList)
