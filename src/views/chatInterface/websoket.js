@@ -1,15 +1,10 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
   function connectSocket(msgData) {
-    const wsurl = 'ws://192.168.2.20:8282'
+    const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)
-    // console.log("webSocket连接成功前", wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
-      // console.log("webSocket连接成功")
-    //   let data = {type: 'bind'}
-    //   let json = JSON.stringify(msgData)
-      // console.log("webSocket连接成功...", msgData)
       webSocket.send(msgData)
     }
     /*连接关闭*/
@@ -61,9 +56,6 @@
        }
       }
       if (data.action === 'group-chat') {
-        console.log('推送数据', data)
-        // localStorage.removeItem('useList')
-        // const list = Array.from(JSON.parse(localStorage.useList)) || [];
         var list = store.state.useList
         if (localStorage.useList) {
           list = Array.from(JSON.parse(localStorage.useList))

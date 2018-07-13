@@ -200,10 +200,11 @@ export default {
     this.$bus.on('refreshCurrentTaskList',()=>{
         this.refreshCurrentTaskList();
     });
-    this.projectPlan()
+    this.projectPlan();
+    this.setUserStatus(null)
   },
   methods: {
-      ...mapMutations(['setProjectInfoDetails','setDetailAll']),
+      ...mapMutations(['setProjectInfoDetails','setDetailAll','setUserStatus']),
       excelCancel(){
         this.$bus.emit('clearExcleData')
       },
@@ -254,6 +255,27 @@ export default {
       //进入任务详情
       showTaskDetails(data)
       {
+          let _this=this;
+          // let url=this.GLOBAL.baseRouter+'task/task/stage-page&is_my=1';
+          let awaiaudit=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/need-review-task-file&people_type=1') //需要审核
+          let fbackdisp=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/wait-action-task-file&people_type=1') //反馈待处理
+          _this.$axios.all([awaiaudit,fbackdisp]).then(([Auditmsg,Dispmsg])=>{
+              if(Auditmsg.data.err_code==0){
+                  console.log(33,Auditmsg.data.data)
+                  let TaskID = Auditmsg.data.data[0].stage_file.task_id;
+                  let file = Auditmsg.data.data[0].stage_file.file;
+                  sessionStorage.TaskID=TaskID;
+                  sessionStorage.FileURl=file;
+                  this.$store.commit('changeComponentTaskID',TaskID);
+                  this.$store.commit('changeComponentFileURl',file);
+              }
+
+          },()=>{
+              _this.$Message.error('请求失败')
+          });
+          let TaskID = data.id;
+          let file = data.file;
+
         this.setDetailAll(data);
         this.$router.push({path:'/project/details',query:{type:'taskManagement'}})
       },

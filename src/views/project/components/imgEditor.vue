@@ -219,14 +219,11 @@
           }
       },
       loadWH(){
-          let sw=$(".single-page-con").width()-300;
-          let sh=$(".single-page-con").height()-160;
-          // $(".imgFocus").height(sh);//先注解
-          $(".imgFocus").height(470);
-          // $(".imgEditorCom,.imgFocus").width(sw);//先注解
-          $(".imgEditorCom,.imgFocus").width(815)  //临时方法
-          // $(".toolBar").css("margin-top",sh+5)//先注解
-           $(".toolBar").css("margin-top",480)//临时方法
+          let sw=$(".single-page-con").width()-500;
+          let sh=$(".single-page-con").height()-200;
+          $(".imgFocus").height(sh);//先注解
+          $(".imgEditorCom,.imgFocus").width(sw);//先注解
+          $(".toolBar").css("margin-top",sh+5)//先注解
       },
       defue(){
         // 标注
@@ -321,19 +318,19 @@
       get(){
           //  获取图片的标注信息
            let TaskID=this.storeTaskID
-           if(TaskID == 0)
+           if(TaskID == 0 || TaskID === null )
            {
-              return false;
+               return false;
            }
            let _this=this;
            let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){
-             
+
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
-                
+
                 _this.IMGlist.forEach((val,index)=>{
                    if(val.file.file==_this.storeFileURl){
                     // 设置初始化值
@@ -356,7 +353,7 @@
               _this.imgdef();
               }else{
                 return
-              }          
+              }
           },()=>{
             _this.$Message.error('请求失败')
           })

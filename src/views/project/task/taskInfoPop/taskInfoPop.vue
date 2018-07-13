@@ -6,9 +6,7 @@
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
         <div class="taskinfopopContainer">
-            <Tabs type="card" class="filebrowse"
-                  :class="$route.query.type === 'taskManagement'?'taskManagement':'taskbrowse'"
-            >
+            <Tabs type="card" class="filebrowse taskManagement">
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
                         <maintask ref="main"
@@ -17,6 +15,9 @@
                                   taskManagement="true"
                         >
                         </maintask>
+                        <div style="text-align: right">
+                            <Button @click="saveTaskDetail">保存</Button>
+                        </div>
                     </div>
                 </TabPane>
                 <TabPane label="规范" style="height: 800px;overflow-y: auto">
@@ -25,7 +26,7 @@
                 <TabPane label="资源" style="height: 800px;overflow-y: auto">
                     <v-resource></v-resource>
                 </TabPane>
-                <TabPane label="子任务" style="height: 800px;overflow-y: auto">
+                <TabPane :label="userStatus === 'member'?'关联任务':'子任务'" style="height: 800px;overflow-y: auto">
                     <subtasklist></subtasklist>
                 </TabPane>
                 <TabPane label="日志" style="height: 800px;overflow-y: auto">
@@ -34,7 +35,7 @@
             </Tabs>
          <section class="videoRight">
              <filebrowse ref="filebrowse"
-                         :class="$route.query.type === 'taskManagement'?'filebrowseContainer':''"
+                         class="filebrowseContainer"
              ></filebrowse>
              <div class="reviewPanel">
 
@@ -53,7 +54,7 @@
     <!-- </transition> -->
 </template>
 <script>
-    import {mapMutations} from 'vuex'
+    import {mapState,mapMutations} from 'vuex'
 
     var qs = require("querystring");
     import maintask from "../taskDetails";
@@ -101,12 +102,12 @@
             };
         },
         methods: {
-            ...mapMutations(['setPrimaryMission']),
+            ...mapMutations(['setPrimaryMission','setUserStatus']),
             //根据任务ID初始化属性
             initTaskDetail() {
-
                 if (!this.$store.state.project.detail.setDetailAll) {
-                    this.$router.push({path: '/project/task'})
+//                    this.$router.push({path: '/project/task'})
+                    this.$router.back(-1)
                 }
                 let taskData = this.$store.state.project.detail.setDetailAll;
                 this.isInitTask = true;
@@ -260,9 +261,19 @@
             },
             // 清除进入详情页获得的任务数据
             leaveInfo() {
-                this.setPrimaryMission(null)
-                this.$router.push({path: '/project/task'});
+                /*返回清空任务ID清空身份*/
+                this.setPrimaryMission(null);
+                this.setUserStatus(null);
+                this.$router.back(-1)
             }
+        },
+        computed:{
+            ...mapState({
+                userStatus(value){
+                    console.log(19,value.project.userStatus)
+                    return value.project.userStatus
+                }
+            })
         }
     };
 </script>
@@ -429,6 +440,7 @@
 
 
     .filebrowseContainer {
+        height: 100%;
         flex: 1;
         margin: 10px 60px 0px 60px;
 
