@@ -40,7 +40,7 @@ const imgSign=function(AllowEdit){
               $('.inputSignBox').append("<div class='sginBoxIcon'></div>")
               $('.inputSignBox').append("<div class='signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>");
               $('.inputSignBox').append("<div class='signButton'><span class='sureSign'>标注</span><span class='outSignbox'>取消</span></div>");
-              $('.inputSignBox').css({"left":cX,"top":cY});
+              $('.inputSignBox').css({"left":cX-15,"top":cY+10});
               e.stopPropagation();
             }
           });
@@ -134,7 +134,6 @@ const imgSign=function(AllowEdit){
                     signIndex[j].firstChild.innerText=sgintxt;
                   }
               }
-
               $(".sginCanvas .editSginDiv").hide();
           })
 
