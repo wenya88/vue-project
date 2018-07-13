@@ -105,6 +105,10 @@
                                                   <div class="clear"></div>
                                               </li>
                                           </ul>
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
                                       </div>
                                       <div class="Completed">
                                           <h3>已完成({{dataAccom.length}})</h3>
@@ -345,8 +349,13 @@
         this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
         this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
         // 本地缓存信息
+<<<<<<< HEAD
         sessionStorage.TaskID=TaskID;
         sessionStorage.FileURl=file;
+=======
+         sessionStorage.TaskID=TaskID;
+         sessionStorage.FileURl=file;
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
         this.$store.commit('changeComponentTaskID',TaskID);
         this.$store.commit('changeComponentFileURl',file);
 

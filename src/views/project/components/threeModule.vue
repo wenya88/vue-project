@@ -1,6 +1,7 @@
 
 <template>
   <!-- 模型插槽 -->
+<<<<<<< HEAD
 
   <body>
     <div id="maind">
@@ -10,10 +11,15 @@
       <!-- <ul>
         <li v-for="(valuename, keys, index) in file_obj" :key="index">{{keys}}</li>
       </ul> -->
+=======
+  <body>
+    <div id="maind">
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
     </div>
   </body>
 </template>
 <script>
+<<<<<<< HEAD
 // import THREE from "three";//node库中的内容
 // import FBXLoader from "three-fbx-loader";//node库中的内容-非官方存在内容错误,但是能使用
 // import OrbitControls from "three-orbitcontrols";
@@ -37,6 +43,9 @@ var qs = require("querystring");
 // var Zlib = require('zlib');
 // import JSZip from 'jszip'
 // import JSZipUtils from 'jszip-utils'
+=======
+var qs = require("querystring");
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
 
 export default {
   data() {
@@ -65,6 +74,7 @@ export default {
       model1: ''
     };
   },
+<<<<<<< HEAD
   created() {
     // this.getBaseData();
   },
@@ -72,6 +82,8 @@ export default {
   //   // this.fbxThree();
   //   this.newFBXMedel();
   // },
+=======
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
   mounted() {
     if (window.THREE) {
       // console.log('THREE has ready1')
@@ -94,6 +106,7 @@ export default {
     }
   },
   methods: {
+<<<<<<< HEAD
     //请求3D文件凭证
     getThreeFileKey() {
       let msg = {
@@ -261,24 +274,42 @@ export default {
     },
     newFBXMedel() {
       
+=======
+    newFBXMedel() {
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
       // this.getThreeFileKey();
       var container, stats, controls;//容器、统计?、控制器
       var camera, scene, renderer, light;//相机、场景、渲染、灯光
       var clock = new THREE.Clock();//时钟
       var mixers = [];
+<<<<<<< HEAD
       init(this.storeFileURl);//初始化
       // init();
       animate();//动画
       function init(url) {
+=======
+      var divHeight = 100%
+      init(this.storeFileURl);//初始化
+      // init();
+      animate();//动画
+      function init() {
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
         //设置相机(可视角度,canvas宽高比,近距离,远距离)
         camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 2000);    
+<<<<<<< HEAD
         camera.position.set(80, 80, 500);
         //轨道控制插件
         controls = new THREE.OrbitControls(camera);
         controls.target.set(400, -50, -300);
+=======
+        camera.position.set(0, 200, 300);
+        //轨道控制插件
+        controls = new THREE.OrbitControls(camera);
+        controls.target.set(0, 100, 0);
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
         controls.update();
         //场景
         scene = new THREE.Scene();
@@ -334,7 +365,12 @@ export default {
         //渲染
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
+<<<<<<< HEAD
         renderer.setSize(window.innerWidth, window.innerHeight);
+=======
+        // renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(document.getElementById("maind").offsetWidth, window.innerHeight/2+20);
+>>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
