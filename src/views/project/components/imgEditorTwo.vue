@@ -7,7 +7,6 @@
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
                      <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
-                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
@@ -18,7 +17,7 @@
                       <div class="sginEditCommit">修改</div>
                     </div>
                     <!-- 画布层 -->
-                    <canvas id="cav" width="1400" height="750">
+                    <canvas id="cav" width="1400" height="750" v-show="hiddenSign">
                       <span>浏览器不支持画布标注！o(╯□╰)o</span>
                     </canvas>
                     <!-- 控件层 -->
@@ -167,10 +166,6 @@
       },
       sginHidden(){
         if(this.hiddenSign){
-          if($(".signIndex").length==0){
-             this.$Message.warning('你还没有标记,快去标记吧 !  O(∩_∩)O~')
-             return
-          }
            $(".signIndex").css("display","none");
            this.hiddenSign=!this.hiddenSign;
            this.hiddenSignText="显示标记"
@@ -186,7 +181,7 @@
          this.$bus.emit('InfoRefresh')
       },
       initImgEditor(){
-        this.url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531475813447&di=fbb33d9210ace050e2dd936b0a461d70&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F012e93554549d80000019ae9a08a3c.jpg";
+        this.url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531485912794&di=09d2aeb20ac567e7c10f3136d351747b&imgtype=0&src=http%3A%2F%2Fi204.photobucket.com%2Falbums%2Fbb157%2Fea1114%2Ftaipeiavb1-1.jpg";
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
@@ -204,7 +199,7 @@
                let maxW=parseInt(imgFocus.style.width);
               
               //  autoZoom
-               if(el.height>maxH&&(el.width-maxW)<100){
+               if((el.height-maxH)>50){
                  AutoResizeImage(0,maxH,el);
                }else{
                  AutoResizeImage(maxW,0,el);
@@ -220,8 +215,8 @@
               //  sginDiv
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
-              //  sgin.style.marginTop=-(canvasH/2)+"px";
-              //  sgin.style.marginLeft=-(canvasW/2)+"px";
+               sgin.style.marginTop=-(canvasH/2)+"px";
+               sgin.style.marginLeft=-(canvasW/2)+"px";
 
               //  controlDiv
                controlDiv.style.width=canvasW+"px";
@@ -288,8 +283,17 @@
             formData.append("files", $Blob ,"file_"+Date.parse(new Date())+".jpeg");
             this.$axios.post(this.fileup,formData).then(msg=>{
               if(msg.data.err_code==0){
-                  //EDITparams.push(msg.data.files);
-                  EDITparams.files.push(JSON.stringify(msg.data.files))
+                  //  EDITparams;
+                  let EDITparams={
+                      "stage_id": this.stageID,
+                      "audit": 2,
+                      "feedback": this.FeedbackValue,
+                      "file": JSON.stringify([{
+                        "file_id": this.fileID,
+                        "tag":sessionStorage.ImgData!=undefined?JSON.parse(sessionStorage.ImgData):'[]',
+                        "label":msg.data.files.url
+                      }])
+                  }
                   // Sgin upload
                   this.$axios.post(url,qs.stringify(EDITparams)).then(msg=>{
                      this.$Message.success(msg.data.err_message);
@@ -304,8 +308,6 @@
             },()=>{
                this.$Message.error("请求失败!")
             })
-
-            
         }else if(type=='ok'){
             this.$axios.post(url,qs.stringify(Okparams)).then(msg=>{
                this.$Message.success(msg.data.err_message);
@@ -337,7 +339,7 @@
       get(){
           //  getImgSignInfo
           //  let TaskID=this.storeTaskID
-           let TaskID=350
+           let TaskID=448
            if(TaskID == 0 || TaskID === null )
            {
               return false;

@@ -7,7 +7,6 @@
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
                      <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
-                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
@@ -18,7 +17,7 @@
                       <div class="sginEditCommit">修改</div>
                     </div>
                     <!-- 画布层 -->
-                    <canvas id="cav" width="1400" height="750">
+                    <canvas id="cav" width="1400" height="750" v-show="hiddenSign">
                       <span>浏览器不支持画布标注！o(╯□╰)o</span>
                     </canvas>
                     <!-- 控件层 -->
@@ -166,10 +165,6 @@
       },
       sginHidden(){
         if(this.hiddenSign){
-          if($(".signIndex").length==0){
-             this.$Message.warning('你还没有标记,快去标记吧 !  O(∩_∩)O~')
-             return
-          }
            $(".signIndex").css("display","none");
            this.hiddenSign=!this.hiddenSign;
            this.hiddenSignText="显示标记"
@@ -197,14 +192,13 @@
           let sgin=document.getElementsByClassName("sginCanvas")[0];
           let controlDiv=document.getElementsByClassName("oControl")[0];
           let imgFocus=document.getElementsByClassName("imgFocus")[0];
-        
           el.onload=function(){
                el2.style.display="none";
                let maxH=parseInt(imgFocus.style.height)
                let maxW=parseInt(imgFocus.style.width);
               
               //  autoZoom
-               if(el.height>maxH&&(el.width-maxW)<100){
+                if((el.height-maxH)>50){
                  AutoResizeImage(0,maxH,el);
                }else{
                  AutoResizeImage(maxW,0,el);
@@ -220,6 +214,8 @@
               //  sginDiv
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
+               sgin.style.marginTop=-(canvasH/2)+"px";
+               sgin.style.marginLeft=-(canvasW/2)+"px";
 
               //  controlDiv
                controlDiv.style.width=canvasW+"px";
