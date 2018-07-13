@@ -321,6 +321,7 @@
             .ivu-tabs-tab {
                 height: 32px !important;
                 line-height: 32px !important;
+                padding: 5px 14px 4px !important;
             }
         }
 
