@@ -19,10 +19,6 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.15.3",
-<<<<<<< HEAD
-    "babel-polyfill": "^6.26.0",
-=======
->>>>>>> d9f9eb6ad8eca5254705e425417ba946004a77d6
     "echarts": "^4.0.4",
     "iview": "^2.12.0",
     "jquery": "^3.3.1",
