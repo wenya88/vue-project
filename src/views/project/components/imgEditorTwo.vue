@@ -6,7 +6,7 @@
           <div class="imgFocus">
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
-                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
+                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>退出标注</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
@@ -32,7 +32,7 @@
               <span :class="[canvasSign?'barLeft barselet':'barLeft']" @click="canvasHidden">
                   <Icon type="edit" class="add"></Icon>{{barText}}
               </span>
-              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清空画布</span>
+              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清除标注</span>
               <span class="barRight">
                   <s><i class="iconfont icon-qimai-guanjiancizhishuduibi"></i>查看上次反馈</s>
                   <s @click="sginHidden"><i class="iconfont icon-yincang"></i>{{hiddenSignText}}</s>
@@ -93,10 +93,10 @@
         fileID:0,
         stageID:0,
         AllowEdit:false,//是否允许标注
-        barText:'显示画布',
+        barText:'标注反馈',
         hiddenSign:true,
         canvasSign:false,
-        hiddenSignText:'隐藏标注'
+        hiddenSignText:'隐藏标记'
       }
     },
     filters:{
@@ -143,7 +143,7 @@
       // clearCanvas
       clearCanvas(){
         this.$Modal.confirm({
-            title: "清除画布",
+            title: "清除标注",
             content: "是否确定清除画布上面的内容,清除后将无法撤消！",
             onOk: () => {
               this.$Message.info('清除成功！└(^o^)┘');
@@ -155,11 +155,11 @@
       canvasHidden(){
           let cav=document.getElementById("cav")
           if(this.canvasSign){
-            this.barText="显示画布";
+            this.barText="标注反馈";
             cav.style.zIndex="12";
             this.canvasSign=!this.canvasSign;
           }else{
-            this.barText="隐藏画布";
+            this.barText="退出标注";
             cav.style.zIndex="14";
             this.canvasSign=!this.canvasSign;
           }
@@ -181,7 +181,7 @@
          this.$bus.emit('InfoRefresh')
       },
       initImgEditor(){
-        this.url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531485912794&di=09d2aeb20ac567e7c10f3136d351747b&imgtype=0&src=http%3A%2F%2Fi204.photobucket.com%2Falbums%2Fbb157%2Fea1114%2Ftaipeiavb1-1.jpg";
+        this.url="http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg";
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
