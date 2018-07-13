@@ -65,9 +65,10 @@
 <script>
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
-  import {imgSign} from './imgEditorTwo/imgSign.js'
-  import {imgCanvas} from './imgEditorTwo/imgCanvas.js'
-  import {canvasControl} from './imgEditorTwo/imgControl.js'
+  import {imgSign} from './imgEditorTwo/imgSign.js';
+  import {imgCanvas} from './imgEditorTwo/imgCanvas.js';
+  import {canvasControl} from './imgEditorTwo/imgControl.js';
+  import {AutoResizeImage} from './imgEditorTwo/autoResizeImage.js';
   export default {
     components:{
       OnLoad:OnLoad
@@ -135,12 +136,12 @@
       },
     },
     methods:{
-      // 清除缓存
+      // clearSession
       clearSession(){
         sessionStorage.removeItem('ImgData');//存图片标注信息
         sessionStorage.removeItem('totalNum');//存图片放大缩小信息
       },
-      // 清除画布
+      // clearCanvas
       clearCanvas(){
         this.$Modal.confirm({
             title: "清除画布",
@@ -151,7 +152,7 @@
             },
         });
       },
-      // 隐藏标注
+      // hideSgin
       canvasHidden(){
           let cav=document.getElementById("cav")
           if(this.canvasSign){
@@ -180,12 +181,12 @@
         }
         
       },
-      //关闭窗口
+      //colseWindow
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
       initImgEditor(){
-        this.url="http://pic2.52pk.com/files/160218/3716262_185245_5644.jpg";
+        this.url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531475813447&di=fbb33d9210ace050e2dd936b0a461d70&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F012e93554549d80000019ae9a08a3c.jpg";
         // this.url=this.storeFileURl;
         this.get();
         this.onLoad();
@@ -200,23 +201,34 @@
         
           el.onload=function(){
                el2.style.display="none";
+               let maxH=parseInt(imgFocus.style.height)
+               let maxW=parseInt(imgFocus.style.width);
+              
+              //  autoZoom
+               if(el.height>maxH&&(el.width-maxW)<100){
+                 AutoResizeImage(0,maxH,el);
+               }else{
+                 AutoResizeImage(maxW,0,el);
+               }
+               if(el.width>maxW&&el.height<maxH){
+                 AutoResizeImage(maxW,0,el);
+               }
+
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
-
-               if(canvasW>imgFocus.style.width){
-                 alert(1)
-                   canvasH=canvasH/2
-                   canvasW=canvasW/2
-               }
-              //  标记层
+              
+              //  sginDiv
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
+              //  sgin.style.marginTop=-(canvasH/2)+"px";
+              //  sgin.style.marginLeft=-(canvasW/2)+"px";
 
-              //  控制层
+              //  controlDiv
                controlDiv.style.width=canvasW+"px";
                controlDiv.style.height=canvasH+"px";
-              // 画布层
+
+              // canvasDiv
                canID.width=canvasW;
                canID.height=canvasH;
 
@@ -233,11 +245,12 @@
           $(".toolBar").css("margin-top",sh+5)//先注解
       },
       defue(){
-        // 标注
+        // sign
         imgSign(this.AllowEdit);
 
       },
-      //需要修改
+      
+      //edit
       commitEidt(type){
         let url=this.GLOBAL.baseRouter+'task/task/inside-audit';
         let Okparams={
@@ -309,7 +322,7 @@
         $.sign.loadingSign(this.data);
       },
       changeState(state){
-        //  控制图片是否可标注
+        //  controlImgSign
               if(state=='1'||state=='2'){
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
@@ -323,18 +336,19 @@
               }
       },
       get(){
-          //  获取图片的标注信息
-           let TaskID=this.storeTaskID
+          //  getImgSignInfo
+          //  let TaskID=this.storeTaskID
+           let TaskID=350
            if(TaskID == 0 || TaskID === null )
            {
                return false;
            }
            let _this=this;
-           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
+           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
+            
             if(Sdate.err_code==0){
-
                 _this.IMGlist = [];
                 _this.IMGlist = Sdate.data;
 

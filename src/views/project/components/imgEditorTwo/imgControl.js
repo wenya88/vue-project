@@ -43,6 +43,7 @@ const canvasControl=()=>{
         };
 
         addEvent(controlDiv, 'mousedown', function(ev) {
+
             let oEvent = prEvent(ev);
             let oParent = oSign.parentNode;
             let disX = oEvent.clientX - oSign.offsetLeft;
@@ -80,6 +81,7 @@ const canvasControl=()=>{
         let restrict=1.1;
         let totalNum=0;
         addWheelEvent(controlDiv, function(delta) {
+          
             let ratioL = (this.clientX - oSign.offsetLeft) / oSign.offsetWidth;
             let ratioT = (this.clientY - oSign.offsetTop) / oSign.offsetHeight;
             let sginDiv=document.getElementsByClassName('signIndex');
