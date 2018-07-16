@@ -17,7 +17,7 @@
                             index,
                             item.file.stage_id,
                             item.file.id
-                        )" :class="{showBg:index==liIndex}"> 
+                        )" :class="{showBg:index==liIndex}">
                         <span>{{index+1}}<br/>{{item.stage_name}}</span>
                         <em>
                             {{item.inside_audit_time>item.client_audit_time?item.inside_audit_date:item.client_audit_date}}<br/>
@@ -46,7 +46,7 @@
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
         </div>
-        
+
         <!-- 反馈信息 -->
         <div v-if="SataeInfo" class="VideofeedbackInfo">
             <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
@@ -60,7 +60,7 @@
 <script>
 
 var Data=[];
-import {baseUrl, deletetaskData} from '../../../config/env.js';
+//import {baseUrl, deletetaskData} from '../../../config/env.js';
 var qs=require('querystring');
 export default {
     data(){
@@ -150,9 +150,9 @@ export default {
        //追加video.js文件
         AddVedioJS(){
             $(".video_js").remove();
-            let head = document.getElementsByTagName('head')[0];  
-            let script = document.createElement('script');  
-            script.async = true;  
+            let head = document.getElementsByTagName('head')[0];
+            let script = document.createElement('script');
+            script.async = true;
             script.src = "http://vjs.zencdn.net/6.6.3/video.js";
             script.classList.add("video_js")
             head.appendChild(script);
@@ -170,7 +170,7 @@ export default {
                         $(".V_markVjs").css({'width':myPWidth,'height':myPHeigth});//设置标记层
                         $(".V_progressBar").css({'width':myPWidth-119,'top':myPHeigth+2,'left':58});//设置进度条
                     });
-                    
+
                     function PauPlay(){ //暂停方法
                         $(".V_markVjs").show()
                         var domWidth=document.getElementsByClassName("vjs-play-progress")[0].style.width;//获取正在播放进度条的宽度
@@ -183,7 +183,7 @@ export default {
                         $(".V_signIndex").hide();
                         PauPlay();
                     });
-                    
+
                     myPlayer.on('play',function(){ //开始播放
                        $(".V_markVjs,.V_signIndex").hide();  //标记层和标记隐藏
                     });
@@ -324,7 +324,7 @@ export default {
                     $(".bBs"+RthisTiem).show();
                     //console.log(RthisTiem);
                     myFun(thisTiem);
-                })	
+                })
 
                 $(document).on('click','.V_markVjs',function(){
                         $(".V_inputSignBox").hide();
@@ -372,7 +372,7 @@ export default {
                this.$Message.error(msg.data.err_message);
             })
         }
-      },   
+      },
         vedioLoad(){
             $.sign.bindSign('.V_markVjs');
             $.sign.loadingSign(this.data);
@@ -432,7 +432,7 @@ export default {
                 // 把StageID传到提交
                 }else{
                 return
-                }          
+                }
             },()=>{
                 _this.$Message.error('请求失败')
             })
