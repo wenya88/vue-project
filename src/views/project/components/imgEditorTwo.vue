@@ -6,7 +6,7 @@
           <div class="imgFocus">
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
-                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>退出标注</span>
+                     <span @click="canvasHidden"><s class="iconfont icon-tuichu"></s>退出标注</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
