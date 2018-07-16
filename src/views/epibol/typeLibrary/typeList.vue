@@ -9,20 +9,19 @@
             this.$nextTick(() => {
                 this.init();
             })
-            document.body.onclick=(e) => {
+            document.body.onclick = (e) => {
                 e.stopPropagation();
                 this.$nextTick(() => {
                     let arrData = (data) => {
                         data.map((item) => {
-                                item.btnShow = false;
+                            item.btnShow = false;
                             if (item.children) {
                                 arrData(item.children)
                             }
                         })
                     };
                     arrData(this.treeMap[0].children);
-                })
-
+                });
             }
         },
         data() {
@@ -93,6 +92,7 @@
                                     item.status = status;
                                     item.rank = rank;
                                     item.btnShow = false;
+                                    item.editText = false;
                                     if (item.children) {
                                         arrData(item.children, rank + 1,item.status)
                                     }
@@ -100,6 +100,7 @@
                             };
                             if (data && Array.isArray(data.data)) {
                                 data.data.map((item) => {
+                                    item.btnShow = false;
                                     if (item.children) {
                                         arrData(item.children, rank,item.status)
                                     }
@@ -113,10 +114,12 @@
             renderContent(h, {root, node, data}) {
                 let folderButton = '';
                 let iconFile = false;
-                let button =  h('div', {
-                    style: {fontSize: '12px',
-                        padding:'2px 25px',
-                        background:'#e4e4e4'},
+                let button = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
                     on: {
                         click: () => {
                             this.changeName(data)
@@ -125,33 +128,37 @@
                 }, [
                     h('div', '修改'),
                 ]);
-                let delButton =  h('div', {
-                    style: {fontSize: '12px',
-//
-                        padding:'2px 25px',
-                    background:'#e4e4e4'
+                let delButton = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
                     },
                     on: {
                         click: () => {
-                            this.remove(data)
+                            this.remove(root, node, data)
                         }
                     }
                 }, [
                     h('div', '删除'),
-                ])
-                let textTitle = h('span', data.name ? data.name : data.tasktype_name)
+                ]);
+                let textTitle = h('span', data.name ? data.name : data.tasktype_name);
 
                 // 名称可以编辑的
-                if (data.status !== 0) {
+                if (data.editText === true) {
                     textTitle = h('Input',
                         {
                             props: {
-                                value: data.name ? data.name : data.tasktype_name
+                                value:data.name ? data.name : data.tasktype_name
                             },
                             style: {
-                                width: '120px'
+                                width: '120px',
+                                fontSize: '12px'
+                            },
+                            on: {
                             }
-                        })
+                        }
+                    )
                 }
 
                 // 需要文件夹按钮的
@@ -174,7 +181,7 @@
                     iconFile = true
                 }
                 // 不需要文件按钮的
-                if (true) {
+                if (data.status === 0) {
                     button = ''
                 }
                 // 不需要删除按钮
@@ -214,20 +221,7 @@
                             textTitle
                         ])
                     ]),
-//                    h('h1', {
-//                        style: {
-//                            display: 'inline-block',
-//                            float: 'right',
-//                            marginRight: '32px',
-//                            opacity:'0',
-//                        }
-//                    }, [
-//                        folderButton,
-//                        button,
-//                        delButton
-//
-//                    ])
-                    h('span',{
+                    h('section',{
                         props:{
                             type:'ios-more'
                         },
@@ -235,9 +229,10 @@
                             display: 'inline-block',
                             float: 'right',
                             marginRight: '32px',
-                            marginTop: '6px',
+                            marginTop:'6px',
                             fontSize:'20px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            opacity:0
                         },
                         on: {
                             click: (e) => {
@@ -254,7 +249,6 @@
                                     display: 'inline-block',
                                     float: 'right',
                                     marginRight: '32px',
-                                    marginTop: '6px',
                                     fontSize: '20px',
                                     cursor: 'pointer'
                                 },
@@ -262,35 +256,48 @@
                         ),
                         h('h1', {
                             style: {
+                                position:'absolute',
+                                top:'50%',
+                                right:'0px',
                                 display: 'inline-block',
                                 float: 'right',
+                                padding:'10px 0',
                                 marginRight: '32px',
-                                position:'absolute',
-                                top:'0px',
-                                right:'0px'
-//                                opacity: '0',
+                                transform:'translateY(-50%)'
+
                             }
                         },
-                            data.btnShow?  [folderButton, button, delButton]:''
+                            data.btnShow?  [ folderButton,button,delButton]:''
                            )
                     ])
                 ]);
             },
+            /*添加*/
             append(data, type) {
                 const children = data.children || [];
+                let name = data.rank === 1 ? '新建文件' : '新建文件夹';
+                let rank = null;
+                if(!type){
+                    rank = data.rank+1
+                }
                 let obj = {
-                    name: '新建文件夹'
+                    name: name,
+                    btnShow:false,
+                    status:type?1:data.status,
+                    rank:rank
                 };
 
                 children.push(obj);
                 this.$set(data, 'children', children);
             },
+            /*删除*/
             remove(root, node, data) {
                 const parentKey = root.find(el => el === node).parent;
                 const parent = root.find(el => el.nodeKey === parentKey).node;
                 const index = parent.children.indexOf(data);
                 parent.children.splice(index, 1);
             },
+            /*异步*/
             loadData(item, callback) {
                 setTimeout(() => {
                     const data = [
@@ -308,36 +315,34 @@
                     callback(data);
                 }, 1000);
             },
+            /*点击进入详情*/
             goTaskList(data) {
+
                 this.$bus.emit('typesDetail',data);
-//                if (data.rank === 2) {
-//                    this.$axios.post(`${this.GLOBAL.baseRouter}newtask/new-task-type/get-types-detail`, qs.stringify({tid: data.id}))
-//                        .then((data) => {
-//                            console.log(2, data)
-//                        })
-//                }
             },
+            /*打开右边菜单*/
             showSetting(data,e){
                 e.stopPropagation();
+                let arrData = (data) => {
+                    data.map((item) => {
+                        item.btnShow = false;
+                        if (item.children) {
+                            arrData(item.children)
+                        }
+                    })
+                };
+                arrData(this.treeMap[0].children);
+
                 this.$set(data,'btnShow',!data.btnShow)
 
-                console.log(12,this.treeMap[0].children)
             },
-            closeSetting(e){
-                console.log(13,this.treeMap[0].children)
-//                e.stopPropagation();
-//                let arrData = (data) => {
-//                    data.map((item) => {
-//                        item.btnShow = false;
-//                        if (item.children) {
-//                            arrData(item.children)
-//                        }
-//                    })
-//                };
-//                arrData(this.treeMap[0].children)
-
+            /*更改名字*/
+            changeName(data){
+                    this.$set(data,'editText',!data.editText);
+            },
+            selecText(data){
+                this.$set(data,'editText',!data.editText);
             }
-
         },
 
     }
@@ -348,9 +353,17 @@
             p {
                 position: relative;
                 &:hover {
-                    h1 {
+                    section {
                         opacity: 1 !important;
                         transition: all .3s;
+                    }
+                }
+                h1{
+                    &:hover {
+                        section {
+                            opacity: 1 !important;
+                            transition: all .3s;
+                        }
                     }
                 }
             }
