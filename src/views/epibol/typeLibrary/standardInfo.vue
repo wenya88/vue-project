@@ -69,16 +69,11 @@
             <Modal
                     v-model="modal1"
                     title="增加标签"
-
             >
                 <section>
                     <div style="margin-bottom: 5px">
-                        <span>规范标签&emsp;：&emsp;</span><Input v-model="value" placeholder="增加规范标签"
+                        <span>规范标签&emsp;：&emsp;</span><Input v-model="normValue" placeholder="增加规范标签"
                                                              style="width: 200px"></Input>
-                    </div>
-                    <div style="margin-bottom: 5px">
-                        <span>优先级标签：&emsp;</span><Input v-model="value" placeholder="增加优先级标签"
-                                                        style="width: 200px"></Input>
                     </div>
                 </section>
             </Modal>
@@ -109,6 +104,9 @@
                                     </div>
                                     <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
                                 </li>
+                                <Select  multiple style="position:absolute;top:-20px;left:454px;width:163px;">
+                                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </ul>
                             <!--流程info增加-->
                             <div class="stepsUl">
@@ -195,6 +193,7 @@
         },
         data() {
             return {
+                cityList:[],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
                 tstandard: [],   // 文件规范
@@ -233,8 +232,7 @@
                 OtherfileName: '',
                 OtherfileMain: '',
                 boxShow: false,
-                value: '测试',
-                model2: '1',
+                normValue: '',
 
                 // 以上是后面测试添加
                 current: 0,
@@ -509,7 +507,6 @@
             },
             //从左边列表组件中获取id,name
             getListId(clicktype) {
-                console.log(1, clicktype)
                 this.isInit = clicktype.isInit;
                 this.category_id = clicktype.category_id;
                 this.listN = clicktype.liName;
@@ -632,14 +629,13 @@
             },
             newtaskGetNorms() {
                 // 获取规范
-                this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-norms', qs.stringify())
-                    .then(({data})=>{
-                    if(data.err_code === 0){
-                        this.norms = data.data;
-
-                    }else{
-                        this.$Message.error(data.err_message);
-                    }
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/get-norms', qs.stringify())
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.norms = data.data;
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
                     })
             },
             newtaskTypesDetail({id,rank}){
@@ -752,6 +748,7 @@
             background: #fff;
             border: none;
             border-bottom: 1px solid @gray;
+            cursor: pointer;
             &:focus {
                 box-shadow: none;
 
@@ -834,6 +831,7 @@
             }
             .stepsUl {
                 padding-left: 35px;
+                margin-bottom: 10px;
                 .stepsList {
                     display: flex;
                     position: relative;

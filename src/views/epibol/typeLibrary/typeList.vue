@@ -1,26 +1,29 @@
 <template>
     <div>
         <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
+        <!--复制-->
         <Modal
-                v-model="modal1"
+                v-model="copy.show"
                 title="选择复制目录"
-                @on-ok="copy"
-                @on-cancel="modal1 = false">
-            <Select v-model="newCopyId" style="width:200px">
+                @on-ok="copyNode"
+                @on-cancel="copy.show = false">
+            <Select v-model="copy.newId" style="width:200px">
                 <Option v-for="item in folder" :value="item.id" :key="item.id">{{ item.name }}</Option>
             </Select>
         </Modal>
+        <!--删除-->
         <Modal
-                v-model="modal2"
+                v-model="del.show"
                 @on-ok="remove"
-                @on-cancel="modal2 = false">
+                @on-cancel="del.show = false">
             请确认删除!
         </Modal>
+        <!--修改名称-->
         <Modal
-                v-model="modal3"
-                @on-ok="remove"
-                @on-cancel="modal3 = false">
-        <Input v-model="newTreeTitle" style="width: 90%" placeholder="请输入新的名称"></Input>
+                v-model="changName.show"
+                @on-ok="selecText"
+                @on-cancel="changName.show = false">
+            <Input v-model="newTreeTitle" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
     </div>
 </template>
@@ -49,14 +52,23 @@
         },
         data() {
             return {
-                modal1: false,
-                modal2: false,
-                modal3: false,
-                newCopyId: '',
-                copyId: '',
-                delId: '',
+                company_id: sessionStorage.getItem('userId'),
+                copy: {
+                    show: false,
+                    id: '',
+                    newId: '',
+                },
+                del: {
+                    show: false,
+                    id: '',
+                },
+                changName: {
+                    show: false,
+                    id: '',
+                    newId: '',
+                },
                 folder: [],
-                newTreeTitle:'',
+                newTreeTitle: '',
                 treeMap: [
                     {
                         name: '全部',
@@ -117,18 +129,16 @@
             init() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/get-types', qs.stringify())
                     .then(({data}) => {
-                        data.data[1].children[1].children.push({id: 7, name: '撒的'})
+                        data.data[1].children[1].children.push({id: 7, name: '撒的'});
                         if (data.err_code === 0) {
                             let rank = 1, arrData = (data, rank, status) => {
                                 data.map((item) => {
-
                                     item.status = status;
                                     item.rank = rank;
                                     item.btnShow = false;
                                     item.editText = false;
                                     if (item.status !== 0 && item.rank === 1) {
                                         this.folder.push(JSON.parse(JSON.stringify(item)))
-                                        console.log(1, this.folder)
                                     }
                                     if (item.children) {
                                         arrData(item.children, rank + 1, item.status)
@@ -144,6 +154,7 @@
                                 });
                             }
                             this.treeMap[0].children = data.data;
+                            console.log(1,this.treeMap[0].children)
                         }
                     })
 
@@ -309,11 +320,11 @@
                         h('h1', {
                                 style: {
                                     position: 'absolute',
-                                    top:'0px',
+                                    top: '0px',
                                     right: '0px',
                                     display: 'inline-block',
                                     marginRight: '32px',
-                                    zIndex:'3'
+                                    zIndex: '3'
                                 }
                             },
                             data.btnShow ? [folderButton, button, copyButton, delButton] : ''
@@ -323,7 +334,7 @@
             },
             /* 添加 */
             append(data, type) {
-                const children = data.children || [];
+                /*const children = data.children || [];
                 let name = data.rank === 1 ? '新建文件' : '新建文件夹';
                 let rank = null;
                 if (!type) {
@@ -336,22 +347,17 @@
                     rank: rank
                 };
                 children.push(obj);
-                this.$set(data, 'children', children);
-            },
-            delButton(root, node, data) {
-                this.modal2 = true;
-                this.delId = data.id
-            },
-            /*删除*/
-            remove() {
-                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/del', qs.stringify({tid: this.delId}))
-                    .then((data) => {
+                this.$set(data, 'children', children);*/
 
-                    });
-//                this.init();
-                this.modal2 = false;
-                this.modal3 = false;
+                /* 新增 */
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                    name: data.name,
+                    company_id: this.company_id
+                }))
+                    .then(() => {
+                    })
             },
+
             /*异步*/
             loadData(item, callback) {
                 setTimeout(() => {
@@ -391,27 +397,43 @@
                 this.$set(data, 'btnShow', !data.btnShow)
 
             },
-            /*更改名字*/
+            /*删除弹窗*/
+            delButton(root, node, data) {
+                this.del.show = true;
+                this.del.id = data.id
+            },
+            /*删除*/
+            remove() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/del', qs.stringify({tid: this.del.id}))
+                    .then((data) => {
+                    });
+                this.init();
+                this.del.show = false;
+            },
+            /*更改名弹窗*/
             changeName(data) {
-                this.modal3 = !this.modal3
-//                this.$set(data, 'editText', !data.editText);
+                this.changName.show = true;
+                console.log(this.newTreeTitle)
             },
+            /*更改名字*/
             selecText(data) {
-                this.$set(data, 'editText', !data.editText);
+                this.$set(data, 'name', this.name);
             },
+            /*复制弹窗*/
             copyButton(data) {
-                this.modal1 = !this.modal1;
-                this.copyId = data.id;
+                this.copy.show = !this.copy.show;
+                this.copy.id = data.id;
 
             },
-            copy() {
+            /*复制*/
+            copyNode() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/copy-type', qs.stringify({
-                    tid: this.copyid,
-                    togid: this.newCopyId
+                    tid: this.copy.id,
+                    togid: this.copy.newId
                 }))
                     .then((data) => {
-                    })
-                this.modal1 =false
+                    });
+                this.copy.show = false;
             }
         },
 
@@ -428,12 +450,12 @@
                         transition: all .3s;
                     }
                 }
-                section{
-                    h1{
-                        div:nth-of-type(1){
+                section {
+                    h1 {
+                        div:nth-of-type(1) {
                             padding-top: 5px;
                         }
-                        div:nth-last-of-type(1){
+                        div:nth-last-of-type(1) {
                             padding-bottom: 5px;
                         }
                     }

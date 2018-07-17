@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </Step>
-                <Step title="已完成" content="这里是该步骤的描述信息"></Step>
+                <Step title="已完成" ></Step>
             </Steps>
 
         </div>
@@ -48,6 +48,9 @@
 <style lang="less" >
     @green:#009900;
     .resourceContainer {
+        .ivu-steps-head{
+            background: #f5f7f6 !important;
+        }
         .red{
             .ivu-steps .ivu-steps-title{
                 background: #f5f7f6 ;
