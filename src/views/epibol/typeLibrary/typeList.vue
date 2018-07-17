@@ -1,5 +1,28 @@
 <template>
-    <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
+    <div>
+        <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
+        <Modal
+                v-model="modal1"
+                title="选择复制目录"
+                @on-ok="copy"
+                @on-cancel="modal1 = false">
+            <Select v-model="newCopyId" style="width:200px">
+                <Option v-for="item in folder" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            </Select>
+        </Modal>
+        <Modal
+                v-model="modal2"
+                @on-ok="remove"
+                @on-cancel="modal2 = false">
+            请确认删除!
+        </Modal>
+        <Modal
+                v-model="modal3"
+                @on-ok="remove"
+                @on-cancel="modal3 = false">
+        <Input v-model="newTreeTitle" style="width: 90%" placeholder="请输入新的名称"></Input>
+        </Modal>
+    </div>
 </template>
 <script>
     import qs from 'querystring'
@@ -8,7 +31,7 @@
         mounted() {
             this.$nextTick(() => {
                 this.init();
-            })
+            });
             document.body.onclick = (e) => {
                 e.stopPropagation();
                 this.$nextTick(() => {
@@ -26,6 +49,14 @@
         },
         data() {
             return {
+                modal1: false,
+                modal2: false,
+                modal3: false,
+                newCopyId: '',
+                copyId: '',
+                delId: '',
+                folder: [],
+                newTreeTitle:'',
                 treeMap: [
                     {
                         name: '全部',
@@ -86,15 +117,21 @@
             init() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/get-types', qs.stringify())
                     .then(({data}) => {
+                        data.data[1].children[1].children.push({id: 7, name: '撒的'})
                         if (data.err_code === 0) {
-                            let rank = 1, arrData = (data, rank,status) => {
+                            let rank = 1, arrData = (data, rank, status) => {
                                 data.map((item) => {
+
                                     item.status = status;
                                     item.rank = rank;
                                     item.btnShow = false;
                                     item.editText = false;
+                                    if (item.status !== 0 && item.rank === 1) {
+                                        this.folder.push(JSON.parse(JSON.stringify(item)))
+                                        console.log(1, this.folder)
+                                    }
                                     if (item.children) {
-                                        arrData(item.children, rank + 1,item.status)
+                                        arrData(item.children, rank + 1, item.status)
                                     }
                                 })
                             };
@@ -102,7 +139,7 @@
                                 data.data.map((item) => {
                                     item.btnShow = false;
                                     if (item.children) {
-                                        arrData(item.children, rank,item.status)
+                                        arrData(item.children, rank, item.status)
                                     }
                                 });
                             }
@@ -128,6 +165,20 @@
                 }, [
                     h('div', '修改'),
                 ]);
+                let copyButton = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.copyButton(root, node, data)
+                        }
+                    }
+                }, [
+                    h('div', '复制'),
+                ]);
                 let delButton = h('div', {
                     style: {
                         fontSize: '12px',
@@ -136,7 +187,7 @@
                     },
                     on: {
                         click: () => {
-                            this.remove(root, node, data)
+                            this.delButton(root, node, data)
                         }
                     }
                 }, [
@@ -149,14 +200,13 @@
                     textTitle = h('Input',
                         {
                             props: {
-                                value:data.name ? data.name : data.tasktype_name
+                                value: data.name ? data.name : data.tasktype_name
                             },
                             style: {
                                 width: '120px',
                                 fontSize: '12px'
                             },
-                            on: {
-                            }
+                            on: {}
                         }
                     )
                 }
@@ -164,9 +214,11 @@
                 // 需要文件夹按钮的
                 if (data.status === 1 && data.rank !== 2) {
                     folderButton = h('div', {
-                        style: {fontSize: '12px',
-                            padding:'2px 25px',
-                            background:'#e4e4e4'},
+                        style: {
+                            fontSize: '12px',
+                            padding: '2px 25px',
+                            background: '#e4e4e4'
+                        },
                         on: {
                             click: () => {
                                 this.append(data)
@@ -185,7 +237,7 @@
                     button = ''
                 }
                 // 不需要删除按钮
-                if(data.status === 0){
+                if (data.status === 0) {
                     delButton = '';
                 }
 
@@ -202,14 +254,14 @@
                             },
                             style: {
                                 marginRight: '8px',
-                                fontSize:'20px'
+                                fontSize: '20px'
                             }
                         }),
                         h('span', {
                             style: {
                                 width: '100px',
-                                fontSize:'14px',
-                                cursor:'pointer'
+                                fontSize: '14px',
+                                cursor: 'pointer'
                             },
                             on: {
                                 click: () => {
@@ -221,26 +273,26 @@
                             textTitle
                         ])
                     ]),
-                    h('section',{
-                        props:{
-                            type:'ios-more'
+                    h('section', {
+                        props: {
+                            type: 'ios-more'
                         },
-                        style:{
+                        style: {
                             display: 'inline-block',
                             float: 'right',
                             marginRight: '32px',
-                            marginTop:'6px',
-                            fontSize:'20px',
+                            marginTop: '6px',
+                            fontSize: '20px',
                             cursor: 'pointer',
-                            opacity:0
+                            opacity: 0
                         },
                         on: {
                             click: (e) => {
-                                this.showSetting(data,e)
+                                this.showSetting(data, e)
                             }
                         }
 
-                    },[
+                    }, [
                         h('icon', {
                                 props: {
                                     type: 'ios-more'
@@ -255,47 +307,50 @@
                             }
                         ),
                         h('h1', {
-                            style: {
-                                position:'absolute',
-                                top:'50%',
-                                right:'0px',
-                                display: 'inline-block',
-                                float: 'right',
-                                padding:'10px 0',
-                                marginRight: '32px',
-                                transform:'translateY(-50%)'
-
-                            }
-                        },
-                            data.btnShow?  [ folderButton,button,delButton]:''
-                           )
+                                style: {
+                                    position: 'absolute',
+                                    top:'0px',
+                                    right: '0px',
+                                    display: 'inline-block',
+                                    marginRight: '32px',
+                                    zIndex:'3'
+                                }
+                            },
+                            data.btnShow ? [folderButton, button, copyButton, delButton] : ''
+                        )
                     ])
                 ]);
             },
-            /*添加*/
+            /* 添加 */
             append(data, type) {
                 const children = data.children || [];
                 let name = data.rank === 1 ? '新建文件' : '新建文件夹';
                 let rank = null;
-                if(!type){
-                    rank = data.rank+1
+                if (!type) {
+                    rank = data.rank + 1
                 }
                 let obj = {
                     name: name,
-                    btnShow:false,
-                    status:type?1:data.status,
-                    rank:rank
+                    btnShow: false,
+                    status: type ? 1 : data.status,
+                    rank: rank
                 };
-
                 children.push(obj);
                 this.$set(data, 'children', children);
             },
+            delButton(root, node, data) {
+                this.modal2 = true;
+                this.delId = data.id
+            },
             /*删除*/
-            remove(root, node, data) {
-                const parentKey = root.find(el => el === node).parent;
-                const parent = root.find(el => el.nodeKey === parentKey).node;
-                const index = parent.children.indexOf(data);
-                parent.children.splice(index, 1);
+            remove() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/del', qs.stringify({tid: this.delId}))
+                    .then((data) => {
+
+                    });
+//                this.init();
+                this.modal2 = false;
+                this.modal3 = false;
             },
             /*异步*/
             loadData(item, callback) {
@@ -318,10 +373,10 @@
             /*点击进入详情*/
             goTaskList(data) {
 
-                this.$bus.emit('typesDetail',data);
+                this.$bus.emit('typesDetail', data);
             },
             /*打开右边菜单*/
-            showSetting(data,e){
+            showSetting(data, e) {
                 e.stopPropagation();
                 let arrData = (data) => {
                     data.map((item) => {
@@ -333,15 +388,30 @@
                 };
                 arrData(this.treeMap[0].children);
 
-                this.$set(data,'btnShow',!data.btnShow)
+                this.$set(data, 'btnShow', !data.btnShow)
 
             },
             /*更改名字*/
-            changeName(data){
-                    this.$set(data,'editText',!data.editText);
+            changeName(data) {
+                this.modal3 = !this.modal3
+//                this.$set(data, 'editText', !data.editText);
             },
-            selecText(data){
-                this.$set(data,'editText',!data.editText);
+            selecText(data) {
+                this.$set(data, 'editText', !data.editText);
+            },
+            copyButton(data) {
+                this.modal1 = !this.modal1;
+                this.copyId = data.id;
+
+            },
+            copy() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/copy-type', qs.stringify({
+                    tid: this.copyid,
+                    togid: this.newCopyId
+                }))
+                    .then((data) => {
+                    })
+                this.modal1 =false
             }
         },
 
@@ -358,11 +428,13 @@
                         transition: all .3s;
                     }
                 }
-                h1{
-                    &:hover {
-                        section {
-                            opacity: 1 !important;
-                            transition: all .3s;
+                section{
+                    h1{
+                        div:nth-of-type(1){
+                            padding-top: 5px;
+                        }
+                        div:nth-last-of-type(1){
+                            padding-bottom: 5px;
                         }
                     }
                 }

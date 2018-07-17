@@ -415,7 +415,8 @@
                     this.fstandard.push({
                         name:'新建阶段',
                         childrens:[{value:'',priority:'1'}],
-                        show:false
+                        show:false,
+                        flowTIlteShow:false,
                     });
                 }
             },

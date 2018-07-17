@@ -151,7 +151,7 @@
                                                     Litem.stage_file.stage_id,
                                                     Litem.stage_file.type,
                                                     Litem.stage_file.file,
-                                                    Litem.stage_file.task_id
+                                                    Litem.stage_file.task_id,item
                                                     )">查看</span>
                                                 </Timeline-item>
                                             </Timeline>
@@ -177,7 +177,7 @@
                                                   Aitem.stage_file.stage_id,
                                                   Aitem.stage_file.type,
                                                   Aitem.stage_file.file,
-                                                  Aitem.stage_file.task_id
+                                                  Aitem.stage_file.task_id,item
                                                   )">查看</span>
                                               </Timeline-item>
                                           </Timeline>

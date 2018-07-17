@@ -174,8 +174,8 @@ export default{
         this.getTaskTypeList();
     },
     mounted(){
-        if(this.userStatus !== null){
-            this.setEditDisabled(true)
+        if(this.userStatus !== 'member'){
+            this.setEditDisabled(false)
         }
     },
     computed:{
