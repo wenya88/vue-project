@@ -34,34 +34,20 @@
         mounted() {
             this.$nextTick(() => {
                 this.init();
-<<<<<<< HEAD
-            })
-            document.body.onclick=(e) => {
-=======
             });
             document.body.onclick = (e) => {
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
                 e.stopPropagation();
                 this.$nextTick(() => {
                     let arrData = (data) => {
                         data.map((item) => {
-<<<<<<< HEAD
-                                item.btnShow = false;
-=======
                             item.btnShow = false;
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
                             if (item.children) {
                                 arrData(item.children)
                             }
                         })
                     };
                     arrData(this.treeMap[0].children);
-<<<<<<< HEAD
-                })
-
-=======
                 });
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
             }
         },
         data() {
@@ -150,13 +136,10 @@
                                     item.status = status;
                                     item.rank = rank;
                                     item.btnShow = false;
-<<<<<<< HEAD
-=======
                                     item.editText = false;
                                     if (item.status !== 0 && item.rank === 1) {
                                         this.folder.push(JSON.parse(JSON.stringify(item)))
                                     }
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
                                     if (item.children) {
                                         arrData(item.children, rank + 1, item.status)
                                     }
@@ -201,9 +184,6 @@
                     },
                     on: {
                         click: () => {
-<<<<<<< HEAD
-                            this.remove(data)
-=======
                             this.copyButton(root, node, data)
                         }
                     }
@@ -219,7 +199,6 @@
                     on: {
                         click: () => {
                             this.delButton(root, node, data)
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
                         }
                     }
                 }, [
@@ -399,36 +378,6 @@
             },
             /*点击进入详情*/
             goTaskList(data) {
-<<<<<<< HEAD
-                this.$bus.emit('typesDetail',data);
-//                if (data.rank === 2) {
-//                    this.$axios.post(`${this.GLOBAL.baseRouter}newtask/new-task-type/get-types-detail`, qs.stringify({tid: data.id}))
-//                        .then((data) => {
-//                            console.log(2, data)
-//                        })
-//                }
-            },
-            showSetting(data,e){
-                e.stopPropagation();
-                this.$set(data,'btnShow',!data.btnShow)
-
-                console.log(12,this.treeMap[0].children)
-            },
-            closeSetting(e){
-                console.log(13,this.treeMap[0].children)
-//                e.stopPropagation();
-//                let arrData = (data) => {
-//                    data.map((item) => {
-//                        item.btnShow = false;
-//                        if (item.children) {
-//                            arrData(item.children)
-//                        }
-//                    })
-//                };
-//                arrData(this.treeMap[0].children)
-
-            }
-=======
 
                 this.$bus.emit('typesDetail', data);
             },
@@ -474,7 +423,6 @@
             copyButton(data) {
                 this.copy.show = !this.copy.show;
                 this.copy.id = data.id;
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
 
             },
             /*复制*/

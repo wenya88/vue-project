@@ -149,10 +149,7 @@ export default {
       var divHeight = 100%
       init(this.storeFileURl);//初始化
       // init();
-<<<<<<< HEAD
       showSign(this.signData)  // 显示获取到的标记
-=======
->>>>>>> e5835714ea6e012c11cfd03fcb51b43c769d9b5d
       animate();//动画
       function init(url) {
         //获得div并添加容器
