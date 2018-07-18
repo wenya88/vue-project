@@ -45,7 +45,7 @@ module.exports = merge(webpackBaseConfig, {
             favicon: './td_icon.ico',
             filename: '../index.html',
             template: './src/template/index.ejs',
-            inject: false
+            inject: false,
         })
     ]
 });

@@ -10,10 +10,10 @@
             <div class="addType">
                 <div class="addButton">
                     <Dropdown trigger="click" style="margin-left: 20px">
-                        <a href="javascript:void(0)">
+                        <span class="typeMenu">
                             <Icon type="plus-round"></Icon>
                             <span>添加规范</span>
-                        </a>
+                        </span>
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
                                 <p>系统默认(12)</p>
@@ -35,6 +35,40 @@
         <standard-info>
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
+                <Row v-for="(item,index) in attrContent" :key="item.config" class="fileAttr">
+                    <Col span="5">
+                    <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
+                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                    </AutoComplete>
+                    </Col>
+                    <Col span="10">
+                    <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                    </AutoComplete>
+                    </Col>
+                    <Icon @click.native="removeContentat(index)" type="trash-b" class="delIcon"></Icon>
+                </Row>
+                <template v-if="content.show" :style='{margin:"10px 0"}'>
+                    <Col span="5">
+                    <AutoComplete v-model="content.name" placeholder="额外属性名称" clearable>
+                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                    </AutoComplete>
+                    </Col>
+                    <Col span="10">
+                    <AutoComplete v-model="content.main" placeholder="额外属性说明" clearable style="margin-left:20px">
+                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                    </AutoComplete>
+                    </Col>
+                    <Button type="text" @click="addContentat()">确认</Button>
+                    <Button type="text" @click="closeContentat()">取消</Button>
+                </template>
+
+                <Button v-if="!content.show" icon="plus-round" type="dashed" long @click="contentListAdd"
+                        style="width:718px">
+                    增加内容规范
+                </Button>
+
+                <h4 :style="{paddingBottom:'10px'}">规格规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="item.config" class="fileAttr">
                     <Col span="5">
                     <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
@@ -147,6 +181,7 @@
                     padding: 10px;
                     font-size: 16px;
                     border-bottom: 1px solid @green;
+                    cursor: pointer;
                 }
                 .tabGreen {
                     border: 1px solid @green !important;
@@ -163,8 +198,9 @@
                     top: 18px;
                     right: 30px;
                 }
-                a {
+                .typeMenu {
                     color: @green;
+                    cursor: pointer;
                 }
                 .header {
                     display: flex;
@@ -192,6 +228,7 @@
                     padding-left: 20px;
                     margin: 14px 0 25px 0;
                     font-size: 14px;
+                    cursor: pointer;
                     .typs {
                         flex: 1;
                         color: #6b6b6b;

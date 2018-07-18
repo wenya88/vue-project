@@ -51,7 +51,7 @@
 <script>
   import {mapState} from 'vuex'
     import accretiontaskpop from "./accretionTaskPop";
-    import tasklist from "./taskList";
+    import tasklist from "./tasklist";
     import maintask from "./taskDetails";
   export default {
       mounted(){

@@ -6,5 +6,5 @@ node_modules
 .DS_Store
 \.settings/
 src/config/env.js
-dist
+/dist/
 /.idea

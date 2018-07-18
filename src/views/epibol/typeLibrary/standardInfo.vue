@@ -28,7 +28,7 @@
             </section>
             <h4 :style="{paddingBottom:'10px'}">制作规范</h4>
           <template v-if="pstandard.length>0" >
-              <Row v-for="(item,index) in pstandard" :key="index" class="fileAttr">
+              <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
                   <Col span="5">
                   <AutoComplete v-model="item.key" placeholder="额外属性名称" clearable>
                       <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
@@ -69,16 +69,11 @@
             <Modal
                     v-model="modal1"
                     title="增加标签"
-
             >
                 <section>
                     <div style="margin-bottom: 5px">
-                        <span>规范标签&emsp;：&emsp;</span><Input v-model="value" placeholder="增加规范标签"
+                        <span>规范标签&emsp;：&emsp;</span><Input v-model="normValue" placeholder="增加规范标签"
                                                              style="width: 200px"></Input>
-                    </div>
-                    <div style="margin-bottom: 5px">
-                        <span>优先级标签：&emsp;</span><Input v-model="value" placeholder="增加优先级标签"
-                                                        style="width: 200px"></Input>
                     </div>
                 </section>
             </Modal>
@@ -102,13 +97,16 @@
                                     <div class="priorityContainer">
                                         <p class="priority"  :class="`priority${list.priority}`" >{{list.priority|priorityValue}}</p>
                                         <div class="priorityList" >
-                                            <p class="priority priority1">高</p>
-                                            <p class="priority priority2">中</p>
-                                            <p class="priority priority3">低</p>
+                                            <p class="priority priority1" @click="editPriority('1',index,i)">高</p>
+                                            <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
+                                            <p class="priority priority3" @click="editPriority('3',index,i)">低</p>
                                         </div>
                                     </div>
-                                    <Icon type="trash-b" class="delIcon"></Icon>
+                                    <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
                                 </li>
+                                <Select  multiple style="position:absolute;top:-20px;left:454px;width:163px;">
+                                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </ul>
                             <!--流程info增加-->
                             <div class="stepsUl">
@@ -132,7 +130,7 @@
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
                                     <Button @click="closeStepList(index)" type="text">取消</Button>
                                 </div>
-                                <Icon v-show="!step.show" @click.native="step.show = !step.show" type="plus"
+                                    <Icon v-show="!step.show" @click.native="flowAddShow(index)" type="plus"
                                       style="margin-left:10px;font-size: 12px;cursor: pointer"></Icon>
                             </div>
                         </Step>
@@ -146,7 +144,7 @@
 
             <h3 :style="{padding:'20px 0 0px'}">文稿文件规范</h3>
             <template v-if="tstandard.length>0">
-                <div v-for="(item,index) in tstandard" :key="index" class="attachingTask" :style='{margin:"20px 0"}'>
+                <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" :style='{margin:"20px 0"}'>
                     <Col span="5">
                     <AutoComplete v-model="item.key" placeholder="输入格式，如“max”" clearable></AutoComplete>
                     </Col>
@@ -154,7 +152,7 @@
                     <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable
                                   style="margin-left:20px"></AutoComplete>
                     </Col>
-                    <Icon @click.native="delOtherfile" type="trash-b" class="delIcon"></Icon>
+                    <Icon @click.native="delOtherfile(index)" type="trash-b" class="delIcon"></Icon>
                 </div>
             </template>
 
@@ -181,8 +179,8 @@
 </template>
 <script>
     import qs from 'querystring'
-    import {newtaskGetNorms} from '@/server/request'
-    import {typeInfo} from "../../../config/env.js";
+
+
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import typeList from "./typeList";
@@ -195,6 +193,7 @@
         },
         data() {
             return {
+                cityList:[],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
                 tstandard: [],   // 文件规范
@@ -233,8 +232,7 @@
                 OtherfileName: '',
                 OtherfileMain: '',
                 boxShow: false,
-                value: '测试',
-                model2: '1',
+                normValue: '',
 
                 // 以上是后面测试添加
                 current: 0,
@@ -397,9 +395,8 @@
                 this.OtherfileMain = '';
             },
             //移除任务附加文件
-            delOtherfile(event, ot) {
-                const index = this.otherfile.indexOf(ot);
-                this.otherfile.splice(index, 1);
+            delOtherfile(index) {
+                this.tstandard.splice(index, 1);
             },
             //移除任务附加文件tabel
             remove(index) {
@@ -415,7 +412,9 @@
                     aSp.current += 1;
                     this.fstandard.push({
                         name:'新建阶段',
-                        childrens:[{value:'',priority:'1'}]
+                        childrens:[{value:'',priority:'1'}],
+                        show:false,
+                        flowTIlteShow:false,
                     });
                 }
             },
@@ -430,9 +429,8 @@
                 this.fileAddMain = '';
             },
             //移除文件属性
-            removeFileat(event, at) {
-                const index = this.attrFile.indexOf(at);
-                this.attrFile.splice(index, 1);
+            removeFileat(index) {
+                this.pstandard.splice(index, 1);
             },
             //移除沟通确认阶段
             delStep(event, st) {
@@ -509,7 +507,6 @@
             },
             //从左边列表组件中获取id,name
             getListId(clicktype) {
-                console.log(1, clicktype)
                 this.isInit = clicktype.isInit;
                 this.category_id = clicktype.category_id;
                 this.listN = clicktype.liName;
@@ -595,17 +592,16 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                console.log(11,this.stepInfoList.type)
                 this.fstandard[index].childrens.push({normId:this.stepInfoList.type,value:this.stepInfoList.text,priority:this.stepInfoList.priority});
                 this.$set(this.fstandard[index],'show',false);
                 this.stepInfoList = {
                     text: '',
                     type: '',
-                    priority: '1'
+                    priority: '优先级'
                 };
             },
             closeStepList(index) {
-                this.$set(this.fstandard[index], 'show', false)
+                this.$set(this.fstandard[index], 'show', false);
                 this.stepInfoList = {
                     text: '',
                     type: '',
@@ -615,8 +611,8 @@
             // 图标框显示
             showMarkers() {
                 this.boxShow = !this.boxShow;
-                this.identification.iconBorder = null
-                this.identification.iconColor = null
+                this.identification.iconBorder = null;
+                this.identification.iconColor = null;
             },
             // 图标框边框
             secMarkers(item, type) {
@@ -633,18 +629,23 @@
             },
             newtaskGetNorms() {
                 // 获取规范
-                this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-norms', qs.stringify())
-                    .then(({data})=>{
-                    if(data.err_code === 0){
-                        this.norms = data.data;
-
-                    }else{
-                        this.$Message.error(data.err_message);
-                    }
+                this.$axios.post(this.GLOBAL.baseRouter + 'newtask/new-task-type/get-norms', qs.stringify())
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.norms = data.data;
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
                     })
             },
             newtaskTypesDetail({id,rank}){
               if(rank === 2){
+                     this.fileShow = false;
+                     this.fileAddName = '';
+                     this.fileAddMain = '';
+                     this.OtherfileShow = false;
+                     this.OtherfileName = '';
+                     this.OtherfileMain = '';
                   this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-types-detail', qs.stringify({tid:id}))
                       .then(({data})=>{
                           if(data.err_code === 0){
@@ -666,10 +667,27 @@
               }
 
             },
-            editPriority(type){
-                this.stepInfoList.priority = type
+            editPriority(type,index,i){
+                if(index === 0 || index){
+                  this.fstandard[index].childrens[i].priority = type
+              }
+              else{
+                  this.stepInfoList.priority = type
+              }
 
-            }
+            },
+            delFlowNorm(index,i){
+                this.fstandard[index].childrens.splice(i,1);
+            },
+            flowAddShow(index){
+                if(this.fstandard){
+                    this.stepInfoList = {text: '',type: '',priority: '优先级'};
+                    this.fstandard.map((item)=>{
+                        item.show = false
+                    });
+                    this.fstandard[index].show = !this.fstandard[index].show
+                }
+           }
         },
         filters:{
             priorityValue(value){
@@ -730,6 +748,7 @@
             background: #fff;
             border: none;
             border-bottom: 1px solid @gray;
+            cursor: pointer;
             &:focus {
                 box-shadow: none;
 
@@ -812,6 +831,7 @@
             }
             .stepsUl {
                 padding-left: 35px;
+                margin-bottom: 10px;
                 .stepsList {
                     display: flex;
                     position: relative;

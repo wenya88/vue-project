@@ -33,7 +33,7 @@
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
         <Col span="4" v-for="(item,index) in listData" :key="index">
-        <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id)">
+        <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id,item)">
           <div class="card-box">
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
             <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
@@ -71,27 +71,28 @@
     </div>
     
     <!-- 浏览任务弹窗 -->
-    <Modal 
-          v-model="isTabModal" 
-          width="1200" 
-          :styles="{top: '100px'}"
-          :closable="false"
-          okText= '保存'
-          cancelText='取消'
-          @on-cancel="closeTabmodal"
-          >
-        <browsetask ref="browsetask"></browsetask>
-        <div slot="footer">
-        </div>
-    </Modal>
+    <!--<Modal -->
+          <!--v-model="isTabModal" -->
+          <!--width="1200" -->
+          <!--:styles="{top: '100px'}"-->
+          <!--:closable="false"-->
+          <!--okText= '保存'-->
+          <!--cancelText='取消'-->
+          <!--@on-cancel="closeTabmodal"-->
+          <!--&gt;-->
+        <!--<browsetask ref="browsetask"></browsetask>-->
+        <!--<div slot="footer">-->
+        <!--</div>-->
+    <!--</Modal>-->
   </div>
 </template>
 
 <script>
 var qs = require('querystring');
+
 import mySort from '../../main-components/sort';
 import browsetask from '../task/browseTaskPop';
-import { mapGetters } from 'vuex'
+import { mapGetters,mapMutations } from 'vuex'
 export default {
   name: 'resourcesList',
   components: {
@@ -158,6 +159,7 @@ export default {
     }),
   },
   methods: {
+      ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
     change (status) {
                 this.$Message.info(`Status: ${status}`);
             },
@@ -279,14 +281,23 @@ export default {
      * 阶段id  必传
      * 阶段  非必传
      */
-    fetchFileData(stageId,type,file,taskId) {
-      this.isTabModal = true;
-      // sessionStorage.FileURl=file;
-      // sessionStorage.TaskID=taskId;
-      this.$store.commit('changeComponentTaskID',taskId);
-      this.$store.commit('changeComponentFileURl',file);
-      this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
-      this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
+    fetchFileData(stageId,type,file,taskId,item) {
+//      this.isTabModal = true;
+        this.$store.commit('changeComponentTaskID',taskId);
+        this.$store.commit('changeComponentFileURl',file);
+
+        // 是否显示编辑信息
+        //sessionStorage.AllowEdit=_this.AllowEdit;
+        item.id = item.task_id
+        this.setPrimaryMission(item);
+        this.setDetailAll(item);
+//        this.setUserStatus('member');
+        this.$router.push({path:'/project/details'});
+
+//      this.$refs.browsetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
+//      this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
+
+
       if(this.status == '1') {
         sessionStorage.AllowEdit='Allow';
       } else {

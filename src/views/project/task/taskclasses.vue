@@ -180,21 +180,20 @@ export default {
         {
             return;
         }
-        this.$axios
-            .post(add, qs.stringify(info))
-            .then(dis => {
-            if (dis.data.err_code === 0) {
-                this.$Message.success("新增子项目成功！");
-                this.getProjectInfo();
-            } else {
-                this.$Message.error(dis.data.err_message);
-            }
-            })
-            .catch(error => {
-            this.$Message.error("请求失败，请刷新重试！");
-            });
+            this.$axios.post(add, qs.stringify(info))
+                .then(dis => {
+                    if (dis.data.err_code === 0) {
+                        this.$Message.success("新增子项目成功！");
+                        this.getProjectInfo();
+                    } else {
+                        this.$Message.error(dis.data.err_message);
+                    }
+                })
+                .catch(error => {
+                    this.$Message.error("请求失败，请刷新重试！");
+                });
         },
-        }
+    }
 }
 </script>
 

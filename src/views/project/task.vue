@@ -156,8 +156,8 @@
 <script>
 import {mapMutations} from 'vuex'
 import qs from 'querystring'
-import taskclasses from "./task/taskClasses";
-import tasklist from "./task/taskList";
+
+import tasklist from "./task/tasklist";
 import taskinfopop from "./task/taskInfoPop/taskInfoPop";
 import accretiontaskpop from "./task/accretionTaskPop";
 import ExcelModal from "./components/excel"
@@ -165,7 +165,7 @@ import vSchedulePlan from "./schedule"
 
 export default {
   components: {
-    taskclasses,
+
     tasklist,
     taskinfopop,
     accretiontaskpop,

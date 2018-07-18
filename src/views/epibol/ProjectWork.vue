@@ -94,7 +94,7 @@
                                         item.id,
                                         item.stage_file.type,
                                         item.stage_file.file,
-                                        item.stage_file.task_id
+                                        item.stage_file.task_id,item
                                         )">
                                         <div class="row">
                                             <span>
@@ -123,7 +123,7 @@
                                         item.task_id,
                                         item.stage_file.type,
                                         item.stage_file.file,
-                                        item.stage_file.task_id
+                                        item.stage_file.task_id,item
                                         )">
                                         <span>
                                             <img :src="item | fitletype"/>{{item.name}}<br/><u class="chlidProject" :title="item.project_name">{{item.project_name}}</u>
@@ -154,7 +154,8 @@
                                         item.id,
                                         item.stage_file.type,
                                         item.stage_file.file,
-                                        item.stage_file.task_id
+                                        item.stage_file.task_id,
+                                        item
                                         )">
                                         
                                         <span class="tip">{{item.upload_day==0?"今天":(Math.abs(item.upload_day)+" 天前")}}</span>
@@ -189,7 +190,7 @@
 <script>
 import CalendInfo from '../main-components/calend/calendrinfo.vue';
 import browsetask from '../project/task/browseTaskPop.vue'
-
+import {mapMutations} from 'vuex'
 export default {
     data(){
         return{
@@ -255,6 +256,7 @@ export default {
         this.InfoRefresh();
     },
     methods:{
+        ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
         //关闭窗口
         InfoRefresh(){
             this.$bus.on('InfoRefresh',()=>{
@@ -268,20 +270,15 @@ export default {
             this.$router.push('/project/home');
         },
         // 文件详情
-        taskDetaInfo(id,type,file,TaskID){
-            let _this=this;
-             _this.isTabModal=true
-            this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
-            this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑
-
+        taskDetaInfo(id,type,file,TaskID,item){
             // 本地缓存信息
             this.$store.commit('changeComponentTaskID',TaskID);
             this.$store.commit('changeComponentFileURl',file);
-            // sessionStorage.TaskID=TaskID;
-            // sessionStorage.FileURl=file;
+            this.setPrimaryMission(item);
+            this.setDetailAll(item);
+            this.setUserStatus('leader');
+            this.$router.push({path:'/project/details'});
 
-            // 是否显示编辑信息
-            //sessionStorage.AllowEdit=_this.AllowEdit;
         },
         closeTabmodal(){
             this.isTabModal=false;
