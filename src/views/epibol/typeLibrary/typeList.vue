@@ -9,6 +9,21 @@
             this.$nextTick(() => {
                 this.init();
             })
+            document.body.onclick=(e) => {
+                e.stopPropagation();
+                this.$nextTick(() => {
+                    let arrData = (data) => {
+                        data.map((item) => {
+                                item.btnShow = false;
+                            if (item.children) {
+                                arrData(item.children)
+                            }
+                        })
+                    };
+                    arrData(this.treeMap[0].children);
+                })
+
+            }
         },
         data() {
             return {
@@ -77,6 +92,7 @@
                                 data.map((item) => {
                                     item.status = status;
                                     item.rank = rank;
+                                    item.btnShow = false;
                                     if (item.children) {
                                         arrData(item.children, rank + 1,item.status)
                                     }
@@ -103,7 +119,7 @@
                         background:'#e4e4e4'},
                     on: {
                         click: () => {
-                            this.append(data)
+                            this.changeName(data)
                         }
                     }
                 }, [
@@ -117,7 +133,7 @@
                     },
                     on: {
                         click: () => {
-                            this.append(data)
+                            this.remove(data)
                         }
                     }
                 }, [
@@ -304,20 +320,22 @@
             showSetting(data,e){
                 e.stopPropagation();
                 this.$set(data,'btnShow',!data.btnShow)
-                console.log(data,!data.btnShow)
+
+                console.log(12,this.treeMap[0].children)
             },
             closeSetting(e){
-                console.log(1212)
-                e.stopPropagation();
-                let arrData = (data) => {
-                    data.map((item) => {
-                        item.btnShow = false
-                        if (item.children) {
-                            arrData(item.children)
-                        }
-                    })
-                };
-                arrData(this.treeMap[0].children)
+                console.log(13,this.treeMap[0].children)
+//                e.stopPropagation();
+//                let arrData = (data) => {
+//                    data.map((item) => {
+//                        item.btnShow = false;
+//                        if (item.children) {
+//                            arrData(item.children)
+//                        }
+//                    })
+//                };
+//                arrData(this.treeMap[0].children)
+
             }
 
         },

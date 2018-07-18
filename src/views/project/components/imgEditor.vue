@@ -6,19 +6,17 @@
           <div class="imgFocus">
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
-                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>隐藏画布</span>
-                     <span @click="clearCanvas"><s class="iconfont icon-qingchu"></s>清空画布</span>
+                     <span @click="canvasHidden"><s class="iconfont icon-tuichu"></s>退出标注</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
                     <!-- 修改编辑层 -->
                     <div class="editSginDiv">
-                      <div class='editSignbox'>X</div>
                       <textarea id="sginText"></textarea>
-                      <div class="sginEditCommit">修改</div>
+                      <div class="signButton"><span class="sginEditCommit">修改</span><span class="editSignbox">取消</span></div>
                     </div>
                     <!-- 画布层 -->
-                    <canvas id="cav" width="1400" height="750">
+                    <canvas id="cav" width="1400" height="750" v-show="hiddenSign">
                       <span>浏览器不支持画布标注！o(╯□╰)o</span>
                     </canvas>
                     <!-- 控件层 -->
@@ -26,14 +24,13 @@
                     <!-- 图片层 -->
                     <img :src="url" class="ImgOnlod" id="oImg"/>                  
                 </div>
-                
           </div>
           <!-- 工具条 -->
           <div class="toolBar">
               <span :class="[canvasSign?'barLeft barselet':'barLeft']" @click="canvasHidden">
                   <Icon type="edit" class="add"></Icon>{{barText}}
               </span>
-              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清空画布</span>
+              <span class="clearCanvas" @click="clearCanvas" v-show="canvasSign"><s class="iconfont icon-qingchu"></s>清除标注</span>
               <span class="barRight">
                   <s><i class="iconfont icon-qimai-guanjiancizhishuduibi"></i>查看上次反馈</s>
                   <s @click="sginHidden"><i class="iconfont icon-yincang"></i>{{hiddenSignText}}</s>
@@ -65,9 +62,10 @@
 <script>
   var qs = require('querystring');
   import OnLoad from './onLoad.vue';
-  import {imgSign} from './imgEditorTwo/imgSign.js'
-  import {imgCanvas} from './imgEditorTwo/imgCanvas.js'
-  import {canvasControl} from './imgEditorTwo/imgControl.js'
+  import {imgSign} from './imgEditorTwo/imgSign.js';
+  import {imgCanvas} from './imgEditorTwo/imgCanvas.js';
+  import {canvasControl} from './imgEditorTwo/imgControl.js';
+  import {AutoResizeImage} from './imgEditorTwo/autoResizeImage.js';
   export default {
     components:{
       OnLoad:OnLoad
@@ -93,10 +91,10 @@
         fileID:0,
         stageID:0,
         AllowEdit:false,//是否允许标注
-        barText:'显示画布',
+        barText:'标注反馈',
         hiddenSign:true,
         canvasSign:false,
-        hiddenSignText:'隐藏标注'
+        hiddenSignText:'隐藏标记'
       }
     },
     filters:{
@@ -135,15 +133,15 @@
       },
     },
     methods:{
-      // 清除缓存
+      // clearSession
       clearSession(){
         sessionStorage.removeItem('ImgData');//存图片标注信息
         sessionStorage.removeItem('totalNum');//存图片放大缩小信息
       },
-      // 清除画布
+      // clearCanvas
       clearCanvas(){
         this.$Modal.confirm({
-            title: "清除画布",
+            title: "清除标注",
             content: "是否确定清除画布上面的内容,清除后将无法撤消！",
             onOk: () => {
               this.$Message.info('清除成功！└(^o^)┘');
@@ -151,25 +149,21 @@
             },
         });
       },
-      // 隐藏标注
+      // hideSgin
       canvasHidden(){
           let cav=document.getElementById("cav")
           if(this.canvasSign){
-            this.barText="显示画布";
+            this.barText="标注反馈";
             cav.style.zIndex="12";
             this.canvasSign=!this.canvasSign;
           }else{
-            this.barText="隐藏画布";
+            this.barText="退出标注";
             cav.style.zIndex="14";
             this.canvasSign=!this.canvasSign;
           }
       },
       sginHidden(){
         if(this.hiddenSign){
-          if($(".signIndex").length==0){
-             this.$Message.warning('你还没有标记,快去标记吧 !  O(∩_∩)O~')
-             return
-          }
            $(".signIndex").css("display","none");
            this.hiddenSign=!this.hiddenSign;
            this.hiddenSignText="显示标记"
@@ -180,7 +174,7 @@
         }
         
       },
-      //关闭窗口
+      //colseWindow
       InfoRefresh(){
          this.$bus.emit('InfoRefresh')
       },
@@ -196,20 +190,37 @@
           let el2=document.getElementById("onload");
           let sgin=document.getElementsByClassName("sginCanvas")[0];
           let controlDiv=document.getElementsByClassName("oControl")[0];
+          let imgFocus=document.getElementsByClassName("imgFocus")[0];
           el.onload=function(){
-              el2.style.display="none";
+               el2.style.display="none";
+               let maxH=parseInt(imgFocus.style.height)
+               let maxW=parseInt(imgFocus.style.width);
+              
+              //  autoZoom
+                if((el.height-maxH)>50){
+                 AutoResizeImage(0,maxH,el);
+               }else{
+                 AutoResizeImage(maxW,0,el);
+               }
+               if(el.width>maxW&&el.height<maxH){
+                 AutoResizeImage(maxW,0,el);
+               }
+
                let canvasW=el.width;
                let canvasH=el.height;
                let canID=document.getElementById("cav");
-
-              //  标记层
+              
+              //  sginDiv
                sgin.style.width=canvasW+"px";
                sgin.style.height=canvasH+"px";
+               sgin.style.marginTop=-(canvasH/2)+"px";
+               sgin.style.marginLeft=-(canvasW/2)+"px";
 
-              //  控制层
+              //  controlDiv
                controlDiv.style.width=canvasW+"px";
                controlDiv.style.height=canvasH+"px";
-              // 画布层
+
+              // canvasDiv
                canID.width=canvasW;
                canID.height=canvasH;
 
@@ -226,11 +237,12 @@
           $(".toolBar").css("margin-top",sh+5)//先注解
       },
       defue(){
-        // 标注
+        // sign
         imgSign(this.AllowEdit);
 
       },
-      //需要修改
+      
+      //edit
       commitEidt(type){
         let url=this.GLOBAL.baseRouter+'task/task/inside-audit';
         let Okparams={
@@ -302,7 +314,7 @@
         $.sign.loadingSign(this.data);
       },
       changeState(state){
-        //  控制图片是否可标注
+        //  controlImgSign
               if(state=='1'||state=='2'){
                   this.AllowEditRow=true;
                   this.SataeInfo=false;
@@ -316,14 +328,14 @@
               }
       },
       get(){
-          //  获取图片的标注信息
+          //  getImgSignInfo
            let TaskID=this.storeTaskID
            if(TaskID == 0 || TaskID === null )
            {
                return false;
            }
            let _this=this;
-           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+350;
+           let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
            _this.$axios.get(url).then(function(msg){
             let Sdate=msg.data;
             if(Sdate.err_code==0){

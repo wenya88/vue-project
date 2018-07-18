@@ -349,28 +349,28 @@
         },
   
     //  打开任务详情
-        taskDetaInfo(id,type,file,TaskID,item){
+    taskDetaInfo(id,type,file,TaskID,item){
 
-            /* let _this=this;
-             _this.isTabModal=true;
-             this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
-             this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
-            // 本地缓存信息
+       /* let _this=this;
+        _this.isTabModal=true;
+        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
+        this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
+        // 本地缓存信息
 
 //         sessionStorage.TaskID=TaskID;
 //         sessionStorage.FileURl=file;
 
-            this.$store.commit('changeComponentTaskID',TaskID);
-            this.$store.commit('changeComponentFileURl',file);
+        this.$store.commit('changeComponentTaskID',TaskID);
+        this.$store.commit('changeComponentFileURl',file);
 
-            // 是否显示编辑信息
-            //sessionStorage.AllowEdit=_this.AllowEdit;
-            this.setPrimaryMission(item);
-            this.setDetailAll(item);
+        // 是否显示编辑信息
+        //sessionStorage.AllowEdit=_this.AllowEdit;
+        this.setPrimaryMission(item);
+        this.setDetailAll(item);
 
-            this.setUserStatus('member')
-            this.$router.push({path:'/project/details'});
-        },
+        this.setUserStatus('member')
+        this.$router.push({path:'/project/details'});
+    },
     //   关闭Model
     closeTabmodal(){
         this.isTabModal=false;
@@ -416,6 +416,7 @@
           let _this=this;
           let url=this.GLOBAL.baseRouter+'task/task/page&run_uid='+_this.userID;
           _this.$axios.get(url).then((msg)=>{
+              console.log(7878,msg)
             // 获取总页数
               _this.maxPage=msg.data.page.count_page;
             // 获取数据

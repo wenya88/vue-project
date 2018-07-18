@@ -1,5 +1,5 @@
 <template>
-  <Content  @click.native="closeSetting"  :style="{minHeight: '280px', background: '#fff'}">
+  <Content    :style="{minHeight: '280px', background: '#fff'}">
      <Row>
       <Col span="6">
           <type-list ref="tree" :listData="formLeft" ></type-list>
@@ -34,9 +34,6 @@ export default {
   },
   mounted() {},
   methods:{
-      closeSetting(e) {
-          this.$refs.tree.closeSetting(e)
-      }
   }
 };
 </script>

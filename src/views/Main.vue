@@ -79,7 +79,7 @@
                     <span class="name">{{item.title}}</span>
                 </li>
             </ul>
-             <div class="single-page-con" :style="`width:${mainWidth}px`">
+             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
                     <router-view></router-view>
                 </div>

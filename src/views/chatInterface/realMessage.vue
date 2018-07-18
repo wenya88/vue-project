@@ -55,17 +55,19 @@ export default {
       const obj = e[lt]
       const list = this.headerList
       const headOne = list[0]
-      list.forEach((item, index) => {
-        const objName = `project_${item.id}`
-        if (objName === obj.group_id) {
-          if (index > 0) {
-            list.splice(index, 1)
-            list.splice(0, 1)
-            list.unshift(item)
-            list.unshift(headOne)
+      if (obj) {
+        list.forEach((item, index) => {
+          const objName = `project_${item.id}`
+          if (objName === obj.group_id) {
+            if (index > 0) {
+              list.splice(index, 1)
+              list.splice(0, 1)
+              list.unshift(item)
+              list.unshift(headOne)
+            }
           }
-        }
-      })
+        })
+      }
       this.$set(this, 'headerList', list)
     },
     // 界面初始话
@@ -131,7 +133,7 @@ export default {
       this.list = {
         id: `project_${item.id}`,
         absold: true
-      }
+      } 
       if (localStorage.nums) {
         const nums = JSON.parse(localStorage.nums)
         const numList = JSON.parse(localStorage.numList)
@@ -148,35 +150,16 @@ export default {
       var numList = {} // 定义一个对象
       var nums = {} // 定义一个对象储存
       const currentPoject = this.list.id // 获取当前显示的项目
-      // console.log('当前id', currentPoject)
       if (!localStorage.numList) { // 初始化,没有消息时
-        if (headerList.length !== 0) { // 项目不为空，才有意义
-          headerList.forEach(item => {
-            const projectName =  `project_${item.id}` // 获取项目id
-            list.forEach(elements => {
-              if (elements.group_id === projectName) { // 不在当前显示的，开始计数
-                if (!numList[projectName]) {
-                  numList[projectName] = 0
-                }
-                numList[projectName]+=1
-              }
-              if (elements.group_id === currentPoject) {
-                if (!nums[group_id]) {
-                  nums[group_id] = 0
-                }
-              } else {
-                if (!nums[group_id]) {
-                  nums[group_id] = 0
-                }
-                nums[group_id]+= 1
-              }
-            })
+          // console.log('初始未读', nums, numList)
+          headerList.forEach(items => {
+            const projectName = `project_${items.id}`
+            numList[projectName] = 0
           })
           localStorage.numList = JSON.stringify(numList) // 储每个项目消息总数
-          this.nums = nums
-          localStorage.nums = JSON.stringify(nums) // 储存未显示消息
-          this.$store.state.nums = nums
-        }
+          this.nums = numList
+          localStorage.nums = JSON.stringify(numList) // 储存未显示消息
+          this.$store.state.nums = numList
       } else {
         // const numForm = {}
         const numberList = JSON.parse(localStorage.numList) // 获取上次储存的每个项目消息
@@ -192,28 +175,26 @@ export default {
             }
           })
         })
-        // console.log('帅', numList)
-        for (let i in numList) { // 循环现在消息总数
-          for (let k in numberList) { // 获取上一个消息总数
-            if (i === k) {
-              if (currentPoject === i) {
-                numed[i] = 0
-              } else {
-                 const numbers = Number(numList[i]) - Number(numberList[k])
-                 if (numbers!==0) {
-                   numed[i]+=numbers
-                 }
+          for (let i in numList) { // 循环现在消息总数
+            for (let k in numberList) { // 获取上一个消息总数
+              if (i === k) {
+                if (currentPoject === i) {
+                  console.log('当前id', numed)
+                  numed[i] = 0
+                } else {
+                  const numbers = Number(numList[i]) - Number(numberList[k])
+                  console.log('不是当前id', numed, numbers)
+                  if (numbers!==0) {
+                      numed[i]+=numbers
+                  }
+                }
               }
             }
           }
-        }
-        this.$nextTick(() => {
-          // console.log('项目', numed)
           this.nums = numed
           localStorage.nums = JSON.stringify(numed)
           this.$store.state.nums = numed
-        })
-        localStorage.numList = JSON.stringify(numList)
+          localStorage.numList = JSON.stringify(numList)
       }
     }
   }

@@ -172,6 +172,7 @@ export default {
     geMsg () {
       this.isShow = true
       this.allNum = 0
+      this.isMsg = false
     },
     getReal (index) {
       const elements = document.getElementsByClassName('header_project')
