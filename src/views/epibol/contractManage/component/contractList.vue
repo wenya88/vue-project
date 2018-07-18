@@ -43,20 +43,10 @@
                 </dl>
             </GeminiScrollbar>
         </div>
-        <Modal
-            v-model="addModal"
-            :title="modalTitle"
-            @on-ok="addOk"
-            :closable="false"
-            width='700'
-            @on-cancel="addCancel">
-            <contract-data ref="contractDataRef"></contract-data>
-        </Modal>
     </div>
 </template>
 <script>
 var qs=require('querystring');
-import contractData from './contractData';
 export default {
     data(){
         return{
@@ -64,9 +54,6 @@ export default {
              modalTitle:null,
              onContractData:Object
         }
-    },
-    components:{
-        contractData:contractData
     },
     props:{
         contData:{
@@ -115,16 +102,6 @@ export default {
                 })
             }
         },
-        // 取消
-        addCancel(){
-            this.$refs.contractDataRef.clearData();
-        },
-        // 编辑
-        editContract(item){
-            this.addModal=true;
-            this.modalTitle='编辑合同';
-            this.$refs.contractDataRef.editContractData(item)
-        },
         //删除
         deleteContract(id){
             if(window.confirm('是否确认删除?')){
@@ -142,8 +119,7 @@ export default {
         },
         // 新增合同
         newAddData(){
-            this.addModal=true;
-            this.modalTitle='新增合同';
+            this.$router.push('/epibol/contractData');
         },
         // 详情
         contDetails(id){
