@@ -82,19 +82,19 @@
                 <div style="flex: 12" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
                         <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
-                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.name}}</div>
-                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.name" class="title" type="text"/>
+                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
+                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
                             <ul class="stepsUl">
-                                <li class="stepsList" v-for="(list,i) in step.childrens" :key="i">
-                                    <Input v-model="list.value" placeholder="Enter something..."
+                                <li class="stepsList" v-for="(list,i) in step.required" :key="i">
+                                    <Input v-model="list.text" placeholder="Enter something..."
                                            style="width: 400px"></Input>
-                                    <Select v-model="list.normId" size="small" class="standard">
+                                    <Select v-model="list.norm" size="small" class="standard">
                                         <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
                                             {{ item.name }}
                                         </Option>
                                     </Select>
                                     <div class="priorityContainer">
-                                        <p class="priority"  :class="`priority${list.priority}`" >{{list.priority|priorityValue}}</p>
+                                        <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
                                         <div class="priorityList" >
                                             <p class="priority priority1" @click="editPriority('1',index,i)">高</p>
                                             <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
@@ -171,7 +171,7 @@
             </Button>
         </Form>
         <Col span="10">
-        <Button type="primary" style="float: right;width: 200px" @click="taskClassubmit">提交</Button>
+        <Button type="primary" style="float: right;width: 200px" @click="submitTaskClas">提交</Button>
         </Col>
     </Content>
 
@@ -192,6 +192,7 @@
         },
         data() {
             return {
+                newData:null,
                 review:'',
                 reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
                 fstandard: [],   // 流程规范
@@ -297,6 +298,9 @@
             this.$bus.on('typesDetail', (data) => {
                 this.newtaskTypesDetail(data);
             });
+            this.$bus.on('addType', (data) => {
+               this.addType(data);
+            });
         },
         methods: {
             //hover阶段，删除图标
@@ -312,11 +316,31 @@
                     el.style.display = "";
                 }
             },
+            submitTaskClas(){
+
+
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/add', qs.stringify({
+                    category_id:this.newData.company_id,
+                    name:this.typename.typename,
+                    stage:JSON.stringify(this.fstandard),
+                }))
+                    .then(res => {
+                        if (res.data.err_code === 0) {
+//                            this.$Message.success("编辑类型成功！");
+                            //this.initPage();
+
+                        } else {
+                            this.$Message.error(res.data.err_message);
+                        }
+                    })
+                    .catch(error => {
+                        this.$Message.error("加载失败，请重试！");
+                    });
+            },
             //提交任务类别库表单
             taskClassubmit: function () {
                 let csbObj = {};
                 //类型属性
-
                 csbObj.id = this.clsId;
                 csbObj.category_id = this.category_id ? this.category_id : 0;
                 csbObj.name = this.listN;
@@ -411,8 +435,13 @@
                 } else {
                     aSp.current += 1;
                     this.fstandard.push({
-                        name:'新建阶段',
-                        childrens:[{value:'',priority:'1'}],
+                        stage_name:'新建阶段',
+                        required: [
+                            {
+                                text: "",
+                                level: "1",
+                                norm: ""
+                            }],
                         show:false,
                         flowTIlteShow:false,
                     });
@@ -638,43 +667,44 @@
                         }
                     })
             },
-            newtaskTypesDetail({id,rank}){
-              if(rank === 2){
-                     this.fileShow = false;
-                     this.fileAddName = '';
-                     this.fileAddMain = '';
-                     this.OtherfileShow = false;
-                     this.OtherfileName = '';
-                     this.OtherfileMain = '';
-                  this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-types-detail', qs.stringify({tid:id}))
-                      .then(({data})=>{
-                          if(data.err_code === 0){
-                              this.typename = data.data.name;
-                              this.tstandard = data.data.tstandard;
-                              this.pstandard = data.data.pstandard;
-                              if(Array.isArray(data.data.fstandard) && data.data){
-                                  data.data.fstandard.map((item)=>{
-                                      item.show = false;
-                                      item.flowTIlteShow = false;
-                                  })
-                              }
-                              this.fstandard = data.data.fstandard;
+            newtaskTypesDetail(data) {
+                if (data.rank === 1) {
 
-                          }else{
-                              this.$Message.error(data.err_message);
-                          }
-                      })
-              }
+                } else if (data.rank === 2) {
+                    this.fileShow = false;
+                    this.fileAddName = '';
+                    this.fileAddMain = '';
+                    this.OtherfileShow = false;
+                    this.OtherfileName = '';
+                    this.OtherfileMain = '';
+                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info', qs.stringify({id: id}))
+                        .then(({data}) => {
+                            if (data.err_code === 0) {
+                                this.typename = data.data.name;
+                                this.tstandard = data.data.tstandard;
+                                this.pstandard = data.data.pstandard;
+                                if (Array.isArray(data.data.fstandard) && data.data) {
+                                    data.data.fstandard.map((item) => {
+                                        item.show = false;
+                                        item.flowTIlteShow = false;
+                                    })
+                                }
+                                this.fstandard = data.data.fstandard;
+
+                            } else {
+                                this.$Message.error(data.err_message);
+                            }
+                        })
+                }
 
             },
             editPriority(type,index,i){
-                if(index === 0 || index){
-                  this.fstandard[index].childrens[i].priority = type
-              }
-              else{
-                  this.stepInfoList.priority = type
-              }
-
+                if (index === 0 || index) {
+                    this.fstandard[index].required[i].level = type
+                }
+                else {
+                    this.stepInfoList.level = type
+                }
             },
             delFlowNorm(index,i){
                 this.fstandard[index].childrens.splice(i,1);
@@ -687,7 +717,11 @@
                     });
                     this.fstandard[index].show = !this.fstandard[index].show
                 }
-           }
+           },
+            addType(data){
+                this.newData = data ;
+
+            }
         },
         filters:{
             priorityValue(value){

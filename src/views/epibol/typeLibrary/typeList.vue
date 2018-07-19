@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
         <!--复制-->
         <Modal
@@ -152,11 +152,11 @@
                                 data.data.map((item) => {
                                     item.btnShow = false;    // 右侧菜单
                                     item.rank = rank;
-                                    if(item.cate_id === '1'){
+                                    if (item.cate_id === '1') {
                                         item.status = 0      // 系统默认
                                     }
                                     if (item.children) {
-                                        arrData(item.children, rank+1, item.status)
+                                        arrData(item.children, rank + 1, item.status)
                                     }
 
                                 });
@@ -254,8 +254,8 @@
                     iconFile = true
                 }
                 // 右侧菜单
-                if(data.status !== 0){
-                     menu =    h('section', {
+                if (data.status !== 0) {
+                    menu = h('section', {
                         props: {
                             type: 'ios-more'
                         },
@@ -334,25 +334,11 @@
                             textTitle
                         ])
                     ]),
-                 menu
+                    menu
                 ]);
             },
             /* 添加 */
             append(data, type) {
-                /*const children = data.children || [];
-                let name = data.rank === 1 ? '新建文件' : '新建文件夹';
-                let rank = null;
-                if (!type) {
-                    rank = data.rank + 1
-                }
-                let obj = {
-                    name: name,
-                    btnShow: false,
-                    status: type ? 1 : data.status,
-                    rank: rank
-                };
-                children.push(obj);
-                this.$set(data, 'children', children);*/
 
                 /* 新增分类*/
                 if (type === 'all') {
@@ -364,10 +350,26 @@
                             if (data.err_code === 0) {
                                 this.init();
                                 this.$Message.success(data.err_message);
-                            }else{
+                            } else {
                                 this.$Message.error(data.err_message);
                             }
                         })
+                } else if (data.rank === 0) {
+                    console.log(2,data)
+                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                        name: '新建文件夹',
+                        parent_id: data.cate_id
+                    }))
+                        .then(({data}) => {
+                            if (data.err_code === 0) {
+                                this.init();
+                                this.$Message.success(data.err_message);
+                            } else {
+                                this.$Message.error(data.err_message);
+                            }
+                        })
+                }else{
+                    this.$bus.emit('addType', data);
                 }
             },
 
@@ -391,7 +393,6 @@
             },
             /*点击进入详情*/
             goTaskList(data) {
-
                 this.$bus.emit('typesDetail', data);
             },
             /*打开右边菜单*/
@@ -436,7 +437,10 @@
             },
             /*更改名字*/
             selecText() {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-update', qs.stringify({id:  this.changName.id,name:this.changName.value}))
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-update', qs.stringify({
+                    id: this.changName.id,
+                    name: this.changName.value
+                }))
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.init();
@@ -466,15 +470,16 @@
     }
 </script>
 <style lang="less">
-    .treeMapWindow{
-        .ivu-modal-header{
+    .treeMapWindow {
+        .ivu-modal-header {
             border-bottom: 1px solid transparent !important;
             border: 1px solid transparent !important;
         }
-        .ivu-modal-footer{
-            border-top:1px solid transparent !important;
+        .ivu-modal-footer {
+            border-top: 1px solid transparent !important;
         }
     }
+
     .treeMapContainer {
         .ivu-tree-children {
             p {
