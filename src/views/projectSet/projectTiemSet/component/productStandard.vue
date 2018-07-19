@@ -16,14 +16,18 @@
                         </span>
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
-                                <p>系统默认(12)</p>
-                                <p>系统默认(12)</p>
-                                <p>系统默认(12)</p>
+                                <p v-for="(item,index) in specification" :key="index"
+                                   @click="selecSpecification(item.children)">{{item.name}}({{item.children.length}})</p>
                             </div>
-                            <dl v-for="(item,index) in typeList" :key="index">
+                            <dl v-for="(item,i) in StandardizeSec" :key="i">
                                 <dt>{{item.name}}</dt>
-                                <ul class="typsList">
-                                    <li class="typs" v-for="(children,index) in item.children">{{children}}</li>
+                                <ul class="typeList">
+                                    <li class="type" :class="index === btnSign[0] && i === btnSign[1]?'sign':''"
+                                        @click="greenSign(index,i)" v-for="(children,index) in item.children">
+                                        <span>{{children.name}}</span>
+                                        <Icon v-if="index === btnSign[0] && i === btnSign[1]" type="checkmark-circled"
+                                              style="padding-left: 5px;color: #00d900;"></Icon>
+                                    </li>
                                 </ul>
                             </dl>
                         </DropdownMenu>
@@ -113,17 +117,14 @@
         created() {
         },
         mounted() {
+            this.menuInit();
         },
         data() {
             return {
-                typeList: [
-                    {
-                        name: '3D模型', children: ['3d', '2d', '场景']
-                    },
-                    {
-                        name: '2D模型', children: ['任务', '地编', '绘画']
-                    }
-                ],
+                btnSign:[0,0],
+                specification:[],
+                StandardizeSec:[],
+                typeList: [],
                 typeMenu: false,
                 tabsColor: 0,
                 typeTabs: [
@@ -141,6 +142,25 @@
             }
         },
         methods: {
+            menuInit(){
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
+                    .then(res => {
+                        if (res.data.err_code === 0) {
+                            this.specification = res.data.data;
+                            if( res.data.data){
+                                res.data.data.map((item) => {
+                                    this.typeList .push(item.children)
+                                })
+                            }
+                            this.StandardizeSec = res.data.data[0].children
+                        } else {
+                            this.$Message.error(res.data.err_message);
+                        }
+                    })
+            },
+            selecSpecification(data){
+                this.StandardizeSec = data;
+            },
             /*内容规范的增删修改*/
             addContentat() {
             },
@@ -159,6 +179,9 @@
             },
             handleClose() {
                 this.visible = false;
+            },
+            greenSign(index,i){
+                this.btnSign =[index,i]
             }
         },
         computed: {},
@@ -170,6 +193,8 @@
 
 <style lang="less" scoped>
     @green: #31bb9f;
+    @btn :#b8f1c6;
+    @bor:#009900;
     .projectSpeContainer {
         .tabHead {
             display: flex;
@@ -209,9 +234,11 @@
                     color: #6b6b6b;
                     p {
                         min-width: 100px;
+                        text-align: center;
                         word-break: keep-all;
                         white-space: nowrap;
                         margin: 0 6px;
+                        cursor: pointer;
                     }
                 }
                 dt {
@@ -223,15 +250,25 @@
                     font-weight: 600;
                     background: #e4e4e4;
                 }
-                .typsList {
+                .typeList {
                     display: flex;
                     padding-left: 20px;
                     margin: 14px 0 25px 0;
                     font-size: 14px;
                     cursor: pointer;
-                    .typs {
-                        flex: 1;
+                    .type {
+                        min-width:120px;
+                        height: 30px;
+                        padding:  0 4px;
+                        margin-left: 15px;
+                        text-align: center;
+                        line-height: 30px;
                         color: #6b6b6b;
+                    }
+                    .sign{
+                        background: @btn;
+                        border: 1px solid @bor;
+                        border-radius: 8px;
                     }
                 }
 

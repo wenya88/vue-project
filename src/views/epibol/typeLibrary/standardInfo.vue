@@ -82,7 +82,6 @@
                 <div style="flex: 12" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
                         <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
-                            <!--<Input v-model="step.stage_name" class="title" type="text" :title="step.stage_name"></Input>-->
                             <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.name}}</div>
                             <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.name" class="title" type="text"/>
                             <ul class="stepsUl">
@@ -104,8 +103,8 @@
                                     </div>
                                     <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
                                 </li>
-                                <Select  multiple style="position:absolute;top:-20px;left:454px;width:163px;">
-                                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                <Select  v-model="review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
+                                    <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
                                 </Select>
                             </ul>
                             <!--流程info增加-->
@@ -193,7 +192,8 @@
         },
         data() {
             return {
-                cityList:[],
+                review:'',
+                reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
                 tstandard: [],   // 文件规范
