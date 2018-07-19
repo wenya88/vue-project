@@ -37,7 +37,7 @@
                                 <InputNumber :min="1" v-model="item.count" style="width:100px"></InputNumber>
                             </span>
                             <span class="span bigFont">
-                                ￥ {{item.unitprice*item.count}}
+                                ￥ {{(item.unitprice*item.count).toFixed(2)}}
                             </span>
                             <span><Icon type="trash-a" class="deletPrice" @click.native="deletPrice(index)"></Icon></span>
                             <div class="clear"></div>
@@ -47,7 +47,7 @@
                             <span class="span">&nbsp;</span>
                             <span class="span">&nbsp;</span>
                             <span class="span">合同文件数量： <em class="bigFont">{{fileCount}}</em></span>
-                            <span class="span">合同总额： <em class="bigFont">￥ {{priceNum*fileCount}}</em></span>
+                            <span class="span">合同总额： <em class="bigFont">￥ {{(priceNum).toFixed(2)}}</em></span>
                             <div class="clear"></div>
                         </li>
                     </div>
@@ -97,6 +97,7 @@
             </div>
         </div>
     </div>
+  
 </template>
 <script>
 export default {
@@ -159,7 +160,16 @@ export default {
         },
         // deletePrice
         deletPrice(index){
-            this.priceData.splice(index,1);
+            if(this.priceData.length>1){
+                this.priceData.splice(index,1);
+            }else{
+                this.priceData.splice(index,1,{
+                key:'',
+                finish_date:'',
+                unitprice:null,
+                count:1,
+            });
+            }
         },
         // addPay
         addPay(){
@@ -172,20 +182,31 @@ export default {
         },
         // deletePay
         deletPay(index){
-            this.contractPayDate.splice(index,1)
+            if(this.contractPayDate.length>1){
+                this.contractPayDate.splice(index,1)
+            }else{
+                this.contractPayDate.splice(index,1,{
+                key:'',
+                num:'',
+                amount:'',
+            })
+            }
         },
         // priceChange
         priceChange(){
             let sum=0;
             let amsum=0;
+            let jsum=0;
+            let jamsum=0;
             for(let i=0;i<this.priceData.length;i++){
                 if(this.priceData.length==1){
                     sum=this.priceData[i].count;
-                    amsum=Number(this.priceData[i].unitprice);
+                    amsum=Number(this.priceData[i].unitprice)*sum;
                 }else{
-                    sum+=this.priceData[i].count;
-                    amsum+=Number(this.priceData[i].unitprice);
+                     sum+=this.priceData[i].count;
+                     amsum+=Number(this.priceData[i].unitprice)*this.priceData[i].count;
                 }
+                
             }
             this.fileCount=sum;
             this.priceNum=amsum;

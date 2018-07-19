@@ -9,13 +9,15 @@
         </div>
         <!-- ContractComponent -->
         <keep-alive>
-            <basic-info v-if="nIndex==1"></basic-info>
-            <contract-cost v-if="nIndex==0"></contract-cost>
+            <basic-info v-if="nIndex==0"></basic-info>
+            <contract-cost v-if="nIndex==1"></contract-cost>
+            <confir-contract v-if="nIndex==2"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
         <div class="nextRow">
             <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
             <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
+            <Button type="warning" v-show="contrateCommit&&nIndex==2">保存合同</Button>
         </div>
         <!-- stop -->
     </div>
@@ -24,6 +26,7 @@
 var qs=require('querystring');
 import basicInfo from './contractData/basicInfo';
 import contractCost from './contractData/contractCost';
+import confirContract from './contractData/confirContract';
 export default {
     data(){
         return{
@@ -34,7 +37,13 @@ export default {
     },
     components:{
         basicInfo:basicInfo,
-        contractCost:contractCost
+        contractCost:contractCost,
+        confirContract:confirContract
+    },
+    computed:{
+        contrateCommit(){
+            return this.$store.state.paySkip.contrateCommit;
+        }
     },
     mounted(){
         this.$bus.on('addContractData',(val)=>{
