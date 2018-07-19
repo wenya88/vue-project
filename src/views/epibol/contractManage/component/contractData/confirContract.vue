@@ -31,6 +31,8 @@
                             <em>限JPG,PNG,PDF格式</em>
                         </p>
                     </div>
+                     <!-- 上传组件 -->
+                    <contract-upload></contract-upload>
                 </div>
                 <!-- 在线合同 -->
                 <div class="lineContract">
@@ -47,6 +49,7 @@
     </div>
 </template>
 <script>
+import contractUpload from './contractUpload';
 export default {
     data(){
         return{
@@ -63,6 +66,9 @@ export default {
                 }
             ]
         }
+    },
+    components:{
+        contractUpload:contractUpload
     },
     mounted(){
         this.autoHeight();
