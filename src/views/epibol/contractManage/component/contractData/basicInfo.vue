@@ -83,7 +83,6 @@ export default {
             oneAccess:'',//对接人
             contact:'',//联系方式
             lineFlag:false,
-            Cid:null,
         }
     },
     computed:{
@@ -107,10 +106,7 @@ export default {
         },
         //  发送数据
         updataContract(){
-            let obj=[{
-                id:this.Cid,
-                company_id:1,
-                create_user:sessionStorage.userId,
+            let obj={
                 project_id:this.myProject,
                 contract_name:this.contractName,
                 customer_id:this.companyAID,
@@ -120,7 +116,7 @@ export default {
                 manager:this.projectUser,
                 start_time:this.contractStartTime,
                 end_time:this.contractEndTime
-            }]
+            }
             this.$bus.emit('addContractData',obj)
         },
         // 改天时间

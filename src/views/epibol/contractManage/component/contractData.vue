@@ -17,7 +17,8 @@
         <div class="nextRow">
             <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
             <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
-            <Button type="warning" v-show="contrateCommit&&nIndex==2">保存合同</Button>
+            <Button type="warning" v-show="nIndex==1" @click="commitContract">保存合同</Button>
+            <!-- <Button type="warning" v-show="contrateCommit&&nIndex==2" @click="commitContract">保存合同</Button> -->
         </div>
         <!-- stop -->
     </div>
@@ -30,7 +31,8 @@ import confirContract from './contractData/confirContract';
 export default {
     data(){
         return{
-            newData:[],
+            newData:{},//basicInfo
+            newCost:{},//contractCost
             nIndex:0,
             componentId:'basic-info'
         }
@@ -49,13 +51,35 @@ export default {
         this.$bus.on('addContractData',(val)=>{
             this.newData=val;
         })
+        this.$bus.on("addContractCost",(val)=>{
+            this.newCost=val;
+        })
     },
     methods:{
+        commitContract(){
+            let url=this.GLOBAL.baseRouter+"task/company/add-contract";
+           
+            let parms={
+                id:this.Cid,
+                company_id:1,
+                create_user:sessionStorage.userId,
+                basic_list:JSON.stringify(this.newData),
+                price_list:JSON.stringify(this.newCost.price_list),
+                step_list:JSON.stringify(this.newCost.step_list)
+            }
+            if(this.Cid==null){
+                delete parms.id
+            }
+            this.$axios.post(url,qs.stringify(parms)).then(msg=>{
+                console.log(msg)
+            })
+        },
         // next
         nextStep(){
             if(this.nIndex>=0&&this.nIndex<2){
                 this.nIndex++;
             }
+            // temporary
         },
         // last
         lastStep(){

@@ -1,7 +1,7 @@
 <template>
   <div id="contraniner">
      <span :id="ids" @click="getClick"></span>
-  </div>
+  </div> 
 </template>
 <script>
 import plupload from 'plupload/js/plupload.min.js'

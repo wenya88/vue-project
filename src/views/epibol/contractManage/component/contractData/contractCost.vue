@@ -136,6 +136,17 @@ export default {
         this.autoHeight();
     },
     methods:{
+        updateCost(){
+            let constArr=
+                {
+                    "price_list":[],
+                    "step_list":[]
+                }
+            
+            constArr.price_list=this.priceData;
+            constArr.step_list=this.contractPayDate;
+            this.$bus.emit('addContractCost',constArr);
+        },
         // autoH
         autoHeight(){
             $(".newContractData .autoHeight").height($(window).height()-250)
@@ -214,6 +225,7 @@ export default {
     },
     updated(){
         this.priceChange();
+        this.updateCost();
     }
 }
 </script>

@@ -7,7 +7,7 @@ const paystatus={
         enterContractFlag:false,
         // fileUpload:"http://59.111.95.148/index.php?r=file/file/file-upload"
         fileUpload:"http://192.168.2.19/index.php?r=file/file/file-upload",
-        contrateCommit:false
+        contrateCommit:false,
     },
     mutations:{
         actionPaySkip(state,pData){

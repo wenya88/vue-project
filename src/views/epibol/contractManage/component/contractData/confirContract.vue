@@ -3,17 +3,20 @@
         <div class="confirContract">
             <!-- 合同预览 -->
             <div v-if="contrateCommit" class="lookContract">
-                <div class="contractIndex">
-                    <span v-for="(item,index) in filesList" :key="item.name" :class="{selet:index==Cindex}" @click="contractImg(index,item.url)">
-                            <img :src="item.url" :title="item.name">
-                            第{{index+1}}页
-                    </span>
+                <div v-if="filesList.length!=0">
+                    <div class="contractIndex">
+                        <span v-for="(item,index) in filesList" :key="item.name" :class="{selet:index==Cindex}" @click="contractImg(index,item.url)">
+                                <img :src="item.url" :title="item.name">
+                                第{{index+1}}页
+                        </span>
+                    </div>
+                    <div class="contract">
+                        <div class="restContractStyle" @click="restContract"><Icon type="arrow-return-left" size="16"></Icon> 重选合同类型</div>
+                        <img :src="imgUrl">
+                    </div>
+                    <div class="clear"></div>
                 </div>
-                <div class="contract">
-                    <div class="restContractStyle" @click="restContract"><Icon type="arrow-return-left" size="16"></Icon> 重选合同类型</div>
-                    <img :src="imgUrl">
-                </div>
-                <div class="clear"></div>
+                <div v-else>暂无图片</div>
             </div>
 
             <!-- 合同上传 -->
@@ -24,15 +27,15 @@
                         <em class="iconfont icon-hetong"></em>签定线下合同
                         <p>如双方已已签定纸质合同，请上传合同</p>
                     </div>
-                    <div class="offineUpLoad" @click="uploadContractFile">
+                    <div class="offineUpLoad" @click="uploadContractFile" id="selectfiles">
                         <Icon type="android-upload" size="45"></Icon>
                         <p>
                             点击上传合同扫描件<br/>
                             <em>限JPG,PNG,PDF格式</em>
                         </p>
                     </div>
-                     <!-- 上传组件 -->
-                    <contract-upload></contract-upload>
+                    <!-- 上传钩子 -->
+                    <div id="contractUpLoadButton" @click="getOssData"></div> 
                 </div>
                 <!-- 在线合同 -->
                 <div class="lineContract">
@@ -49,30 +52,20 @@
     </div>
 </template>
 <script>
-import contractUpload from './contractUpload';
+import {fileUpload} from '../contractUpload.js';
+var qs=require('querystring');
 export default {
     data(){
         return{
             imgUrl:'',
             Cindex:0,
-            filesList:[
-                {   
-                    url:'http://e.hiphotos.baidu.com/image/pic/item/8c1001e93901213fe4c06e3958e736d12e2e9567.jpg',
-                    name:'美女1号'
-                },
-                {
-                    url:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532589805&di=c8ffe778d37a7d64006538e7bb5bb6e5&imgtype=jpg&er=1&src=http%3A%2F%2Fs7.sinaimg.cn%2Fmw690%2F006LDoUHzy7auXtxWOG16%26amp%3B690',
-                    name:'我的小可爱啊'
-                }
-            ]
+            filesList:[]
         }
-    },
-    components:{
-        contractUpload:contractUpload
     },
     mounted(){
         this.autoHeight();
         this.getContractFile();
+        fileUpload();
     },
     computed:{
         contrateCommit(){
@@ -80,6 +73,11 @@ export default {
         },
     },
     methods:{
+        getOssData(){
+            this.$axios.post(this.GLOBAL.baseRouter+"file/oss/oss",qs.stringify({"type":"upload"})).then((msg)=>{
+                 fileUpload(msg.data);
+            })
+        },
         // autoH
         autoHeight(){
             $(".newContractData>.confirContract,.newContractData .confirContract .offlineContract,.newContractData>.confirContract .lineContract").height($(window).height()-252);
@@ -93,7 +91,6 @@ export default {
             // this.$nextTick(()=>{
             //     this.contractRow();
             // })
-
         },
         // changeImg
         contractImg(index,url){
@@ -102,7 +99,9 @@ export default {
         },
         // defultImg
         getContractFile(){
-            this.imgUrl=this.filesList[0].url;
+            if(this.filesList.length!=0){
+                this.imgUrl=this.filesList[0].url;
+            }
         },
         // restContract
         restContract(){
