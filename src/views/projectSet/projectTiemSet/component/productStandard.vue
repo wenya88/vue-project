@@ -36,7 +36,7 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info>
+        <standard-info :project="true">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="item.config" class="fileAttr">

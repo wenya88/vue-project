@@ -51,7 +51,10 @@
                     })
                 };
                 arrData(this.treeMap[0].children);
-            }
+            };
+            this.$bus.on('treeUpdate', (data) => {
+                this.init();
+            });
         },
         data() {
             return {
@@ -59,11 +62,12 @@
                 copy: {
                     show: false,
                     id: '',
-                    newId: '123',
+                    newId: '',
                 },
                 del: {
                     show: false,
                     id: '',
+                    data:'',
                 },
                 changName: {
                     show: false,
@@ -140,6 +144,10 @@
                                     item.rank = rank;
                                     item.btnShow = false;
                                     item.editText = false;
+                                    if(item.tasktype){
+                                        item.children = item.tasktype
+                                        item.isTasktype = true;
+                                    }
                                     if (item.status !== 0 && item.rank === 1) {
                                         this.folder.push(JSON.parse(JSON.stringify(item)))
                                     }
@@ -231,7 +239,10 @@
                         }
                     )
                 }
-
+                //不需要修改按钮的
+                if(data.rank === 2){
+                    button = ''
+                }
                 // 需要文件夹按钮的
                 if (data.rank === 0 || data.rank === 1) {
                     folderButton = h('div', {
@@ -393,6 +404,7 @@
             },
             /*点击进入详情*/
             goTaskList(data) {
+                console.log('info',data)
                 this.$bus.emit('typesDetail', data);
             },
             /*打开右边菜单*/
@@ -415,11 +427,19 @@
             delButton(root, node, data) {
                 this.del.show = true;
                 this.del.id = data.cate_id;
+                this.del.data =data
             },
             /*删除*/
             remove() {
+                let url = 'task/task-type/cate-delete';
+                let obj = {id: this.del.id}
+                //类型删除
+                if(this.del.data.rank === 2){
+                    url = 'task/task-type/delete';
+                    obj = {id: this.del.data.id}
+                }
                 /*分类 删除*/
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-delete', qs.stringify({id: this.del.id}))
+                this.$axios.post(this.GLOBAL.baseRouter + url, qs.stringify(obj))
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.init();
