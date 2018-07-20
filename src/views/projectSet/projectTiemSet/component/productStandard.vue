@@ -23,10 +23,11 @@
                                 <dt>{{item.name}}</dt>
                                 <ul class="typeList">
                                     <li class="type" :class="index === btnSign[0] && i === btnSign[1]?'sign':''"
-                                        @click="greenSign(index,i)" v-for="(children,index) in item.children">
-                                        <span>{{children.name}}</span>
+                                        @click="greenSign(index,i,item)" v-for="(children,index) in item.children">
+                                        <img v-if="children.icon_url" width="16" height="16" :src="children.icon_url" alt=""  :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}"  >
+                                        <span>{{children.tasktype_name}}</span>
                                         <Icon v-if="index === btnSign[0] && i === btnSign[1]" type="checkmark-circled"
-                                              style="padding-left: 5px;color: #00d900;"></Icon>
+                                              style="padding-left: 5px;color: #00d900;line-height: 30px;"></Icon>
                                     </li>
                                 </ul>
                             </dl>
@@ -39,69 +40,69 @@
         <standard-info :project="true">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
-                <Row v-for="(item,index) in attrContent" :key="item.config" class="fileAttr">
+                <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
                     <Col span="5">
-                    <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
-                    <Icon @click.native="removeContentat(index)" type="trash-b" class="delIcon"></Icon>
+                    <Icon @click.native="removeAttrContent(index)" type="trash-b" class="delIcon"></Icon>
                 </Row>
-                <template v-if="content.show" :style='{margin:"10px 0"}'>
+                <template v-if="attrContentW.show" :style='{margin:"10px 0"}'>
                     <Col span="5">
-                    <AutoComplete v-model="content.name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="attrContentW.name" placeholder="额外属性名称" clearable>
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="content.main" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="attrContentW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
-                    <Button type="text" @click="addContentat()">确认</Button>
-                    <Button type="text" @click="closeContentat()">取消</Button>
+                    <Button type="text" @click="addAttrContent()">确认</Button>
+                    <Button type="text" @click="closeattrContent()">取消</Button>
                 </template>
 
-                <Button v-if="!content.show" icon="plus-round" type="dashed" long @click="contentListAdd"
+                <Button v-if="!attrContentW.show" icon="plus-round" type="dashed" long @click.native="attrContentW.show=!attrContentW.show"
                         style="width:718px">
                     增加内容规范
                 </Button>
 
                 <h4 :style="{paddingBottom:'10px'}">规格规范</h4>
-                <Row v-for="(item,index) in attrContent" :key="item.config" class="fileAttr">
+                <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
                     <Col span="5">
-                    <AutoComplete v-model="item.config_name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
-                    <Icon @click.native="removeContentat(index)" type="trash-b" class="delIcon"></Icon>
+                    <Icon @click.native="removeRuleList(index)" type="trash-b" class="delIcon"></Icon>
                 </Row>
-                <template v-if="content.show" :style='{margin:"10px 0"}'>
+                <template v-if="ruleListW.show" :style='{margin:"10px 0"}'>
                     <Col span="5">
-                    <AutoComplete v-model="content.name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="ruleListW.name" placeholder="额外属性名称" clearable>
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="content.main" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="ruleListW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
-                    <Button type="text" @click="addContentat()">确认</Button>
-                    <Button type="text" @click="closeContentat()">取消</Button>
+                    <Button type="text" @click="addruleList()">确认</Button>
+                    <Button type="text" @click="closeruleList()">取消</Button>
                 </template>
 
-                <Button v-if="!content.show" icon="plus-round" type="dashed" long @click="contentListAdd"
+                <Button v-if="!ruleListW.show" icon="plus-round" type="dashed" long @click="ruleListW.show=!ruleListW.show"
                         style="width:718px">
                     增加制作规范
                 </Button>
@@ -111,6 +112,7 @@
 </template>
 
 <script>
+    import qs from 'querystring'
     import standardInfo from '@/views/epibol/typeLibrary/standardInfo.vue'
 
     export default {
@@ -118,9 +120,13 @@
         },
         mounted() {
             this.menuInit();
+            this.listInit()
+            /*接口要修改*/
+            this.projectTasktype();
         },
         data() {
             return {
+                project_id:sessionStorage.getItem('projectID'),
                 btnSign:[0,0],
                 specification:[],
                 StandardizeSec:[],
@@ -133,12 +139,18 @@
                     {name: '地编', id: 3},
                     {name: '场景', id: 4},
                 ],
-                content: {
+                attrContentW: {
                     show: false,
                     name: '',
                     main: '',
                 },
-                attrContent: [{config_name: "", value: ""}],
+                ruleListW: {
+                    show: false,
+                    name: '',
+                    main: '',
+                },
+                attrContent: [{name: "", values: "",type:'connect'}],
+                ruleList: [{name: "", values: "",type:'hand'}],
             }
         },
         methods: {
@@ -146,27 +158,109 @@
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
                     .then(res => {
                         if (res.data.err_code === 0) {
-                            this.specification = res.data.data;
-                            if( res.data.data){
-                                res.data.data.map((item) => {
-                                    this.typeList .push(item.children)
-                                })
-                            }
+                            this.forTreeData(res.data.data)
+                            this.specification = res.data.data
+//                            if( res.data.data){
+//                                res.data.data.map( (item) => {
+//                                    this.typeList .push(item.children)
+//                                })
+//                            }
                             this.StandardizeSec = res.data.data[0].children
                         } else {
                             this.$Message.error(res.data.err_message);
                         }
                     })
             },
+            forTreeData(tree){
+                let arrData = (data) => {
+                    data.map((item) => {
+                        if(item.tasktype&&item.tasktype.length>0){
+                            item.children = item.tasktype
+                        }
+                        item.btnShow = false;
+                        if (item.children) {
+                            arrData(item.children)
+                        }
+                    });
+                    return data
+                };
+                return arrData(tree)
+
+            },
+            listInit(){
+                /*接口要修改*/
+              /*  this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list')
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });*/
+            },
+            projectTasktype(){
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info',qs.stringify({id:402}))
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.attrContent = data.data.standard.filter((item) => {
+                            return item.type === 'connect'
+                            });
+                            this.ruleList = data.data.standard.filter((item) => {
+                                return item.type === 'hand'
+                            });
+
+                            this.$bus.emit('projectInfo',data.data);
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });
+            },
             selecSpecification(data){
                 this.StandardizeSec = data;
             },
+            addAttrContent(){
+                this.attrContent.push({name: this.attrContentW.name, values: this.attrContentW.values,type:'connect'});
+              this.attrContentW =  {
+                  show: false,
+                  name: '',
+                  main: '',
+              }
+            },
+            closeattrContent(){
+                this.attrContentW =  {
+                    show: false,
+                    name: '',
+                    main: '',
+                }
+            },
+            addruleList(){
+                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values,type:'hand'});
+              this.ruleListW =  {
+                  show: false,
+                  name: '',
+                  main: '',
+              }
+            },
+            closeruleList(){
+                this.ruleListW =  {
+                    show: false,
+                    name: '',
+                    main: '',
+                }
+            },
+            removeAttrContent(index){
+                this.attrContent.splice(index, 1);
+            },
+            removeRuleList(index){
+                this.ruleList.splice(index, 1);
+            }
+            ,
             /*内容规范的增删修改*/
             addContentat() {
             },
             closeContentat() {
             },
             contentListAdd() {
+
             },
             removeContentat() {
             },
@@ -180,8 +274,21 @@
             handleClose() {
                 this.visible = false;
             },
-            greenSign(index,i){
-                this.btnSign =[index,i]
+            greenSign(index,i,children){
+                this.btnSign =[index,i];
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/add',qs.stringify({project_id:this.project_id,tasktype_id:children.cate_id}))
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            console.log(11,data)
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });
+
+            },
+            clearData(){
+                this.ruleList = [{name: "", values: "",type:'hand'}];
+                this.attrContent = [{name: "", values: "",type:'connect'}];
             }
         },
         computed: {},
@@ -191,7 +298,7 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
     @green: #31bb9f;
     @btn :#b8f1c6;
     @bor:#009900;
@@ -222,6 +329,9 @@
                     position: absolute;
                     top: 18px;
                     right: 30px;
+                    .ivu-dropdown ,.ivu-select-dropdown{
+                        top:0 !important;
+                    }
                 }
                 .typeMenu {
                     color: @green;
@@ -257,18 +367,27 @@
                     font-size: 14px;
                     cursor: pointer;
                     .type {
+                        display: flex;
                         min-width:120px;
                         height: 30px;
-                        padding:  0 4px;
+                        padding:  0 4px 0 16px;
                         margin-left: 15px;
                         text-align: center;
                         line-height: 30px;
                         color: #6b6b6b;
+                        overflow: hidden;
+                        img{
+                            margin:29px 4px 0 0;
+                        }
+
                     }
                     .sign{
                         background: @btn;
                         border: 1px solid @bor;
                         border-radius: 8px;
+                        img{
+                            margin:27px 4px 0 0;
+                        }
                     }
                 }
 

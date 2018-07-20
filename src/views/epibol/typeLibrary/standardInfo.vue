@@ -208,7 +208,7 @@
                 isSubmit:false,// 提交按钮
                 updateId :null, // 更新
                 newData:null, // 添加
-                review:'',
+                review:[],
                 reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
@@ -224,8 +224,8 @@
                 modal1: false,
                 identification: {
                     iconBorder: null,
-                    iconColor: null,
-                    icon: null,
+                    iconColor: null,    // 颜色
+                    icon: null,         // url路径
                     color: null,
                 },
                 TaskIdentity: [],
@@ -316,6 +316,17 @@
             this.$bus.on('addType', (data) => {
                this.addType(data);
             });
+            this.$bus.on('projectInfo', (data) => {
+                this.review = [];
+                if(data.stage.is_inside_audit == 1){
+                    this.review.push(1)
+                }
+                if(data.stage.is_client_audit == 1){
+                    this.review.push(0)
+                }
+                this.addInfo(data)
+            });
+
         },
         methods: {
             getNormslist(){
@@ -385,7 +396,9 @@
                         category_id:this.newData.cate_id,
                         name:this.typename.typename,
                         stage:JSON.stringify(this.fstandard),
-                        standard : JSON.stringify(this.tstandard.concat(this.pstandard))
+                        standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                        icon:this.identification.iconBorder,
+                        color:this.identification.iconColor,
                     };
                 } else if(this.updateId !== null){
                     /*修改*/
@@ -394,7 +407,9 @@
                         id:this.updateId,
                         name:this.typename.typename,
                         stage:JSON.stringify(this.fstandard),
-                        standard : JSON.stringify(this.tstandard.concat(this.pstandard))
+                        standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                        icon:this.identification.iconBorder,
+                        color:this.identification.iconColor,
                     }
                 }
                 this.$axios.post(this.GLOBAL.baseRouter + url, qs.stringify(obj))
@@ -746,9 +761,10 @@
             },
 
             newtaskTypesDetail(data) {
-                this.isSubmit = data.status === 0 || data === 'default'? false :true;
+                console.log(11,data)
                 // 进入详情
                 if (data.rank === 2 || data === 'default') {
+                    this.isSubmit = data.status === 0 || data === 'default'? false :true;
                     let obj = {id:data.id};
                     this.clearInfo();
                     // 获取更新id
@@ -761,21 +777,7 @@
                     this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info', qs.stringify(obj))
                         .then(({data}) => {
                             if (data.err_code === 0) {
-                                this.typename.typename = data.tasktype_name;
-                                this.tstandard = data.standard.filter((item) => {
-                                return item.type === 'file'
-                                });
-                                this.pstandard = data.standard.filter((item) => {
-                                    return item.type === 'progress'
-                                }); // 制作规范
-
-                                if (Array.isArray(data.stage) && data.data) {
-                                    data.stage.map((item) => {
-                                        item.show = false;
-                                        item.flowTIlteShow = false;
-                                    })
-                                }
-                                this.fstandard = data.stage;
+                                this.addInfo(data)
 
                             } else {
                                 this.$Message.error(data.err_message);
@@ -783,6 +785,26 @@
                         });
                 }
 
+            },
+            addInfo(data){
+                this.typename.typename = data.tasktype_name;
+                this.tstandard = data.standard.filter((item) => {
+                    return item.type === 'file'
+                });
+                this.pstandard = data.standard.filter((item) => {
+                    return item.type === 'progress'
+                }); // 制作规范
+
+                if (Array.isArray(data.stage) && data.data) {
+                    data.stage.map((item) => {
+                        item.show = false;
+                        item.flowTIlteShow = false;
+                    })
+                }
+                this.fstandard = data.stage;
+
+                this.identification.icon = data.icon_url;
+                this.identification.iconColor = data.color;
             },
             editPriority(type,index,i){
                 if (index === 0 || index) {
@@ -820,7 +842,8 @@
                 this.fstandard= [];   // 流程规范
                 this.pstandard= [];   // 制作规范
                 this.tstandard= [];   // 文件规范
-                this.typename = {typename:'', icon:'', color:'',}
+                this.typename = {typename:'', icon:'', color:''};
+                this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
             }
         },
         filters:{

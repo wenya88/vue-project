@@ -264,6 +264,9 @@ export default {
 </script>
 <style lang="less">
 @import "./main.less";
+.main-header-avator{
+    z-index: 2;
+}
 .layout-logo {
     width: 100px;
     height: 30px;
