@@ -34,9 +34,18 @@
                     </Layout>
                 </Layout>
             </TabPane>
-            <!-- <TabPane label="权限设置">
-
-            </TabPane> -->
+            <TabPane label="权限设置">
+                <Layout>
+                    <Sider>
+                        
+                    </Sider>
+                    <Layout>
+                        <Content>
+                            
+                        </Content>
+                    </Layout>
+                </Layout>
+            </TabPane> 
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
