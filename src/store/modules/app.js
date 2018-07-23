@@ -14,10 +14,10 @@ const app = {
         menuTheme: 'dark', // 主题
         themeColor: '',
         messageCount: 0,
-        fileUrl:[],
+        fileUrl: [],
     },
     mutations: {
-        updateMenulist (state) {
+        updateMenulist(state) {
             let accessCode = parseInt(Cookies.get('post_id'));
             let menuList = [];
             // menu.forEach((item, index) => {
@@ -30,28 +30,28 @@ const app = {
             //             menuList.push(item);
             //         }
             //     } else {
-                    menuList.push(item);
-                // }
-            });
+            //         menuList.push(item);
+            // }
+            //},
             state.menuList = menuList;
         },
-        changeMenuTheme (state, theme) {
+        changeMenuTheme(state, theme) {
             state.menuTheme = theme;
         },
-        changeMainTheme (state, mainTheme) {
+        changeMainTheme(state, mainTheme) {
             state.themeColor = mainTheme;
         },
-        setMessageCount (state, count) {
+        setMessageCount(state, count) {
             state.messageCount = count;
         },
-        setfileUrl(state,data){
+        setfileUrl(state, data) {
             state.fileUrl.push(data);
         },
-        clearfileUrl(state){
+        clearfileUrl(state) {
             state.fileUrl = [];
             console.log()
         },
     }
-};
 
+}
 export default app;
