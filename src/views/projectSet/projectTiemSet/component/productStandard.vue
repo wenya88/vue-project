@@ -3,8 +3,9 @@
         <!--tab头部-->
         <section class="tabHead">
             <ul class="typeTabsContainer">
-                <li class="typeTab" v-for="(item,index) in typeTabs" @click="tabsHandle(index)"
-                    :class="{'tabGreen':index === tabsColor}" :key="index">{{item.name}}
+                <li class="typeTab" v-for="(item,index) in typeTabs" @click.stop="projectTasktype(item,index)"
+                    :class="{'tabGreen':index === tabsColor}" :key="index">{{item.tasktype_name}}
+                    <i @click.stop="closeType(item)" class="closeSign">X</i>
                 </li>
             </ul>
             <div class="addType">
@@ -17,14 +18,18 @@
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
                                 <p v-for="(item,index) in specification" :key="index"
-                                   @click="selecSpecification(item.children)">{{item.name}}({{item.children.length}})</p>
+                                   @click="selecSpecification(item.children)">
+                                    {{item.name}}({{item.children.length}})</p>
                             </div>
                             <dl v-for="(item,i) in StandardizeSec" :key="i">
                                 <dt>{{item.name}}</dt>
+                                <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
-                                    <li class="type" :class="index === btnSign[0] && i === btnSign[1]?'sign':''"
-                                        @click="greenSign(index,i,item)" v-for="(children,index) in item.children">
-                                        <img v-if="children.icon_url" width="16" height="16" :src="children.icon_url" alt=""  :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}"  >
+                                    <li class="type" :class="children.border?'sign':''"
+                                        @click="greenSign(index,i,children)" v-for="(children,index) in item.children">
+                                        <img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"
+                                             alt=""
+                                             :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">
                                         <span>{{children.tasktype_name}}</span>
                                         <Icon v-if="index === btnSign[0] && i === btnSign[1]" type="checkmark-circled"
                                               style="padding-left: 5px;color: #00d900;line-height: 30px;"></Icon>
@@ -37,7 +42,7 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info :project="true">
+        <standard-info ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
@@ -68,7 +73,8 @@
                     <Button type="text" @click="closeattrContent()">取消</Button>
                 </template>
 
-                <Button v-if="!attrContentW.show" icon="plus-round" type="dashed" long @click.native="attrContentW.show=!attrContentW.show"
+                <Button v-if="!attrContentW.show" icon="plus-round" type="dashed" long
+                        @click.native="attrContentW.show=!attrContentW.show"
                         style="width:718px">
                     增加内容规范
                 </Button>
@@ -102,8 +108,8 @@
                     <Button type="text" @click="closeruleList()">取消</Button>
                 </template>
 
-                <Button v-if="!ruleListW.show" icon="plus-round" type="dashed" long @click="ruleListW.show=!ruleListW.show"
-                        style="width:718px">
+                <Button v-if="!ruleListW.show" icon="plus-round" type="dashed" long
+                        @click="ruleListW.show=!ruleListW.show" style="width:718px">
                     增加制作规范
                 </Button>
             </div>
@@ -120,25 +126,23 @@
         },
         mounted() {
             this.menuInit();
-            this.listInit()
-            /*接口要修改*/
-            this.projectTasktype();
+            this.listInit();
+
+            this.$nextTick(() => {
+                this.projectTasktype('init')
+            })
         },
         data() {
             return {
-                project_id:sessionStorage.getItem('projectID'),
-                btnSign:[0,0],
-                specification:[],
-                StandardizeSec:[],
+                tabsTypeId: null,
+                project_id: sessionStorage.getItem('projectID'),
+                btnSign: [0, 0],
+                specification: [],
+                StandardizeSec: [],
                 typeList: [],
                 typeMenu: false,
                 tabsColor: 0,
-                typeTabs: [
-                    {name: '原画', id: 1},
-                    {name: '科技', id: 2},
-                    {name: '地编', id: 3},
-                    {name: '场景', id: 4},
-                ],
+                typeTabs: [],
                 attrContentW: {
                     show: false,
                     name: '',
@@ -149,108 +153,143 @@
                     name: '',
                     main: '',
                 },
-                attrContent: [{name: "", values: "",type:'connect'}],
-                ruleList: [{name: "", values: "",type:'hand'}],
+                attrContent: [{name: "", values: "", type: 'connect'}],
+                ruleList: [{name: "", values: "", type: 'hand'}],
             }
         },
         methods: {
-            menuInit(){
+            /*右侧菜单*/
+            menuInit() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
                     .then(res => {
                         if (res.data.err_code === 0) {
-                            this.forTreeData(res.data.data)
-                            this.specification = res.data.data
-//                            if( res.data.data){
-//                                res.data.data.map( (item) => {
-//                                    this.typeList .push(item.children)
-//                                })
-//                            }
+                            this.forTreeData(res.data.data);
+                            this.specification = res.data.data;
+                            if( res.data.data){
+                                res.data.data.map( (item) => {
+                                    this.typeList .push(item.children)
+                                })
+                            }
                             this.StandardizeSec = res.data.data[0].children
                         } else {
                             this.$Message.error(res.data.err_message);
                         }
                     })
             },
-            forTreeData(tree){
-                let arrData = (data) => {
-                    data.map((item) => {
-                        if(item.tasktype&&item.tasktype.length>0){
-                            item.children = item.tasktype
-                        }
-                        item.btnShow = false;
-                        if (item.children) {
-                            arrData(item.children)
-                        }
-                    });
-                    return data
-                };
-                return arrData(tree)
+
+            /*递归遍历*/
+            forTreeData(tree) {
+                setTimeout(() => {
+                    let arrData = (data) => {
+                        data.map((item) => {
+                            item.btnShow = false;
+
+//                            this.typeTabs.map((tab,i) => {
+//                                if(item.id == tab.tasktype_id){
+//                                    item.border = true;
+//                                }
+//                            });
+                            if (item.tasktype && item.tasktype.length > 0) {
+                                item.children = item.tasktype;
+                            }
+
+                            if (item.children) {
+                                arrData(item.children)
+                            }
+                        });
+
+                        return data
+                    };
+                    return arrData(tree)
+                },500)
 
             },
-            listInit(){
+            /*查询列表*/
+            listInit() {
                 /*接口要修改*/
-              /*  this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list')
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list', qs.stringify({project_id: this.project_id}))
                     .then(({data}) => {
                         if (data.err_code === 0) {
+                            this.typeTabs = data.data
                         } else {
                             this.$Message.error(data.err_message);
                         }
-                    });*/
+                    });
             },
-            projectTasktype(){
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info',qs.stringify({id:402}))
+            /*查询详情*/
+            projectTasktype(item,index) {
+                this.clearData();
+                this.$refs.tree.clearInfo();
+                this.tabsColor = index;
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info', qs.stringify({id: item.id}))
                     .then(({data}) => {
                         if (data.err_code === 0) {
+                            this.tabsTypeId = data.data.id;
+                            console.log('iiiiid',this.tabsTypeId)
                             this.attrContent = data.data.standard.filter((item) => {
-                            return item.type === 'connect'
+                                return item.type === 'connect'
                             });
                             this.ruleList = data.data.standard.filter((item) => {
                                 return item.type === 'hand'
                             });
-
-                            this.$bus.emit('projectInfo',data.data);
+                            this.$bus.emit('projectInfo', data.data);
                         } else {
                             this.$Message.error(data.err_message);
                         }
                     });
             },
-            selecSpecification(data){
+            /*删除*/
+            closeType(item) {
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/delete', qs.stringify({id: item.id}))
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.listInit();
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });
+            },
+            selecSpecification(data) {
                 this.StandardizeSec = data;
             },
-            addAttrContent(){
-                this.attrContent.push({name: this.attrContentW.name, values: this.attrContentW.values,type:'connect'});
-              this.attrContentW =  {
-                  show: false,
-                  name: '',
-                  main: '',
-              }
-            },
-            closeattrContent(){
-                this.attrContentW =  {
+            addAttrContent() {
+                this.attrContent.push({
+                    name: this.attrContentW.name,
+                    values: this.attrContentW.values,
+                    type: 'connect'
+                });
+                this.attrContentW = {
                     show: false,
                     name: '',
                     main: '',
                 }
             },
-            addruleList(){
-                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values,type:'hand'});
-              this.ruleListW =  {
-                  show: false,
-                  name: '',
-                  main: '',
-              }
-            },
-            closeruleList(){
-                this.ruleListW =  {
+            closeattrContent() {
+                this.attrContentW = {
                     show: false,
                     name: '',
                     main: '',
                 }
             },
-            removeAttrContent(index){
+            addruleList() {
+                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'hand'});
+                this.ruleListW = {
+                    show: false,
+                    name: '',
+                    main: '',
+                }
+            },
+            closeruleList() {
+                this.ruleListW = {
+                    show: false,
+                    name: '',
+                    main: '',
+                }
+            },
+            removeAttrContent(index) {
                 this.attrContent.splice(index, 1);
             },
-            removeRuleList(index){
+            removeRuleList(index) {
                 this.ruleList.splice(index, 1);
             }
             ,
@@ -266,7 +305,7 @@
             },
             /*tab的切换*/
             tabsHandle(index) {
-                this.tabsColor = index;
+
             },
             handleOpen() {
                 this.visible = true;
@@ -274,22 +313,26 @@
             handleClose() {
                 this.visible = false;
             },
-            greenSign(index,i,children){
-                this.btnSign =[index,i];
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/add',qs.stringify({project_id:this.project_id,tasktype_id:children.cate_id}))
+            /*添加*/
+            greenSign(index, i, children) {
+                this.btnSign = [index, i];
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/add', qs.stringify({
+                    project_id: this.project_id,
+                    tasktype_id: children.id
+                }))
                     .then(({data}) => {
                         if (data.err_code === 0) {
-                            console.log(11,data)
+                            this.listInit()
                         } else {
                             this.$Message.error(data.err_message);
                         }
                     });
 
             },
-            clearData(){
-                this.ruleList = [{name: "", values: "",type:'hand'}];
-                this.attrContent = [{name: "", values: "",type:'connect'}];
-            }
+            clearData() {
+                this.ruleList = [{name: "", values: "", type: 'hand'}];
+                this.attrContent = [{name: "", values: "", type: 'connect'}];
+            },
         },
         computed: {},
         components: {
@@ -298,10 +341,10 @@
     }
 </script>
 
-<style lang="less" >
+<style lang="less">
     @green: #31bb9f;
-    @btn :#b8f1c6;
-    @bor:#009900;
+    @btn: #b8f1c6;
+    @bor: #009900;
     .projectSpeContainer {
         .tabHead {
             display: flex;
@@ -310,10 +353,31 @@
                 padding: 21px 0 0 21px;
                 background: #fff;
                 .typeTab {
+                    position: relative;
                     padding: 10px;
                     font-size: 16px;
                     border-bottom: 1px solid @green;
                     cursor: pointer;
+                    &:hover {
+                        .closeSign {
+                            opacity: 1;
+                        }
+                    }
+                    .closeSign {
+                        display: block;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 16px;
+                        height: 16px;
+                        text-align: center;
+                        line-height: 16px;
+                        font-size: 12px;
+                        color: #fff;
+                        background: red;
+                        border-radius: 50%;
+                        opacity: 0;
+                    }
                 }
                 .tabGreen {
                     border: 1px solid @green !important;
@@ -329,8 +393,8 @@
                     position: absolute;
                     top: 18px;
                     right: 30px;
-                    .ivu-dropdown ,.ivu-select-dropdown{
-                        top:0 !important;
+                    .ivu-dropdown, .ivu-select-dropdown {
+                        top: 0 !important;
                     }
                 }
                 .typeMenu {
@@ -368,25 +432,25 @@
                     cursor: pointer;
                     .type {
                         display: flex;
-                        min-width:120px;
+                        min-width: 120px;
                         height: 30px;
-                        padding:  0 4px 0 16px;
+                        padding: 0 4px 0 16px;
                         margin-left: 15px;
                         text-align: center;
                         line-height: 30px;
                         color: #6b6b6b;
                         overflow: hidden;
-                        img{
-                            margin:29px 4px 0 0;
+                        img {
+                            margin: 29px 4px 0 0;
                         }
 
                     }
-                    .sign{
+                    .sign {
                         background: @btn;
                         border: 1px solid @bor;
                         border-radius: 8px;
-                        img{
-                            margin:27px 4px 0 0;
+                        img {
+                            margin: 27px 4px 0 0;
                         }
                     }
                 }

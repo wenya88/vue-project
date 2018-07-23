@@ -30,11 +30,12 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
+
     </div>
 </template>
 <script>
     import qs from 'querystring'
-
+    import vUpload from '@/components/upload.vue'
     export default {
         mounted() {
             this.$nextTick(() => {
@@ -55,6 +56,8 @@
             this.$bus.on('treeUpdate', (data) => {
                 this.init();
             });
+
+
         },
         data() {
             return {
@@ -133,6 +136,7 @@
             }
         },
         methods: {
+
             init() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
                     .then(({data}) => {
@@ -486,6 +490,9 @@
                 this.copy.show = false;
             }
         },
+        components:{
+            vUpload
+        }
 
     }
 </script>

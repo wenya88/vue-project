@@ -67,16 +67,29 @@
             <!--规范增加-->
             <h4 :style="{paddingBottom:'10px'}">制作流程规范</h4>
             <Button type="primary" @click="modal1 = true">增加标签</Button>
+            <Button type="primary" @click="modal2 = true">删除标签</Button>
             <Modal
                     v-model="modal1"
                     title="增加标签"
+                    @on-ok="addNorms"
             >
                 <section>
                     <div style="margin-bottom: 5px">
-                        <span>规范标签&emsp;：&emsp;</span><Input v-model="normValue" placeholder="增加规范标签"
-                                                             style="width: 200px"></Input>
+                        <span>规范标签&emsp;：&emsp;</span>
+                        <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
                     </div>
                 </section>
+            </Modal>
+            <Modal
+                    v-model="modal2"
+                    title="删除标签"
+                    @on-ok="delNorms"
+            >
+                <Select v-model="delnormsValue" size="small" class="standard">
+                    <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                        {{ item.name }}
+                    </Option>
+                </Select>
             </Modal>
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
@@ -89,6 +102,7 @@
                             <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
                             <!---->
                             <ul class="stepsUl">
+
                                 <li class="stepsList" v-for="(list,i) in step.require" :key="i">
                                     <Input v-model="list.text" placeholder="Enter something..."
                                            style="width: 400px"></Input>
@@ -109,7 +123,7 @@
                                     <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
                                 </li>
                                 <!--审核选项-->
-                                <Select  v-if="project" v-model="review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
+                                <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
                                     <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
                                 </Select>
                             </ul>
@@ -177,7 +191,7 @@
             </Button>
         </Form>
         <Col span="10">
-        <Button v-if="isSubmit"  type="primary" style="float: right;width: 200px" @click="submitTaskClas">提交</Button>
+        <Button v-if="isSubmit||project"  type="primary" style="float: right;width: 200px" @click="submitTaskClas">提交</Button>
         <Button v-else  type="error" style="float: right;width: 200px" >系统默认无法修改</Button>
         </Col>
     </Content>
@@ -197,18 +211,26 @@
             Caspanel,
             Icon
         },
-        props:{
-            project:{
-                type:Boolean,
-                default:false,
+        props: {
+            project: {
+                type: Boolean,
+                default: false,
+            },
+            attrContent: {
+                type: Array
+            },
+            ruleList: {
+                type: Array
             }
         },
         data() {
             return {
+                normsValue:'',
+                delnormsValue:'',
                 isSubmit:false,// 提交按钮
                 updateId :null, // 更新
                 newData:null, // 添加
-                review:[],
+
                 reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
@@ -222,6 +244,7 @@
                 /*调试接口添加*/
                 norms:[],
                 modal1: false,
+                modal2: false,
                 identification: {
                     iconBorder: null,
                     iconColor: null,    // 颜色
@@ -317,14 +340,20 @@
                this.addType(data);
             });
             this.$bus.on('projectInfo', (data) => {
-                this.review = [];
-                if(data.stage.is_inside_audit == 1){
-                    this.review.push(1)
+                this.addInfo(data);
+                this.tabsTypeId = data.id;
+                if(data && data.stage){
+                    data.stage.map((item, index) => {
+                        this.fstandard[index].review = [];
+                        if (item.is_inside_audit == 1) {
+                            this.fstandard[index].review.push(1);
+                        }
+                        if (item.is_client_audit == 1) {
+                            this.fstandard[index].review.push(0);
+                        }
+                    });
                 }
-                if(data.stage.is_client_audit == 1){
-                    this.review.push(0)
-                }
-                this.addInfo(data)
+
             });
 
         },
@@ -333,7 +362,6 @@
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/norms')
                     .then(({data}) => {
                         if (data.err_code === 0) {
-
                             this.norms = data.data
                         } else {
                             this.$Message.error(data.err_message);
@@ -387,9 +415,51 @@
                 }
             },
             submitTaskClas(){
+                /*项目级*/
+                if(this.project){
+                    this.fstandard.map((item,index) => {
+
+                        if(item.review.indexOf(0) !== -1){
+                            this.fstandard[index].is_client_audit = 1
+                        }else{
+                            this.fstandard[index].is_client_audit = 0
+                        }
+                        if(item.review.indexOf(1) !== -1){
+                            this.fstandard[index].is_inside_audit = 1
+                        }else{
+                            this.fstandard[index].is_inside_audit = 0
+                        }
+
+                    });
+
+                    let obj = {
+                        id:this.tabsTypeId,
+                        name:this.typename.typename,
+                        stage:JSON.stringify(this.fstandard),
+                        standard : JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
+                        icon:this.identification.iconBorder,
+                        color:this.identification.iconColor,
+                    };
+                    this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/update', qs.stringify(obj))
+                        .then(res => {
+                            if (res.data.err_code === 0) {
+                                this.$Message.success("保存成功");
+                                this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                            } else {
+                                this.$Message.error(res.data.err_message);
+                            }
+                        })
+                        .catch(error => {
+                            this.$Message.error("加载失败，请重试！");
+                        });
+                    return false
+                }
+
+                /*公司级*/
                 let url = null;
                 let obj = null;
                 if(this.updateId === null){
+
                     /*新建*/
                     url = 'task/task-type/add';
                     obj = {
@@ -787,6 +857,7 @@
 
             },
             addInfo(data){
+
                 this.typename.typename = data.tasktype_name;
                 this.tstandard = data.standard.filter((item) => {
                     return item.type === 'file'
@@ -795,7 +866,7 @@
                     return item.type === 'progress'
                 }); // 制作规范
 
-                if (Array.isArray(data.stage) && data.data) {
+                if (Array.isArray(data.stage) && data) {
                     data.stage.map((item) => {
                         item.show = false;
                         item.flowTIlteShow = false;
@@ -844,6 +915,30 @@
                 this.tstandard= [];   // 文件规范
                 this.typename = {typename:'', icon:'', color:''};
                 this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
+            },
+            addNorms(){
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/add-norm', qs.stringify({name:this.normValue}))
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.modal1 = false;
+                            this.normValue = '';
+                            this.getNormslist()
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });
+            },
+            delNorms(){
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/delete-norm', qs.stringify({id:this.delnormsValue}))
+                    .then(({data}) => {
+                        if (data.err_code === 0) {
+                            this.modal2 = false;
+                            this.normValue = '';
+                            this.getNormslist()
+                        } else {
+                            this.$Message.error(data.err_message);
+                        }
+                    });
             }
         },
         filters:{

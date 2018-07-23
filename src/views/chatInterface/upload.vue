@@ -32,7 +32,7 @@ export default {
       this.$store.state.blob = false
     },
     getData () {
-      let url =  this.GLOBAL.baseRouter+"/file/oss/oss"
+      let url =  this.GLOBAL.baseRouter+"/file/oss/oss";
       const items = this.uploadObj
       this.$axios.post(url, qs.stringify(items)).then(data => {
         const obj = data.data
@@ -44,7 +44,7 @@ export default {
           'callback' : obj.callback,
           'signature': obj.signature,
  
-        }
+        };
         this.configure = {
           'url': obj.host,
           'multipart_params': configure
