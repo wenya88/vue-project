@@ -21,7 +21,6 @@ const app = {
             let accessCode = parseInt(Cookies.get('post_id'));
             let menuList = [];
             menu.forEach((item, index) => {
-<<<<<<< HEAD
             //     if (item.access) {
             //         if(accessCode == 3) {
             //             if(item.access == 3){
@@ -31,19 +30,8 @@ const app = {
             //             menuList.push(item);
             //         }
             //     } else {
-=======
-                if (item.access) {
-                    if (accessCode == 3) {
-                        if (item.access == 3) {
-                            menuList.push(item);
-                        }
-                    } else if (accessCode != 3 && item.access != 3) {
-                        menuList.push(item);
-                    }
-                } else {
->>>>>>> 970f11c4c8f157f3b4340886436964729febb445
                     menuList.push(item);
-                }
+                // }
             });
             state.menuList = menuList;
         },
