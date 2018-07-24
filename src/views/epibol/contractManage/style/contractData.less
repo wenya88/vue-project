@@ -149,7 +149,10 @@
         .offlineContract{
             float:left;width:50%;border-right:1px solid #e1e1e1;
             .offineUpLoad{
-                color:#a1a1a1;margin-top:30%;margin-left:35%;cursor:pointer;
+                color:#a1a1a1;margin-top:30%;margin-left:35%;cursor:pointer;background:red;
+                .offupLoad{
+                    position:absolute;width:230px;height:65px;display:inline-block;
+                }
                 &>.ivu-icon{
                     float:left;
                 }
@@ -181,25 +184,37 @@
         }
         .lookContract{
             .contractIndex{
-                width:130px;float:left;
-                padding:10px 0px;
+                width:150px;float:left;padding:10px 4px;overflow-y:auto;overflow-x:hidden;
                 span{
                     padding:2px;border:2px solid #ddd;display:inline-block;width:126px;text-align:center;margin-bottom:10px;
                     img{
                         width:100%;
                     }
+                    &:hover .delete{
+                        display:inline-block;
+                    }
                 }
                 .selet{
                     border:2px solid #09bb07;
                 }
+                .ageUpload{
+                    background:#f2f2f2;border-width:2px;border-color:#e4e4e4;border-style:solid;width:126px;height:163px;display:flex;justify-content:center;align-items:center;
+                    color:#aaa;cursor:pointer;transition:all 0.3s;
+                    &:hover{
+                        border-color:#50b595;color:#50b595;
+                    }
+                }
+                .delete{
+                   position:absolute;margin-left:92px;color:#fff;background:rgba(0, 0, 0, 0.3);padding:1px 4px;border-radius:2px;margin-top:3px;display:none;cursor:pointer;
+                }
             }
             .contract{
-                margin-left:140px;overflow-y:auto;
+                margin-left:160px;overflow-y:auto;
                 img{
-                    width:98%;display:block;margin:0 auto;
+                    max-width:98%;display:block;margin:0 auto;
                 }
                 .restContractStyle{
-                    position: absolute;z-index:11;left:50%;background:rgba(49, 189, 159, .5);color:#fff;padding:5px 20px;border-radius:0px 0px 4px 4px;cursor:pointer;
+                    background:rgba(49, 189, 159, .5);color:#fff;padding:5px 20px;cursor:pointer;width:140px;position: absolute;z-index:11;
                     &:hover{
                         background:rgba(49, 189, 159, .8);
                     }

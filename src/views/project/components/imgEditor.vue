@@ -197,7 +197,7 @@
                let maxW=parseInt(imgFocus.style.width);
               
               //  autoZoom
-                if((el.height-maxH)>50){
+               if((el.height-maxH)>50){
                  AutoResizeImage(0,maxH,el);
                }else{
                  AutoResizeImage(maxW,0,el);
