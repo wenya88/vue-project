@@ -31,11 +31,18 @@
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
 
+        <v-upload>
+            <template slot="upload">
+                <div id="browse">123</div>
+            </template>
+        </v-upload>
     </div>
 </template>
 <script>
     import qs from 'querystring'
     import vUpload from '@/components/upload.vue'
+    import api from 'api'
+
     export default {
         mounted() {
 
@@ -139,10 +146,10 @@
         },
         methods: {
 
-            init() {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
-                    .then(({data}) => {
+            async init() {
+               let {data} = await api.taskCateList();
                         if (data.err_code === 0) {
+                            /*递归遍历获得层级*/
                             let rank = 0;
                             const arrData = (data, rank, status) => {
                                 data.map((item) => {
@@ -176,11 +183,10 @@
                                 });
                             }
                             this.treeMap[0].children = data.data;
-                            console.log(1, this.treeMap[0].children)
                         } else {
                             this.$Message.error(data.err_message)
                         }
-                    })
+
             },
             renderContent(h, {root, node, data}) {
                 let folderButton = '';
@@ -355,39 +361,63 @@
                 ]);
             },
             /* 添加 */
-            append(data, type) {
-
-                /* 新增分类*/
+//            append(data, type) {
+//                /* 新增分类*/
+//                if (type === 'all') {
+//                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+//                        name: '新建文件夹',
+//                        company_id: this.company_id
+//                    }))
+//                        .then(({data}) => {
+//                            if (data.err_code === 0) {
+//                                this.init();
+//                                this.$Message.success(data.err_message);
+//                            } else {
+//                                this.$Message.error(data.err_message);
+//                            }
+//                        })
+//                } else if (data.rank === 0) {
+//                    console.log(2,data)
+//                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify())
+//                        .then(({data}) => {
+//                            if (data.err_code === 0) {
+//                                this.init();
+//                                this.$Message.success(data.err_message);
+//                            } else {
+//                                this.$Message.error(data.err_message);
+//                            }
+//                        })
+//                }else{
+//                    this.$bus.emit('addType', data);
+//                }
+//            },
+            async append(treeData,type) {
+                let obj = null;
+                /*添加分类*/
                 if (type === 'all') {
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                    obj = {
                         name: '新建文件夹',
                         company_id: this.company_id
-                    }))
-                        .then(({data}) => {
-                            if (data.err_code === 0) {
-                                this.init();
-                                this.$Message.success(data.err_message);
-                            } else {
-                                this.$Message.error(data.err_message);
-                            }
-                        })
-                } else if (data.rank === 0) {
-                    console.log(2,data)
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                    }
+                } else if (treeData.rank === 0) {
+                    /*添加类型*/
+                    obj = {
                         name: '新建文件夹',
                         parent_id: data.cate_id
-                    }))
-                        .then(({data}) => {
-                            if (data.err_code === 0) {
-                                this.init();
-                                this.$Message.success(data.err_message);
-                            } else {
-                                this.$Message.error(data.err_message);
-                            }
-                        })
+                    }
                 }else{
                     this.$bus.emit('addType', data);
+                    return false
                 }
+
+                let {data} = await api.taskCateAdd(obj);
+                if (data.err_code === 0) {
+                    this.init();
+                    this.$Message.success(data.err_message);
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+
             },
 
             /*异步*/
