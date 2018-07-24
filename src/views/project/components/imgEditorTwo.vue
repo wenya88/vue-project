@@ -6,15 +6,14 @@
           <div class="imgFocus">
                 <!-- 控制canvas -->
                 <div :class="[canvasSign?'controlCanvas showCanvas':'controlCanvas hideCanvas']">
-                     <span @click="canvasHidden"><s class="iconfont icon-yincang"></s>退出标注</span>
+                     <span @click="canvasHidden"><s class="iconfont icon-tuichu"></s>退出标注</span>
                 </div>
                 <!-- 标注层 -->
                 <div class="sginCanvas" id="signx">
                     <!-- 修改编辑层 -->
                     <div class="editSginDiv">
-                      <div class='editSignbox'>X</div>
                       <textarea id="sginText"></textarea>
-                      <div class="sginEditCommit">修改</div>
+                      <div class="signButton"><span class="sginEditCommit">修改</span><span class="editSignbox">取消</span></div>
                     </div>
                     <!-- 画布层 -->
                     <canvas id="cav" width="1400" height="750" v-show="hiddenSign">

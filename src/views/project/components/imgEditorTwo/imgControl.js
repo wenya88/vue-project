@@ -3,6 +3,7 @@ const canvasControl=()=>{
         let oCanvas=document.getElementById("cav");
         let oImg=document.getElementById("oImg");
         let controlDiv=document.getElementsByClassName("oControl")[0];
+
         let addEvent=(obj, sType, fn)=>{
                 if (obj.addEventListener) {
                     obj.addEventListener(sType, fn, false);
@@ -26,7 +27,6 @@ const canvasControl=()=>{
                 }
                 return oEvent;
             }
-        
             
         let addWheelEvent=(obj, callback)=>{
                 if (window.navigator.userAgent.toLowerCase().indexOf('firefox') != -1) {
@@ -43,6 +43,7 @@ const canvasControl=()=>{
         };
         let osi=0;
         addEvent(controlDiv, 'mousedown', function(ev) {
+            // 初始化坐标
             let osiTop=oSign.offsetTop;
             let osiLeft=oSign.offsetLeft;
             oSign.style.marginLeft="";
@@ -52,6 +53,7 @@ const canvasControl=()=>{
                 oSign.style.top=osiTop+"px";
                 osi++
             }
+            // 坐际赋值方法
             let oEvent = prEvent(ev);
             let oParent = oSign.parentNode;
             let disX = oEvent.clientX - oSign.offsetLeft;
@@ -74,6 +76,8 @@ const canvasControl=()=>{
                     return false;
                 }
             }; 
+
+            // 释放方法
             let endMove = function(ev) {
                 if (oParent.releaseCapture) {
                     oParent.releaseCapture();
@@ -86,9 +90,12 @@ const canvasControl=()=>{
             addEvent(oParent, 'mouseup', endMove);
             return false;
         });
-        let restrict=1.1;
+        
+        // 放大缩小方法
+        let restrict=1.1; 
         let totalNum=0;
         addWheelEvent(controlDiv, function(delta) {
+            // 初始化坐标
             let osiTop=oSign.offsetTop;
             let osiLeft=oSign.offsetLeft;
             oSign.style.marginLeft="";
@@ -98,40 +105,41 @@ const canvasControl=()=>{
                 oSign.style.top=osiTop+"px";
                 osi++
             }
+            // 坐标点
             let ratioL = (this.clientX - oSign.offsetLeft) / oSign.offsetWidth;
             let ratioT = (this.clientY - oSign.offsetTop) / oSign.offsetHeight;
             let sginDiv=document.getElementsByClassName('signIndex');
             // let ratioDelta = !delta ? 1 + 0.1 : 1 - 0.1;
             let w,h
             if(!delta){
+                // 放大
                 totalNum++
                 w = Math.round(oSign.offsetWidth * restrict);
                 h = Math.round(oSign.offsetHeight * restrict);
-                if(sginDiv.length>0){
+                if(sginDiv.length>0){//标记点放大
                     for(let i=0;i<sginDiv.length;i++){
                         sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)*restrict)+1+'px';
                         sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)*restrict)+3+'px';
                     }
                 }
             }else{
+                // 缩小
                 totalNum--
                 w = Math.round(oSign.offsetWidth / restrict);
                 h = Math.round(oSign.offsetHeight / restrict);
-                if(sginDiv.length>0){
+                if(sginDiv.length>0){//标记点缩小
                     for(let i=0;i<sginDiv.length;i++){
                         sginDiv[i].style.left=Math.round(parseInt(sginDiv[i].style.left)/restrict)-1+'px';
                         sginDiv[i].style.top=Math.round(parseInt(sginDiv[i].style.top)/restrict)-3+'px';
                     }
                 }
             }
+            // 缓存计数器
             sessionStorage.totalNum=totalNum;
-            // let w = Math.ceil(oSign.offsetWidth * ratioDelta);
-            // let h = Math.ceil(oSign.offsetHeight * ratioDelta);
             
             let l = Math.round(this.clientX - (w * ratioL));
             let t = Math.round(this.clientY - (h * ratioT));
            
-            // console.log("w:"+w,"h:"+h,"l:"+l,"t:"+t,"totalNum:"+totalNum);
             // imgChange
 
             oImg.style.width=w +'px';
