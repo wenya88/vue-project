@@ -5,7 +5,6 @@
             <p class="button">选择文件</p>
         </slot>
     </div>
-
 </template>
 
 <script>

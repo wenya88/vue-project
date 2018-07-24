@@ -103,6 +103,14 @@
                     </li>
                 </ul>
             </div>
+            
+            <!-- contractSchedle -->
+            <div class="contractSchedle">
+                <div class="Flex">
+                    1
+                </div>
+            </div>
+
             <div class="clear"></div>
     </div>
 </template>
@@ -173,7 +181,8 @@ export default {
         },
         // autoH
         autoHeight(){
-            $(".newContractData .autoHeight").height($(window).height()-250)
+            $(".newContractData .autoHeight").height($(window).height()-250);
+            $(".contractSchedle").height($(window).height()-290);
         },
         //  发送数据
         updataContract(){

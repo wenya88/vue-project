@@ -27,14 +27,15 @@
                         <em class="iconfont icon-hetong"></em>签定线下合同
                         <p>如双方已已签定纸质合同，请上传合同</p>
                     </div>
-                    <div class="offineUpLoad" @click="uploadContractFile">
+                    <div class="offineUpLoad">
+                        <file-upload></file-upload>
                         <Icon type="android-upload" size="45"></Icon>
                         <p>
                             点击上传合同扫描件<br/>
                             <em>限JPG,PNG,PDF格式</em>
                         </p>
                     </div>
-                    <!-- 上传钩子 -->
+                   
                 </div>
                 <!-- 在线合同 -->
                 <div class="lineContract">
@@ -51,6 +52,7 @@
     </div>
 </template>
 <script>
+import fileUpload from '../../../../../components/upload';
 var qs=require('querystring');
 export default {
     data(){
@@ -65,6 +67,9 @@ export default {
         this.autoHeight();
         this.getContractFile();
         this.uploadContractFile();
+    },
+    components:{
+        fileUpload:fileUpload
     },
     computed:{
         contrateCommit(){
