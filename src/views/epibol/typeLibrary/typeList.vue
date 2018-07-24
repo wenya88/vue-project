@@ -31,7 +31,7 @@
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
 
-        <v-upload>
+        <v-upload ref="c1">
             <template slot="upload">
                 <div id="browse">123</div>
             </template>

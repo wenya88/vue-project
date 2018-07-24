@@ -14,7 +14,7 @@ const app = {
         menuTheme: 'dark', // 主题
         themeColor: '',
         messageCount: 0,
-        fileUrl: [],
+        uploadFile: {},
     },
     mutations: {
         updateMenulist(state) {
@@ -45,13 +45,12 @@ const app = {
             state.messageCount = count;
         },
         setfileUrl(state, data) {
-            state.fileUrl.push(data);
+            state.uploadFile= data;
         },
         clearfileUrl(state) {
-            state.fileUrl = [];
-            console.log()
+            state.uploadFile = {};
         },
     }
 
-}
+};
 export default app;
