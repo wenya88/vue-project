@@ -31,11 +31,7 @@
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
 
-        <v-upload ref="c1">
-            <template slot="upload">
-                <div id="browse">123</div>
-            </template>
-        </v-upload>
+        <v-upload></v-upload>
     </div>
 </template>
 <script>
@@ -45,11 +41,7 @@
 
     export default {
         mounted() {
-
-
-            this.$nextTick(() => {
                 this.init();
-            });
             document.body.onclick = (e) => {
                 e.stopPropagation();
                 let arrData = (data) => {
@@ -70,6 +62,7 @@
         },
         data() {
             return {
+                idInit:null,
                 company_id: sessionStorage.getItem('userId'),
                 copy: {
                     show: false,
@@ -157,9 +150,17 @@
                                     item.rank = rank;
                                     item.btnShow = false;
                                     item.editText = false;
+
                                     if(item.tasktype){
-                                        item.children = item.tasktype
+                                        item.children = item.tasktype;
                                         item.isTasktype = true;
+                                        if(item.children){
+                                            item.children.map((children) => {
+                                            if(this.idInit === null){
+                                                this.idInit = children.id
+                                            }
+                                            })
+                                        }
                                     }
                                     if (item.status !== 0 && item.rank === 1) {
                                         this.folder.push(JSON.parse(JSON.stringify(item)))
