@@ -70,7 +70,6 @@ const canvasControl=()=>{
                 // divMove
                 oSign.style.left = l +'px';
                 oSign.style.top = t +'px';
-
     
                 oParent.onselectstart = function() {
                     return false;

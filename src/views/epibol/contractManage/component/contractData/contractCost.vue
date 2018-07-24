@@ -54,7 +54,6 @@
                 </ul>
             </div>
             <h1 style="margin-top:30px">合同付款</h1>
-            
             <div class="priceList contractPay">
                 <ul>
                     <li class="priceTile">
@@ -64,7 +63,7 @@
                         <div class="clear"></div>
                     </li>
                     <div v-if="lineFlag">
-                        <li v-for="(item,index) in payListData" :key="index">
+                        <li v-for="(item,index) in contractPayDate" :key="index">
                             <span class="span line">{{item.key}}</span>
                             <span class="span line">{{item.num}}</span>
                             <span class="span line bigFont">￥{{item.amount}}</span>
@@ -108,7 +107,6 @@ export default {
                     return date && date.valueOf() < Date.now() - 86400000;
                 }
             },
-            priceListData:[],
             priceData:[
                 {
                     key:'',
@@ -117,7 +115,6 @@ export default {
                     count:1,
                 }
             ],
-            payListData:[],
             contractPayDate:[
                 {
                     key:'',
@@ -128,14 +125,34 @@ export default {
             fileCount:1,
             priceNum:0,
             amount:0,
-            dateIndex:0,
-            lineFlag:false,
+            dateIndex:0
+        }
+    },
+    computed:{
+        lineFlag(){
+            return this.$store.state.paySkip.enterContractFlag;
+        }
+    },
+    props:{
+        contractCostData:{
+            type:Array
         }
     },
     mounted(){
         this.autoHeight();
+        this.editContractData();
     },
     methods:{
+        // editContract
+        editContractData(){
+            if(this.contractCostData.length>0){
+               this.priceData=this.contractCostData[0].price_list;
+               this.contractPayDate=this.contractCostData[0].step_list;
+               for(let i=0;i<this.priceData.length;i++){
+                   this.priceData[i].count=Number(this.priceData[i].count);
+               }
+            }
+        },
         updateCost(){
             let constArr=
                 {
@@ -211,10 +228,10 @@ export default {
             let jamsum=0;
             for(let i=0;i<this.priceData.length;i++){
                 if(this.priceData.length==1){
-                    sum=this.priceData[i].count;
+                    sum=Number(this.priceData[i].count);
                     amsum=Number(this.priceData[i].unitprice)*sum;
                 }else{
-                     sum+=this.priceData[i].count;
+                     sum+=Number(this.priceData[i].count);
                      amsum+=Number(this.priceData[i].unitprice)*this.priceData[i].count;
                 }
                 
