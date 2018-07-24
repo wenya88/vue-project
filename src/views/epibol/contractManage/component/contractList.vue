@@ -71,37 +71,6 @@ export default {
             $('.contractRow').height($(window).height()-170);
             this.$store.commit('changContractStatus',false);
         },
-        // 提交
-        addOk(){
-            let _this=this;
-            let url=_this.GLOBAL.baseRouter+'task/company/add-contract';
-            let editUrl=_this.GLOBAL.baseRouter+'task/company/edit-contract';
-            _this.$Loading.start();
-            if(_this.onContractData.id==null){
-                delete _this.onContractData.id;
-                _this.$axios.post(url,qs.stringify(_this.onContractData)).then(msg=>{
-                    _this.$Loading.finish();
-                    if(msg.data.err_code==0){
-                        _this.$Message.success(msg.data.err_message);
-                        _this.$bus.emit('addSuccess');
-                        _this.addCancel();
-                    }else if(msg.data.err_code>0){
-                        _this.$Message.error(msg.data.err_message)
-                    }
-                })
-            }else{
-                _this.$axios.post(editUrl,qs.stringify(_this.onContractData)).then(msg=>{
-                    _this.$Loading.finish();
-                    if(msg.data.err_code==0){
-                        _this.$Message.success('修改成功！');
-                        _this.$bus.emit('addSuccess');
-                        _this.addCancel();
-                    }else{
-                        _this.$Message.warning(msg.data.err_message)
-                    }
-                })
-            }
-        },
         //删除
         deleteContract(id){
             if(window.confirm('是否确认删除?')){
@@ -119,20 +88,23 @@ export default {
         },
         //编辑
         editContract(item){
-            this.$store.commit('getContractIDCommit',item);
+            this.$store.commit('getContractIDCommit',item);//传contrac_ID
             this.newAddData();
         },
         // 新增合同
         newAddData(){
-            this.$router.push('/epibol/contractData');
+            this.$router.push('/epibol/contractData');//路由切换
         },
         // 详情
         contDetails(item){
-            this.$store.commit('changContractStatus',true);
+            this.$store.commit('changContractStatus',true);//显示列表还是输入框
             this.$store.commit('getContractIDCommit',item);
             this.newAddData();
         }
         
+    },
+    destroyed(){
+        this.$store.commit('getContrateCommit',false);//销毁组件
     }
 
 }

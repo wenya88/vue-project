@@ -17,8 +17,7 @@
         <div class="nextRow">
             <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
             <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
-            <Button type="warning" v-show="nIndex==1" @click="commitContract">保存合同</Button>
-            <!-- <Button type="warning" v-show="contrateCommit&&nIndex==2" @click="commitContract">保存合同</Button> -->
+            <Button type="warning" v-show="contrateCommit&&nIndex==2" @click="commitContract">保存合同</Button>
         </div>
         <!-- stop -->
     </div>
@@ -33,6 +32,7 @@ export default {
         return{
             newData:{},//basicInfo
             newCost:{},//contractCost
+            newFileLoad:[],//contractFile
             nIndex:0,
             componentId:'basic-info',
             addInfo:'',
@@ -60,6 +60,9 @@ export default {
         this.$bus.on("addContractCost",(val)=>{
             this.newCost=val;
         });
+        this.$bus.on("ContractUploadFile",(val)=>{
+            this.newFileLoad=val;
+        })
         this.contractInfo();
     },
     methods:{
@@ -98,14 +101,12 @@ export default {
             let url;
             let parms={
                 contract_id:this.contractID,
-                // company_id:1,
-                // create_user:sessionStorage.userId,
                 basic_list:JSON.stringify(this.newData),
                 price_list:JSON.stringify(this.newCost.price_list),
                 step_list:JSON.stringify(this.newCost.step_list)
             }
             if(this.contractID==null){
-                delete parms.id
+                delete parms.contract_id
                 url=this.GLOBAL.baseRouter+"task/company/add-contract";
                 this.addInfo='添加成功!'
             }else{
