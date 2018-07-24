@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Tree class="treeMapContainer" :data="treeMap" :load-data="loadData" :render="renderContent"></Tree>
+        <Tree class="treeMapContainer" :data="treeMap"  :render="renderContent"></Tree>
         <!--复制-->
         <Modal
                 class="treeMapWindow"
@@ -30,16 +30,18 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
+        <v-upload></v-upload>
     </div>
 </template>
 <script>
+    import {mapState,mapMutations} from 'vuex'
     import qs from 'querystring'
+    import vUpload from '@/components/upload.vue'
+    import api from 'api'
 
     export default {
         mounted() {
-            this.$nextTick(() => {
                 this.init();
-            });
             document.body.onclick = (e) => {
                 e.stopPropagation();
                 let arrData = (data) => {
@@ -55,6 +57,8 @@
             this.$bus.on('treeUpdate', (data) => {
                 this.init();
             });
+
+
         },
         data() {
             return {
@@ -133,10 +137,11 @@
             }
         },
         methods: {
-            init() {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
-                    .then(({data}) => {
+            ...mapMutations(['setDefId']),
+            async init() {
+               let {data} = await api.taskCateList();
                         if (data.err_code === 0) {
+                            /*递归遍历获得层级*/
                             let rank = 0;
                             const arrData = (data, rank, status) => {
                                 data.map((item) => {
@@ -144,9 +149,17 @@
                                     item.rank = rank;
                                     item.btnShow = false;
                                     item.editText = false;
+
                                     if(item.tasktype){
-                                        item.children = item.tasktype
+                                        item.children = item.tasktype;
                                         item.isTasktype = true;
+                                        if(item.children){
+                                            item.children.map((children) => {
+                                            if(this.defId === null){
+                                                this.setDefId(children.id)
+                                            }
+                                            })
+                                        }
                                     }
                                     if (item.status !== 0 && item.rank === 1) {
                                         this.folder.push(JSON.parse(JSON.stringify(item)))
@@ -170,16 +183,16 @@
                                 });
                             }
                             this.treeMap[0].children = data.data;
-                            console.log(1, this.treeMap[0].children)
                         } else {
                             this.$Message.error(data.err_message)
                         }
-                    })
+
             },
             renderContent(h, {root, node, data}) {
                 let folderButton = '';
                 let iconFile = false;
                 let menu = '';
+
                 let button = h('div', {
                     style: {
                         fontSize: '12px',
@@ -349,62 +362,37 @@
                 ]);
             },
             /* 添加 */
-            append(data, type) {
-
-                /* 新增分类*/
+            async append(treeData,type) {
+                let obj = null;
+                /*添加分类*/
                 if (type === 'all') {
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                    obj = {
                         name: '新建文件夹',
                         company_id: this.company_id
-                    }))
-                        .then(({data}) => {
-                            if (data.err_code === 0) {
-                                this.init();
-                                this.$Message.success(data.err_message);
-                            } else {
-                                this.$Message.error(data.err_message);
-                            }
-                        })
-                } else if (data.rank === 0) {
-                    console.log(2,data)
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-add', qs.stringify({
+                    }
+                } else if (treeData.rank === 0) {
+                    /*添加类型*/
+                    obj = {
                         name: '新建文件夹',
-                        parent_id: data.cate_id
-                    }))
-                        .then(({data}) => {
-                            if (data.err_code === 0) {
-                                this.init();
-                                this.$Message.success(data.err_message);
-                            } else {
-                                this.$Message.error(data.err_message);
-                            }
-                        })
+                        parent_id: treeData.cate_id
+                    }
                 }else{
-                    this.$bus.emit('addType', data);
+                    this.$bus.emit('addType', treeData);
+                    return false
                 }
+
+                let {data} = await api.taskCateAdd(obj);
+                if (data.err_code === 0) {
+                    this.init();
+                    this.$Message.success(data.err_message);
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+
             },
 
-            /*异步*/
-            loadData(item, callback) {
-                setTimeout(() => {
-                    const data = [
-                        {
-                            title: 'children',
-                            loading: false,
-                            children: []
-                        },
-                        {
-                            title: 'children',
-                            loading: false,
-                            children: []
-                        }
-                    ];
-                    callback(data);
-                }, 1000);
-            },
             /*点击进入详情*/
             goTaskList(data) {
-                console.log('info',data)
                 this.$bus.emit('typesDetail', data);
             },
             /*打开右边菜单*/
@@ -456,18 +444,14 @@
                 this.changName.id = data.cate_id;
             },
             /*更改名字*/
-            selecText() {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-update', qs.stringify({
-                    id: this.changName.id,
-                    name: this.changName.value
-                }))
-                    .then(({data}) => {
-                        if (data.err_code === 0) {
-                            this.init();
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
-                    })
+            async selecText() {
+                let {data} = await api.taskCateUpdate({id: this.changName.id, name: this.changName.value})
+
+                if (data.err_code === 0) {
+                    this.init();
+                } else {
+                    this.$Message.error(data.err_message);
+                }
             },
             /*复制弹窗*/
             copyButton(data) {
@@ -486,6 +470,16 @@
                 this.copy.show = false;
             }
         },
+        computed:{
+            ...mapState({
+                defId(data){
+                    return data.typelib.defId
+                }
+            })
+        },
+        components:{
+            vUpload
+        }
 
     }
 </script>

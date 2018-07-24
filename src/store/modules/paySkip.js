@@ -8,6 +8,7 @@ const paystatus={
         // fileUpload:"http://59.111.95.148/index.php?r=file/file/file-upload"
         fileUpload:"http://192.168.2.19/index.php?r=file/file/file-upload",
         contrateCommit:false,
+        contractID:null
     },
     mutations:{
         actionPaySkip(state,pData){
@@ -24,6 +25,9 @@ const paystatus={
         },
         getContrateCommit(state,pData){
             state.contrateCommit=pData
+        },
+        getContractIDCommit(state,pData){
+            state.contractID=pData
         }
 
     }

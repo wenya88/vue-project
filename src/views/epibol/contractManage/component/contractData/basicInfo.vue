@@ -2,26 +2,72 @@
     <div class="newContractData autoHeight">
             <!-- basicInfo -->
             <div class="basicInfo">
-                <ul>
+                <ul v-show="lineFlag">
                     <li>合同关联项目</li>
-                    <li :class="{line:lineFlag}">
-                    <Select v-model="myProject" filterable>
-                                <Option v-for="item in projectPage" :value="item.id" :key="item.id">{{ item.name }}</Option>
-                    </Select>
+                    <li class="line" v-for="item in projectPage" v-if="item.id==myProject">
+                        {{item.id==myProject?item.name:''}}
                     </li>
                     <li>合同名称</li>
-                    <li :class="{line:lineFlag}">
-                        <Input v-model="contractName" placeholder="请输入合同名称"></Input>
+                    <li class="line">
+                        {{contractName}}
                     </li>
                     <li>合同时间</li>
-                    <li :class="{line:lineFlag}">
-                        <DatePicker :options="dateTime" type="datetimerange" format="yyyy-MM-dd" placeholder="请选择合同起始时间和结束时间" style="width: 500px" @on-change="changeDate"></DatePicker>
+                    <li class="line">
+                        {{contractTime[0]}}~{{contractTime[1]}}
                     </li>
                     <li>
                         <span class="span">商务代表</span><span class="span">项目负责人</span>
                         <div class="clear"></div>
                     </li>
-                    <li :class="{line:lineFlag}">
+                    <li class="line">
+                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==agentUser">
+                           {{item.user_id==agentUser?item.realname:''}}
+                        </span>
+                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==projectUser">
+                           {{item.user_id==projectUser?item.realname:''}}
+                        </span>
+                        <div class="clear"></div>
+                    </li>
+                    <li>甲方公司</li>
+                    <li class="line">
+                        {{companyA}}
+                    </li>
+                    <li>
+                        <span class="span">对接人</span><span class="span">联系方式</span>
+                        <div class="clear"></div>
+                    </li>
+                    <li class="line">
+                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==oneAccess">
+                            {{item.user_id==oneAccess?item.realname:''}}
+                        </span>
+                        <span class="span">
+                           {{contact}}
+                        </span>
+                        <div class="clear"></div>
+                    </li>
+                </ul>
+                <ul v-show="!lineFlag">
+                    <li>合同关联项目</li>
+                    <li>
+                    <Select v-model="myProject" filterable>
+                            <Option v-for="item in projectPage" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                    </Select>
+                    </li>
+                    <li>合同名称</li>
+                    <li>
+                        <Input v-model="contractName" placeholder="请输入合同名称"></Input>
+                    </li>
+                    <li>合同时间</li>
+                    <li>
+                        <DatePicker :options="dateTime" type="datetimerange" format="yyyy-MM-dd" placeholder="请选择合同起始时间和结束时间" style="width: 500px" @on-change="changeDate"
+                        :value="contractTime.length>0?contractTime:''"
+                        ></DatePicker>
+                    </li>
+                    <li>
+                        <span class="span">商务代表</span><span class="span">项目负责人</span>
+                        <div class="clear"></div>
+                    </li>
+                    <li>
                         <span class="span">
                             <Select v-model="agentUser" filterable>
                                 <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
@@ -35,7 +81,7 @@
                         <div class="clear"></div>
                     </li>
                     <li>甲方公司</li>
-                    <li :class="{line:lineFlag}">
+                    <li>
                         <Input v-model="companyA" @on-enter="companySearch" @on-blur="companySearch" placeholder="请输入完整的甲方公司名称">
                                 <Button slot="append" :icon="loadingStatus" @click.native="companySearch" :loading="loading"></Button>
                         </Input>
@@ -44,7 +90,7 @@
                         <span class="span">对接人</span><span class="span">联系方式</span>
                         <div class="clear"></div>
                     </li>
-                    <li :class="{line:lineFlag}">
+                    <li>
                         <span class="span">
                             <Select v-model="oneAccess" filterable>
                                 <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
@@ -57,6 +103,14 @@
                     </li>
                 </ul>
             </div>
+            
+            <!-- contractSchedle -->
+            <div class="contractSchedle">
+                <div class="Flex">
+                    1
+                </div>
+            </div>
+
             <div class="clear"></div>
     </div>
 </template>
@@ -82,7 +136,7 @@ export default {
             companyAID:'', //甲方公司ID
             oneAccess:'',//对接人
             contact:'',//联系方式
-            lineFlag:false,
+            contractTime:[],
         }
     },
     computed:{
@@ -91,18 +145,44 @@ export default {
         },
         projectUserData(){
             return this.$store.state.paySkip.userData;
+        },
+        lineFlag(){
+            return this.$store.state.paySkip.enterContractFlag;
         }
     },
     mounted(){
         this.autoHeight();
+        this.routerGet();
     },
     updated(){
         this.updataContract();
+       
     },
     methods:{
+        routerGet(){
+            if(this.projectPage.length==0&&this.projectUserData==0){
+                this.$router.push('/epibol/contractManage')
+            }
+        },
+        // editContract
+        editContract(data){
+            this.myProject=data.project_id.toString();
+            this.contractName=data.contract_name;
+            this.companyA=data.customer_name;
+            this.companyAID=data.customer_id;
+            this.oneAccess=data.customer_people;
+            this.contact=data.customer_phone;
+            this.agentUser=data.business_people.toString();
+            this.projectUser=data.manager.toString();
+            this.contractStartTime=data.start_time;
+            this.contractEndTime=data.end_time;
+            this.contractTime[0]=data.start_time;
+            this.contractTime[1]=data.end_time;
+        },
         // autoH
         autoHeight(){
-            $(".newContractData .autoHeight").height($(window).height()-250)
+            $(".newContractData .autoHeight").height($(window).height()-250);
+            $(".contractSchedle").height($(window).height()-290);
         },
         //  发送数据
         updataContract(){

@@ -9,8 +9,8 @@
         </div>
         <!-- ContractComponent -->
         <keep-alive>
-            <basic-info v-if="nIndex==0"></basic-info>
-            <contract-cost v-if="nIndex==1"></contract-cost>
+            <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
+            <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
             <confir-contract v-if="nIndex==2"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
@@ -34,7 +34,10 @@ export default {
             newData:{},//basicInfo
             newCost:{},//contractCost
             nIndex:0,
-            componentId:'basic-info'
+            componentId:'basic-info',
+            addInfo:'',
+            contractCostData:[],
+            basicInfoData:{}
         }
     },
     components:{
@@ -45,6 +48,9 @@ export default {
     computed:{
         contrateCommit(){
             return this.$store.state.paySkip.contrateCommit;
+        },
+        contractID(){
+            return this.$store.state.paySkip.contractID
         }
     },
     mounted(){
@@ -53,25 +59,70 @@ export default {
         })
         this.$bus.on("addContractCost",(val)=>{
             this.newCost=val;
-        })
+        });
+        this.contractInfo();
     },
     methods:{
+        contractInfo(){
+            if(this.contractID!=null){
+                this.$Loading.start();
+                let url=this.GLOBAL.baseRouter+"task/company/contract-info";
+                let params={
+                    "contract_id":this.contractID
+                }
+                this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                    this.$Loading.finish();
+                    this.contractCostData=[];
+                    let contractCost=[
+                       {
+                           "price_list":msg.data.price_list,
+                           "step_list":msg.data.step_list
+                       }
+                    ];
+                    // 清单及付款
+                    this.contractCostData=contractCost;
+
+                    // 基本信息
+                    this.basicInfoData=msg.data;
+                    delete this.basicInfoData.price_list;
+                    delete this.basicInfoData.step_list;
+                    this.$refs.editContract.editContract(this.basicInfoData);
+                },()=>{
+                    this.$Message.error("请求失败!")
+                    this.$Loading.error();
+                })
+            }
+        },
         commitContract(){
-            let url=this.GLOBAL.baseRouter+"task/company/add-contract";
-           
+            this.$Loading.start();
+            let url;
             let parms={
-                id:this.Cid,
-                company_id:1,
-                create_user:sessionStorage.userId,
+                contract_id:this.contractID,
+                // company_id:1,
+                // create_user:sessionStorage.userId,
                 basic_list:JSON.stringify(this.newData),
                 price_list:JSON.stringify(this.newCost.price_list),
                 step_list:JSON.stringify(this.newCost.step_list)
             }
-            if(this.Cid==null){
+            if(this.contractID==null){
                 delete parms.id
+                url=this.GLOBAL.baseRouter+"task/company/add-contract";
+                this.addInfo='添加成功!'
+            }else{
+                url=this.GLOBAL.baseRouter+"task/company/edit-contract";
+                this.addInfo='修改成功!'
             }
             this.$axios.post(url,qs.stringify(parms)).then(msg=>{
-                console.log(msg)
+               if(msg.data.err_code>0){
+                  this.$Loading.finish();
+                  this.$Message.warning(msg.data.err_message);
+               }else{
+                  this.$Message.success(this.addInfo);
+                  this.$router.go(-1);
+               }
+            },()=>{
+                this.$Loading.error();
+                this.$Message.error('提交失败！')
             })
         },
         // next

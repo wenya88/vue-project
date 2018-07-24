@@ -18,7 +18,8 @@ import contractList from './contractManage/component/contractList'
 export default {
     data(){
         return{
-            contData:[]
+            contData:[],
+            search:''
         }
     },
     components:{
@@ -30,7 +31,7 @@ export default {
         this.getUserInfo();
         this.$bus.on('addSuccess',()=>{
             this.contractData();
-        })
+        });
     },
     methods:{
         // 新增
@@ -50,6 +51,7 @@ export default {
                 _this.$Loading.finish();
                 if(msg.data.err_code==0){
                     _this.contData=msg.data.data
+                    _this.$store.commit('getContractIDCommit',null)
                 }
             },()=>{
                 _this.$Loading.error();

@@ -27,15 +27,15 @@
                         <em class="iconfont icon-hetong"></em>签定线下合同
                         <p>如双方已已签定纸质合同，请上传合同</p>
                     </div>
-                    <div class="offineUpLoad" @click="uploadContractFile" id="selectfiles">
+                    <div class="offineUpLoad">
+                        <file-upload></file-upload>
                         <Icon type="android-upload" size="45"></Icon>
                         <p>
                             点击上传合同扫描件<br/>
                             <em>限JPG,PNG,PDF格式</em>
                         </p>
                     </div>
-                    <!-- 上传钩子 -->
-                    <div id="contractUpLoadButton" @click="getOssData"></div> 
+                   
                 </div>
                 <!-- 在线合同 -->
                 <div class="lineContract">
@@ -52,20 +52,24 @@
     </div>
 </template>
 <script>
-import {fileUpload} from '../contractUpload.js';
+import fileUpload from '../../../../../components/upload';
 var qs=require('querystring');
 export default {
     data(){
         return{
             imgUrl:'',
             Cindex:0,
-            filesList:[]
+            filesList:[],
+            configure:{}
         }
     },
     mounted(){
         this.autoHeight();
         this.getContractFile();
-        fileUpload();
+        this.uploadContractFile();
+    },
+    components:{
+        fileUpload:fileUpload
     },
     computed:{
         contrateCommit(){
@@ -73,11 +77,6 @@ export default {
         },
     },
     methods:{
-        getOssData(){
-            this.$axios.post(this.GLOBAL.baseRouter+"file/oss/oss",qs.stringify({"type":"upload"})).then((msg)=>{
-                 fileUpload(msg.data);
-            })
-        },
         // autoH
         autoHeight(){
             $(".newContractData>.confirContract,.newContractData .confirContract .offlineContract,.newContractData>.confirContract .lineContract").height($(window).height()-252);
@@ -90,7 +89,7 @@ export default {
             // this.$store.commit('getContrateCommit',true);
             // this.$nextTick(()=>{
             //     this.contractRow();
-            // })
+            // }
         },
         // changeImg
         contractImg(index,url){
