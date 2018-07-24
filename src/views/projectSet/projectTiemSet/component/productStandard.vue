@@ -31,7 +31,7 @@
                                              alt=""
                                              :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">
                                         <span>{{children.tasktype_name}}</span>
-                                        <Icon v-if="index === btnSign[0] && i === btnSign[1]" type="checkmark-circled"
+                                        <Icon v-if="children.border" type="checkmark-circled"
                                               style="padding-left: 5px;color: #00d900;line-height: 30px;"></Icon>
                                     </li>
                                 </ul>
@@ -185,12 +185,11 @@
                     let arrData = (data) => {
                         data.map((item) => {
                             item.btnShow = false;
-
-//                            this.typeTabs.map((tab,i) => {
-//                                if(item.id == tab.tasktype_id){
-//                                    item.border = true;
-//                                }
-//                            });
+                            this.typeTabs.map((tab,i) => {
+                                if(item.id == tab.tasktype_id){
+                                    item.border = true;
+                                }
+                            });
                             if (item.tasktype && item.tasktype.length > 0) {
                                 item.children = item.tasktype;
                             }
@@ -217,13 +216,18 @@
                         }
             },
             /*查询详情*/
-            projectTasktype(item,index) {
+            async projectTasktype(item,index) {
+                let obj = null;
                 this.clearData();
                 this.$refs.tree.clearInfo();
-                this.tabsColor = index;
+                if(item !== 'init'){
+                     obj = {id: item.id};
+                    this.tabsColor = index;
+                }else if(item === 'init' && this.typeTabs.length>0) {
+                     obj = {id: this.typeTabs[0].id};
+                }
 
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info', qs.stringify({id: item.id}))
-                    .then(({data}) => {
+                let {data} = await api.projectTaskInfo(obj);
                         if (data.err_code === 0) {
                             this.tabsTypeId = data.data.id;
                             this.attrContent = data.data.standard.filter((item) => {
@@ -236,7 +240,6 @@
                         } else {
                             this.$Message.error(data.err_message);
                         }
-                    });
             },
             /*删除*/
             closeType(item) {
@@ -323,6 +326,7 @@
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.listInit()
+                            this.menuInit()
                         } else {
                             this.$Message.error(data.err_message);
                         }

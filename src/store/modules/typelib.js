@@ -11,7 +11,9 @@ const typelib = {
         }
     },
     actions:{
-
+        setDefIdAction({commit},data){
+         commit('setDefId',data)
+        }
     }
 };
 
