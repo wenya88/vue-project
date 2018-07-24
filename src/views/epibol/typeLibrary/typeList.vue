@@ -62,7 +62,7 @@
         },
         data() {
             return {
-           
+
                 company_id: sessionStorage.getItem('userId'),
                 copy: {
                     show: false,
