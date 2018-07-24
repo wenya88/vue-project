@@ -93,7 +93,7 @@
             </Modal>
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
-                <div style="flex: 12" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                <div style="flex: 12">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
                         <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
                             <!--步骤名称-->
@@ -198,9 +198,8 @@
 
 </template>
 <script>
-    import qs from 'querystring'
-
-
+    import qs from 'querystring';
+    import api from 'api';
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import typeList from "./typeList";
@@ -225,7 +224,6 @@
         },
         data() {
             return {
-                normsValue:'',
                 delnormsValue:'',
                 isSubmit:false,// 提交按钮
                 updateId :null, // 更新
@@ -268,60 +266,11 @@
 
                 // 以上是后面测试添加
                 current: 0,
-                reqeData: {},
-                reqarn: {},
-                isInit: Boolean,
-                /*--------------------文件类型阶段属性开始------------------------*/
                 formLeft: {},
-                fileType: "",
-                stepCount: [
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                ],
                 accesData: [],
                 reqData: [],
                 attrFile: [{config_name: "", value: ""}],
                 otherfile: [{config_name: '', value: ''}],
-                /*----------------------文件类型阶段属性结束-----------------------*/
-                category_id: 0,
-                index: 1,
-                acces: [
-                    {
-                        title: "文件格式",
-                        key: "file_format"
-                    },
-                    {
-                        title: "描述",
-                        key: "describe"
-                    },
-                    {
-                        title: "操作",
-                        width: 150,
-                        align: "center",
-                        render: (h, params) => {
-                            return h("div", [
-                                h(
-                                    "Button",
-                                    {
-                                        props: {
-                                            type: "error",
-                                            size: "small"
-                                        },
-                                        on: {
-                                            click: () => {
-                                                this.remove(params.index);
-                                            }
-                                        }
-                                    },
-                                    "移除"
-                                )
-                            ]);
-                        }
-                    }
-                ]
             };
         },
         mounted() {
@@ -338,6 +287,7 @@
             });
             this.$bus.on('addType', (data) => {
                this.addType(data);
+               this.isSubmit = true;
             });
             this.$bus.on('projectInfo', (data) => {
                 this.addInfo(data);
@@ -358,216 +308,111 @@
 
         },
         methods: {
-            getNormslist(){
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/norms')
-                    .then(({data}) => {
-                        if (data.err_code === 0) {
-                            this.norms = data.data
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
-                    });
-            },
-            iconList(){
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/icon-list')
-                    .then(({data}) => {
-                        if (data.err_code === 0) {
-                            if(data.data){
-                                data.data.map((item,index) => {
-                                    switch (index)
-                                    {
-                                        case 0:
-                                          item.color =  '#33cc6b';
-                                            break;
-                                        case 1:
-                                            item.color =  '#ccabb6';
-                                            break;
-                                        case 2:
-                                            item.color =  '#cc62bd';
-                                            break;
-                                        case 3:
-                                            item.color =  '#aacc46';
-                                            break;
-                                        case 4:
-                                            item.color =  '#53ccc3';
-                                            break;
-                                    }
-                                })
-                            }
-                            this.TaskIdentity = data.data
-
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
-                    });
-            },
-            //hover阶段，删除图标
-            dataDetails: function (e) {
-                let el = event.currentTarget.children[0].children[0];
-                if(el){
-                    el.style.display = "inline-block";
+            /*获取规范列表*/
+            async getNormslist() {
+                let {data} = await api.getNorms();
+                if (data.err_code === 0) {
+                    this.norms = data.data
+                } else {
+                    this.$Message.error(data.err_message);
                 }
+
             },
-            hiddenDetail: function (e) {
-                let el = event.currentTarget.children[0].children[0];
-                if(el){
-                    el.style.display = "";
-                }
-            },
-            submitTaskClas(){
-                /*项目级*/
-                if(this.project){
-                    this.fstandard.map((item,index) => {
-
-                        if(item.review.indexOf(0) !== -1){
-                            this.fstandard[index].is_client_audit = 1
-                        }else{
-                            this.fstandard[index].is_client_audit = 0
-                        }
-                        if(item.review.indexOf(1) !== -1){
-                            this.fstandard[index].is_inside_audit = 1
-                        }else{
-                            this.fstandard[index].is_inside_audit = 0
-                        }
-
-                    });
-
-                    let obj = {
-                        id:this.tabsTypeId,
-                        name:this.typename.typename,
-                        stage:JSON.stringify(this.fstandard),
-                        standard : JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
-                        icon:this.identification.iconBorder,
-                        color:this.identification.iconColor,
-                    };
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/update', qs.stringify(obj))
-                        .then(res => {
-                            if (res.data.err_code === 0) {
-                                this.$Message.success("保存成功");
-                                this.$bus.emit('treeUpdate') // 刷新左侧树状图
-                            } else {
-                                this.$Message.error(res.data.err_message);
+            /*获取图标库*/
+            async iconList(){
+                let {data} = await api.getIconList();
+                if (data.err_code === 0) {
+                    if (data.data) {
+                        data.data.map((item, index) => {
+                            switch (index) {
+                                case 0:
+                                    item.color = '#33cc6b';
+                                    break;
+                                case 1:
+                                    item.color = '#ccabb6';
+                                    break;
+                                case 2:
+                                    item.color = '#cc62bd';
+                                    break;
+                                case 3:
+                                    item.color = '#aacc46';
+                                    break;
+                                case 4:
+                                    item.color = '#53ccc3';
+                                    break;
                             }
                         })
-                        .catch(error => {
-                            this.$Message.error("加载失败，请重试！");
-                        });
+                    }
+                    this.TaskIdentity = data.data
+
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+            },
+            /*提交*/
+             submitTaskClas(){
+                /*项目级*/
+                if(this.project){
+                     this.submitProject()
                     return false
                 }
-
                 /*公司级*/
-                let url = null;
-                let obj = null;
-                if(this.updateId === null){
-
-                    /*新建*/
-                    url = 'task/task-type/add';
-                    obj = {
-                        category_id:this.newData.cate_id,
-                        name:this.typename.typename,
-                        stage:JSON.stringify(this.fstandard),
-                        standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                        icon:this.identification.iconBorder,
-                        color:this.identification.iconColor,
-                    };
-                } else if(this.updateId !== null){
-                    /*修改*/
-                    url = 'task/task-type/update';
-                    obj = {
-                        id:this.updateId,
-                        name:this.typename.typename,
-                        stage:JSON.stringify(this.fstandard),
-                        standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                        icon:this.identification.iconBorder,
-                        color:this.identification.iconColor,
-                    }
-                }
-                this.$axios.post(this.GLOBAL.baseRouter + url, qs.stringify(obj))
-                    .then(res => {
-                        if (res.data.err_code === 0) {
-                            this.$Message.success("保存成功");
-                            this.$bus.emit('treeUpdate') // 刷新左侧树状图
-                        } else {
-                            this.$Message.error(res.data.err_message);
-                        }
-                    })
-                    .catch(error => {
-                        this.$Message.error("加载失败，请重试！");
-                    });
+               this.submitCompany()
             },
-            //提交任务类别库表单
-            taskClassubmit: function () {
-                let csbObj = {};
-                //类型属性
-                csbObj.id = this.clsId;
-                csbObj.category_id = this.category_id ? this.category_id : 0;
-                csbObj.name = this.listN;
-                csbObj.stage = JSON.stringify(this.stepCount);
-                //文件属性
-                // let main_file = {};
-                // main_file.file_name = csb.fileType;
-                // main_file.file_format = csb.fileType;
-                let files = [];
-                // files.push(main_file);
-                //任务主文件
-                let _attrFile = {
-                    file_name: "",
-                    file_format: this.fileType,
-                    is_main: 1,
-                    require: []
-                };
-                for (let i = 0; i < this.attrFile.length; i++) {
-                    let r = {
-                        config_id: 0,
-                        config_name: this.attrFile[i].config_name,
-                        value: this.attrFile[i].value
+            /*项目级提交*/
+            async submitProject(){
+                this.fstandard.map((item,index) => {
+                    if(item.review.indexOf(0) !== -1){
+                        this.fstandard[index].is_client_audit = 1
+                    }else{
+                        this.fstandard[index].is_client_audit = 0
                     }
-                    _attrFile.require.push(r);
-                }
-                files.push(_attrFile);
-                //任务附加文件
-                console.log(this.otherfile.length);
-                for (let i = 0; i < this.otherfile.length; i++) {
-                    let _otherfile = {
-                        file_name: "",
-                        file_format: this.otherfile[i].file_format,
-                        is_main: 0,
-                        require: [
-                            {
-                                config_id: 0,
-                                config_name: "",
-                                value: this.otherfile[i].value
-                            }
-                        ]
-                    };
-                    files.push(_otherfile);
-                }
-                csbObj.file = JSON.stringify(files);
-                let address = "";
-                //判断类型是否为ture执行接口
-                if (this.isInit) {
-                    address = "task/task-type/add";
+                    if(item.review.indexOf(1) !== -1){
+                        this.fstandard[index].is_inside_audit = 1
+                    }else{
+                        this.fstandard[index].is_inside_audit = 0
+                    }
+
+                });
+
+                let obj = {
+                    id:this.tabsTypeId,
+                    name:this.typename.typename,
+                    stage:JSON.stringify(this.fstandard),
+                    standard : JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
+                    icon:this.identification.iconBorder,
+                    color:this.identification.iconColor,
+                };
+                let res = await api.taskprojectCateUpdate(obj);
+                if (res.data.err_code === 0) {
+                    this.$Message.success("保存成功");
+                    this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
-                    address = "task/task-type/update";
+                    this.$Message.error(res.data.err_message);
                 }
-
-                console.log(csbObj);
-
-                this.$axios
-                    .post(this.GLOBAL.baseRouter + address, qs.stringify(csbObj))
-                    .then(res => {
-                        if (res.data.err_code === 0) {
-                            this.$Message.success("编辑类型成功！");
-                            //this.initPage();
-                            this.taskClassforEach();
-                            this.refreshPage();
-                        } else {
-                            this.$Message.error(res.data.err_message);
-                        }
-                    })
-                    .catch(error => {
-                        this.$Message.error("加载失败，请重试！");
-                    });
+            },
+            /*公司级提交*/
+            async submitCompany(){
+                let url = 'task/task-type/add';
+                let obj = {
+                    category_id:this.newData.cate_id,
+                    name:this.typename.typename,
+                    stage:JSON.stringify(this.fstandard),
+                    standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                    icon:this.identification.iconBorder,
+                    color:this.identification.iconColor,
+                };
+                 if(this.updateId !== null){
+                    url = 'task/task-type/update';
+                    obj.id = this.updateId;
+                }
+                let res = await api.taskTypeAdd(obj, url);
+                if (res.data.err_code === 0) {
+                    this.$Message.success("保存成功");
+                    this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                } else {
+                    this.$Message.error(res.data.err_message);
+                }
             },
             //增加任务附加文件
             addJunctShow(data) {
@@ -619,23 +464,6 @@
             removeFileat(index) {
                 this.pstandard.splice(index, 1);
             },
-            //移除沟通确认阶段
-            delStep(event, st) {
-                if (this.stepCount.length <= 1) {
-                    this.stepCount = [
-                        {
-                            id: 1,
-                            stage_name: "默认阶段",
-                            is_inside_audit: false,
-                            tasktype_id: this.category_id
-                        }
-                    ];
-                    this.$Message.warning("默认阶段，不可刪除");
-                } else {
-                    const index = this.stepCount.indexOf(st);
-                    this.stepCount.splice(index, 1);
-                }
-            },
             /**
              * get请求
              */
@@ -650,117 +478,6 @@
                     }
                 );
             },
-            //遍历任务类别详情数据
-            taskClassforEach() {
-                this.clernPage();
-                this.get(
-                    typeInfo,
-                    {
-                        id: this.clsId
-                    },
-                    res => {
-                        this.formLeft = res.data;
-                        this.listN = res.data.tasktype_name;
-                        //任务附加文件列表
-                        this.accesData = res.data.file;
-                        this.otherfile = [];
-                        if (this.accesData != null) {
-                            this.accesData.forEach(reqr => {
-                                this.forSubmit = reqr.is_main;
-                                if (reqr.is_main == 1) {
-                                    this.reqData = reqr.require;
-                                    this.fileType = reqr.file_format;
-                                    this.reqData.forEach((reqFor) => {
-                                        this.attrFile.push({
-                                            config_name: reqFor.config_name,
-                                            value: reqFor.value
-                                        });
-                                    });
-                                } else if (reqr.is_main == 0) {
-                                    reqr.value = reqr.require[0].value;
-                                    this.otherfile.push(reqr);
-                                }
-                            });
-                        }
-                        //沟通确认阶段
-                        if (this.formLeft.stage != null) {
-                            this.formLeft.stage.forEach(sta => {
-                                sta.is_inside_audit = sta.is_inside_audit == 1 ? true : false;
-                                this.stepCount.push(sta);
-                            });
-                        }
-                    }
-                );
-            },
-            //从左边列表组件中获取id,name
-            getListId(clicktype) {
-                this.isInit = clicktype.isInit;
-                this.category_id = clicktype.category_id;
-                this.listN = clicktype.liName;
-                this.clsId = clicktype.id;
-
-                if (clicktype.isInit) {
-                    //新增文件類型-頁面
-                    this.initPage();
-                } else {
-                    this.taskClassforEach();
-                }
-            },
-            //初始化頁面數據
-            initPage() {
-                this.clernPage();
-                this.stepCount.push({
-                    id: 1,
-                    stage_name: "默认阶段",
-                    is_inside_audit: false,
-                    tasktype_id: this.category_id
-                });
-                //清空
-                this.otherfile = [];
-                this.attrFile = [{config_name: "", value: ""}];
-            },
-            clernPage() {
-                this.stepCount = [];
-                this.formLeft = {};
-                this.listN = "";
-                this.fileType = "";
-                this.accesData = [];
-                this.reqData = [];
-                this.reqfData = [];
-                this.otherfile = [];
-                this.attrFile = [];
-            },
-            //刷新当前页面
-            refreshPage() {
-                this.$Spin.show(
-                    {
-                        render: h => {
-                            return h("div", [
-                                h("Icon", {
-                                    class: "demo-spin-icon-load",
-                                    props: {
-                                        type: "load-c",
-                                        size: 18
-                                    }
-                                }),
-                                h("div", "Loading")
-                            ]);
-                        }
-                    },
-                    location.reload()
-                );
-                setTimeout(() => {
-                    this.$Spin.hide();
-                }, 3000);
-            },
-            //或者select文件格式选择后id
-            getSelectId(r) {
-                let requ = this.formLeft.file[r]; //文件类型数据
-                if (requ) {
-                    this.reqeData = requ;
-                }
-            },
-//      ][
             // 确认 取消按钮
             fileListAdd() {
                 this.fileShow = !this.fileShow
@@ -830,34 +547,29 @@
 
             },
 
-            newtaskTypesDetail(data) {
-                console.log(11,data)
+            async newtaskTypesDetail(dataDetail) {
                 // 进入详情
-                if (data.rank === 2 || data === 'default') {
-                    this.isSubmit = data.status === 0 || data === 'default'? false :true;
-                    let obj = {id:data.id};
+                if (dataDetail.rank === 2 || dataDetail === 'default') {
+                    this.isSubmit = dataDetail.status === 0 || dataDetail === 'default'? false :true;
+                    let obj = {id:dataDetail.id};
                     this.clearInfo();
                     // 获取更新id
-                    this.updateId = data.id;
-                    if(data === 'default'){
+                    this.updateId = dataDetail.id;
+                    if(dataDetail === 'default'){
                         obj = {
                             id:340
                         }
                     }
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info', qs.stringify(obj))
-                        .then(({data}) => {
-                            if (data.err_code === 0) {
-                                this.addInfo(data)
-
-                            } else {
-                                this.$Message.error(data.err_message);
-                            }
-                        });
+                    let {data} = await api.taskCateinfo(obj);
+                    console.log(33,data.err_code === 0)
+                    if (data.err_code === 0) {
+                               this.addInfo(data)
+                    } else {
+                        this.$Message.error(data.err_message);
+                    }
                 }
-
             },
             addInfo(data){
-
                 this.typename.typename = data.tasktype_name;
                 this.tstandard = data.standard.filter((item) => {
                     return item.type === 'file'
@@ -916,32 +628,33 @@
                 this.typename = {typename:'', icon:'', color:''};
                 this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
             },
-            addNorms(){
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/add-norm', qs.stringify({name:this.normValue}))
-                    .then(({data}) => {
-                        if (data.err_code === 0) {
-                            this.modal1 = false;
-                            this.normValue = '';
-                            this.getNormslist()
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
-                    });
+            /*添加规范*/
+            async addNorms() {
+                let {data} = await api.addNorm({name: this.normValue});
+                if (data.err_code === 0) {
+                    this.modal1 = false;
+                    this.normValue = '';
+                    this.getNormslist()
+                } else {
+                    this.$Message.error(data.err_message);
+                }
             },
-            delNorms(){
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/delete-norm', qs.stringify({id:this.delnormsValue}))
-                    .then(({data}) => {
-                        if (data.err_code === 0) {
-                            this.modal2 = false;
-                            this.normValue = '';
-                            this.getNormslist()
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
-                    });
+            /*删除规范*/
+            async delNorms() {
+                let {data} = await api.deleteNorm({id: this.delnormsValue});
+
+                if (data.err_code === 0) {
+                    this.modal2 = false;
+                    this.normValue = '';
+                    this.getNormslist()
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+
             }
         },
         filters:{
+            /*优先级*/
             priorityValue(value){
                 let data = value;
                 switch (value) {
