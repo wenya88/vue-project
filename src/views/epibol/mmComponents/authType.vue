@@ -5,7 +5,7 @@
             ({{number}})
             <slot name="number"></slot>
         </div>
-        <Tabs type="card" v-if="tabsStatus">
+        <Tabs type="card">
             <TabPane label="部门">
                 <ul class="fMenu">
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
@@ -26,30 +26,7 @@
                 </ul>
                 <slot name="addDept"></slot>
             </TabPane>
-            <TabPane label="职能">
-                <ul class="fMenu">
-                    <li v-for="(item,index) in dutyList" :key="index" :class="{'actived': SMenuIndex == index}" @click="open2Table(index,item.company_id,item.id)">
-                        {{item.name}}
-                        <span class="numStyle">{{item.member_count}}</span>
-                        <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1">
-                            <span>...</span>
-                            <div class="api" slot="content">
-                                <!-- <slot name="fmore"></slot> -->
-                                <ul>
-                                    <li @click="editDuty(item.id,item.name)">编辑</li>
-                                    <li @click="delDuty(item.id)">删除</li>
-                                </ul>
-                            </div> 
-                        </Poptip>
-                    </li>
-                </ul>
-                <slot name="addDuty"></slot>
-            </TabPane> 
         </Tabs>
-        <div class="autoList" v-else>
-            <div>111111111</div>
-        </div>
     </div>
 </template>
 <script>
@@ -58,8 +35,7 @@ export default {
     data() {
         return {
             FMenuIndex: null,
-            SMenuIndex: null,
-            tabsStatus: true
+            SMenuIndex: null
         }
     },
     props: {
@@ -78,19 +54,6 @@ export default {
         dutyList: {
             type: Array,
             default: []
-        }
-        // menuList: Array,
-        // iconSize: Number,
-        // openNames: {
-        //     type: Array
-        // }
-    },
-    created() {
-        let tabsType = sessionStorage.tabsType;
-        if(tabsType == 'member') {
-            this.tabsStatus = true
-        } else if(tabsType == 'auto') {
-            this.tabsStatus = false
         }
     },
     methods: {
