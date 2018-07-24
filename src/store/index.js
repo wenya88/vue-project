@@ -7,6 +7,7 @@ import project from './modules/project';
 import member from './modules/member';
 import paySkip from './modules/paySkip';
 import ImgVedioStatus from './modules/ImgVedioStatus';
+import typelib from './modules/typelib';
 
 Vue.use(Vuex);
 
@@ -35,7 +36,8 @@ const store = new Vuex.Store({
         project,
         member,
         paySkip,
-        ImgVedioStatus
+        ImgVedioStatus,
+        typelib
     }
 });
 

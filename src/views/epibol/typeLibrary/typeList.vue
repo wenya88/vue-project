@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Tree class="treeMapContainer" :data="treeMap"  :render="renderContent"></Tree>
+        <Tree class="treeMapContainer" :data="treeMap" :render="renderContent"></Tree>
         <!--复制-->
         <Modal
                 class="treeMapWindow"
@@ -30,18 +30,18 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
-
         <v-upload></v-upload>
     </div>
 </template>
 <script>
+    import {mapState, mapActions} from 'vuex'
     import qs from 'querystring'
     import vUpload from '@/components/upload.vue'
     import api from 'api'
 
     export default {
         mounted() {
-                this.init();
+            this.init();
             document.body.onclick = (e) => {
                 e.stopPropagation();
                 let arrData = (data) => {
@@ -62,7 +62,7 @@
         },
         data() {
             return {
-                idInit:null,
+
                 company_id: sessionStorage.getItem('userId'),
                 copy: {
                     show: false,
@@ -72,7 +72,7 @@
                 del: {
                     show: false,
                     id: '',
-                    data:'',
+                    data: '',
                 },
                 changName: {
                     show: false,
@@ -138,62 +138,61 @@
             }
         },
         methods: {
-
+            ...mapActions(['setDefIdAction']),
             async init() {
-               let {data} = await api.taskCateList();
-                        if (data.err_code === 0) {
-                            /*递归遍历获得层级*/
-                            let rank = 0;
-                            const arrData = (data, rank, status) => {
-                                data.map((item) => {
-                                    item.status = status;
-                                    item.rank = rank;
-                                    item.btnShow = false;
-                                    item.editText = false;
+                let {data} = await api.taskCateList();
+                if (data.err_code === 0) {
+                    /*递归遍历获得层级*/
+                    let rank = 0;
+                    const arrData = (data, rank, status) => {
+                        data.map((item) => {
+                            item.status = status;
+                            item.rank = rank;
+                            item.btnShow = false;
+                            item.editText = false;
 
-                                    if(item.tasktype){
-                                        item.children = item.tasktype;
-                                        item.isTasktype = true;
-                                        if(item.children){
-                                            item.children.map((children) => {
-                                            if(this.idInit === null){
-                                                this.idInit = children.id
-                                            }
-                                            })
+                            if (item.tasktype) {
+                                item.children = item.tasktype;
+                                item.isTasktype = true;
+                                if (item.children) {
+                                    item.children.map((children) => {
+                                        if (this.defId === null) {
+                                            this.setDefIdAction(children.id);
                                         }
-                                    }
-                                    if (item.status !== 0 && item.rank === 1) {
-                                        this.folder.push(JSON.parse(JSON.stringify(item)))
-                                    }
-                                    if (item.children) {
-                                        arrData(item.children, rank + 1, item.status)
-                                    }
-                                })
-                            };
-                            if (data && Array.isArray(data.data)) {
-                                data.data.map((item) => {
-                                    item.btnShow = false;    // 右侧菜单
-                                    item.rank = rank;
-                                    if (item.cate_id === '1') {
-                                        item.status = 0      // 系统默认
-                                    }
-                                    if (item.children) {
-                                        arrData(item.children, rank + 1, item.status)
-                                    }
-
-                                });
+                                    })
+                                }
                             }
-                            this.treeMap[0].children = data.data;
-                        } else {
-                            this.$Message.error(data.err_message)
-                        }
+                            if (item.status !== 0 && item.rank === 1) {
+                                this.folder.push(JSON.parse(JSON.stringify(item)))
+                            }
+                            if (item.children) {
+                                arrData(item.children, rank + 1, item.status)
+                            }
+                        })
+                    };
+                    if (data && Array.isArray(data.data)) {
+                        data.data.map((item) => {
+                            item.btnShow = false;    // 右侧菜单
+                            item.rank = rank;
+                            if (item.cate_id === '1') {
+                                item.status = 0      // 系统默认
+                            }
+                            if (item.children) {
+                                arrData(item.children, rank + 1, item.status)
+                            }
+
+                        });
+                    }
+                    this.treeMap[0].children = data.data;
+                } else {
+                    this.$Message.error(data.err_message)
+                }
 
             },
             renderContent(h, {root, node, data}) {
                 let folderButton = '';
                 let iconFile = false;
                 let menu = '';
-
                 let button = h('div', {
                     style: {
                         fontSize: '12px',
@@ -362,8 +361,9 @@
                     menu
                 ]);
             },
+
             /* 添加 */
-            async append(treeData,type) {
+            async append(treeData, type) {
                 let obj = null;
                 /*添加分类*/
                 if (type === 'all') {
@@ -377,7 +377,7 @@
                         name: '新建文件夹',
                         parent_id: treeData.cate_id
                     }
-                }else{
+                } else {
                     this.$bus.emit('addType', treeData);
                     return false
                 }
@@ -408,22 +408,23 @@
                     })
                 };
                 arrData(this.treeMap[0].children);
-
+console.log(333,this.$set)
                 this.$set(data, 'btnShow', !data.btnShow)
+                console.log(444)
 
             },
             /*删除弹窗*/
             delButton(root, node, data) {
                 this.del.show = true;
                 this.del.id = data.cate_id;
-                this.del.data =data
+                this.del.data = data
             },
             /*删除*/
             remove() {
                 let url = 'task/task-type/cate-delete';
                 let obj = {id: this.del.id}
                 //类型删除
-                if(this.del.data.rank === 2){
+                if (this.del.data.rank === 2) {
                     url = 'task/task-type/delete';
                     obj = {id: this.del.data.id}
                 }
@@ -471,7 +472,14 @@
                 this.copy.show = false;
             }
         },
-        components:{
+        computed: {
+            ...mapState({
+                defId(data) {
+                    return data.typelib.defId
+                }
+            })
+        },
+        components: {
             vUpload
         }
 

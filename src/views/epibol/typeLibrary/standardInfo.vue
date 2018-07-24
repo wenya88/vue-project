@@ -198,6 +198,8 @@
 
 </template>
 <script>
+
+    import {mapState} from 'vuex';
     import qs from 'querystring';
     import api from 'api';
     import Icon from "iview/src/components/icon/icon";
@@ -274,8 +276,6 @@
             };
         },
         mounted() {
-            // 默认进入系统默认
-            this.newtaskTypesDetail('default');
             // 获取规范列表
             this.getNormslist();
             // icon列表
@@ -303,9 +303,7 @@
                         }
                     });
                 }
-
             });
-
         },
         methods: {
             /*获取规范列表*/
@@ -316,7 +314,6 @@
                 } else {
                     this.$Message.error(data.err_message);
                 }
-
             },
             /*获取图标库*/
             async iconList(){
@@ -546,7 +543,6 @@
                 }
 
             },
-
             async newtaskTypesDetail(dataDetail) {
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
@@ -557,11 +553,10 @@
                     this.updateId = dataDetail.id;
                     if(dataDetail === 'default'){
                         obj = {
-                            id:340
+                            id:this.defId
                         }
                     }
                     let {data} = await api.taskCateinfo(obj);
-                    console.log(33,data.err_code === 0)
                     if (data.err_code === 0) {
                                this.addInfo(data)
                     } else {
@@ -653,18 +648,34 @@
 
             }
         },
+        computed:{
+            ...mapState({
+                defId(data){
+                    return data.typelib.defId
+                }
+            })
+        },
+        watch:{
+            // 异步defId数据
+            defId(data){
+                if(data !== null){
+                    this.newtaskTypesDetail('default');
+                }
+            }
+        },
         filters:{
             /*优先级*/
             priorityValue(value){
+                console.log(66,value)
                 let data = value;
                 switch (value) {
-                    case 3:
+                    case '3':
                         data = '高';
                         break;
-                    case 2:
+                    case '2':
                         data = '中';
                         break;
-                    case 1:
+                    case '1':
                         data = '低';
                         break;
                 }
