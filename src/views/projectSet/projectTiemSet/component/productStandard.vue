@@ -42,7 +42,7 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
+        <standard-info v-if="typeTabs.length>0" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
@@ -114,6 +114,7 @@
                 </Button>
             </div>
         </standard-info>
+        <div v-else style="text-align: center;height: 100%;margin-top: 120px;font-size: 20px">请从右上角添加规范哦</div>
     </div>
 </template>
 
@@ -352,6 +353,7 @@
     .projectSpeContainer {
         .tabHead {
             display: flex;
+
             .typeTabsContainer {
                 display: flex;
                 padding: 21px 0 0 21px;
@@ -391,6 +393,7 @@
             .addType {
                 position: relative;
                 flex: 1;
+                min-height: 80px;
                 border-bottom: 1px solid @green;
                 background: #fff;
                 .addButton {

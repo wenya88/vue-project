@@ -115,9 +115,9 @@
                                     <div class="priorityContainer">
                                         <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
                                         <div class="priorityList" >
-                                            <p class="priority priority3" @click="editPriority(3,index,i)">高</p>
-                                            <p class="priority priority2" @click="editPriority(2,index,i)">中</p>
-                                            <p class="priority priority1" @click="editPriority(1,index,i)">低</p>
+                                            <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
+                                            <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
+                                            <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
                                         </div>
                                     </div>
                                     <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
@@ -141,9 +141,9 @@
                                     <div class="priorityContainer">
                                         <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
                                         <div class="priorityList">
-                                            <p class="priority priority3" @click="editPriority(3)">高</p>
-                                            <p class="priority priority2" @click="editPriority(2)">中</p>
-                                            <p class="priority priority1" @click="editPriority(1)">低</p>
+                                            <p class="priority priority3" @click="editPriority('3')">高</p>
+                                            <p class="priority priority2" @click="editPriority('2')">中</p>
+                                            <p class="priority priority1" @click="editPriority('1')">低</p>
                                         </div>
                                     </div>
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
@@ -226,6 +226,8 @@
         },
         data() {
             return {
+                goinfo:null,
+                createInfo:false,
                 delnormsValue:'',
                 isSubmit:false,// 提交按钮
                 updateId :null, // 更新
@@ -282,11 +284,14 @@
             if(!this.project){
                 this.iconList();
             }
+            /*进入详情*/
             this.$bus.on('typesDetail', (data) => {
+                this.goinfo = data;
                 this.newtaskTypesDetail(data);
             });
             this.$bus.on('addType', (data) => {
                this.addType(data);
+                this.goinfo = data;
                this.isSubmit = true;
             });
             this.$bus.on('projectInfo', (data) => {
@@ -391,20 +396,32 @@
             /*公司级提交*/
             async submitCompany(){
                 let url = 'task/task-type/add';
-                let obj = {
-                    category_id:this.newData.cate_id,
-                    name:this.typename.typename,
-                    stage:JSON.stringify(this.fstandard),
-                    standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                    icon:this.identification.iconBorder,
-                    color:this.identification.iconColor,
-                };
-                 if(this.updateId !== null){
+                let obj = null;
+                 if(this.updateId !== null || this.createInfo){
                     url = 'task/task-type/update';
-                    obj.id = this.updateId;
-                }
+                     obj = {
+                         id:this.updateId,
+                         name:this.typename.typename,
+                         stage:JSON.stringify(this.fstandard),
+                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                         icon:this.identification.iconBorder,
+                         color:this.identification.iconColor,
+                     };
+                }else{
+                     obj = {
+                         category_id:this.newData.cate_id,
+                         name:this.typename.typename,
+                         stage:JSON.stringify(this.fstandard),
+                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                         icon:this.identification.iconBorder,
+                         color:this.identification.iconColor,
+                     };
+
+                 }
                 let res = await api.taskTypeAdd(obj, url);
                 if (res.data.err_code === 0) {
+                    this.createInfo = true ;
+                    this.newtaskTypesDetail(this.goinfo);
                     this.$Message.success("保存成功");
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
@@ -593,7 +610,8 @@
                 }
             },
             delFlowNorm(index,i){
-                this.fstandard[index].childrens.splice(i,1);
+//                console.log(131,this.fstandard[index])
+                this.fstandard[index].require.splice(i,1);
             },
             flowAddShow(index){
                 if(this.fstandard){
@@ -607,7 +625,9 @@
             addType(data){
                 this.clearInfo();
                 this.newData = data ;
-                this.updateId = null
+                this.updateId = null;
+                this.createInfo = false;
+
             },
              /*清空页面*/
             clearInfo(){
@@ -666,7 +686,6 @@
         filters:{
             /*优先级*/
             priorityValue(value){
-                console.log(66,value)
                 let data = value;
                 switch (value) {
                     case '3':

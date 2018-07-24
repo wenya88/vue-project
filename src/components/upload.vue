@@ -62,7 +62,7 @@
         },
         mounted() {
             /*图片上传*/
-            this.upload()
+            this.upload();
 
         },
         data() {
@@ -106,7 +106,7 @@
 
                 /*上传*/
                 uploader.bind('FilesAdded',  (uploader, files)=> {
-                    this.clearfileUrl()
+                    this.clearfileUrl();
                     this.getImgkey()
                         .then(() => {
                             files.map((item,index) => {
