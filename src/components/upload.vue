@@ -112,7 +112,6 @@
                             files.map((item,index) => {
                                 let name = files[index].name.split('.')[1];
                                 let postfix = (name == 'rar' || name == 'zip')?name:'';
-
                                 //获取签名
                                 let configure = {
                                     'url': this.uploadKey.host,
@@ -139,6 +138,7 @@
                     let obj = {uploader:uploader,files:files,data:data}
                     this.imgsrc = JSON.parse(data.response);
                     this.setfileUrl(obj);
+                    this.$bus.emit("FileUploaded");
                 });
                 uploader.bind('UploadProgress',(uploader,file)=>{
 

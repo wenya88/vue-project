@@ -119,6 +119,7 @@
 
 <script>
     import qs from 'querystring'
+    import api from 'api'
     import standardInfo from '@/views/epibol/typeLibrary/standardInfo.vue'
 
     export default {
@@ -126,11 +127,8 @@
         },
         mounted() {
             this.menuInit();
-            this.listInit();
+            this.infoinit()
 
-            this.$nextTick(() => {
-                this.projectTasktype('init')
-            })
         },
         data() {
             return {
@@ -158,6 +156,10 @@
             }
         },
         methods: {
+            async infoinit(){
+                await this.listInit();
+                await this.projectTasktype('init')
+            },
             /*右侧菜单*/
             menuInit() {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list')
@@ -205,27 +207,25 @@
 
             },
             /*查询列表*/
-            listInit() {
+           async listInit() {
                 /*接口要修改*/
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list', qs.stringify({project_id: this.project_id}))
-                    .then(({data}) => {
+                const {data} = await api.projectTaskList({project_id: this.project_id});
                         if (data.err_code === 0) {
                             this.typeTabs = data.data
                         } else {
                             this.$Message.error(data.err_message);
                         }
-                    });
             },
             /*查询详情*/
             projectTasktype(item,index) {
                 this.clearData();
                 this.$refs.tree.clearInfo();
                 this.tabsColor = index;
+
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info', qs.stringify({id: item.id}))
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.tabsTypeId = data.data.id;
-                            console.log('iiiiid',this.tabsTypeId)
                             this.attrContent = data.data.standard.filter((item) => {
                                 return item.type === 'connect'
                             });

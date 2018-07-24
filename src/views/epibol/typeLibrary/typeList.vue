@@ -30,11 +30,11 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
-
         <v-upload></v-upload>
     </div>
 </template>
 <script>
+    import {mapState,mapMutations} from 'vuex'
     import qs from 'querystring'
     import vUpload from '@/components/upload.vue'
     import api from 'api'
@@ -62,7 +62,6 @@
         },
         data() {
             return {
-                idInit:null,
                 company_id: sessionStorage.getItem('userId'),
                 copy: {
                     show: false,
@@ -138,7 +137,7 @@
             }
         },
         methods: {
-
+            ...mapMutations(['setDefId']),
             async init() {
                let {data} = await api.taskCateList();
                         if (data.err_code === 0) {
@@ -156,8 +155,8 @@
                                         item.isTasktype = true;
                                         if(item.children){
                                             item.children.map((children) => {
-                                            if(this.idInit === null){
-                                                this.idInit = children.id
+                                            if(this.defId === null){
+                                                this.setDefId(children.id)
                                             }
                                             })
                                         }
@@ -470,6 +469,13 @@
                     });
                 this.copy.show = false;
             }
+        },
+        computed:{
+            ...mapState({
+                defId(data){
+                    return data.typelib.defId
+                }
+            })
         },
         components:{
             vUpload

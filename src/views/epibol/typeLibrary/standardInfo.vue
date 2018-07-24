@@ -198,6 +198,8 @@
 
 </template>
 <script>
+
+    import {mapState} from 'vuex';
     import qs from 'querystring';
     import api from 'api';
     import Icon from "iview/src/components/icon/icon";
@@ -316,7 +318,6 @@
                 } else {
                     this.$Message.error(data.err_message);
                 }
-
             },
             /*获取图标库*/
             async iconList(){
@@ -557,7 +558,7 @@
                     this.updateId = dataDetail.id;
                     if(dataDetail === 'default'){
                         obj = {
-                            id:340
+                            id:this.defId
                         }
                     }
                     let {data} = await api.taskCateinfo(obj);
@@ -652,6 +653,13 @@
                 }
 
             }
+        },
+        computed:{
+            ...mapState({
+                defId(data){
+                    return data.typelib.defId
+                }
+            })
         },
         filters:{
             /*优先级*/

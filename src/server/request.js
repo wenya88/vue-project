@@ -37,4 +37,12 @@ export default {
     taskTypeAdd: (data, changeUrl) => {
         return Vue.$axios.post(url + changeUrl, qs.stringify(data))                            // 新增类型
     },
+    /*项目级类型库*/
+    projectTaskList: (data) => {
+        return Vue.$axios.post(url + 'task/project-tasktype/list', qs.stringify(data))                            // 新增类型
+    },
+    projectTaskInfo: (data) => {
+        return Vue.$axios.post(url + 'task/project-tasktype/info', qs.stringify(data))                            // 新增类型
+    },
+
 }
