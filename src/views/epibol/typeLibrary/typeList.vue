@@ -38,6 +38,8 @@
     import vUpload from '@/components/upload.vue'
     export default {
         mounted() {
+
+
             this.$nextTick(() => {
                 this.init();
             });
