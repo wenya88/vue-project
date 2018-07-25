@@ -394,6 +394,7 @@
 
             /*点击进入详情*/
             goTaskList(data) {
+
                 this.$bus.emit('typesDetail', data);
             },
             /*打开右边菜单*/
@@ -408,9 +409,9 @@
                     })
                 };
                 arrData(this.treeMap[0].children);
-console.log(333,this.$set)
+
                 this.$set(data, 'btnShow', !data.btnShow)
-                console.log(444)
+
 
             },
             /*删除弹窗*/

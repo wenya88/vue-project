@@ -129,7 +129,7 @@ const mutations = {
     /*获取工作台任务的身份- 成员或者组长*/
     setUserStatus(state, data){
         state.userStatus = data;
-    }
+    },
 
 };
 

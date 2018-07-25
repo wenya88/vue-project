@@ -42,7 +42,7 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
+        <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
@@ -114,6 +114,7 @@
                 </Button>
             </div>
         </standard-info>
+        <div v-else style="text-align: center;height: 100%;margin-top: 120px;font-size: 20px">请从右上角添加规范哦</div>
     </div>
 </template>
 
@@ -132,6 +133,7 @@
         },
         data() {
             return {
+                infoUpdate:null,
                 tabsTypeId: null,
                 project_id: sessionStorage.getItem('projectID'),
                 btnSign: [0, 0],
@@ -217,6 +219,7 @@
             },
             /*查询详情*/
             async projectTasktype(item,index) {
+                this.infoUpdate = {item:item,index:index};
                 let obj = null;
                 this.clearData();
                 this.$refs.tree.clearInfo();
@@ -241,12 +244,17 @@
                             this.$Message.error(data.err_message);
                         }
             },
+            // 提交时更新info
+            infoUpdate(){
+//                this.projectTasktype(this.infoUpdate.item,this.infoUpdate.index)
+            },
             /*删除*/
             closeType(item) {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/delete', qs.stringify({id: item.id}))
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.listInit();
+                            this.menuInit();
                         } else {
                             this.$Message.error(data.err_message);
                         }
@@ -352,6 +360,7 @@
     .projectSpeContainer {
         .tabHead {
             display: flex;
+
             .typeTabsContainer {
                 display: flex;
                 padding: 21px 0 0 21px;
@@ -391,6 +400,7 @@
             .addType {
                 position: relative;
                 flex: 1;
+                min-height: 80px;
                 border-bottom: 1px solid @green;
                 background: #fff;
                 .addButton {
