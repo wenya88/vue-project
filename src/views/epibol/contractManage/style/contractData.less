@@ -64,10 +64,40 @@
        }
     }
     .contractSchedle{
-        margin-left:530px;padding:20px;overflow:auto;
+        margin-left:530px;padding:20px;overflow:auto;text-align:center;
         .Flex{
-            display:flex;justify-content:center;align-items:center; width:100%;
-            height:100%;
+          width:400px;display:inline-block;text-align:left;
+          h1{
+              font-weight:normal;font-size:14px;margin-bottom:20px;
+          }
+          .schedle{
+              li{
+                  span{
+                    width:60px;height:60px;padding:12px 2px;display:inline-block;border-radius:100%;text-align:center;line-height:36px;overflow: hidden;
+                    border:1px solid #a6a6a6;background:#fff;float:left;
+                  }
+                  .state{
+                    background:#49c800;border-color:#49c800;color:#fff;
+                  }
+                  .statusInfo{
+                      float:left;margin-left:30px;width:200px;line-height:18px;color:#c9c9c9;margin-top:10px;
+                      .Constate{
+                          color:#009900;font-size:14px;display:line-block;font-weight:bold;
+                      }
+                  }
+                  p{
+                      margin:10px 29px;height:42px;width:2px;display:inline-block;overflow:hidden;background:#e1e1e1;
+                      em{
+                          position:absolute;margin-left:10px;color:#ff9900;width:10px;margin-top:-5px;
+                      }
+                  }
+                &:nth-last-of-type(1){
+                    p{
+                        display:none;
+                    }
+                }
+              }
+          }
         }
     }
    .autoHeight{
@@ -105,6 +135,12 @@
            li{
                padding:8px 0px;
                &:hover .deletPrice{display:inline-block;}
+               &:nth-of-type(1):hover .deletPrice{
+                    display:none;
+               }
+               &:nth-last-of-type(2):hover .deletPrice{
+                    display:none;
+               }
            }
            .line{
                &:extend(.newContractData .basicInfo ul .line);

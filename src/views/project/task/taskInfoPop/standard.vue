@@ -3,31 +3,48 @@
     <div class="taskInfoPopStandardContainer">
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
-           <template>
-               <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo">
-                   <span>风格</span>
-                   <span>{{item}}</span>
-               </dd>
-           </template>
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'progress' || item.type === 'file' || item.type === 'connect'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
         </dl>
         <dl class="standardList">
-            <dt class="standardTitle">基础规范</dt>
+            <dt class="standardTitle">制作流程规范</dt>
             <div>
-                <li>流程1-流程2-流程3</li>
+                <ul class="flowChartUl">
+                   <template v-if="infoDetails">
+                       <li v-for="(item,index) in infoDetails.stage" class="flowChart"
+                           @click="getFlowInfo(item)"
+                       >
+                           <span v-if="index !== 0">———</span>{{item.stage_name}}
+                       </li>
+                   </template>
+                </ul>
             </div>
-            <dd v-for="(item,index) in dataForm" :key="index" class="standardInfo">
-                <span>风格</span>
-                <span>{{item}}</span>
+            <dd v-if="flowChartText" v-for="(item,index) in flowChartText" :key="index" class="standardInfo">
+            <span>{{item.norm_name}}</span>
+            <div>
+                <span>{{item.text}}</span>
+                <span  class="level" :class="'level'+item.level" >{{item.level}}</span>
+            </div>
             </dd>
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">交稿文件规范</dt>
-            <dd v-for="(item,index) in dataForm" :key="index" class="standardInfo">
-                <span>风格</span>
-                <span>{{item}}</span>
-            </dd>
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'hand'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
+
         </dl>
-        {{infoDetails}}
     </div>
 </template>
 
@@ -38,7 +55,7 @@
 
         },
         mounted() {
-            this.init()
+
         },
         data() {
             return {
@@ -48,16 +65,14 @@
                     connect:[],
                     hand:[],
                 },
-                dataForm: [
-                    'DJDJDJDJ',
-                    '活跃',
-                ]
+                flowChartText:[]
             }
         },
         methods: {
-            init(data){
-                console.log(91,data)
-
+            getFlowInfo(item){
+                if(item.require){
+                    this.flowChartText = item.require
+                }
             }
         },
         computed: {
@@ -69,7 +84,7 @@
         },
         watch:{
             infoDetails(data){
-               this.init(data)
+                console.log(99,data)
             }
         },
         components: {}
@@ -81,6 +96,9 @@
         padding: 0 10px;
         margin-bottom: 40px;
         .standardList {
+            .flowChartUl{
+                display: flex;
+            }
             .standardTitle{
                 font-size: 16px;
                 color: #ccc;
@@ -88,6 +106,19 @@
             .standardInfo {
                 display: flex;
                 justify-content: space-between;
+            }
+            .level{
+                padding: 0 5px;
+                color: #fff;
+            }
+            .level3{
+              background: red;
+            }
+            .level2{
+                background: orange;
+            }
+            .level1{
+                background: #8c8c8c;
             }
         }
         dl{

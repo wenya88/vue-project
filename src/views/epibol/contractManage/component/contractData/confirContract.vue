@@ -4,7 +4,7 @@
             <!-- 合同预览 -->
             <div v-if="contrateCommit" class="lookContract">
                     <div class="contractIndex">
-                        <file-upload>
+                        <file-upload v-if="contrateButton">
                             <span class="ageUpload" id="browse" slot="upload">
                                 <p>
                                     <Icon type="android-upload" size="35"></Icon><br/>
@@ -13,20 +13,20 @@
                             </span>
                         </file-upload>
                         <span v-for="(item,index) in filesList" :key="index" :class="{selet:index==Cindex}" @click="contractImg(index,item.file_url)">
-                                <em class="delete" @click.stop="deleteImg(index)"><Icon type="trash-a" size="16"></Icon></em>
+                                <em class="delete" @click.stop="deleteImg(index)" v-show="contrateButton"><Icon type="trash-a" size="16"></Icon></em>
                                 <img :src="item.file_url">
                                 第{{index+1}}页
                         </span>
                     </div>
                     <div class="contract">
-                        <div class="restContractStyle" @click="restContract"><Icon type="arrow-return-left" size="16"></Icon>&nbsp;&nbsp;重选合同类型</div>
+                        <div class="restContractStyle" @click="restContract" v-show="contrateButton"><Icon type="arrow-return-left" size="16"></Icon>&nbsp;&nbsp;重选合同类型</div>
                         <img :src="imgUrl" id="bigImg">
                     </div>
                     <div class="clear"></div>
             </div>
 
             <!-- 合同上传 -->
-            <div v-if="!contrateCommit">
+            <div v-else>
                 <!-- 线下合同 -->
                 <div class="offlineContract">
                     <div class="title">
@@ -69,10 +69,11 @@ export default {
             imgUrl:'',
             Cindex:0,
             filesList:[],
-            configure:{},
+            configure:{}
         }
     },
     mounted(){
+        this.initFileData();
         this.autoHeight();
         this.getContractFile();
         this.$bus.on("FileUploaded",(val)=>{
@@ -82,7 +83,11 @@ export default {
     components:{
         fileUpload:fileUpload
     },
+    props:["filesData"],
     computed:{
+        contrateButton(){
+            return this.$store.state.paySkip.contrateButton;
+        },
         contrateCommit(){
             return this.$store.state.paySkip.contrateCommit;
         },
@@ -91,6 +96,17 @@ export default {
         }
     },
     methods:{
+        // initFileData
+        initFileData(){
+            if(this.filesData.length>0){
+                this.filesList=this.filesData;
+                this.$store.commit('getContrateCommit',true);
+                this.$nextTick(()=>{
+                    this.getContractFile();
+                    this.contractRow();
+                })
+            }
+        },
         // uploadCallBack
         uploadCallBack(){
            this.uploadFile.forEach(val => {
@@ -100,6 +116,7 @@ export default {
                delete val.Status;
            })
            this.$store.commit('getContrateCommit',true);
+           this.$store.commit('getContractServerButton',true);
            this.$nextTick(()=>{
                 this.getContractFile();
                 this.contractRow();
@@ -125,6 +142,7 @@ export default {
             this.filesList.splice(index,1);
             if(this.filesList.length==0){
                 this.restContract();
+                this.$store.commit('getContractServerButton',false);
             }
         },
         // defultImg

@@ -9,7 +9,7 @@ let Axios = axios.create({
 Axios.interceptors.request.use(
   config => {
     if (localStorage.token) {
-      config.headers.TOKEN = `${localStorage.token}`;
+      config.headers.token = `${localStorage.token}`;
     }
     return config;
   },
