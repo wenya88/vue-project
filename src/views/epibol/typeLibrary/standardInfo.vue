@@ -431,7 +431,7 @@
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'file'});
+                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'hand'});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';

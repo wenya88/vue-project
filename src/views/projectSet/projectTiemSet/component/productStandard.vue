@@ -283,7 +283,7 @@
                 }
             },
             addruleList() {
-                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'hand'});
+                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'file'});
                 this.ruleListW = {
                     show: false,
                     name: '',
