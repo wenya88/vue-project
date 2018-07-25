@@ -278,6 +278,7 @@
             //点击切换任务项
             changeTaskListItem(currentRow, oldRow) {
                 console.log(1,currentRow)
+                console.log(2,this.subtask)
                 if (this.subtask === 'true') {
                     this.$emit('editWindow', currentRow)
                 } else if (currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
