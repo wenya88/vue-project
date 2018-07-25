@@ -3,12 +3,14 @@
     <div class="taskInfoPopStandardContainer">
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
-           <template>
-               <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo">
-                   <span>风格</span>
-                   <span>{{item}}</span>
-               </dd>
-           </template>
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'progress' || item.type === 'file' || item.type === 'connect'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
@@ -22,10 +24,15 @@
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">交稿文件规范</dt>
-            <dd v-for="(item,index) in dataForm" :key="index" class="standardInfo">
-                <span>风格</span>
-                <span>{{item}}</span>
-            </dd>
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'hand'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
+
         </dl>
         {{infoDetails}}
     </div>

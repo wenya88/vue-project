@@ -284,22 +284,24 @@ export default{
         getTaskTypeList()
         {
             //console.log("===");
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list',qs.stringify({company_id: 1}))
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
                 .then( res => res.data)
                 .then( ({data}) => {
+                    this.taskTypesList = data
+                    console.log(78,this.taskTypesList)
 //                    this.taskTypesList = [];
-                    if (data) {
-                        data.map((items, index) => {
-                            if (items.children) {
-                                items.children.map((item) => {
-                                    console.log(111,item)
-                                    this.taskTypesList = this.taskTypesList.concat(item.tasktype)
-//                                    console.log(33,this.taskTypesList)
-                                })
-                            }
-                        })
-                    }
-                    console.log(911,this.taskTypesList)
+//                    if (data) {
+//                        data.map((items, index) => {
+//                            if (items.children) {
+//                                items.children.map((item) => {
+//                                    console.log(111,item)
+//                                    this.taskTypesList = this.taskTypesList.concat(item.tasktype)
+////                                    console.log(33,this.taskTypesList)
+//                                })
+//                            }
+//                        })
+//                    }
+
 //                    res.data.forEach((res)=>{
 //                        if(res.tasktype)
 //                        {
