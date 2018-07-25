@@ -129,6 +129,7 @@
 <script>
 var qs = require("querystring");
 import {mapState,mapMutations} from 'vuex';
+import api from 'api';
 export default{
     props:{
         taskManagement:{
@@ -192,7 +193,7 @@ export default{
         },
     },
     methods:{
-
+        ...mapMutations(['setTaskInfo']),
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
             // console.log('详情',id,fatherFunctions)
@@ -203,11 +204,13 @@ export default{
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
+
                         this.initTaskDetailFromData(res);
                         this.getTaskTypeRequire(res.tasktype_id);
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
                         this.principalName = res.member_id;
+                        this.setTaskInfo(res)
                     }
                 )
                 .catch(error => {
