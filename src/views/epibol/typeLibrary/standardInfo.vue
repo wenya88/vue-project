@@ -1,5 +1,5 @@
 <template>
-    <Content class="taskClassLibrary" :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+    <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
 
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
             <!--内容规范-->
@@ -388,6 +388,7 @@
                 let res = await api.taskprojectCateUpdate(obj);
                 if (res.data.err_code === 0) {
                     this.$Message.success("保存成功");
+                    this.$emit('update')
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
                     this.$Message.error(res.data.err_message);
