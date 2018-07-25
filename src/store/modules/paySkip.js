@@ -8,6 +8,7 @@ const paystatus={
         // fileUpload:"http://59.111.95.148/index.php?r=file/file/file-upload"
         fileUpload:"http://192.168.2.19/index.php?r=file/file/file-upload",
         contrateCommit:false,
+        contrateButton:false,
         contractID:null
     },
     mutations:{
@@ -28,6 +29,9 @@ const paystatus={
         },
         getContractIDCommit(state,pData){
             state.contractID=pData
+        },
+        getContractServerButton(state,pData){
+            state.contrateButton=pData;
         }
 
     }
