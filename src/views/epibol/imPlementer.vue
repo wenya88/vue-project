@@ -113,7 +113,7 @@
            </p>
            <!-- 上传文件 -->
            <div class="upload_box">
-               <upload-box :parameter='partObj' >
+               <upload-box>
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
                    <p class="title_all"><span class='iconfont icon-shangchuan3 font_class'></span><span class="prompt_title">拖入/点击上传任务文件</span></p>
@@ -129,6 +129,7 @@
 <script>
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
+// import {mapState} from 'vuex'
 export default {
   data () {
     return {
@@ -162,16 +163,28 @@ export default {
     this.getMsgList()
   },
   computed: {
-    getUpfile () {
-      return this.$store.state.uploadFile
+    // ...mapState({
+    //   uploadList(data){
+    //     return data.app.uploadFile
+    //   }
+    // }),
+    uploadList () {
+      return this.$store.state.app.uploadFile
     }
   },
   watch: {
-    getUpfile (e) {
-      console.log('eeeee', e)
+    uploadList(data) {
+      console.log('上传变化', data)
+      this.getList(data)
     }
   },
   methods: {
+    // 获取队列
+    getList (list) {
+      list.forEach(item => {
+        console.log('地址', item)
+      })
+    },
     // 上传
     getUpload () {
       this.isclose = true

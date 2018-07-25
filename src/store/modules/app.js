@@ -3,6 +3,7 @@ import {menu} from '@/router/menu'
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
+import { cidrSubnet } from 'ip';
 
 const app = {
     state: {
@@ -48,7 +49,7 @@ const app = {
             state.uploadFile.push(data.data);
         },
         clearfileUrl(state) {
-            state.uploadFile = [];
+            state.uploadFile = []; 
         },
     }
 

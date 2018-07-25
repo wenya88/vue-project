@@ -39,37 +39,21 @@ export default {
       signData: {}
     };
   },
-  mounted() {
-    if (window.THREE) {
-      // console.log('THREE has ready1')
-      this.newFBXMedel();
-    } else {
-      $LAB
-        .script("./src/views/project/components/threeFile/js/three.js").wait()
-        .script("./src/views/project/components/threeFile/js/inflate.min.js").wait()
-        .script("./src/views/project/components/threeFile/js/FBXLoader.js").wait()
-        .script("./src/views/project/components/threeFile/js/CSS3DRenderer.js").wait()
-        .script("./src/views/project/components/threeFile/js/OrbitControls.js").wait(() => {
-          // console.log('THREE is ready2');
-          this.newFBXMedel();
-        })
-    filters:{
-      filtStat (val) {
-        if(val==1){
-          return '内部待审'
-        }else if(val==2){
-          return '客户待审'
-        }else if(val==3){
-          return '内部已反馈'
-        }else if(val==4){
-          return '客户已反馈'
-        }else if(val==5){
-          return '审核通过'
-        }else{
-          return '--'
-        }
+  filters:{
+    filtStat(val){
+      if(val==1){
+        return '内部待审'
+      }else if(val==2){
+        return '客户待审'
+      }else if(val==3){
+        return '内部已反馈'
+      }else if(val==4){
+        return '客户已反馈'
+      }else if(val==5){
+        return '审核通过'
+      }else{
+        return '--'
       }
-    }
     }
   },
   mounted() {
@@ -161,9 +145,8 @@ export default {
       var mouse = new THREE.Vector2();
 			var raycaster = new THREE.Raycaster();
       var urlObject;
-      var divHeight = 100%
-      // init(this.storeFileURl);//初始化
 
+      var divHeight = 100%
       init(this.storeFileURl);//初始化
       // init();
       showSign(this.signData)  // 显示获取到的标记
@@ -416,147 +399,6 @@ export default {
           // console.log(item)
           getSignText(item.x,item.y,item.z,index,item.message)
         })
->>>>>>> 44796540316d33d3d353ce7b0d85423d68e86e9f
-      }
-			
-||||||| .r1145
-			
-=======
-			// 标记编辑框
->>>>>>> .r1148
-			function showText(point) {
-        // console.log(point)
-        // let signcover=document.getElementsByClassName("signcover")[0];
-        sessionStorage.point = JSON.stringify(point);
-        var indexId = 0, x, y, z, removeId, removeHtml;
-				var element = document.createElement( 'div' );
-          element.innerHTML = "<div class='inputSignBox'>"+
-          "<div class='outSignbox'>X</div>"+
-          "<div class='signbox' contenteditable='true' id='inputText' tabindex='-1'><em id='deflutText'>输入标记</em></div>"+
-          "<div class='sureSign'>标注</div>"+
-          "</div>";
-        // signcover.firstChild.appendChild( element )
-          // console.log(signcover)
-					//添加编辑
-          $(document).on('click','#inputText',function(){
-            $(this).focus();
-            $('.signbox em').remove();
-          });
-          //编辑框聚焦
-          $(document).on('click','.outSignbox',function(){
-            $('.inputSignBox').remove();
-          });
-          //退出编辑
-          $(document).on('click','.sureSign',function(){
-            if($('.signbox em').length>0){
-              $('.inputSignBox').remove();
-            }else if($('.signbox').text().length<=0){
-              $('.inputSignBox').remove();
-            }else{
-              indexId++;
-              var text=$.trim($('.signbox').text());
-							$('.inputSignBox').remove();
-							// 显示标记的内容
-              signText(JSON.parse(sessionStorage.point),indexId,text)
-              var mes={x:point.x,y:point.y,z:point.z,message:text};
-              Data[Data.length]=mes;
-              sessionStorage.threeData=JSON.stringify(Data);
-            }
-					});
-					//弹出取消标记
-					$(document).on('mouseenter','[id*=Ts]',function(e){
-						var m=$(this).attr('id').replace(/[^0-9]/ig, "");   // m为id后面的数字
-						removeHtml = $(this).prop("outerHTML")   // 获取当前的html
-              e.stopPropagation();
-              removeId=m;
-							$('.chooseBox').remove();
-							x=$(this).attr('x');
-							y=$(this).attr('y');
-							z=$(this).attr('z');
-              $(this).append("<div class='chooseBox'><ul><li id='deleteSign'>X</li></ul></div>");
-					});
-					//删除标记
-          $(document).on('click','#deleteSign',function(){
-						// 移除sessionStorage.threeData中的值
-						deleteData(x,y,z);
-						// 移除场景中相对于的物体对象
-						removeSign(x,y,z);
-          });
-          //点击消失
-          $(document).click(function(){
-            $('.chooseBox').remove();
-					});
-					
-        var object = new THREE.CSS3DObject( element );
-					object.position.x = point.x;
-					object.position.y = point.y;
-					object.position.z = point.z;
-					// object.rotation.x = Math.random();
-					// object.rotation.y = Math.random();
-					// object.rotation.z = Math.random();
-					object.rotation.x = camera.rotation.x;
-					object.rotation.y = camera.rotation.y;
-				 	object.rotation.z = camera.rotation.z;
-
-
-					object.scale.x = 0.5;
-					object.scale.y = 0.5;
-					scene.add( object );
-					
-					editText.push(object);
-					// console.log('显示标记框',editText)
-			}
-      // 显示标记
-      function signText(point,id,text) {
-				var objectName = 'sign'+id
-        var signtext = document.createElement('div');
-				signtext.innerHTML = "<div class='signIndex' id='Ts"+id+"' theSign='"+text+"' x='"+point.x+"' y='"+point.y+"' z='"+point.z+"'>"+"<div class='hintBox'"+"title="+text+">"+text+"</div>"+"</div>";
-				
-        var signObject = new THREE.CSS3DObject( signtext );
-        signObject.position.x = point.x;
-        signObject.position.y = point.y;
-        signObject.position.z = point.z;
-        signObject.rotation.x = camera.rotation.x;
-        signObject.rotation.y = camera.rotation.y;
-        signObject.rotation.z = camera.rotation.z;
-				signObject.name = objectName   // 给物体对象设置特定name
-
-        signObject.scale.x = 0.5;
-        signObject.scale.y = 0.5;
-				scene.add( signObject );
-				signTexts.push(signObject);
-        // console.log('显示标记',signTexts)
-			}
-			// 删除标记记录
-			function deleteData(x,y,z){
-				for(var i=0;i<Data.length;i++){
-					if(Data[i].x==x&&Data[i].y==y&&Data[i].z==z){
-						Data.splice(i,1);
-						sessionStorage.threeData=JSON.stringify(Data);
-						break;
-					}else{
-						continue;
-					}
-				}
-			}
-			// 从场景中移除标注
-			function removeSign(x,y,z) {
-				for(var n=0;n<signTexts.length;n++) {
-					if(signTexts[n].position.x==x&&signTexts[n].position.y==y&&signTexts[n].position.z==z) {
-						var htmlSign = scene.getObjectByName(signTexts[n].name)   // 获取特定name的物体对象
-					}
-				}
-				scene.remove( htmlSign );
-			}
-      // 调用接口获取到标记并显示标记
-      function showSign(signObj) {
-        // console.log(signObj)
-        // console.log(signObj.file.tag)
-        var getShowSign = signObj.file.tag;
-        getShowSign.forEach((item,index) => {
-          // console.log(item)
-          getSignText(item.x,item.y,item.z,index,item.message)
-        })
       }
       //窗口重置
       function onWindowResize() {
@@ -630,19 +472,9 @@ body {
   overflow: hidden;
 }
 </style>
-<<<<<<< .mine
-<<<<<<< HEAD
-=======
 <style scoped lang="less">
 @import "threeFile/style/feek.less";
 </style>
->>>>>>> 44796540316d33d3d353ce7b0d85423d68e86e9f
-||||||| .r1145
-=======
-<style scoped lang="less">
-@import "threeFile/style/feek.less";
-</style>
->>>>>>> .r1148
 <style scoped>
 @import "threeFile/style/sign.css";
 </style>
