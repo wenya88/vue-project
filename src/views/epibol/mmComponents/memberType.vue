@@ -5,7 +5,7 @@
             ({{number}})
             <slot name="number"></slot>
         </div>
-        <Tabs type="card" v-if="tabsStatus">
+        <Tabs type="card">
             <TabPane label="部门">
                 <ul class="fMenu">
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
@@ -47,9 +47,6 @@
                 <slot name="addDuty"></slot>
             </TabPane> 
         </Tabs>
-        <div class="autoList" v-else>
-            <div>111111111</div>
-        </div>
     </div>
 </template>
 <script>
@@ -58,8 +55,7 @@ export default {
     data() {
         return {
             FMenuIndex: null,
-            SMenuIndex: null,
-            tabsStatus: true
+            SMenuIndex: null
         }
     },
     props: {
@@ -84,14 +80,6 @@ export default {
         // openNames: {
         //     type: Array
         // }
-    },
-    created() {
-        let tabsType = sessionStorage.tabsType;
-        if(tabsType == 'member') {
-            this.tabsStatus = true
-        } else if(tabsType == 'auto') {
-            this.tabsStatus = false
-        }
     },
     methods: {
         /**
