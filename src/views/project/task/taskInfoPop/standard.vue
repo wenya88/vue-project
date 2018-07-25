@@ -3,10 +3,12 @@
     <div class="taskInfoPopStandardContainer">
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
-            <dd v-for="(item,index) in dataForm" :key="index" class="standardInfo">
-                <span>风格</span>
-                <span>{{item}}</span>
-            </dd>
+           <template>
+               <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo">
+                   <span>风格</span>
+                   <span>{{item}}</span>
+               </dd>
+           </template>
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
@@ -25,26 +27,51 @@
                 <span>{{item}}</span>
             </dd>
         </dl>
+        {{infoDetails}}
     </div>
 </template>
 
 <script>
+    import {mapState} from 'vuex'
     export default {
         created() {
+
         },
         mounted() {
+            this.init()
         },
         data() {
             return {
-
+                standardType:{
+                    progess :[],
+                    file:[],
+                    connect:[],
+                    hand:[],
+                },
                 dataForm: [
                     'DJDJDJDJ',
                     '活跃',
                 ]
             }
         },
-        methods: {},
-        computed: {},
+        methods: {
+            init(data){
+                console.log(91,data)
+
+            }
+        },
+        computed: {
+            ...mapState({
+                infoDetails(data){
+                    return data.project.detail.taskInfo
+                }
+            })
+        },
+        watch:{
+            infoDetails(data){
+               this.init(data)
+            }
+        },
         components: {}
     }
 </script>

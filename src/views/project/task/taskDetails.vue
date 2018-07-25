@@ -54,8 +54,8 @@
                                    :disabled="editDisabled"
                                    icon="android-color-palette"
                     >
-                        <Option v-for="item in taskTypesList"
-                                :key="item.tasktype_name"
+                        <Option v-for="(item,index) in taskTypesList"
+                                :key="index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
@@ -81,8 +81,8 @@
                                    @on-select="selectTaskType"
                                    :disabled="editDisabled"
                     >
-                        <Option v-for="item in taskTypesList"
-                                :key="item.tasktype_name"
+                        <Option v-for="(item,index) in taskTypesList"
+                                :key="index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
@@ -201,10 +201,10 @@ export default{
             {
                 this.getChildProject()
                 this.taskID = id;
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
+//                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-
                         this.initTaskDetailFromData(res);
                         this.getTaskTypeRequire(res.tasktype_id);
                         this.clickMenberDropdown();
@@ -286,23 +286,35 @@ export default{
             //console.log("===");
             this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list',qs.stringify({company_id: 1}))
                 .then( res => res.data)
-                .then( res => {
-                    this.taskTypesList=[];
-                    res.data.forEach((res)=>{
-                        if(res.tasktype)
-                        {
-                            this.taskTypesList = [];
-                            this.taskTypesList = res.tasktype;
-                            // res.tasktype.forEach((res)=>{
-                            //     console.log(res);
-                            //     this.taskTypesList.push({
-                            //         tasktype_name:res.tasktype_name,
-                            //         cate_id:res.cate_id
-                            //     });
-                            // })
-                        }
-
-                    })
+                .then( ({data}) => {
+//                    this.taskTypesList = [];
+                    if (data) {
+                        data.map((items, index) => {
+                            if (items.children) {
+                                items.children.map((item) => {
+                                    console.log(111,item)
+                                    this.taskTypesList = this.taskTypesList.concat(item.tasktype)
+//                                    console.log(33,this.taskTypesList)
+                                })
+                            }
+                        })
+                    }
+                    console.log(911,this.taskTypesList)
+//                    res.data.forEach((res)=>{
+//                        if(res.tasktype)
+//                        {
+//                            this.taskTypesList = [];
+//                            this.taskTypesList = res.tasktype;
+//                            // res.tasktype.forEach((res)=>{
+//                            //     console.log(res);
+//                            //     this.taskTypesList.push({
+//                            //         tasktype_name:res.tasktype_name,
+//                            //         cate_id:res.cate_id
+//                            //     });
+//                            // })
+//                        }
+//
+//                    })
                     })
                 .catch(error => {
                     //this.$Message.error("获取任务信息失败，请重试！");

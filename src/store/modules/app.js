@@ -46,7 +46,9 @@ const app = {
             state.messageCount = count;
         },
         setfileUrl(state, data) {
+            data.data.name = data.files.name
             state.uploadFile.push(data.data);
+            console.log(11,state.uploadFile)
         },
         clearfileUrl(state) {
             state.uploadFile = []; 
