@@ -31,7 +31,7 @@
                                              alt=""
                                              :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">
                                         <span>{{children.tasktype_name}}</span>
-                                        <Icon v-if="index === btnSign[0] && i === btnSign[1]" type="checkmark-circled"
+                                        <Icon v-if="children.border" type="checkmark-circled"
                                               style="padding-left: 5px;color: #00d900;line-height: 30px;"></Icon>
                                     </li>
                                 </ul>
@@ -42,7 +42,7 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
+        <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
@@ -114,6 +114,7 @@
                 </Button>
             </div>
         </standard-info>
+        <div v-else style="text-align: center;height: 100%;margin-top: 120px;font-size: 20px">请从右上角添加规范哦</div>
     </div>
 </template>
 
@@ -132,6 +133,7 @@
         },
         data() {
             return {
+                infoUpdate:null,
                 tabsTypeId: null,
                 project_id: sessionStorage.getItem('projectID'),
                 btnSign: [0, 0],
@@ -185,12 +187,11 @@
                     let arrData = (data) => {
                         data.map((item) => {
                             item.btnShow = false;
-
-//                            this.typeTabs.map((tab,i) => {
-//                                if(item.id == tab.tasktype_id){
-//                                    item.border = true;
-//                                }
-//                            });
+                            this.typeTabs.map((tab,i) => {
+                                if(item.id == tab.tasktype_id){
+                                    item.border = true;
+                                }
+                            });
                             if (item.tasktype && item.tasktype.length > 0) {
                                 item.children = item.tasktype;
                             }
@@ -217,13 +218,19 @@
                         }
             },
             /*查询详情*/
-            projectTasktype(item,index) {
+            async projectTasktype(item,index) {
+                this.infoUpdate = {item:item,index:index};
+                let obj = null;
                 this.clearData();
                 this.$refs.tree.clearInfo();
-                this.tabsColor = index;
+                if(item !== 'init'){
+                     obj = {id: item.id};
+                    this.tabsColor = index;
+                }else if(item === 'init' && this.typeTabs.length>0) {
+                     obj = {id: this.typeTabs[0].id};
+                }
 
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/info', qs.stringify({id: item.id}))
-                    .then(({data}) => {
+                let {data} = await api.projectTaskInfo(obj);
                         if (data.err_code === 0) {
                             this.tabsTypeId = data.data.id;
                             this.attrContent = data.data.standard.filter((item) => {
@@ -236,7 +243,10 @@
                         } else {
                             this.$Message.error(data.err_message);
                         }
-                    });
+            },
+            // 提交时更新info
+            infoUpdate(){
+//                this.projectTasktype(this.infoUpdate.item,this.infoUpdate.index)
             },
             /*删除*/
             closeType(item) {
@@ -244,6 +254,7 @@
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.listInit();
+                            this.menuInit();
                         } else {
                             this.$Message.error(data.err_message);
                         }
@@ -272,7 +283,7 @@
                 }
             },
             addruleList() {
-                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'hand'});
+                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'file'});
                 this.ruleListW = {
                     show: false,
                     name: '',
@@ -323,6 +334,7 @@
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.listInit()
+                            this.menuInit()
                         } else {
                             this.$Message.error(data.err_message);
                         }
@@ -348,6 +360,7 @@
     .projectSpeContainer {
         .tabHead {
             display: flex;
+
             .typeTabsContainer {
                 display: flex;
                 padding: 21px 0 0 21px;
@@ -387,6 +400,7 @@
             .addType {
                 position: relative;
                 flex: 1;
+                min-height: 80px;
                 border-bottom: 1px solid @green;
                 background: #fff;
                 .addButton {

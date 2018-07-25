@@ -73,10 +73,14 @@ const state = {
   ],
   taskType: [],
   subProjectList: [],
-    detail:{},
+    detail:{
+        projectInfo:null,
+        setDetailAll:null,
+        taskInfo:null,
+    },
     primaryMission:null,      // 主任务id
     userStatus:null,          //进入工作台任务的状态 成员或者组长
-}
+};
 
 const getters = {
   getNdsSortList: state => state.ndsSortList,
@@ -105,7 +109,7 @@ const actions = {
       commit('updateSubProjectList', res)
     })
   }
-}
+};
 
 const mutations = {
   updateTaskList(state, data){
@@ -118,7 +122,7 @@ const mutations = {
         Vue.set(state.detail, 'projectInfo', data)
 
   },
-    /*进入任务详情时获得info*/
+    /*进入任务详情时获得List*/
   setDetailAll(state, data) {
       Vue.set(state.detail, 'setDetailAll', data)
   } ,
@@ -129,6 +133,10 @@ const mutations = {
     /*获取工作台任务的身份- 成员或者组长*/
     setUserStatus(state, data){
         state.userStatus = data;
+    },
+    /*进入任务详情时获得info*/
+    setTaskInfo(state,data){
+        Vue.set(state.detail, 'taskInfo', data)
     }
 
 };

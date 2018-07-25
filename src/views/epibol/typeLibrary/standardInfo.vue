@@ -1,5 +1,5 @@
 <template>
-    <Content class="taskClassLibrary" :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+    <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
 
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
             <!--内容规范-->
@@ -115,9 +115,9 @@
                                     <div class="priorityContainer">
                                         <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
                                         <div class="priorityList" >
-                                            <p class="priority priority3" @click="editPriority(3,index,i)">高</p>
-                                            <p class="priority priority2" @click="editPriority(2,index,i)">中</p>
-                                            <p class="priority priority1" @click="editPriority(1,index,i)">低</p>
+                                            <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
+                                            <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
+                                            <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
                                         </div>
                                     </div>
                                     <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
@@ -141,9 +141,9 @@
                                     <div class="priorityContainer">
                                         <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
                                         <div class="priorityList">
-                                            <p class="priority priority3" @click="editPriority(3)">高</p>
-                                            <p class="priority priority2" @click="editPriority(2)">中</p>
-                                            <p class="priority priority1" @click="editPriority(1)">低</p>
+                                            <p class="priority priority3" @click="editPriority('3')">高</p>
+                                            <p class="priority priority2" @click="editPriority('2')">中</p>
+                                            <p class="priority priority1" @click="editPriority('1')">低</p>
                                         </div>
                                     </div>
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
@@ -226,6 +226,8 @@
         },
         data() {
             return {
+                goinfo:null,
+                createInfo:false,
                 delnormsValue:'',
                 isSubmit:false,// 提交按钮
                 updateId :null, // 更新
@@ -276,19 +278,20 @@
             };
         },
         mounted() {
-            // 默认进入系统默认
-            this.newtaskTypesDetail('default');
             // 获取规范列表
             this.getNormslist();
             // icon列表
             if(!this.project){
                 this.iconList();
             }
+            /*进入详情*/
             this.$bus.on('typesDetail', (data) => {
+                this.goinfo = data;
                 this.newtaskTypesDetail(data);
             });
             this.$bus.on('addType', (data) => {
                this.addType(data);
+                this.goinfo = data;
                this.isSubmit = true;
             });
             this.$bus.on('projectInfo', (data) => {
@@ -305,9 +308,7 @@
                         }
                     });
                 }
-
             });
-
         },
         methods: {
             /*获取规范列表*/
@@ -387,6 +388,7 @@
                 let res = await api.taskprojectCateUpdate(obj);
                 if (res.data.err_code === 0) {
                     this.$Message.success("保存成功");
+                    this.$emit('update')
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
                     this.$Message.error(res.data.err_message);
@@ -395,20 +397,32 @@
             /*公司级提交*/
             async submitCompany(){
                 let url = 'task/task-type/add';
-                let obj = {
-                    category_id:this.newData.cate_id,
-                    name:this.typename.typename,
-                    stage:JSON.stringify(this.fstandard),
-                    standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                    icon:this.identification.iconBorder,
-                    color:this.identification.iconColor,
-                };
-                 if(this.updateId !== null){
+                let obj = null;
+                 if(this.updateId !== null || this.createInfo){
                     url = 'task/task-type/update';
-                    obj.id = this.updateId;
-                }
+                     obj = {
+                         id:this.updateId,
+                         name:this.typename.typename,
+                         stage:JSON.stringify(this.fstandard),
+                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                         icon:this.identification.iconBorder,
+                         color:this.identification.iconColor,
+                     };
+                }else{
+                     obj = {
+                         category_id:this.newData.cate_id,
+                         name:this.typename.typename,
+                         stage:JSON.stringify(this.fstandard),
+                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                         icon:this.identification.iconBorder,
+                         color:this.identification.iconColor,
+                     };
+
+                 }
                 let res = await api.taskTypeAdd(obj, url);
                 if (res.data.err_code === 0) {
+                    this.createInfo = true ;
+                    this.newtaskTypesDetail(this.goinfo);
                     this.$Message.success("保存成功");
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
@@ -417,7 +431,7 @@
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'file'});
+                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'hand'});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
@@ -547,7 +561,6 @@
                 }
 
             },
-
             async newtaskTypesDetail(dataDetail) {
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
@@ -562,7 +575,6 @@
                         }
                     }
                     let {data} = await api.taskCateinfo(obj);
-                    console.log(33,data.err_code === 0)
                     if (data.err_code === 0) {
                                this.addInfo(data)
                     } else {
@@ -599,7 +611,8 @@
                 }
             },
             delFlowNorm(index,i){
-                this.fstandard[index].childrens.splice(i,1);
+//                console.log(131,this.fstandard[index])
+                this.fstandard[index].require.splice(i,1);
             },
             flowAddShow(index){
                 if(this.fstandard){
@@ -613,7 +626,9 @@
             addType(data){
                 this.clearInfo();
                 this.newData = data ;
-                this.updateId = null
+                this.updateId = null;
+                this.createInfo = false;
+
             },
              /*清空页面*/
             clearInfo(){
@@ -661,18 +676,26 @@
                 }
             })
         },
+        watch:{
+            // 异步defId数据
+            defId(data){
+                if(data !== null){
+                    this.newtaskTypesDetail('default');
+                }
+            }
+        },
         filters:{
             /*优先级*/
             priorityValue(value){
                 let data = value;
                 switch (value) {
-                    case 3:
+                    case '3':
                         data = '高';
                         break;
-                    case 2:
+                    case '2':
                         data = '中';
                         break;
-                    case 1:
+                    case '1':
                         data = '低';
                         break;
                 }

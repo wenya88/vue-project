@@ -38,7 +38,8 @@
                    return [
                         { title : "Image files", extensions : "jpg,gif,png,bmp" },
                         { title : "Zip files", extensions : "zip,rar" },
-                    ]
+                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv"},
+                   ]
                 }
             } ,
             maxFileSize:{
@@ -62,7 +63,7 @@
         },
         mounted() {
             /*图片上传*/
-            this.upload()
+            this.upload();
 
         },
         data() {
@@ -106,7 +107,7 @@
 
                 /*上传*/
                 uploader.bind('FilesAdded',  (uploader, files)=> {
-                    this.clearfileUrl()
+                    this.clearfileUrl();
                     this.getImgkey()
                         .then(() => {
                             files.map((item,index) => {
@@ -137,7 +138,10 @@
                 uploader.bind('FileUploaded',(uploader,files,data)=>{
                     let obj = {uploader:uploader,files:files,data:data}
                     this.imgsrc = JSON.parse(data.response);
+
+                    console.log(33,obj)
                     this.setfileUrl(obj);
+
                     this.$bus.emit("FileUploaded");
                 });
                 uploader.bind('UploadProgress',(uploader,file)=>{

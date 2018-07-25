@@ -54,8 +54,8 @@
                                    :disabled="editDisabled"
                                    icon="android-color-palette"
                     >
-                        <Option v-for="item in taskTypesList"
-                                :key="item.tasktype_name"
+                        <Option v-for="(item,index) in taskTypesList"
+                                :key="index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
@@ -81,8 +81,8 @@
                                    @on-select="selectTaskType"
                                    :disabled="editDisabled"
                     >
-                        <Option v-for="item in taskTypesList"
-                                :key="item.tasktype_name"
+                        <Option v-for="(item,index) in taskTypesList"
+                                :key="index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
@@ -129,6 +129,7 @@
 <script>
 var qs = require("querystring");
 import {mapState,mapMutations} from 'vuex';
+import api from 'api';
 export default{
     props:{
         taskManagement:{
@@ -192,7 +193,7 @@ export default{
         },
     },
     methods:{
-
+        ...mapMutations(['setTaskInfo']),
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
             // console.log('详情',id,fatherFunctions)
@@ -208,6 +209,7 @@ export default{
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions);
                         this.principalName = res.member_id;
+                        this.setTaskInfo(res)
                     }
                 )
                 .catch(error => {
@@ -281,25 +283,39 @@ export default{
         getTaskTypeList()
         {
             //console.log("===");
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/cate-list',qs.stringify({company_id: 1}))
+            this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
                 .then( res => res.data)
-                .then( res => {
-                    this.taskTypesList=[];
-                    res.data.forEach((res)=>{
-                        if(res.tasktype)
-                        {
-                            this.taskTypesList = [];
-                            this.taskTypesList = res.tasktype;
-                            // res.tasktype.forEach((res)=>{
-                            //     console.log(res);
-                            //     this.taskTypesList.push({
-                            //         tasktype_name:res.tasktype_name,
-                            //         cate_id:res.cate_id
-                            //     });
-                            // })
-                        }
+                .then( ({data}) => {
+                    this.taskTypesList = data
+                    console.log(78,this.taskTypesList)
+//                    this.taskTypesList = [];
+//                    if (data) {
+//                        data.map((items, index) => {
+//                            if (items.children) {
+//                                items.children.map((item) => {
+//                                    console.log(111,item)
+//                                    this.taskTypesList = this.taskTypesList.concat(item.tasktype)
+////                                    console.log(33,this.taskTypesList)
+//                                })
+//                            }
+//                        })
+//                    }
 
-                    })
+//                    res.data.forEach((res)=>{
+//                        if(res.tasktype)
+//                        {
+//                            this.taskTypesList = [];
+//                            this.taskTypesList = res.tasktype;
+//                            // res.tasktype.forEach((res)=>{
+//                            //     console.log(res);
+//                            //     this.taskTypesList.push({
+//                            //         tasktype_name:res.tasktype_name,
+//                            //         cate_id:res.cate_id
+//                            //     });
+//                            // })
+//                        }
+//
+//                    })
                     })
                 .catch(error => {
                     //this.$Message.error("获取任务信息失败，请重试！");
