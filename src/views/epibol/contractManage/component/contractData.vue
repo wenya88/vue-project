@@ -103,7 +103,8 @@ export default {
                 contract_id:this.contractID,
                 basic_list:JSON.stringify(this.newData),
                 price_list:JSON.stringify(this.newCost.price_list),
-                step_list:JSON.stringify(this.newCost.step_list)
+                step_list:JSON.stringify(this.newCost.step_list),
+                file_list:JSON.stringify(this.newFileLoad)
             }
             if(this.contractID==null){
                 delete parms.contract_id
