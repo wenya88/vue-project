@@ -25,12 +25,15 @@
                 </Step>
                 <Step title="已完成" ></Step>
             </Steps>
+            {{infoDetails}}
 
         </div>
     </div>
 </template>
 
 <script>
+    import api from 'api'
+    import {mapState} from 'vuex'
     export default {
         created() {
         },
@@ -40,7 +43,13 @@
             return {}
         },
         methods: {},
-        computed: {},
+        computed: {
+            ...mapState({
+                infoDetails(data){
+                    return data.project.detail.setDetailAll
+                }
+            })
+        },
         components: {}
     }
 </script>

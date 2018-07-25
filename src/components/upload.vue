@@ -138,7 +138,10 @@
                 uploader.bind('FileUploaded',(uploader,files,data)=>{
                     let obj = {uploader:uploader,files:files,data:data}
                     this.imgsrc = JSON.parse(data.response);
+
+                    console.log(33,obj)
                     this.setfileUrl(obj);
+
                     this.$bus.emit("FileUploaded");
                 });
                 uploader.bind('UploadProgress',(uploader,file)=>{
