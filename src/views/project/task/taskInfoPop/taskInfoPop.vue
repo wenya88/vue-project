@@ -64,10 +64,10 @@
     import vStandard from "./standard";
     import vResource from "./resource";
 
-    import {
-        cateList,
-        deletetaskData,
-    } from "@/config/env.js";
+    // import {
+    //     cateList,
+    //     deletetaskData,
+    // } from "@/config/env.js";
 
     export default {
         props: [

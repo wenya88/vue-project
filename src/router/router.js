@@ -174,7 +174,14 @@ export const appRouter = [
                 name: 'contractManage',
                 title: '合同',
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
-            }, {
+            },{
+                path: '/epibol/contractData',
+                icon: 'ios-paper-outline',
+                name: 'contractData',
+                title: '新增合同',
+                component: resolve => { require(['@/views/epibol/contractManage/component/contractData.vue'], resolve); }
+            }, 
+            {
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
                 name: 'projectManage',

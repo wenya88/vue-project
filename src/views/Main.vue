@@ -79,7 +79,7 @@
                     <span class="name">{{item.title}}</span>
                 </li>
             </ul>
-             <div class="single-page-con" :style="`width:${mainWidth}px`">
+             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
                     <router-view></router-view>
                 </div>
@@ -264,6 +264,9 @@ export default {
 </script>
 <style lang="less">
 @import "./main.less";
+.main-header-avator{
+    z-index: 2;
+}
 .layout-logo {
     width: 100px;
     height: 30px;

@@ -576,7 +576,7 @@
     }
 
     .main-header-con {
-        z-index: 0 !important;
+        z-index: 1 !important;
     }
 
     .showAdd {

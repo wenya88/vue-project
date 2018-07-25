@@ -283,7 +283,6 @@ export default {
      */
     fetchFileData(stageId,type,file,taskId,item) {
 //      this.isTabModal = true;
-
         this.$store.commit('changeComponentTaskID',taskId);
         this.$store.commit('changeComponentFileURl',file);
 

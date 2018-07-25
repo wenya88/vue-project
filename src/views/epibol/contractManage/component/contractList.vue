@@ -3,24 +3,23 @@
         <div class="contractRow">
             <GeminiScrollbar>
                 <dl>
-                    <dd v-for="item in contData">
+                    <dd v-for="(item,index) in contData" :key="index">
                         <div class="title">
                             <Dropdown>
                                 <a href="javascript:void(0)">
                                     <Icon type="ios-more" size="20"></Icon>
                                 </a>
-                                <DropdownMenu slot="list" v-if="item.status=='0'||item.status=='13'">
-                                    <DropdownItem @click.native="editContract(item)">编辑</DropdownItem>
-                                    <DropdownItem @click.native="editContract(item.id)">删除</DropdownItem>
+                                <DropdownMenu slot="list" v-if="item.status<'1'">
+                                    <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
+                                    <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
                                 </DropdownMenu>
-                                <DropdownMenu slot="list" v-else>
-                                    <DropdownItem v-show="item.status=='12'||item.status=='8'?true:false">{{item.status=='3'?'申请结算首付款':'申请结算尾款'}}</DropdownItem>
+                                <DropdownMenu slot="list">
                                     <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
                         <div class="projectName">
-                            {{item.project_name!=null?item.project_name:'--'}}
+                            {{item.contract_name}}
                         </div>
                         <div class="projectName">
                             ￥{{item.contract_price}}
@@ -43,20 +42,10 @@
                 </dl>
             </GeminiScrollbar>
         </div>
-        <Modal
-            v-model="addModal"
-            :title="modalTitle"
-            @on-ok="addOk"
-            :closable="false"
-            width='700'
-            @on-cancel="addCancel">
-            <contract-data ref="contractDataRef"></contract-data>
-        </Modal>
     </div>
 </template>
 <script>
 var qs=require('querystring');
-import contractData from './contractData';
 export default {
     data(){
         return{
@@ -64,9 +53,6 @@ export default {
              modalTitle:null,
              onContractData:Object
         }
-    },
-    components:{
-        contractData:contractData
     },
     props:{
         contData:{
@@ -82,7 +68,8 @@ export default {
     methods:{
         // 初始化高
         autoH(){
-            $('.contractRow').height($(window).height()-170)
+            $('.contractRow').height($(window).height()-170);
+            this.$store.commit('changContractStatus',false);
         },
         // 提交
         addOk(){
@@ -115,16 +102,6 @@ export default {
                 })
             }
         },
-        // 取消
-        addCancel(){
-            this.$refs.contractDataRef.clearData();
-        },
-        // 编辑
-        editContract(item){
-            this.addModal=true;
-            this.modalTitle='编辑合同';
-            this.$refs.contractDataRef.editContractData(item)
-        },
         //删除
         deleteContract(id){
             if(window.confirm('是否确认删除?')){
@@ -140,15 +117,20 @@ export default {
                 return
             }
         },
+        //编辑
+        editContract(item){
+            this.$store.commit('getContractIDCommit',item);
+            this.newAddData();
+        },
         // 新增合同
         newAddData(){
-            this.addModal=true;
-            this.modalTitle='新增合同';
+            this.$router.push('/epibol/contractData');
         },
         // 详情
-        contDetails(id){
-            this.$store.commit('changContractStatus',false);
-            this.$router.push('/epibol/contractDetails/'+id);
+        contDetails(item){
+            this.$store.commit('changContractStatus',true);
+            this.$store.commit('getContractIDCommit',item);
+            this.newAddData();
         }
         
     }

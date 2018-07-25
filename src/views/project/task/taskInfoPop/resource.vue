@@ -1,8 +1,9 @@
 <template>
     <!--资源-->
     <div class="resourceContainer">
-        <Steps :current="2" direction="vertical">
-            <Step title="线条" content="这里是该步骤的描述信息">
+        <div class="red">
+            <Steps :current="2" class="red" direction="vertical">
+                <Step title="线条" content="这里是该步骤的描述信息">
                     <div class="content">
                         <div class="resourceTitle">
                             <p  class="resourceStatus" style="text-align: right">已完成</p>
@@ -15,15 +16,17 @@
                                     <span>大小</span>
                                     <span>1212*3465</span>
                                 </li><li class="fileList">
-                                    <span>大小</span>
-                                    <span>1212*3465</span>
-                                </li>
+                                <span>大小</span>
+                                <span>1212*3465</span>
+                            </li>
                             </ul>
                         </div>
                     </div>
                 </Step>
-                <Step title="已完成" content="这里是该步骤的描述信息"></Step>
-        </Steps>
+                <Step title="已完成" ></Step>
+            </Steps>
+
+        </div>
     </div>
 </template>
 
@@ -42,12 +45,18 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
     @green:#009900;
-    /*.ivu-steps-title,.ivu-steps-content,.ivu-steps-item.ivu-steps-status-finish ,.ivu-steps-title{*/
-        /*color: red !important;*/
-    /*}*/
     .resourceContainer {
+        .ivu-steps-head{
+            background: #f5f7f6 !important;
+        }
+        .red{
+            .ivu-steps .ivu-steps-title{
+                background: #f5f7f6 ;
+                color: red !important;
+            }
+        }
         .content {
             width: 350px;
             font-size: 14px;

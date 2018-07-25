@@ -181,7 +181,6 @@ export default {
   },
   methods: {
     finishData(status) {
-        console.log(970)
       this.finish = true
       setTimeout(() => {
         this.$refs.finish.fetchData()

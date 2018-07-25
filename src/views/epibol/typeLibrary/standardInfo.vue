@@ -6,36 +6,37 @@
             <slot name="item"></slot>
             <!--任务类型名称-->
             <h4 :style="{paddingBottom:'10px'}">规范名称</h4>
-            <section class="taskTypeName">
+            <section v-if="!project" class="taskTypeName">
                 <div v-show="boxShow" class="taskTypeNameBox">
                     <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
-                        <Icon @click.native="secMarkers(item,'icon')" class="identification"
-                              :class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon"></Icon>
+                        <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
+                        <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
+                              <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon"></Icon>-->
                         <div @click="secMarkers(item)" class="identification"
                              :class="{'iconColor':identification.iconColor === item.color}">
                             <p class="signColor" :style="{background:item.color}"></p>
                         </div>
                     </div>
-                    <Button @click="addMarkers()" type="text">确认</Button>
-                    <Button @click="boxShow = false" type="text">取消</Button>
+                    <Button @click="addMarkers(true)" type="text">确认</Button>
+                    <Button @click="addMarkers(false)" type="text">取消</Button>
                 </div>
                   <Input   :style="{width:'300px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="typename.typename"></Input>
                   <button @click="showMarkers" class="btn">
-                      <Icon v-if="identification.icon" :type="identification.icon" :style="{color:identification.color}"
-                            style="font-size:30px;"></Icon>
+                      <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
+                           style="height:36px;margin-top:30px;">
                       <template v-else>任务标识</template>
                   </button>
             </section>
             <h4 :style="{paddingBottom:'10px'}">制作规范</h4>
           <template v-if="pstandard.length>0" >
-              <Row v-for="(item,index) in pstandard" :key="index" class="fileAttr">
+              <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
                   <Col span="5">
-                  <AutoComplete v-model="item.key" placeholder="额外属性名称" clearable>
+                  <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
                       <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                   </AutoComplete>
                   </Col>
                   <Col span="10">
-                  <AutoComplete v-model="item.value" placeholder="额外属性说明" clearable style="margin-left:20px">
+                  <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                       <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                   </AutoComplete>
                   </Col>
@@ -66,49 +67,65 @@
             <!--规范增加-->
             <h4 :style="{paddingBottom:'10px'}">制作流程规范</h4>
             <Button type="primary" @click="modal1 = true">增加标签</Button>
+            <Button type="primary" @click="modal2 = true">删除标签</Button>
             <Modal
                     v-model="modal1"
                     title="增加标签"
-
+                    @on-ok="addNorms"
             >
                 <section>
                     <div style="margin-bottom: 5px">
-                        <span>规范标签&emsp;：&emsp;</span><Input v-model="value" placeholder="增加规范标签"
-                                                             style="width: 200px"></Input>
-                    </div>
-                    <div style="margin-bottom: 5px">
-                        <span>优先级标签：&emsp;</span><Input v-model="value" placeholder="增加优先级标签"
-                                                        style="width: 200px"></Input>
+                        <span>规范标签&emsp;：&emsp;</span>
+                        <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
                     </div>
                 </section>
             </Modal>
+            <Modal
+                    v-model="modal2"
+                    title="删除标签"
+                    @on-ok="delNorms"
+            >
+                <Select v-model="delnormsValue" size="small" class="standard">
+                    <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                        {{ item.name }}
+                    </Option>
+                </Select>
+            </Modal>
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
-                <div style="flex: 12" v-on:mouseenter="dataDetails($event)" v-on:mouseleave="hiddenDetail($event)">
+                <div style="flex: 12">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
                         <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
-                            <!--<Input v-model="step.stage_name" class="title" type="text" :title="step.stage_name"></Input>-->
-                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.name}}</div>
-                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.name" class="title" type="text"/>
+                            <!--步骤名称-->
+                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
+                            <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
+                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
+                            <!---->
                             <ul class="stepsUl">
-                                <li class="stepsList" v-for="(list,i) in step.childrens" :key="i">
-                                    <Input v-model="list.value" placeholder="Enter something..."
+
+                                <li class="stepsList" v-for="(list,i) in step.require" :key="i">
+                                    <Input v-model="list.text" placeholder="Enter something..."
                                            style="width: 400px"></Input>
-                                    <Select v-model="list.normId" size="small" class="standard">
+                                    <!--规范列表-->
+                                    <Select v-model="list.norm" size="small" class="standard">
                                         <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
                                             {{ item.name }}
                                         </Option>
                                     </Select>
                                     <div class="priorityContainer">
-                                        <p class="priority"  :class="`priority${list.priority}`" >{{list.priority|priorityValue}}</p>
+                                        <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
                                         <div class="priorityList" >
-                                            <p class="priority priority1">高</p>
-                                            <p class="priority priority2">中</p>
-                                            <p class="priority priority3">低</p>
+                                            <p class="priority priority3" @click="editPriority(3,index,i)">高</p>
+                                            <p class="priority priority2" @click="editPriority(2,index,i)">中</p>
+                                            <p class="priority priority1" @click="editPriority(1,index,i)">低</p>
                                         </div>
                                     </div>
-                                    <Icon type="trash-b" class="delIcon"></Icon>
+                                    <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
                                 </li>
+                                <!--审核选项-->
+                                <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
+                                    <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
+                                </Select>
                             </ul>
                             <!--流程info增加-->
                             <div class="stepsUl">
@@ -116,45 +133,45 @@
                                 <div v-show="step.show" class="stepsList">
                                     <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
                                            style="width: 400px"></Input>
-                                    <Select v-model="stepInfoList.type" class="standard" size="small">
+                                    <Select v-model="stepInfoList.norm" class="standard" size="small">
                                         <Option v-for="item in norms" :value="item.id" :key="item.id">
                                             {{ item.name }}
                                         </Option>
                                     </Select>
                                     <div class="priorityContainer">
-                                        <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.priority}`" >{{stepInfoList.priority|priorityValue}}</p>
+                                        <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
                                         <div class="priorityList">
-                                            <p class="priority priority1" @click="editPriority('1')">高</p>
-                                            <p class="priority priority2" @click="editPriority('2')">中</p>
-                                            <p class="priority priority3" @click="editPriority('3')">低</p>
+                                            <p class="priority priority3" @click="editPriority(3)">高</p>
+                                            <p class="priority priority2" @click="editPriority(2)">中</p>
+                                            <p class="priority priority1" @click="editPriority(1)">低</p>
                                         </div>
                                     </div>
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
                                     <Button @click="closeStepList(index)" type="text">取消</Button>
                                 </div>
-                                <Icon v-show="!step.show" @click.native="step.show = !step.show" type="plus"
+                                    <Icon v-show="!step.show" @click.native="flowAddShow(index)" type="plus"
                                       style="margin-left:10px;font-size: 12px;cursor: pointer"></Icon>
                             </div>
                         </Step>
                     </Steps>
                 </div>
-                <div style="flex: 12" @click="addSteps">
-                    <Icon style="font-size:36px;color: #39f;cursor: pointer" type="plus-circled"></Icon>
+                <div style="flex: 12" >
+                    <Icon @click.native="addSteps" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled"></Icon>
                 </div>
 
             </div>
 
             <h3 :style="{padding:'20px 0 0px'}">文稿文件规范</h3>
             <template v-if="tstandard.length>0">
-                <div v-for="(item,index) in tstandard" :key="index" class="attachingTask" :style='{margin:"20px 0"}'>
+                <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" :style='{margin:"20px 0"}'>
                     <Col span="5">
-                    <AutoComplete v-model="item.key" placeholder="输入格式，如“max”" clearable></AutoComplete>
+                    <AutoComplete v-model="item.name" placeholder="输入格式，如“max”" clearable></AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.value" placeholder="附加文件描述..." clearable
+                    <AutoComplete v-model="item.values" placeholder="附加文件描述..." clearable
                                   style="margin-left:20px"></AutoComplete>
                     </Col>
-                    <Icon @click.native="delOtherfile" type="trash-b" class="delIcon"></Icon>
+                    <Icon @click.native="delOtherfile(index)" type="trash-b" class="delIcon"></Icon>
                 </div>
             </template>
 
@@ -174,15 +191,17 @@
             </Button>
         </Form>
         <Col span="10">
-        <Button type="primary" style="float: right;width: 200px" @click="taskClassubmit">提交</Button>
+        <Button v-if="isSubmit||project"  type="primary" style="float: right;width: 200px" @click="submitTaskClas">提交</Button>
+        <Button v-else  type="error" style="float: right;width: 200px" >系统默认无法修改</Button>
         </Col>
     </Content>
 
 </template>
 <script>
-    import qs from 'querystring'
-    import {newtaskGetNorms} from '@/server/request'
-    import {typeInfo} from "../../../config/env.js";
+
+    import {mapState} from 'vuex';
+    import qs from 'querystring';
+    import api from 'api';
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import typeList from "./typeList";
@@ -193,8 +212,26 @@
             Caspanel,
             Icon
         },
+        props: {
+            project: {
+                type: Boolean,
+                default: false,
+            },
+            attrContent: {
+                type: Array
+            },
+            ruleList: {
+                type: Array
+            }
+        },
         data() {
             return {
+                delnormsValue:'',
+                isSubmit:false,// 提交按钮
+                updateId :null, // 更新
+                newData:null, // 添加
+
+                reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
                 tstandard: [],   // 文件规范
@@ -207,24 +244,18 @@
                 /*调试接口添加*/
                 norms:[],
                 modal1: false,
+                modal2: false,
                 identification: {
                     iconBorder: null,
-                    iconColor: null,
-                    icon: null,
+                    iconColor: null,    // 颜色
+                    icon: null,         // url路径
                     color: null,
                 },
-                TaskIdentity: [
-                    {color: '#33cc6b', icon: 'android-notifications-none'},
-                    {color: '#ccabb6', icon: 'ios-game-controller-b-outline'},
-                    {color: '#cc62bd', icon: 'ios-star-outline'},
-                    {color: '#aacc46', icon: 'ios-stopwatch-outline'},
-                    {color: '#53ccc3', icon: 'ios-bolt-outline'},
-
-                ],
+                TaskIdentity: [],
                 stepInfoList: {
                     text: '',
                     type: '',
-                    priority: '优先级',
+                    level: '优先级',
                 },
                 fileShow: false,
                 fileAddName: '',
@@ -233,173 +264,163 @@
                 OtherfileName: '',
                 OtherfileMain: '',
                 boxShow: false,
-                value: '测试',
-                model2: '1',
+                normValue: '',
 
                 // 以上是后面测试添加
                 current: 0,
-                reqeData: {},
-                reqarn: {},
-                isInit: Boolean,
-                /*--------------------文件类型阶段属性开始------------------------*/
                 formLeft: {},
-                fileType: "",
-                stepCount: [
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                    {show: false},
-                ],
                 accesData: [],
                 reqData: [],
                 attrFile: [{config_name: "", value: ""}],
                 otherfile: [{config_name: '', value: ''}],
-                /*----------------------文件类型阶段属性结束-----------------------*/
-                category_id: 0,
-                index: 1,
-                acces: [
-                    {
-                        title: "文件格式",
-                        key: "file_format"
-                    },
-                    {
-                        title: "描述",
-                        key: "describe"
-                    },
-                    {
-                        title: "操作",
-                        width: 150,
-                        align: "center",
-                        render: (h, params) => {
-                            return h("div", [
-                                h(
-                                    "Button",
-                                    {
-                                        props: {
-                                            type: "error",
-                                            size: "small"
-                                        },
-                                        on: {
-                                            click: () => {
-                                                this.remove(params.index);
-                                            }
-                                        }
-                                    },
-                                    "移除"
-                                )
-                            ]);
-                        }
-                    }
-                ]
             };
         },
         mounted() {
-            this.newtaskGetNorms();
+            // 获取规范列表
+            this.getNormslist();
+            // icon列表
+            if(!this.project){
+                this.iconList();
+            }
             this.$bus.on('typesDetail', (data) => {
                 this.newtaskTypesDetail(data);
             });
+            this.$bus.on('addType', (data) => {
+               this.addType(data);
+               this.isSubmit = true;
+            });
+            this.$bus.on('projectInfo', (data) => {
+                this.addInfo(data);
+                this.tabsTypeId = data.id;
+                if(data && data.stage){
+                    data.stage.map((item, index) => {
+                        this.fstandard[index].review = [];
+                        if (item.is_inside_audit == 1) {
+                            this.fstandard[index].review.push(1);
+                        }
+                        if (item.is_client_audit == 1) {
+                            this.fstandard[index].review.push(0);
+                        }
+                    });
+                }
+            });
         },
         methods: {
-            //hover阶段，删除图标
-            dataDetails: function (e) {
-                let el = event.currentTarget.children[0].children[0];
-                if(el){
-                    el.style.display = "inline-block";
-                }
-            },
-            hiddenDetail: function (e) {
-                let el = event.currentTarget.children[0].children[0];
-                if(el){
-                    el.style.display = "";
-                }
-            },
-            //提交任务类别库表单
-            taskClassubmit: function () {
-                let csbObj = {};
-                //类型属性
-
-                csbObj.id = this.clsId;
-                csbObj.category_id = this.category_id ? this.category_id : 0;
-                csbObj.name = this.listN;
-                csbObj.stage = JSON.stringify(this.stepCount);
-                //文件属性
-                // let main_file = {};
-                // main_file.file_name = csb.fileType;
-                // main_file.file_format = csb.fileType;
-                let files = [];
-                // files.push(main_file);
-                //任务主文件
-                let _attrFile = {
-                    file_name: "",
-                    file_format: this.fileType,
-                    is_main: 1,
-                    require: []
-                };
-                for (let i = 0; i < this.attrFile.length; i++) {
-                    let r = {
-                        config_id: 0,
-                        config_name: this.attrFile[i].config_name,
-                        value: this.attrFile[i].value
-                    }
-                    _attrFile.require.push(r);
-                }
-                files.push(_attrFile);
-                //任务附加文件
-                console.log(this.otherfile.length);
-                for (let i = 0; i < this.otherfile.length; i++) {
-                    let _otherfile = {
-                        file_name: "",
-                        file_format: this.otherfile[i].file_format,
-                        is_main: 0,
-                        require: [
-                            {
-                                config_id: 0,
-                                config_name: "",
-                                value: this.otherfile[i].value
-                            }
-                        ]
-                    };
-                    files.push(_otherfile);
-                }
-                csbObj.file = JSON.stringify(files);
-                let address = "";
-                //判断类型是否为ture执行接口
-                if (this.isInit) {
-                    address = "task/task-type/add";
+            /*获取规范列表*/
+            async getNormslist() {
+                let {data} = await api.getNorms();
+                if (data.err_code === 0) {
+                    this.norms = data.data
                 } else {
-                    address = "task/task-type/update";
+                    this.$Message.error(data.err_message);
                 }
+            },
+            /*获取图标库*/
+            async iconList(){
+                let {data} = await api.getIconList();
+                if (data.err_code === 0) {
+                    if (data.data) {
+                        data.data.map((item, index) => {
+                            switch (index) {
+                                case 0:
+                                    item.color = '#33cc6b';
+                                    break;
+                                case 1:
+                                    item.color = '#ccabb6';
+                                    break;
+                                case 2:
+                                    item.color = '#cc62bd';
+                                    break;
+                                case 3:
+                                    item.color = '#aacc46';
+                                    break;
+                                case 4:
+                                    item.color = '#53ccc3';
+                                    break;
+                            }
+                        })
+                    }
+                    this.TaskIdentity = data.data
 
-                console.log(csbObj);
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+            },
+            /*提交*/
+             submitTaskClas(){
+                /*项目级*/
+                if(this.project){
+                     this.submitProject()
+                    return false
+                }
+                /*公司级*/
+               this.submitCompany()
+            },
+            /*项目级提交*/
+            async submitProject(){
+                this.fstandard.map((item,index) => {
+                    if(item.review.indexOf(0) !== -1){
+                        this.fstandard[index].is_client_audit = 1
+                    }else{
+                        this.fstandard[index].is_client_audit = 0
+                    }
+                    if(item.review.indexOf(1) !== -1){
+                        this.fstandard[index].is_inside_audit = 1
+                    }else{
+                        this.fstandard[index].is_inside_audit = 0
+                    }
 
-                this.$axios
-                    .post(this.GLOBAL.baseRouter + address, qs.stringify(csbObj))
-                    .then(res => {
-                        if (res.data.err_code === 0) {
-                            this.$Message.success("编辑类型成功！");
-                            //this.initPage();
-                            this.taskClassforEach();
-                            this.refreshPage();
-                        } else {
-                            this.$Message.error(res.data.err_message);
-                        }
-                    })
-                    .catch(error => {
-                        this.$Message.error("加载失败，请重试！");
-                    });
+                });
+
+                let obj = {
+                    id:this.tabsTypeId,
+                    name:this.typename.typename,
+                    stage:JSON.stringify(this.fstandard),
+                    standard : JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
+                    icon:this.identification.iconBorder,
+                    color:this.identification.iconColor,
+                };
+                let res = await api.taskprojectCateUpdate(obj);
+                if (res.data.err_code === 0) {
+                    this.$Message.success("保存成功");
+                    this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                } else {
+                    this.$Message.error(res.data.err_message);
+                }
+            },
+            /*公司级提交*/
+            async submitCompany(){
+                let url = 'task/task-type/add';
+                let obj = {
+                    category_id:this.newData.cate_id,
+                    name:this.typename.typename,
+                    stage:JSON.stringify(this.fstandard),
+                    standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
+                    icon:this.identification.iconBorder,
+                    color:this.identification.iconColor,
+                };
+                 if(this.updateId !== null){
+                    url = 'task/task-type/update';
+                    obj.id = this.updateId;
+                }
+                let res = await api.taskTypeAdd(obj, url);
+                if (res.data.err_code === 0) {
+                    this.$Message.success("保存成功");
+                    this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                } else {
+                    this.$Message.error(res.data.err_message);
+                }
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.tstandard.push({key: this.OtherfileName, value: this.OtherfileMain});
+                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'file'});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
             },
             //移除任务附加文件
-            delOtherfile(event, ot) {
-                const index = this.otherfile.indexOf(ot);
-                this.otherfile.splice(index, 1);
+            delOtherfile(index) {
+                this.tstandard.splice(index, 1);
             },
             //移除任务附加文件tabel
             remove(index) {
@@ -412,10 +433,17 @@
                     this.$Message.error("最多只能添加6个阶段");
                     aSp.current = 6;
                 } else {
-                    aSp.current += 1;
+//                    aSp.current += 1;
                     this.fstandard.push({
-                        name:'新建阶段',
-                        childrens:[{value:'',priority:'1'}]
+                        stage_name:'新建阶段',
+                        require: [
+                            {
+                                text: "",
+                                level:"优先级",
+                                norm: ""
+                            }],
+                        show:false,
+                        flowTIlteShow:false,
                     });
                 }
             },
@@ -424,32 +452,14 @@
              */
             //增加文件属性
             addFileat() {
-                this.pstandard.push({key: this.fileAddName, value: this.fileAddMain});
-                this.fileShow = false
+                this.pstandard.push({name: this.fileAddName, values: this.fileAddMain,type:'progress'});
+                this.fileShow = false;
                 this.fileAddName = '';
                 this.fileAddMain = '';
             },
             //移除文件属性
-            removeFileat(event, at) {
-                const index = this.attrFile.indexOf(at);
-                this.attrFile.splice(index, 1);
-            },
-            //移除沟通确认阶段
-            delStep(event, st) {
-                if (this.stepCount.length <= 1) {
-                    this.stepCount = [
-                        {
-                            id: 1,
-                            stage_name: "默认阶段",
-                            is_inside_audit: false,
-                            tasktype_id: this.category_id
-                        }
-                    ];
-                    this.$Message.warning("默认阶段，不可刪除");
-                } else {
-                    const index = this.stepCount.indexOf(st);
-                    this.stepCount.splice(index, 1);
-                }
+            removeFileat(index) {
+                this.pstandard.splice(index, 1);
             },
             /**
              * get请求
@@ -465,124 +475,12 @@
                     }
                 );
             },
-            //遍历任务类别详情数据
-            taskClassforEach() {
-                this.clernPage();
-                this.get(
-                    typeInfo,
-                    {
-                        id: this.clsId
-                    },
-                    res => {
-                        this.formLeft = res.data;
-                        this.listN = res.data.tasktype_name;
-                        //任务附加文件列表
-                        this.accesData = res.data.file;
-                        this.otherfile = [];
-                        if (this.accesData != null) {
-                            this.accesData.forEach(reqr => {
-                                this.forSubmit = reqr.is_main;
-                                if (reqr.is_main == 1) {
-                                    this.reqData = reqr.require;
-                                    this.fileType = reqr.file_format;
-                                    this.reqData.forEach((reqFor) => {
-                                        this.attrFile.push({
-                                            config_name: reqFor.config_name,
-                                            value: reqFor.value
-                                        });
-                                    });
-                                } else if (reqr.is_main == 0) {
-                                    reqr.value = reqr.require[0].value;
-                                    this.otherfile.push(reqr);
-                                }
-                            });
-                        }
-                        //沟通确认阶段
-                        if (this.formLeft.stage != null) {
-                            this.formLeft.stage.forEach(sta => {
-                                sta.is_inside_audit = sta.is_inside_audit == 1 ? true : false;
-                                this.stepCount.push(sta);
-                            });
-                        }
-                    }
-                );
-            },
-            //从左边列表组件中获取id,name
-            getListId(clicktype) {
-                console.log(1, clicktype)
-                this.isInit = clicktype.isInit;
-                this.category_id = clicktype.category_id;
-                this.listN = clicktype.liName;
-                this.clsId = clicktype.id;
-
-                if (clicktype.isInit) {
-                    //新增文件類型-頁面
-                    this.initPage();
-                } else {
-                    this.taskClassforEach();
-                }
-            },
-            //初始化頁面數據
-            initPage() {
-                this.clernPage();
-                this.stepCount.push({
-                    id: 1,
-                    stage_name: "默认阶段",
-                    is_inside_audit: false,
-                    tasktype_id: this.category_id
-                });
-                //清空
-                this.otherfile = [];
-                this.attrFile = [{config_name: "", value: ""}];
-            },
-            clernPage() {
-                this.stepCount = [];
-                this.formLeft = {};
-                this.listN = "";
-                this.fileType = "";
-                this.accesData = [];
-                this.reqData = [];
-                this.reqfData = [];
-                this.otherfile = [];
-                this.attrFile = [];
-            },
-            //刷新当前页面
-            refreshPage() {
-                this.$Spin.show(
-                    {
-                        render: h => {
-                            return h("div", [
-                                h("Icon", {
-                                    class: "demo-spin-icon-load",
-                                    props: {
-                                        type: "load-c",
-                                        size: 18
-                                    }
-                                }),
-                                h("div", "Loading")
-                            ]);
-                        }
-                    },
-                    location.reload()
-                );
-                setTimeout(() => {
-                    this.$Spin.hide();
-                }, 3000);
-            },
-            //或者select文件格式选择后id
-            getSelectId(r) {
-                let requ = this.formLeft.file[r]; //文件类型数据
-                if (requ) {
-                    this.reqeData = requ;
-                }
-            },
-//      ][
             // 确认 取消按钮
             fileListAdd() {
                 this.fileShow = !this.fileShow
             },
             closeFileat() {
-                this.fileShow = false
+                this.fileShow = false;
                 this.fileAddName = '';
                 this.fileAddMain = '';
             },
@@ -595,93 +493,189 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                console.log(11,this.stepInfoList.type)
-                this.fstandard[index].childrens.push({normId:this.stepInfoList.type,value:this.stepInfoList.text,priority:this.stepInfoList.priority});
+                console.log(this.fstandard)
+                this.fstandard[index].require.push({
+                    norm: this.stepInfoList.norm,
+                    text: this.stepInfoList.text,
+                    level: this.stepInfoList.level
+                });
                 this.$set(this.fstandard[index],'show',false);
                 this.stepInfoList = {
                     text: '',
-                    type: '',
-                    priority: '1'
+                    norm: '',
+                    level: '1'
                 };
+
             },
             closeStepList(index) {
-                this.$set(this.fstandard[index], 'show', false)
+                this.$set(this.fstandard[index], 'show', false);
                 this.stepInfoList = {
                     text: '',
-                    type: '',
-                    priority: '1'
+                    norm: '',
+                    level: '1'
                 };
             },
             // 图标框显示
             showMarkers() {
                 this.boxShow = !this.boxShow;
-                this.identification.iconBorder = null
-                this.identification.iconColor = null
+                this.identification.iconBorder = null;
+                this.identification.iconColor = null;
             },
             // 图标框边框
             secMarkers(item, type) {
+                console.log(item)
                 if (type === 'icon') {
-                    this.identification.iconBorder = item.icon;
+                    this.identification.iconBorder = item.id;
+                    this.identification.icon = item.url;
                 } else {
                     this.identification.iconColor = item.color;
                 }
             },
-            addMarkers() {
+            addMarkers(type) {
                 this.boxShow = false;
-                this.identification.icon = this.identification.iconBorder;
-                this.identification.color = this.identification.iconColor;
-            },
-            newtaskGetNorms() {
-                // 获取规范
-                this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-norms', qs.stringify())
-                    .then(({data})=>{
-                    if(data.err_code === 0){
-                        this.norms = data.data;
+                if (!type) {
+                    this.identification = {
+                        iconBorder: null,
+                        iconColor: null,
+                        icon: null,
+                        color: null,
+                    }
+                }
 
-                    }else{
+            },
+            async newtaskTypesDetail(dataDetail) {
+                // 进入详情
+                if (dataDetail.rank === 2 || dataDetail === 'default') {
+                    this.isSubmit = dataDetail.status === 0 || dataDetail === 'default'? false :true;
+                    let obj = {id:dataDetail.id};
+                    this.clearInfo();
+                    // 获取更新id
+                    this.updateId = dataDetail.id;
+                    if(dataDetail === 'default'){
+                        obj = {
+                            id:this.defId
+                        }
+                    }
+                    let {data} = await api.taskCateinfo(obj);
+                    if (data.err_code === 0) {
+                               this.addInfo(data)
+                    } else {
                         this.$Message.error(data.err_message);
                     }
+                }
+            },
+            addInfo(data){
+                this.typename.typename = data.tasktype_name;
+                this.tstandard = data.standard.filter((item) => {
+                    return item.type === 'file'
+                });
+                this.pstandard = data.standard.filter((item) => {
+                    return item.type === 'progress'
+                }); // 制作规范
+
+                if (Array.isArray(data.stage) && data) {
+                    data.stage.map((item) => {
+                        item.show = false;
+                        item.flowTIlteShow = false;
                     })
-            },
-            newtaskTypesDetail({id,rank}){
-              if(rank === 2){
-                  this.$axios.post(this.GLOBAL.baseRouter+'newtask/new-task-type/get-types-detail', qs.stringify({tid:id}))
-                      .then(({data})=>{
-                          if(data.err_code === 0){
-                              this.typename = data.data.name;
-                              this.tstandard = data.data.tstandard;
-                              this.pstandard = data.data.pstandard;
-                              if(Array.isArray(data.data.fstandard) && data.data){
-                                  data.data.fstandard.map((item)=>{
-                                      item.show = false;
-                                      item.flowTIlteShow = false;
-                                  })
-                              }
-                              this.fstandard = data.data.fstandard;
+                }
+                this.fstandard = data.stage;
 
-                          }else{
-                              this.$Message.error(data.err_message);
-                          }
-                      })
-              }
-
+                this.identification.icon = data.icon_url;
+                this.identification.iconColor = data.color;
             },
-            editPriority(type){
-                this.stepInfoList.priority = type
+            editPriority(type,index,i){
+                if (index === 0 || index) {
+                    this.fstandard[index].require[i].level = type
+                }
+                else {
+                    this.stepInfoList.level = type
+                }
+            },
+            delFlowNorm(index,i){
+                this.fstandard[index].childrens.splice(i,1);
+            },
+            flowAddShow(index){
+                if(this.fstandard){
+                    this.stepInfoList = {text: '',norm: '',level: '优先级'};
+                    this.fstandard.map((item)=>{
+                        item.show = false
+                    });
+                    this.fstandard[index].show = !this.fstandard[index].show
+                }
+           },
+            addType(data){
+                this.clearInfo();
+                this.newData = data ;
+                this.updateId = null
+            },
+             /*清空页面*/
+            clearInfo(){
+                this.fileShow = false;
+                this.fileAddName = '';
+                this.fileAddMain = '';
+                this.OtherfileShow = false;
+                this.OtherfileName = '';
+                this.OtherfileMain = '';
+                this.fstandard= [];   // 流程规范
+                this.pstandard= [];   // 制作规范
+                this.tstandard= [];   // 文件规范
+                this.typename = {typename:'', icon:'', color:''};
+                this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
+            },
+            /*添加规范*/
+            async addNorms() {
+                let {data} = await api.addNorm({name: this.normValue});
+                if (data.err_code === 0) {
+                    this.modal1 = false;
+                    this.normValue = '';
+                    this.getNormslist()
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+            },
+            /*删除规范*/
+            async delNorms() {
+                let {data} = await api.deleteNorm({id: this.delnormsValue});
+
+                if (data.err_code === 0) {
+                    this.modal2 = false;
+                    this.normValue = '';
+                    this.getNormslist()
+                } else {
+                    this.$Message.error(data.err_message);
+                }
 
             }
         },
+        computed:{
+            ...mapState({
+                defId(data){
+                    return data.typelib.defId
+                }
+            })
+        },
+        watch:{
+            // 异步defId数据
+            defId(data){
+                if(data !== null){
+                    this.newtaskTypesDetail('default');
+                }
+            }
+        },
         filters:{
+            /*优先级*/
             priorityValue(value){
+                console.log(66,value)
                 let data = value;
                 switch (value) {
-                    case '1':
+                    case '3':
                         data = '高';
                         break;
                     case '2':
                         data = '中';
                         break;
-                    case '3':
+                    case '1':
                         data = '低';
                         break;
                 }
@@ -695,8 +689,12 @@
      @yeowll :#ffd66b;
      @org :orange;
      @red :red;
+     @red :red;
+     @step:#ffcc00;
     .taskClassLibrary {
-
+        .ivu-steps-vertical ,.ivu-steps-item{
+            min-height: 102px !important;
+        }
         .fileAttr.ivu-row {
             &::after {
                 clear: none;
@@ -730,6 +728,8 @@
             background: #fff;
             border: none;
             border-bottom: 1px solid @gray;
+            cursor: pointer;
+            overflow: hidden;
             &:focus {
                 box-shadow: none;
 
@@ -787,10 +787,31 @@
             }
         }
         .stepContainer {
+            /*步骤条圈*/
+            .ivu-steps.ivu-steps-small,.ivu-steps-head-inner{
+                width: 40px !important;
+                height: 40px !important;
+                line-height: 40px !important;
+                font-size: 16px !important;
+                background: @step !important;
+                border: 1px solid transparent !important;
+                span{
+                    color: #fff !important;
+                }
+                .ivu-icon{
+                    top: 4px !important;
+                    font-size: 30px !important;
+                }
+            }
+            /*步骤条线*/
+            .ivu-steps-vertical.ivu-steps-small ,.ivu-steps-tail{
+                left: 19px !important;
+            }
+            /*步骤条title*/
             .title {
                 position: absolute;
-                top: 20px;
-                left: -69px;
+                top: 40px;
+                left: -78px;
                 width: 100px;
                 height: 23px;
                 text-align: center;
@@ -808,10 +829,24 @@
                     text-align: center;
                     border-radius: 0;
                 }
-
+            }
+            /*步骤条阶段标记*/
+            .acmSign {
+                position: absolute;
+                top: 63px;
+                left: -56px;
+                width: 53px;
+                height: 18px;
+                padding: 0 2px;
+                line-height: 18px;
+                font-size: 12px;
+                background: #00cc00;
+                color: #fff;
+                border-radius: 6px;
             }
             .stepsUl {
                 padding-left: 35px;
+                margin-bottom: 10px;
                 .stepsList {
                     display: flex;
                     position: relative;
@@ -852,16 +887,17 @@
                             cursor: pointer;
                         }
                         .priority3{
-                           border: 1px solid @yeowll !important;
-                            color: @yeowll !important;
+                            border: 1px solid @red !important;
+                            color: @red !important;
+
                         }
                         .priority2{
                            border: 1px solid @org !important;
                             color: @org !important;
                         }
                         .priority1{
-                           border: 1px solid @red !important;
-                            color: @red !important;
+                            border: 1px solid @yeowll !important;
+                            color: @yeowll !important;
                         }
                         .priorityList {
                             display: none;

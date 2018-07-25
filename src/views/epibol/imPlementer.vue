@@ -33,7 +33,7 @@
                <span>{{elems.startDay}}~{{elems.endDay}}</span>
              </p>
            </div>
-           <div class="upload_preview_box">
+           <div class="upload_preview_box" @click="getUpload">
              <p class="iconfont icon-jiahao"></p>
            </div>
          </div>
@@ -71,8 +71,8 @@
         <div class="my_strips"></div>
      </div>
      <!-- 上传界面 -->
-      <div class="upload_page">
-        <p class="upload_page_close">x</p>
+      <div class="upload_page" v-if="isclose">
+        <p class="upload_page_close" @click="getclose">x</p>
         <div class="upload_page_header">
            <span class="upload_header_ce">测试</span>
            <span class="upload_header_title">变形金刚之大黄蜂</span>
@@ -81,21 +81,46 @@
            <p class="Choice_page_title">选者上传阶段</p>
            <ul class="choice_page_ul">
              <li>
-               <p></p>
+               <p>框架</p>
+                <span class="iconfont icon-tongyong-quan upload_gou"></span>
              </li>
              <li>
-               <p></p>
+               <p>上色</p>
+                <span class="iconfont icon-tongyong-quan upload_gou"></span>
              </li>
              <li>
-               <p></p>
+               <p>贴图</p>
+                <span class="iconfont icon-tongyong-quan upload_gou"></span>
              </li>
              <li>
-               <p></p>
+               <p>精修</p>
+                <span class="iconfont icon-tongyong-quan upload_gou"></span>
              </li>
              <li>
-               <p></p>
+               <p>高修</p>
+               <span class="iconfont icon-tongyong-quan upload_gou"></span>
+               <span class="upload_jiao">交稿阶段</span>
              </li>
            </ul>
+           <p class="Choice_page_title">文件交稿规范</p>
+           <p class="clearfix choice_title_Stand">
+             <span>命名要求</span>
+             <span>空间命名以s_开头</span>
+           </p>
+           <p class="clearfix choice_title_Stand">
+             <span>储存要求</span>
+             <span>贴图文件存在IMG目录下</span>
+           </p>
+           <!-- 上传文件 -->
+           <div class="upload_box">
+               <upload-box :parameter='partObj' >
+                 <template slot='upload'>
+                   <div id="browse" class="browse"></div>
+                   <p class="title_all"><span class='iconfont icon-shangchuan3 font_class'></span><span class="prompt_title">拖入/点击上传任务文件</span></p>
+                 </template>
+               </upload-box>
+           </div>
+           <p class="sure_title">确认</p>
         </div>
       </div>
      <!-- 上传界面end -->
@@ -103,13 +128,16 @@
 </template>
 <script>
 var qs = require('querystring')
+import uploadBox from '../../components/upload.vue'
 export default {
   data () {
     return {
       dateList: [],
+      partObj: {},
       widths: '',
       widthAll: '',
       left: 0,
+      isclose: true,
       tastList: [],
       examinList: [],
       solt: {},
@@ -125,26 +153,55 @@ export default {
       endTime: '2018-8-10'
     }
   },
-  created () {
-    // this.getMsgList()
+  components: {
+    uploadBox
   },
   mounted () {
     // this.getShowTime()
     this.getScreenWidth()
     this.getMsgList()
   },
+  computed: {
+    getUpfile () {
+      return this.$store.state.uploadFile
+    }
+  },
+  watch: {
+    getUpfile (e) {
+      console.log('eeeee', e)
+    }
+  },
   methods: {
+    // 上传
+    getUpload () {
+      this.isclose = true
+      this.$nextTick(() => {
+        this.getClick()
+      })
+    },
+    // 点击关闭
+    getclose () {
+      this.isclose = false
+    },
+    // 点击事件
+    getClick () {
+      $('.choice_page_ul>li').click(function() {
+        $('.choice_page_ul>li').each(function() {
+          $(this).removeClass("choice_page_active")
+          $(this).find('.upload_gou').attr('style', 'display: none;')
+        })
+        $(this).addClass("choice_page_active");
+        $(this).find('.upload_gou').attr('style', 'display: block;')
+      })
+    },
     // 获取数据
     getMsgList () {
-      for (let i = 1; i < 10; i++) {
+      for (let i = 1; i < 8; i++) {
         const indexs = i * 8
         this.getBefore(indexs)
         this.getAfter(indexs)
       }
       const that = this
-      // this.$nextTick(() => {
-      //   this.getAll()
-      // })
       var times = setTimeout(function () {
         that.getAll()
         clearTimeout(times)
@@ -161,7 +218,6 @@ export default {
          const beforeData = this.beforeData
          let lists = Object.assign(beforeData, list);
          this.beforeData = lists
-         console.log('获取之前的数据', lists)
        })
     },
     // 添加数据到前面
@@ -175,7 +231,6 @@ export default {
          const lists = this.listAll
          let list = Object.assign(lists, beforeData);
          this.getView(list)
-         console.log('获取之前的数据', data.data.data)
        })
     },
     // 获取后面的数据
@@ -191,7 +246,6 @@ export default {
          this.afterData = lists
         //  const lists = this.listAll
         //  let list = Object.assign(afterData, lists);
-         console.log('获取之后的数据', lists)
        })
     },
       // 插入到后面的数据
@@ -218,7 +272,6 @@ export default {
          const nowList = data.data.data
          let list = Object.assign(afterLists, nowList, beforeLists);
         //  this.listAll = list
-        console.log('获取数据', list)
          this.getView(list)
        }, error => {
          console.log('错误', error)
@@ -235,7 +288,6 @@ export default {
         // console.log('时间列表1', i, lists)
         tastList = tastList.concat(list[i])
       }
-      console.log('时间列表', list, lists)
       const index = lists.length - 1
       this.startTime = lists[0]
       this.endTime = lists[index]
@@ -338,7 +390,6 @@ export default {
           element.setAttribute('style', `width: ${widthAll}; left: ${moves}`)
         }
       })
-      console.log('获取今天', todayStr)
     },
     // 获取task排序位子
     getTop () {
@@ -450,7 +501,6 @@ export default {
        const width = this.widths.split('px')[0]
        this.widthAll = width *(timeNum + 1) + 10*(timeNum + 1)+ 'px'
        this.dateList = list
-       console.log('获取时间数据', startTime, endTime, list)
        if (isToday) {
         this.getToDay()
         this.isToday = false
@@ -474,7 +524,6 @@ export default {
          endDisX = e.clientX - startDisX + lefts
         //  const widths = width * 8 + 70
         //  const endDisXAbs = Math.abs(endDisX)
-         console.log('拖动', endDisX)
          that.left = endDisX
          const movePx = endDisX + 'px'
         //  if (endDisX < 0) {
@@ -811,10 +860,10 @@ export default {
   color: #ffffff;
 }
 .upload_page{
-  width: 500px;
-  height: 600px;
+  width: 556px;
+  height: 800px;
   position: fixed;
-  top: 10px;
+  top: 70px;
   left: 50%;
   margin-left: -250px;
   background: #ffffff;
@@ -864,5 +913,112 @@ export default {
 }
 .Choice_page_title{
   font-size: 14px;
+  color: rgb(218,218,218);
+}
+.choice_page_ul {
+  width: 100%;
+  height: 40px;
+  margin: 20px 0px;
+}
+.choice_page_ul li{
+  position: relative;
+  width: 100px;
+  height: 100%;
+  float: left;
+  cursor: pointer;
+  border: 1px solid rgb(215,215,215);
+}
+.choice_page_ul li>p{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 40px;
+}
+.choice_page_active{
+  border: 1px solid rgb(250,51,0)!important;
+  color: rgb(250,51,0);
+}
+.upload_gou{
+  display: none;
+ font-size: 15px;
+ position: absolute;
+ right: 5px;
+ top: 0;
+ color: rgb(24,191,164);
+}
+.upload_jiao{
+  position: absolute;
+  right: 10px;
+  top: -15px;
+  width: 70px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-radius: 10px;
+  background: rgb(0,204,0);
+  color: #ffffff;
+  transform: rotate(10deg);
+}
+.choice_title_Stand{
+  margin-top: 10px;
+}
+.choice_title_Stand>span:first-child{
+  float: left;
+  font-size: 16px;
+  color: rgb(24,191,164);
+}
+.choice_title_Stand>span:last-child{
+  float: right;
+  font-size: 14px;
+  color: rgb(215,215,215);
+}
+.upload_box{
+  width: 100%;
+  height: 400px;
+  margin-top: 50px;
+  border: 1px dashed black;
+}
+.sure_title{
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  margin-top: 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  background: rgba(24,191,164, 1);
+  color: #ffffff;
+}
+.sure_title:hover{
+   background: rgba(24,191,164, .8);
+}
+.prompt_title{
+  font-size: 18px;
+  color: rgb(215,215,215);
+  margin-left: 10px;
+  cursor: pointer;
+}
+.font_class{
+ font-size: 30px;
+ cursor: pointer;
+ color: rgb(215,215,215);
+}
+.uploadContainer{
+  top: 50%;
+  text-align: center;
+}
+.title_all{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+}
+.browse{
+ width: 100%;
+ height: 45px;
+ opacity: 0;
 }
 </style>

@@ -1,247 +1,147 @@
 <template>
-    <div class="editContract">
-        <Alert type="warning" show-icon v-show="editInfo==13">
-            修改说明:
-            <template slot="desc">
-                {{description}}
-            </template>
-        </Alert>
-        <div class="contractInfo">
-            <dl>
-                <dd>
-                    <em>
-                        <b>所属项目</b>
-                        <Select v-model="myProject" filterable>
-                            <Option v-for="item in projectPage" :value="item.id" :key="item.id">{{ item.name }}</Option>
-                        </Select>
-                    </em>
-                    <em>
-                        <b>甲方公司</b>
-                        <Input v-model="companyA" @on-enter="search" @on-blur="search">
-                            <Button slot="append" :icon="loadingStatus" @click.native="search" :loading="loading"></Button>
-                        </Input>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em>
-                        <b>对接人</b>
-                        <Input v-model="oneAccess"></Input>
-                    </em>
-                    <em>
-                        <b>联系方式</b>
-                        <Input v-model="contact"></Input>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em class="block">
-                        <b>项目总额</b>
-                        <Input v-model="totalNum"></Input>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em>
-                        <b>首付金额</b>
-                        <Input v-model="downPay"></Input>
-                    </em>
-                    <em>
-                        <b>尾款金额</b>
-                        <Input v-model="finalPay"></Input>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em>
-                        <b>合同开始时间</b>
-                        <DatePicker type="date" :options="startData" placeholder="开始时间" style="width:100%" @on-change="startDate" :value="startTiem"></DatePicker>
-                    </em>
-                    <em>
-                        <b>合同结束时间</b>
-                        <DatePicker type="date" :options="startData" placeholder="结束时间" style="width:100%" @on-change="endData" :value="endTiem"></DatePicker>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em>
-                        <b>上传合同</b>
-                        <file-upload ref="fileUp"></file-upload>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-                <dd>
-                    <em>
-                        <b>商务代表</b>
-                        <Select v-model="agentUser" filterable>
-                            <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
-                        </Select>
-                    </em>
-                    <em>
-                        <b>项目负责人</b>
-                        <Select v-model="projectUser" filterable>
-                            <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
-                        </Select>
-                    </em>
-                    <div class="clear"></div>
-                </dd>
-            </dl>
+    <div class="newContractData">
+        <!-- ContractNav -->
+        <div class="contractNav">
+            <span :class="[nIndex==0?'spanOne':'']"><s>1</s>基本信息</span>
+            <span :class="[nIndex==1?'spanTwo':'']"><s>2</s>费用及付款</span>
+            <span :class="[nIndex==2?'spanTwo':'']"><s>3</s>确认合同</span>
+            <div class="clear"></div>
         </div>
+        <!-- ContractComponent -->
+        <keep-alive>
+            <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
+            <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
+            <confir-contract v-if="nIndex==2"></confir-contract>
+        </keep-alive>
+        <!-- nextRow -->
+        <div class="nextRow">
+            <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
+            <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
+            <Button type="warning" v-show="nIndex==1" @click="commitContract">保存合同</Button>
+            <!-- <Button type="warning" v-show="contrateCommit&&nIndex==2" @click="commitContract">保存合同</Button> -->
+        </div>
+        <!-- stop -->
     </div>
 </template>
 <script>
-import fileUpload from './fileupload';
-var qs=require('querystring')
+var qs=require('querystring');
+import basicInfo from './contractData/basicInfo';
+import contractCost from './contractData/contractCost';
+import confirContract from './contractData/confirContract';
 export default {
     data(){
         return{
-            editInfo:null,
-            description:'',
-            startData: {
-                disabledDate (date) {
-                    return date && date.valueOf() < Date.now() - 86400000;
-                }
-            },
-            loading:false,
-            companyA:'',
-            loadingStatus:'ios-search',
-            //----------------
-            myProject:'',
-            companyAID:'',
-            oneAccess:'',
-            contact:'',
-            totalNum:'',
-            downPay:'',
-            finalPay:'',
-            startTiem:'',
-            endTiem:'',
-            accFile:[],
-            projectData:[],
-            agentUser:'',
-            projectUser:'',
-            Cid:null,
+            newData:{},//basicInfo
+            newCost:{},//contractCost
+            nIndex:0,
+            componentId:'basic-info',
+            addInfo:'',
+            contractCostData:[],
+            basicInfoData:{}
+        }
+    },
+    components:{
+        basicInfo:basicInfo,
+        contractCost:contractCost,
+        confirContract:confirContract
+    },
+    computed:{
+        contrateCommit(){
+            return this.$store.state.paySkip.contrateCommit;
+        },
+        contractID(){
+            return this.$store.state.paySkip.contractID
         }
     },
     mounted(){
-        this.$refs.fileUp.setWidth(668) //初始化附件宽度
-        this.$bus.on('contractFileData',(val)=>{
-            this.accFile=JSON.stringify(val);
+        this.$bus.on('addContractData',(val)=>{
+            this.newData=val;
         })
-    },
-    computed:{
-        projectPage(){
-            return this.$store.state.paySkip.projectData;
-        },
-        projectUserData(){
-            return this.$store.state.paySkip.userData;
-        }
-
-    },
-    components:{
-        fileUpload:fileUpload
+        this.$bus.on("addContractCost",(val)=>{
+            this.newCost=val;
+        });
+        this.contractInfo();
     },
     methods:{
-        // 搜索
-        search(){
-            if(this.companyA==''){
-                return
-            }
-            let _this=this;
-            _this.$Loading.start();
-            _this.loading=true;
-            let url=_this.GLOBAL.baseRouter+'task/company/search-demand';
-            let params={
-                company_name:_this.companyA
-            }
-            _this.$axios.post(url,qs.stringify(params)).then(msg=>{
-                _this.$Loading.finish();
-                _this.loading=false;
-                if(msg.data.id!=undefined){
-                    _this.loadingStatus='checkmark-circled'
-                    _this.companyAID=msg.data.id;
-                }else{
-                    _this.loadingStatus='close-circled'
-                    _this.$Message.error('未找到公司,请重试!')
+        contractInfo(){
+            if(this.contractID!=null){
+                this.$Loading.start();
+                let url=this.GLOBAL.baseRouter+"task/company/contract-info";
+                let params={
+                    "contract_id":this.contractID
                 }
-                console.log(msg.data.id)
+                this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                    this.$Loading.finish();
+                    this.contractCostData=[];
+                    let contractCost=[
+                       {
+                           "price_list":msg.data.price_list,
+                           "step_list":msg.data.step_list
+                       }
+                    ];
+                    // 清单及付款
+                    this.contractCostData=contractCost;
+
+                    // 基本信息
+                    this.basicInfoData=msg.data;
+                    delete this.basicInfoData.price_list;
+                    delete this.basicInfoData.step_list;
+                    this.$refs.editContract.editContract(this.basicInfoData);
+                },()=>{
+                    this.$Message.error("请求失败!")
+                    this.$Loading.error();
+                })
+            }
+        },
+        commitContract(){
+            this.$Loading.start();
+            let url;
+            let parms={
+                contract_id:this.contractID,
+                // company_id:1,
+                // create_user:sessionStorage.userId,
+                basic_list:JSON.stringify(this.newData),
+                price_list:JSON.stringify(this.newCost.price_list),
+                step_list:JSON.stringify(this.newCost.step_list)
+            }
+            if(this.contractID==null){
+                delete parms.id
+                url=this.GLOBAL.baseRouter+"task/company/add-contract";
+                this.addInfo='添加成功!'
+            }else{
+                url=this.GLOBAL.baseRouter+"task/company/edit-contract";
+                this.addInfo='修改成功!'
+            }
+            this.$axios.post(url,qs.stringify(parms)).then(msg=>{
+               if(msg.data.err_code>0){
+                  this.$Loading.finish();
+                  this.$Message.warning(msg.data.err_message);
+               }else{
+                  this.$Message.success(this.addInfo);
+                  this.$router.go(-1);
+               }
             },()=>{
-                _this.$Loading.error();
+                this.$Loading.error();
+                this.$Message.error('提交失败！')
             })
         },
-        clearData(){
-            this.loadingStatus='ios-search';
-            this.companyAID='';
-            this.myProject='';
-            this.companyA='';
-            this.oneAccess='';
-            this.contact='';
-            this.totalNum='';
-            this.downPay='';
-            this.finalPay='';
-            this.startTiem='';
-            this.endTiem='';
-            this.accFile=[];
-            this.projectData=[];
-            this.agentUser='';
-            this.projectUser='';
-            this.$refs.fileUp.clearFileData();
-            this.Cid=null
-        },
-        updataContract(){
-            let obj={
-                id:this.Cid,
-                project_id:this.myProject,
-                company_id:1,
-                create_user:sessionStorage.userId,
-                contract_price:this.totalNum,
-                first_payment:this.downPay,
-                last_payment:this.finalPay,
-                customer_id:this.companyAID,
-                customer_people:this.oneAccess,
-                customer_phone:this.contact,
-                business_people:this.agentUser,
-                manager:this.projectUser,
-                files:this.accFile,
-                start_time:this.startTiem,
-                end_time:this.endTiem
+        // next
+        nextStep(){
+            if(this.nIndex>=0&&this.nIndex<2){
+                this.nIndex++;
             }
-            this.$bus.emit('addContractData',obj)
+            // temporary
         },
-        startDate(date){
-            this.startTiem=date;
-        },
-        endData(data){
-            this.endTiem=data;
-        },
-        editContractData(data){
-            this.Cid=data.id;
-            this.myProject=data.project_id;
-            this.totalNum=data.contract_price;
-            this.oneAccess=data.customer_people;
-            this.contact=data.customer_phone;
-            this.agentUser=data.business_people_id;
-            this.projectUser=data.manager_id;
-            this.downPay=data.first_payment;
-            this.finalPay=data.last_payment;
-            this.startTiem=data.start_time;
-            this.endTiem=data.end_time;
-            this.accFile=data.files==""?[]:JSON.parse(data.files);
-            this.companyA=data.customer_name;
-            this.companyAID=data.customer_id;
-            if(this.accFile!=""){
-                this.$refs.fileUp.defaFile(this.accFile);
-            };
-            this.editInfo=data.status;
-            this.description=data.description;
+        // last
+        lastStep(){
+            if(this.nIndex>0){
+                this.nIndex--;
+            }
         }
-    },
-    watch:{
-        accFile(val){
-            this.updataContract();
-        }
-    },
-    updated(){
-        this.updataContract();
     }
+
 }
 </script>
+<style lang="less" scoped>
+@import '../style/contractData.less';
+</style>

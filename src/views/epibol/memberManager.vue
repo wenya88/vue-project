@@ -1,8 +1,8 @@
 <template>
     <div class="membermanager">
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
-        <Tabs size="small">
-            <TabPane label="成员管理">
+        <Tabs size="small" v-model="tabsType" @on-click="changeTabs()">
+            <TabPane label="成员管理" name="member">
                 <Layout>
                     <Sider>
                         <membertype title="成都有限公司" number="41" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
@@ -34,9 +34,18 @@
                     </Layout>
                 </Layout>
             </TabPane>
-            <!-- <TabPane label="权限设置">
-
-            </TabPane> -->
+            <TabPane label="权限设置" name="auto">
+                <Layout>
+                    <Sider>
+                        
+                    </Sider>
+                    <Layout>
+                        <Content>
+                            
+                        </Content>
+                    </Layout>
+                </Layout>
+            </TabPane> 
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
@@ -76,6 +85,7 @@ export default {
     },
     data() {
         return {
+            tabsType: 'member',
             num: 1,
             showAddNewTodo: false,
             newToDoItemValue: '',
@@ -113,6 +123,7 @@ export default {
     mounted() {
         this.deptListData();
         this.dutyListData();
+        sessionStorage.tabsType = this.tabsType;
     },
     computed: {
         ...mapGetters({
@@ -121,6 +132,9 @@ export default {
         })
     },
     methods: {
+        changeTabs() {
+            sessionStorage.tabsType = this.tabsType;
+        },
         updateDate(memberType) {
             this.$emit('init');
         },
