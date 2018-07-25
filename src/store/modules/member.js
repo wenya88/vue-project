@@ -7,6 +7,7 @@ import global from '../../components/Global'
 const state = {
   deptList: [],
   dutyList: [],
+  authList: [],
   deptLFComId: 0,
   deptLFdeptId: 0,
   dutyLFComId: 0,
@@ -16,6 +17,7 @@ const state = {
 const getters = {
   getDeptList: state => state.deptList,
   getDutyList: state => state.dutyList,
+  getAuthList: state => state.authList,
   getDeptLFComId: state => state.deptLFComId,
   getDeptLFdeptId: state => state.deptLFdeptId,
   getDutyLFComId: state => state.dutyLFComId,
@@ -43,22 +45,30 @@ const actions = {
       })
   },
   fetchDutyList({commit, state}, data) {
-  Axios.post(global.baseRouter+'task/post/list', data)
-    .then(res => res.data)
-    // .then(res => res.data)
-    .then(res => {
-      let fetchList = res.data;
-      fetchList.push({
-        company_id: res.data[0].company_id,
-        id: 0,
-        member_count: res.free_member,
-        name: '自定义角色'
+    Axios.post(global.baseRouter+'task/post/list', data)
+      .then(res => res.data)
+      // .then(res => res.data)
+      .then(res => {
+        let fetchList = res.data;
+        fetchList.push({
+          company_id: res.data[0].company_id,
+          id: 0,
+          member_count: res.free_member,
+          name: '自定义角色'
+        })
+        commit('updateDutyList', fetchList);
+        commit('updateDutyLFComId', res.data[0].company_id);
+        commit('updateDutyLFpostId', res.data[0].id);
       })
-      commit('updateDutyList', fetchList);
-      commit('updateDutyLFComId', res.data[0].company_id);
-      commit('updateDutyLFpostId', res.data[0].id);
+  },
+  fetchAuthList({commit, state}, data) {
+    Axios.post(global.baseRouter+'system/auth/auth-list', data)
+    .then(res => res.data)
+    .then(res => {
+      console.log(res)
+      // let fetchList = res.data
     })
-}
+  }
 }
 
 const mutations = {
@@ -79,7 +89,10 @@ const mutations = {
   },
   updateDutyLFpostId(state, data) {
     state.dutyLFpostId = data;
-  }
+  },
+  // updateAuthList(state, data){
+  //   state.authList = data;
+  // }
 }
 
 export default {
