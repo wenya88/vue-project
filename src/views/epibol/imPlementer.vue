@@ -24,8 +24,8 @@
                  <span class="iconfont icon-shangchuandengdai" v-show="elems.status == 2"></span>
                </div>
                <div>
-                 <p class="task_describe_msg">诛仙剑客模型</p>
-                 <p class="task_describe_sub">诛仙</p>
+                 <p class="task_describe_msg">{{elems.name}}</p>
+                 <p class="task_describe_sub">{{elems.project_name}}</p>
                </div>
              </div>
              <p class="task_describe_time">
@@ -33,7 +33,7 @@
                <span>{{elems.startDay}}~{{elems.endDay}}</span>
              </p>
            </div>
-           <div class="upload_preview_box" @click="getUpload">
+           <div class="upload_preview_box" @click="getUpload(elems)">
              <p class="iconfont icon-jiahao"></p>
            </div>
          </div>
@@ -46,12 +46,16 @@
      <div class="examine_task">
         <div class="examin_msg_task" v-for="(item, index) in examinList" :key="index" :style="`width:${item.centWidths};top:${item.top};left:${item.left}`">
            <p class="examin_sanjiao" :style="`margin-left:${item.chilrenLeft}`"></p>
-           <div class="eaxmin_msg">
+           <div class="eaxmin_msg" :style="`${item.status == 1 ? '150' : '300'}px`">
              <div class="eaxmin_title_all">
-               <p>钢铁侠3D模型</p>
-               <p>复仇者联盟</p>
+               <p>{{item.name}}</p>
+               <p>{{item.project_name}}</p>
              </div>
-             <p class="msg_stauts">等待反馈中...</p>
+             <p class="msg_stauts" v-if="item.status == '1'">等待反馈中...</p>
+             <div v-if="item.status !== '1'">
+               <p class="clearfix msg_couple"><span></span><span>反馈</span><span>已反馈</span></p>
+               <p class="msg_couple_p"></p>
+             </div>
            </div>
         </div>
      </div>
@@ -80,26 +84,10 @@
         <div class="upload_page_main">
            <p class="Choice_page_title">选者上传阶段</p>
            <ul class="choice_page_ul">
-             <li>
-               <p>框架</p>
+             <li v-for="(items,index) in stageList" :key="index" :class="items.elementClass" @click="getClick(index)" >
+               <p>{{items.stage_name}}</p>
                 <span class="iconfont icon-tongyong-quan upload_gou"></span>
-             </li>
-             <li>
-               <p>上色</p>
-                <span class="iconfont icon-tongyong-quan upload_gou"></span>
-             </li>
-             <li>
-               <p>贴图</p>
-                <span class="iconfont icon-tongyong-quan upload_gou"></span>
-             </li>
-             <li>
-               <p>精修</p>
-                <span class="iconfont icon-tongyong-quan upload_gou"></span>
-             </li>
-             <li>
-               <p>高修</p>
-               <span class="iconfont icon-tongyong-quan upload_gou"></span>
-               <span class="upload_jiao">交稿阶段</span>
+                <span class="upload_jiao" v-if="index == stageList.length-1">交稿阶段</span>
              </li>
            </ul>
            <p class="Choice_page_title">文件交稿规范</p>
@@ -113,14 +101,31 @@
            </p>
            <!-- 上传文件 -->
            <div class="upload_box">
-               <upload-box>
+               <upload-box v-if="!nameList.length">
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
                    <p class="title_all"><span class='iconfont icon-shangchuan3 font_class'></span><span class="prompt_title">拖入/点击上传任务文件</span></p>
                  </template>
                </upload-box>
+               <div class='all_upload_page' v-else>
+                 <div class="again_upload_father">
+                   <p class="again_upload" @click="againFun">重新上传</p>
+                 </div>
+                 <div class="yu_lan">
+                   <img :src="feilsUrl" v-show="filesStatus==1"></img>
+                   <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
+                        your browser does not support the video tag
+                    </video>
+                   <!-- <video width="100%" height="300px;">
+                    <source :src="feilsUrl"/>
+                  </video> -->
+                 </div>
+                 <p class="yulan_span">
+                   <span v-for="(items, index) in nameList" :key="index" @click="getYu(index)" :class="items.backClass">{{items.name}}</span>
+                 </p>
+               </div>
            </div>
-           <p class="sure_title">确认</p>
+           <p class="sure_title" @click="uploadImg">确认</p>
         </div>
       </div>
      <!-- 上传界面end -->
@@ -138,7 +143,7 @@ export default {
       widths: '',
       widthAll: '',
       left: 0,
-      isclose: true,
+      isclose: false,
       tastList: [],
       examinList: [],
       solt: {},
@@ -150,6 +155,12 @@ export default {
       beforeData: {},
       afterData: {},
       listAll: {},
+      nameList: [],
+      feilsList: [],
+      filesStatus: 0,
+      feilsUrl: '',
+      task_id: '',
+      stageList: [],
       startTime: '2018-6-20',
       endTime: '2018-8-10'
     }
@@ -179,26 +190,87 @@ export default {
     }
   },
   methods: {
+    // 重新上传
+    againFun () {
+      this.nameList = []
+      this.feilsUrl = ''
+      this.filesStatus = 0
+      this.feilsList = []
+    },
+    // 预览
+    getYu (index) {
+      const list = this.feilsList
+      list.forEach((items, idx) => {
+        if (index === idx) {
+          items.is_main = 1
+        } else {
+          items.is_main = 0
+        }
+      })
+      const nameList = this.nameList
+      if (nameList.length) {
+        const name = nameList[index].name
+        nameList.forEach((items, idx) => {
+          if (idx == index) {
+            items.backClass = 'yulanBack'
+          } else {
+            items.backClass = ''
+          }
+        })
+        const names = name.split('.')[1]
+        let filesStatus = 0
+        if (names == 'jpg' || names == 'png') {
+          filesStatus = 1
+        } else if (names == 'mp4' || names == 'avi' || names == 'mpg' || names == 'rmvb') {
+          filesStatus = 2
+        } else if (names == 'fbx') {
+          filesStatus = 3
+        }
+        this.filesStatus = filesStatus
+        this.nameList = nameList
+        this.feilsUrl = JSON.parse(list[index].response).file_url
+      }
+    },
     // 获取队列
     getList (list) {
+      const nameList = []
       list.forEach(item => {
+        const nameObj = {
+          name: item.name
+        }
+        nameList.push(nameObj)
         console.log('地址', item)
       })
+      this.nameList = nameList
+      this.feilsList = list
+      this.getYu(0)
     },
     // 上传
-    getUpload () {
+    getUpload (data) {
+      this.task_id = data.id
+      console.log(data)
       this.isclose = true
-      this.$nextTick(() => {
-        this.getClick()
-      })
+      this.getStageList()
     },
     // 点击关闭
     getclose () {
       this.isclose = false
     },
     // 点击事件
-    getClick () {
-      $('.choice_page_ul>li').click(function() {
+    getClick (index) {
+      let that = this
+      this.stage = index + 1
+      const list = this.stageList
+      // list.forEach((item, idx) => {
+      //   if (index === idx) {
+      //     item.elementClass = 'choice_page_active'
+      //     item.isGou = true
+      //   } else {
+      //     item.elementClass = ''
+      //     item.isGou = false
+      //   }
+      // })
+       $('.choice_page_ul>li').click(function() {
         $('.choice_page_ul>li').each(function() {
           $(this).removeClass("choice_page_active")
           $(this).find('.upload_gou').attr('style', 'display: none;')
@@ -609,16 +681,30 @@ export default {
         list.forEach(item => {
           if (Object.keys(item.stage).length != 0) {
             item.stage.left = left
+            item.stage.name = item.name
+            item.stage.project_name = item.project_name
             ones[i].push(item.stage)
           }
         })
       }
       for (let k in ones) {
         const list = ones[k]
+        let topNum = 0
         list.forEach((items, index) => {
           items.centWidths = clentWidth + 'px'
           items.chilrenLeft = clentWidth / 2 + 'px'
           items.top = index * 210 + 'px'
+          if (index > 0) {
+            const status = list[index - 1].status
+            if (status !== '1') {
+              topNum+= 360
+            } else {
+              topNum+=210
+            }
+          } else {
+             topNum = 0
+          }
+          items.top = topNum + 'px'
           heightList.push(index * 210)
           allList.push(items)
         })
@@ -631,7 +717,7 @@ export default {
       if (length >= 0) {
         const lengths = boxHgs + heightList[length] + 150
         if (lengths > height_min) {
-           this.boxHight = boxHgs + heightList[length] + 150 + 'px'
+           this.boxHight = boxHgs + heightList[length] + 300 + 'px'
         } else {
           this.boxHight = height_min + 'px'
         }
@@ -644,6 +730,48 @@ export default {
         }
       }
       this.examinList = allList
+      console.log('反馈信息', allList)
+    },
+    // 查找阶段
+    getStageList () {
+      const url = this.GLOBAL.baseRouter+"/task/task/info"
+      const items = {
+        id: this.task_id
+      }
+      this.$axios.post(url, qs.stringify(items)).then(data => {
+         this.stageList = data.data.stage
+         console.log('阶段', data.data.stage)
+       })
+    },
+    // 上传
+    uploadImg () {
+       const url = this.GLOBAL.baseRouter+"/task/task/stage-upload"
+       const list = this.feilsList
+       const objList = []
+       console.log('上传', list)
+       list.forEach(items => {
+         const obj = JSON.parse(items.response)
+         objList.push({
+           fid: obj.fid,
+           file: obj.file_url,
+           is_main: items.is_main,
+           thumb: obj.file_url + '?x-oss-process=image/resize,l_50',
+           type: obj.mimeType
+         })
+       })
+       const items = {
+         task_id: this.task_id, // 任务id
+         stage: this.stage, //上传阶段
+         file: JSON.stringify(objList) // json字符串
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+        if (data.data.err_code === 0) {
+         this.$Message.success(data.data.err_message)
+        } else {
+          this.$Message.error(data.data.err_message)
+        }
+        this.againFun()
+       })
     }
   }
 }
@@ -798,7 +926,7 @@ export default {
 }
 .eaxmin_msg{
  width: 100%;
- height: 150px;
+ /* height: 150px; */
  padding: 10px;
  background: rgb(26,153,170);
 }
@@ -871,6 +999,34 @@ export default {
   background: rgb(72,197,183);
   font-size: 16px;
   color: #ffffff;
+}
+.msg_couple{
+  width: 100%;
+}
+.msg_couple>span:nth-child(1){
+  float: left;
+  display: block;
+  width: 30px;
+  height: 30px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+.msg_couple>span:nth-child(2){
+  float: left;
+  color: #ffffff;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.msg_couple>span:nth-child(3){
+  float: right;
+  font-size: 20px;
+  color: rgb(72,197,183);
+}
+.msg_couple_p{
+ width: 100%;
+ height: 150px;
+ border: 2px solid #ffffff;
+ border-radius: 4px;
 }
 .upload_page{
   width: 556px;
@@ -1007,6 +1163,10 @@ export default {
 .sure_title:hover{
    background: rgba(24,191,164, .8);
 }
+.yulanBack {
+  border: 1px solid rgb(24,191,164);
+  color: rgb(24,191,164);
+}
 .prompt_title{
   font-size: 18px;
   color: rgb(215,215,215);
@@ -1033,5 +1193,46 @@ export default {
  width: 100%;
  height: 45px;
  opacity: 0;
+}
+.yu_lan{
+ width: 100%;
+ height: 300px;
+ /* margin-top: 50px; */
+}
+.yulan_span{
+ width: 100%;
+ margin-top: 10px;
+}
+.yulan_span>span{
+  padding: 5px 10px;
+  background: rgb(210,210,210);
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.yu_lan>img{
+  width: 100%;
+  height: 100%;
+}
+.again_upload{
+ width: 80px;
+ height: 20px;
+ text-align: center;
+ line-height: 20px;
+ margin: 5px 10px;
+ font-size: 16px;
+ cursor: pointer;
+ border-radius: 4px;
+ float: right;
+ background: rgb(255,153,0);
+ color: #ffffff;
+}
+.all_upload_page{
+ width: 100%;
+ height: 100%;
+}
+.again_upload_father{
+ width: 100%;
+ height: 30px;
 }
 </style>
