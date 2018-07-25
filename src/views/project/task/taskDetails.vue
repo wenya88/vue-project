@@ -201,8 +201,8 @@ export default{
             {
                 this.getChildProject()
                 this.taskID = id;
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
-//                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
+//                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
                         this.initTaskDetailFromData(res);
