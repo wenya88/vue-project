@@ -410,7 +410,7 @@
                     top: 18px;
                     right: 30px;
                     .ivu-dropdown, .ivu-select-dropdown {
-                        top: 0 !important;
+                        top: 50px !important;
                     }
                 }
                 .typeMenu {

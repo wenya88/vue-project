@@ -30,7 +30,7 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
-        <v-upload></v-upload>
+        <!--<v-upload></v-upload>-->
     </div>
 </template>
 <script>
@@ -150,15 +150,16 @@
                             item.rank = rank;
                             item.btnShow = false;
                             item.editText = false;
-
+                            item.expand = true;
                             if (item.tasktype) {
                                 item.children = item.tasktype;
                                 item.isTasktype = true;
+                                item.expand = true;
                                 if (item.children) {
                                     item.children.map((children) => {
                                         if (this.defId === null) {
 //                                            item.children.expand = true
-                                            this.$set(item.children,'expand',true)
+                                            this.$set(item.children,'expand',true);
                                             this.setDefIdAction(children.id);
                                         }
                                     })

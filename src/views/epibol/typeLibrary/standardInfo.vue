@@ -64,36 +64,9 @@
             </Button>
 
             <!--流程规范-->
-            <!--规范增加-->
-            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">制作流程规范</h4>
-            <Button type="primary" @click="modal1 = true">增加标签</Button>
-            <Button type="primary" @click="modal2 = true">删除标签</Button>
-            <Modal
-                    v-model="modal1"
-                    title="增加标签"
-                    @on-ok="addNorms"
-            >
-                <section>
-                    <div style="margin-bottom: 5px">
-                        <span>规范标签&emsp;：&emsp;</span>
-                        <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px":disabled="disabled"></Input>
-                    </div>
-                </section>
-            </Modal>
-            <Modal
-                    v-model="modal2"
-                    title="删除标签"
-                    @on-ok="delNorms"
-            >
-                <Select v-model="delnormsValue" size="small" class="standard">
-                    <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
-                        {{ item.name }}
-                    </Option>
-                </Select>
-            </Modal>
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
-                <div style="flex: 12">
+                <div style="flex: 14">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
                         <Step v-for="(step,index) in fstandard" class="stepContainer"  style="padding-bottom: 70px;" :key="index">
                             <!--步骤名称-->
@@ -155,12 +128,16 @@
                         </Step>
                     </Steps>
                 </div>
-                <div style="flex: 12" >
+                <div style="flex: 14" >
                     <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
                 </div>
 
             </div>
 
+            <!--规范增加-->
+            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
+            <Button type="primary" @click="modal1 = true">增加规范</Button>
+            <Button type="primary" @click="modal2 = true">删除规范</Button>
             <h3 :style="{padding:'20px 0 0px'}">文稿文件规范</h3>
             <template v-if="tstandard.length>0">
                 <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" :style='{margin:"20px 0"}'>
@@ -190,10 +167,32 @@
                 增加文稿规范
             </Button>
         </Form>
-        <Col span="10">
-        <Button v-if="isSubmit||project"  type="primary" style="float: right;width: 200px" @click="submitTaskClas">提交</Button>
-        <Button v-else  type="error" style="float: right;width: 200px" >系统默认无法修改</Button>
-        </Col>
+        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>
+        <Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>
+        <Modal
+                v-model="modal1"
+                title="增加标签"
+                @on-ok="addNorms"
+        >
+            <section>
+                <div style="margin-bottom: 5px">
+                    <span>规范标签&emsp;：&emsp;</span>
+                    <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
+                </div>
+            </section>
+        </Modal>
+        <Modal
+                v-model="modal2"
+                title="删除标签"
+                @on-ok="delNorms"
+        >
+            <Select v-model="delnormsValue" size="small" class="standard">
+                <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                    {{ item.name }}
+                </Option>
+            </Select>
+        </Modal>
+
     </Content>
 
 </template>
@@ -713,6 +712,9 @@
                         break;
                     case '1':
                         data = '低';
+                        break;
+                    case '0':
+                        data = '优先级';
                         break;
                 }
                 return data
