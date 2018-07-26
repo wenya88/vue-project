@@ -6,6 +6,11 @@
         </div>
         <div class="my_strip"></div>
      </div>
+     <!-- 显示延期任务 -->
+      <div class="no_left_msgs">
+        <p class="no_msg_lefts"></p>
+        <p class="no_msg_titles">5</p>
+      </div>
      <!-- 显示未读任务 -->
       <div class="no_msg">
         <p class="no_msg_sj"></p>
@@ -966,12 +971,28 @@ export default {
   top: 80px;
   cursor: pointer;
 }
+.no_msgs{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 10px;
+  top: 80px;
+  cursor: pointer;
+}
 .no_left_msg{
   position: absolute;
   width: 50px;
   height: 50px;
   left: 10px;
   bottom: 80px;
+  cursor: pointer;
+}
+.no_left_msgs{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 10px;
+  top: 80px;
   cursor: pointer;
 }
 .no_left_msg>p:nth-child(2){
@@ -986,6 +1007,17 @@ export default {
   /* margin-left: 84px; */
   border-top: 10px solid transparent;
   border-right: 20px solid rgb(72,197,183);
+  border-bottom: 10px solid transparent;
+}
+.no_msg_lefts{
+  position: absolute;
+  left: 0;
+  top: 10px;
+  height: 0px;
+  width: 0px;
+  /* margin-left: 84px; */
+  border-top: 10px solid transparent;
+  border-right: 20px solid rgb(255,92,50);
   border-bottom: 10px solid transparent;
 }
 .no_msg_sj {
@@ -1006,6 +1038,17 @@ export default {
   text-align: center;
   line-height: 40px;
   background: rgb(72,197,183);
+  font-size: 16px;
+  color: #ffffff;
+}
+.no_msg_titles{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left: 10px;
+  text-align: center;
+  line-height: 40px;
+  background: rgb(255,92,50);
   font-size: 16px;
   color: #ffffff;
 }
