@@ -3,11 +3,11 @@
     <div class="resourceContainer">
         <div class="red">
             <Steps :current="2" class="red" direction="vertical">
-                <Step title="线条" content="这里是该步骤的描述信息">
+                <Step  v-for="(item,index) in formItem" :title="item.name" @click.native="showimg(item)" >
                     <div class="content">
                         <div class="resourceTitle">
-                            <p  class="resourceStatus" style="text-align: right">已完成</p>
-                            <p>2017.2.1-2017.2.2</p>
+                            <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>
+                            <p>{{item.create_time|time}}</p>
                         </div>
                         <div class="file">
                             <p>上传文件规格</p>
@@ -23,10 +23,7 @@
                         </div>
                     </div>
                 </Step>
-                <Step title="已完成" ></Step>
             </Steps>
-            {{infoDetails}}
-
         </div>
     </div>
 </template>
@@ -40,15 +37,83 @@
         mounted() {
         },
         data() {
-            return {}
+            return {
+                formItem:[]
+            }
         },
-        methods: {},
+        methods: {
+             init(data){
+                if(data){
+                    data.stage_list.map((item,index) => {
+                         this.getstage(item.id,data.stage[index].stage_name)
+                    })
+                }
+
+            },
+            async getstage(params,name){
+                let {data} = await api.taskStageInfo({id:params});
+                data.name = name;
+                this.formItem.push(data);
+
+            },
+            showimg(data){
+               let url = null,task_id = null,type = null;
+                if(data && data.file){
+                    data.file.map((item) => {
+                        if(item.is_main === '1'){
+                            url = item.file;
+                            task_id = item.task_id;
+                            type = item.type;
+                        }
+                    });
+                    this.$bus.emit('initFileBrowse',{taskid:task_id,type:type});
+                    this.$store.commit('changeComponentTaskID', task_id);
+                    this.$store.commit('changeComponentFileURl', url);
+                }
+
+            }
+        },
         computed: {
             ...mapState({
                 infoDetails(data){
-                    return data.project.detail.setDetailAll
+                    return data.project.detail.taskInfo
                 }
             })
+        },
+        watch:{
+            infoDetails(data){
+                this.init(data)
+            }
+        },
+        filters:{
+            time(data){
+                data = data.length === 10 ?data*1000:data;
+                return  `${new Date(data).toLocaleDateString()} ：${new Date(data).toTimeString().split(' ')[0]}`;
+            },
+            stateData(data){
+
+                let state = null;
+                switch (data)
+                {
+                    case '1':
+                        state='内部待审';
+                        break;
+                    case '2':
+                        state='客户待审';
+                        break;
+                    case '3':
+                        state='内部已反馈';
+                        break;
+                    case '4':
+                        state='客户已反馈';
+                        break;
+                        case '5':
+                            state='审核通过';
+                        break;
+
+                }
+                return state
+            }
         },
         components: {}
     }

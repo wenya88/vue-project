@@ -1,4 +1,4 @@
-<template>
+﻿<template>
    <div class="page_week_all">
      <div class="clearfix myTaskAll">
         <div class="my_task_top">
@@ -185,7 +185,7 @@ export default {
   },
   watch: {
     uploadList(data) {
-      console.log('上传变化', data)
+      // console.log('上传变化', data)
       this.getList(data)
     }
   },
@@ -239,7 +239,7 @@ export default {
           name: item.name
         }
         nameList.push(nameObj)
-        console.log('地址', item)
+        // console.log('地址', item)
       })
       this.nameList = nameList
       this.feilsList = list
@@ -248,7 +248,7 @@ export default {
     // 上传
     getUpload (data) {
       this.task_id = data.id
-      console.log(data)
+      // console.log(data)
       this.isclose = true
       this.getStageList()
     },
@@ -301,7 +301,7 @@ export default {
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const list = data.data.data
          const beforeData = this.beforeData
-         console.log('数据', data)
+        //  console.log('数据', data)
          let lists = Object.assign(beforeData, list);
          this.beforeData = lists
        })

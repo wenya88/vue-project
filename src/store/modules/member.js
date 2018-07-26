@@ -7,6 +7,7 @@ import global from '../../components/Global'
 const state = {
   deptList: [],
   dutyList: [],
+  postList: [],
   authList: [],
   deptLFComId: 0,
   deptLFdeptId: 0,
@@ -17,6 +18,7 @@ const state = {
 const getters = {
   getDeptList: state => state.deptList,
   getDutyList: state => state.dutyList,
+  getPostList: state => state.postList,
   getAuthList: state => state.authList,
   getDeptLFComId: state => state.deptLFComId,
   getDeptLFdeptId: state => state.deptLFdeptId,
@@ -54,7 +56,7 @@ const actions = {
           company_id: res.data[0].company_id,
           id: 0,
           member_count: res.free_member,
-          name: '自定义角色'
+          name: '未分配角色'
         })
         commit('updateDutyList', fetchList);
         commit('updateDutyLFComId', res.data[0].company_id);
@@ -65,8 +67,18 @@ const actions = {
     Axios.post(global.baseRouter+'system/auth/auth-list', data)
     .then(res => res.data)
     .then(res => {
-      console.log(res)
-      // let fetchList = res.data
+      // console.log(res)
+      let fetchList = res.data
+      let postNamaList = [];
+      let authList = [];
+      fetchList.forEach((item) => {
+        postNamaList.push(item)
+      });
+      postNamaList.forEach((item,index) => {
+        authList.push(item.all_auth.auth)
+      })
+      commit('updatePostList', postNamaList);
+      commit('updatAuthList', authList);
     })
   }
 }
@@ -90,9 +102,12 @@ const mutations = {
   updateDutyLFpostId(state, data) {
     state.dutyLFpostId = data;
   },
-  // updateAuthList(state, data){
-  //   state.authList = data;
-  // }
+  updatePostList(state, data){
+    state.postList = data;
+  },
+  updatAuthList(state, data){
+    state.authList = data;
+  }
 }
 
 export default {

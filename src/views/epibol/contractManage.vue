@@ -2,7 +2,9 @@
     <div class="newContract">
         <dl>
             <dt>
-                <span class="span">合同</span>
+                <span class="span">
+                    <Input v-model="search" placeholder="合同/项目名称" style="width: 300px" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Input>
+                </span>
                 <span class="em">
                     <Button type="success" @click.native="newAdd">新增合同</Button>
                 </span>
@@ -38,10 +40,14 @@ export default {
         newAdd(){
            this.$refs.contractRef.newAddData();
         },
+        // 搜索
+        searchCommit(){
+            this.contractData(this.search);
+        },
         // 初始化列表数据
         contractData(search=this.search){
             let _this=this;
-            let url=_this.GLOBAL.baseRouter+'task/company/get-contract-list';
+            let url=_this.GLOBAL.baseRouter+'task/contract/get-contract-list';
             let params={
                 search:search,
                 company_id:1

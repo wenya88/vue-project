@@ -210,7 +210,7 @@ export default {
                 num:'',
                 amount:'',
             }
-            this.contractPayDate.splice(1,0,obj)
+            this.contractPayDate.splice(this.contractPayDate.length-1,0,obj)
         },
         // deletePay
         deletPay(index){

@@ -92,9 +92,7 @@
                     </li>
                     <li>
                         <span class="span">
-                            <Select v-model="oneAccess" filterable>
-                                <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
-                            </Select>
+                            <Input v-model="oneAccess" placeholder="请输入合同名称"></Input>
                         </span>
                         <span class="span">
                             <Input v-model="contact" placeholder="请输入联系方式"></Input>

@@ -178,7 +178,7 @@ export default {
                     },
                     onOk: () => {
                        let _this=this;
-                       let url=_this.GLOBAL.baseRouter+'task/company/contract-status';
+                       let url=_this.GLOBAL.baseRouter+'task/contract/contract-status';
                        let params={
                            contract_id:_this.contractID,
                            action_user:sessionStorage.userId
@@ -201,7 +201,7 @@ export default {
         setContractStatus(){
             let _this=this;
             _this.$Loading.start();
-            let url=_this.GLOBAL.baseRouter+'task/company/set-contract-status';
+            let url=_this.GLOBAL.baseRouter+'task/contract/set-contract-status';
             let params={
                 contract_id:_this.contractID,
                 status:_this.setStatus,

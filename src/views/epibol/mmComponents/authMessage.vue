@@ -4,8 +4,8 @@
       <div class="content-left">
         <div class="title">设置角色功能权限</div>
         <Tabs type="card" @on-click="changeTabs">
-          <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.name" :name="tab.name">
-            <auth-list :authList="authList"></auth-list>
+          <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab[index].name" :name="tab.name">
+            <auth-list :authList="authLists"></auth-list>
           </TabPane>
         </Tabs>
       </div>
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+var qs = require('querystring');
+import { mapGetters } from 'vuex'
 import authList from './authList.vue';
 import authTree from './authTree.vue';
 export default {
@@ -34,27 +36,39 @@ export default {
     authList,
     authTree
   },
+  props: {
+    tabs: {
+      type: Array,
+      default: []
+    }
+  },
   data() {
     return {
       name: 'bbb',
-      tabs: [{
-        name: '工作台'
-      }, {
-        name: '招标'
-      }, {
-        name: '合同'
-      }],
-      authList: [{
+      // tabs: [{
+      //   name: '工作台'
+      // }, {
+      //   name: '招标'
+      // }, {
+      //   name: '合同'
+      // }],
+      authLists: [{
         status: true,
         modelName: '我的任务清单',
         modelMessage: '拥有管理的权限的成员，可对任务进行(开启任务，上传文件，查看任务详情等操作)'
       }]
     }
   },
+  mounted() {
+    // this.authData();
+    this.$bus.on("changeAuth", (val) => {
+      console.log(val)
+      })
+  },
   methods: {
     changeTabs(name) {  //根据name的不同加载不同的权限列表
       console.log(name)
-    }
+    },
   }
 }
 </script>
