@@ -26,7 +26,7 @@ import global from './components/Global'//引用全局变量文件
 // axios.defaults.baseURL = 'http://59.111.95.148';
 // axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
-// Vue.$axios = axios;
+Vue.$axios = axios;  // Vue.$axios 调用
 Vue.prototype.GLOBAL = global
 Vue.prototype.$connectSoket = soket
 if (localStorage.token) {

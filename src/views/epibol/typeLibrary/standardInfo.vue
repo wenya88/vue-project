@@ -319,7 +319,9 @@
         },
         methods: {
             projectdisabled(){
-
+                if(this.project){
+                    this.disabled = false;
+                }
             },
 
             /*获取规范列表*/
