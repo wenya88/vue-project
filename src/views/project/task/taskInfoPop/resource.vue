@@ -3,7 +3,7 @@
     <div class="resourceContainer">
         <div class="red">
             <Steps :current="2" class="red" direction="vertical">
-                <Step  v-for="(item,index) in formItem" :title="item.name" @click.native="showimg(item)" >
+                <Step  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)" >
                     <div class="content">
                         <div class="resourceTitle">
                             <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>

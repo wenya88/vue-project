@@ -7,7 +7,7 @@
             <!--任务类型名称-->
             <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规范名称</h4>
             <section v-if="!project" class="taskTypeName">
-                <div v-show="boxShow" class="taskTypeNameBox">
+                <div v-if="!disabled" v-show="boxShow" class="taskTypeNameBox">
                     <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
                         <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
                         <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
@@ -66,8 +66,8 @@
             <!--流程规范-->
             <!--规范增加-->
             <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">制作流程规范</h4>
-            <!--<Button type="primary" @click="modal1 = true">增加标签</Button>-->
-            <!--<Button type="primary" @click="modal2 = true">删除标签</Button>-->
+            <Button type="primary" @click="modal1 = true">增加标签</Button>
+            <Button type="primary" @click="modal2 = true">删除标签</Button>
             <Modal
                     v-model="modal1"
                     title="增加标签"
@@ -279,6 +279,7 @@
             };
         },
         mounted() {
+            this.projectdisabled()
             // 获取规范列表
             this.getNormslist();
             // icon列表
@@ -289,11 +290,14 @@
             this.$bus.on('typesDetail', (data) => {
                 this.goinfo = data;
                 this.newtaskTypesDetail(data);
+
             });
+
             this.$bus.on('addType', (data) => {
                this.addType(data);
                 this.goinfo = data;
                this.isSubmit = true;
+                this.disabled = false;
             });
             this.$bus.on('projectInfo', (data) => {
                 this.addInfo(data);
@@ -310,8 +314,14 @@
                     });
                 }
             });
+
+
         },
         methods: {
+            projectdisabled(){
+
+            },
+
             /*获取规范列表*/
             async getNormslist() {
                 let {data} = await api.getNorms();
@@ -568,6 +578,7 @@
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
                     this.isSubmit = dataDetail.status === 0 || dataDetail === 'default'? false :true;
+                    this.disabled = dataDetail.status === 0 || dataDetail === 'default'? true :false;
                     let obj = {id:dataDetail.id};
                     this.clearInfo();
                     // 获取更新id

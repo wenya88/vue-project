@@ -30,7 +30,7 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
-        <!--<v-upload></v-upload>-->
+        <v-upload></v-upload>
     </div>
 </template>
 <script>
@@ -397,7 +397,7 @@
 
             /*点击进入详情*/
             goTaskList(data) {
-                console.log(222,data)
+
                 if(data.temporary){
                     this.$bus.emit('addType', data);
                 }else{
