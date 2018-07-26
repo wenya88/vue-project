@@ -151,7 +151,7 @@
                                                     Litem.stage_file.stage_id,
                                                     Litem.stage_file.type,
                                                     Litem.stage_file.file,
-                                                    Litem.stage_file.task_id,item
+                                                    Litem.stage_file.task_id
                                                     )">查看</span>
                                                 </Timeline-item>
                                             </Timeline>
@@ -177,7 +177,7 @@
                                                   Aitem.stage_file.stage_id,
                                                   Aitem.stage_file.type,
                                                   Aitem.stage_file.file,
-                                                  Aitem.stage_file.task_id,item
+                                                  Aitem.stage_file.task_id
                                                   )">查看</span>
                                               </Timeline-item>
                                           </Timeline>
@@ -353,7 +353,7 @@
 
        /* let _this=this;
         _this.isTabModal=true;
-
+        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
         this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
         // 本地缓存信息
 
@@ -362,7 +362,6 @@
 
         this.$store.commit('changeComponentTaskID',TaskID);
         this.$store.commit('changeComponentFileURl',file);
-        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
 
         // 是否显示编辑信息
         //sessionStorage.AllowEdit=_this.AllowEdit;
