@@ -1,11 +1,16 @@
 <template>
     <div class="newContractData">
         <!-- ContractNav -->
-        <div class="contractNav">
+        <div class="contractNav" v-if="!lineFlag">
             <span :class="[nIndex==0?'spanOne':'']"><s>1</s>基本信息</span>
             <span :class="[nIndex==1?'spanTwo':'']"><s>2</s>费用及付款</span>
             <span :class="[nIndex==2?'spanTwo':'']"><s>3</s>确认合同</span>
             <div class="clear"></div>
+        </div>
+        <div class="detailsNav" v-else>
+            <span @click="nIndex=0" :class="[nIndex==0?'show':'']">基本信息</span>
+            <span @click="nIndex=1" :class="[nIndex==1?'show':'']">费用及付款</span>
+            <span @click="nIndex=2" :class="[nIndex==2?'show':'']">确认合同</span>
         </div>
         <!-- ContractComponent -->
         <keep-alive>
@@ -14,7 +19,7 @@
             <confir-contract v-if="nIndex==2" :filesData="filesData" ref="emitFile"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
-        <div class="nextRow">
+        <div class="nextRow"  v-if="!lineFlag">
             <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
             <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
             <Button type="warning" v-show="contrateButton&&nIndex==2" @click="commitContract">保存合同</Button>
@@ -52,6 +57,9 @@ export default {
         },
         contractID(){
             return this.$store.state.paySkip.contractID
+        },
+        lineFlag(){
+            return this.$store.state.paySkip.enterContractFlag;
         }
     },
     destroyed(){
