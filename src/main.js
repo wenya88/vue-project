@@ -29,9 +29,9 @@ Vue.prototype.$axios = axios
 Vue.$axios = axios;
 Vue.prototype.GLOBAL = global
 Vue.prototype.$connectSoket = soket
-// if (localStorage.token) {
-//   axios.defaults.headers.common['token'] = localStorage.token;
-// }
+if (localStorage.token) {
+  axios.defaults.headers.common['token'] = localStorage.token;
+}
 localStorage.pid = 1
 Vue.use(vueEventCalendar, { locale: 'zh' })
 Vue.use(iView);
@@ -55,24 +55,24 @@ router.beforeEach((to, from, next) => {
   next();
 })
 // http response 拦截器
-axios.interceptors.response.use(
-response => {
-  return response;
-},
-error => {
-  if (error.response) {
-    switch (error.response.status) {
-      case 600:
-        // 返回 600 清除token信息并跳转到登录页面
-        store.commit(types.LOGOUT);
-        router.replace({
-          path: '/login',
-          query: {redirect: router.currentRoute.fullPath}
-        })
-    }
-  }
-  return Promise.reject(error.response.data)   // 返回接口返回的错误信息
-});
+// axios.interceptors.response.use(
+// response => {
+//   return response;
+// },
+// error => {
+//   if (error.response) {
+//     switch (error.response.status) {
+//       case 600:
+//         // 返回 600 清除token信息并跳转到登录页面
+//         store.commit(types.LOGOUT);
+//         router.replace({
+//           path: '/login',
+//           query: {redirect: router.currentRoute.fullPath}
+//         })
+//     }
+//   }
+//   return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+// });
 
 new Vue({
   el: '#app',
