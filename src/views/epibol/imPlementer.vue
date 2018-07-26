@@ -220,7 +220,7 @@ export default {
          } else {
            this.$Message.error(data.data.err_message)
          }
-         console.log('开始任务', data)
+        //  console.log('开始任务', data)
        })
     },
     // 取消开始
@@ -420,24 +420,22 @@ export default {
         // console.log('时间列表1', i, lists)
         tastList = tastList.concat(list[i])
       }
-      // let obj = []
-      // tastList.forEach((items, index) => {
-      //   if (index == 0) {
-      //     obj.push(items)
-      //   } else {
-      //     obj.forEach(elems => {
-      //       if (elems.id == items.id) {
-
-      //       }
-      //     })
-      //   }
-      //   console.log('sss', items)
-      // })
-      console.log('数据', tastList)
+      let objList = []
+      tastList.forEach((items, i) => {
+        let flag = true
+        objList.forEach((elems, j) => {
+          if (items.id == elems.id) {
+            flag = false
+          }
+        })
+        if (flag) {
+          objList.push(items);
+        }
+      })
       const index = lists.length - 1
       this.startTime = lists[0]
       this.endTime = lists[index]
-      this.tastList = tastList
+      this.tastList = objList
       this.getTimeSlot()
       this.getTast()
       this.getFeedback(list)
