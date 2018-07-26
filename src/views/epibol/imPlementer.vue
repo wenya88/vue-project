@@ -79,7 +79,7 @@
         <p class="upload_page_close" @click="getclose">x</p>
         <div class="upload_page_header">
            <span class="upload_header_ce">测试</span>
-           <span class="upload_header_title">变形金刚之大黄蜂</span>
+           <span class="upload_header_title">{{task_name}}</span>
         </div>
         <div class="upload_page_main">
            <p class="Choice_page_title">选者上传阶段</p>
@@ -149,6 +149,7 @@ export default {
       solt: {},
       index: 0,
       boxHg: '',
+      task_name: '',
       isToday: true,
       boxHgs: '',
       boxHight: '',
@@ -249,6 +250,7 @@ export default {
     getUpload (data) {
       this.task_id = data.id
       // console.log(data)
+      this.task_name = data.name
       this.isclose = true
       this.getStageList()
     },
