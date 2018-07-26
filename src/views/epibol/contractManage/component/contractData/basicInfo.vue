@@ -20,11 +20,11 @@
                         <div class="clear"></div>
                     </li>
                     <li class="line">
-                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==agentUser">
-                           {{item.user_id==agentUser?item.realname:''}}
+                        <span class="span">
+                           {{agentUser}}
                         </span>
-                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==projectUser">
-                           {{item.user_id==projectUser?item.realname:''}}
+                        <span class="span">
+                           {{projectUser}}
                         </span>
                         <div class="clear"></div>
                     </li>
@@ -37,8 +37,8 @@
                         <div class="clear"></div>
                     </li>
                     <li class="line">
-                        <span class="span" v-for="item in projectUserData" v-if="item.user_id==oneAccess">
-                            {{item.user_id==oneAccess?item.realname:''}}
+                        <span class="span">
+                            {{oneAccess}}
                         </span>
                         <span class="span">
                            {{contact}}
@@ -70,12 +70,12 @@
                     <li>
                         <span class="span">
                             <Select v-model="agentUser" filterable>
-                                <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
+                                <Option v-for="item in projectUserData" :value="item.realname" :key="item.user_id">{{ item.realname }}</Option>
                             </Select>
                         </span>
                         <span class="span">
                             <Select v-model="projectUser" filterable>
-                                <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
+                                <Option v-for="item in projectUserData" :value="item.realname" :key="item.user_id">{{ item.realname }}</Option>
                             </Select>
                         </span>
                         <div class="clear"></div>
@@ -189,14 +189,13 @@ export default {
             this.companyAID=data.customer_id;
             this.oneAccess=data.customer_people;
             this.contact=data.customer_phone;
-            this.agentUser=data.business_people.toString();
-            this.projectUser=data.manager.toString();
+            this.agentUser=data.business_people;
+            this.projectUser=data.manager;
             this.contractStartTime=data.start_time;
             this.contractEndTime=data.end_time;
             this.contractTime[0]=data.start_time;
             this.contractTime[1]=data.end_time;
-            this.contractStatus=data.status_list;
-            
+            this.contractStatus=data.status_list;          
             let Iindex=null
             for(let i=0;i<this.contractStatus.length;i++){
                 if(this.contractStatus[i].status==1){
@@ -204,7 +203,6 @@ export default {
                 }
             }
             this.Iindex=Iindex;
-
         },
         // autoH
         autoHeight(){

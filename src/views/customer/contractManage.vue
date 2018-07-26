@@ -20,24 +20,19 @@ export default {
   data(){
         return{
             search:null,
-            contData:[],
-            status:"20",
-            filterSataus:[
-              { "status": "20", "statusText": "全部" }
-            ],
-            loadNum:0
+            contData:[]
         }
   },
   components:{
     contractList:contractList
   },
   mounted(){
-    this.contractData(this.search,this.status);
+    this.contractData(this.search);
   },
   watch:{
     status(val){
       this.search=null;
-      this.contractData(this.search,val);
+      this.contractData(this.search);
     }
   },
   methods:{
@@ -45,39 +40,18 @@ export default {
         this.contractData(this.search);
     },
     // 初始化列表数据
-    contractData(search=this.search,status=this.status){
+    contractData(search=this.search){
         let _this=this;
-        let url=_this.GLOBAL.baseRouter+'task/company/contract-list';
+        let url=_this.GLOBAL.baseRouter+'task/demand-contract/contract-list';
         let params={
                 search:search,
-                status:status,
-                demand_id:2
+                page_size:50,
         };
         _this.$Loading.start();
         _this.$axios.post(url,qs.stringify(params)).then(msg=>{
             _this.$Loading.finish();
               if(msg.data.err_code==0){
                 _this.contData=msg.data.data;
-                if(_this.loadNum==0){
-                    _this.contData.forEach(val=>{
-                        let obj={
-                          status:val.status,
-                          statusText:val.status_text
-                        }
-                        _this.filterSataus.push(obj) 
-                    })
-                    // 去重
-                    for(let i = 0; i < _this.filterSataus.length - 1; i++){
-                        for(let j = 1; j < _this.filterSataus.length; j++){
-                            if (i != j) {
-                                if (_this.filterSataus[i].status == _this.filterSataus[j].status) {
-                                    _this.filterSataus.splice(j, 1)
-                                }
-                            }
-                        }
-                    }
-                  _this.loadNum=1;
-                }
             }
         },()=>{
                 _this.$Loading.error();

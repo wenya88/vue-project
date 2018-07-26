@@ -9,11 +9,7 @@
                                 <a href="javascript:void(0)">
                                     <Icon type="ios-more" size="20"></Icon>
                                 </a>
-                                <DropdownMenu slot="list" v-if="item.status<='0'">
-                                    <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
-                                    <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
-                                </DropdownMenu>
-                                <DropdownMenu slot="list" v-else>
+                                <DropdownMenu slot="list">
                                     <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
@@ -32,10 +28,10 @@
                         </div>
                         <div class="projectInfo">
                             <span class="company">
-                                <i class="iconfont icon-ren"></i> {{item.customer_name}}
+                                <i class="iconfont icon-ren"></i> {{item.company}}
                             </span>
                             <span class="date">
-                                {{item.create_time}}
+                                {{item.create_time}}~{{item.end_time}}
                             </span>
                         </div>
                     </dd>
@@ -77,18 +73,14 @@ export default {
         this.autoH();
     },
     methods:{
-        enterContract(id){
-            this.$store.commit('changContractStatus',true);
-            this.$router.push('/epibol/contractDetails/'+id);
-        },
         // 初始化高
         autoH(){
             $('.contractRow').height($(window).height()-210);
         },         
         // 详情
         contDetails(id){
-            this.$store.commit('changContractStatus',false);
-            this.$router.push('/epibol/contractDetails/'+id);
+           this.$router.push('/customer/contractData');
+           this.$store.commit('getContractIDCommit',id);
         }
         
     }
