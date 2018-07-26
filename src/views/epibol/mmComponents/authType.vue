@@ -7,7 +7,7 @@
     </div>
     <div class="auth">
       <ul class="fMenu">
-        <li v-for="(item,index) in authList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
+        <li v-for="(item,index) in postList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.id)">
           {{item.name}}
           <span class="numStyle">{{item.member_count}}</span>
         </li>
@@ -33,17 +33,12 @@ export default {
       type: String,
       default: ''
     },
-    authList: {
+    postList: {
         type: Array,
         default: []
     }
   },
   methods: {
-    /**
-     * 初始化数据
-     */
-    initData() {
-    },
     /**
      * 改变类型项
      */
@@ -55,35 +50,10 @@ export default {
       this.$emit('on-change', active);
       console.log(active);
     },
-    openTable(index, comId, deptId) {
+    openTable(index, postId) {
       this.FMenuIndex = index
-      this.$emit('openDept', index, comId, deptId);
+      this.$emit('openAuth', index, postId);
     },
-    editDept(id, name) {
-      this.$emit('deptEdit', id, name)
-    },
-    delDept(id) {
-      this.$emit('deptDel', id)
-    },
-    delDuty(id) {
-      this.$emit('dutyDel', id)
-    },
-    open2Table(index, comId, dutyId) {
-      this.SMenuIndex = index
-      this.$emit('openDuty', index, comId, dutyId);
-    },
-    editDuty(id, name) {
-      this.$emit('dutyEdit', id, name)
-    },
-    //名字多语言处理
-    itemTitle(item) {
-      if (typeof item.title === 'object') {
-        return this.$t(item.title.i18n);
-      }
-      else {
-        return item.title;
-      }
-    }
   },
   computed: {
 
