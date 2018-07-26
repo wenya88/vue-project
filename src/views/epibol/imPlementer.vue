@@ -301,23 +301,24 @@ export default {
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const list = data.data.data
          const beforeData = this.beforeData
+         console.log('数据', data)
          let lists = Object.assign(beforeData, list);
          this.beforeData = lists
        })
     },
     // 添加数据到前面
-    getBefores (number) {
-       const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-       const items = {
-         xdays: number
-       }
-       this.$axios.post(url, qs.stringify(items)).then(data => {
-         const beforeData = data.data.data
-         const lists = this.listAll
-         let list = Object.assign(lists, beforeData);
-         this.getView(list)
-       })
-    },
+    // getBefores (number) {
+    //    const url = this.GLOBAL.baseRouter+"/task/task/shaft"
+    //    const items = {
+    //      xdays: number
+    //    }
+    //    this.$axios.post(url, qs.stringify(items)).then(data => {
+    //      const beforeData = data.data.data
+    //      const lists = this.listAll
+    //      let list = Object.assign(lists, beforeData);
+    //      this.getView(list)
+    //    })
+    // },
     // 获取后面的数据
     getAfter (number) {
        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
@@ -329,23 +330,24 @@ export default {
          const afterData = this.afterData
          let lists = Object.assign(list, afterData);
          this.afterData = lists
+        //  console.log('数据1', list)
         //  const lists = this.listAll
         //  let list = Object.assign(afterData, lists);
        })
     },
       // 插入到后面的数据
-    getAfters (number) {
-       const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-       const items = {
-         xdays: number
-       }
-       this.$axios.post(url, qs.stringify(items)).then(data => {
-         const afterData = data.data.data
-         const lists = this.listAll
-         let list = Object.assign(afterData, lists);
-         this.getView(list)
-       })
-    },
+    // getAfters (number) {
+    //    const url = this.GLOBAL.baseRouter+"/task/task/shaft"
+    //    const items = {
+    //      xdays: number
+    //    }
+    //    this.$axios.post(url, qs.stringify(items)).then(data => {
+    //      const afterData = data.data.data
+    //      const lists = this.listAll
+    //      let list = Object.assign(afterData, lists);
+    //      this.getView(list)
+    //    })
+    // },
     // 获取任务时间数据
     getAll () {
        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
@@ -730,7 +732,7 @@ export default {
         }
       }
       this.examinList = allList
-      console.log('反馈信息', allList)
+      // console.log('反馈信息', allList)
     },
     // 查找阶段
     getStageList () {
@@ -740,7 +742,7 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
          this.stageList = data.data.stage
-         console.log('阶段', data.data.stage)
+        //  console.log('阶段', data.data.stage)
        })
     },
     // 上传
@@ -748,7 +750,7 @@ export default {
        const url = this.GLOBAL.baseRouter+"/task/task/stage-upload"
        const list = this.feilsList
        const objList = []
-       console.log('上传', list)
+      //  console.log('上传', list)
        list.forEach(items => {
          const obj = JSON.parse(items.response)
          objList.push({
