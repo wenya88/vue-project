@@ -1,33 +1,47 @@
 <template>
     <div>
-        <dl class="contractRow">
-            <dd class="title">
-                <span>所属项目</span>
-                <span>合同金额</span>
-                <span>乙方信息</span>
-                <span>对接人</span>
-                <span>联系电话</span>
-                <span>合同进度</span>
-                <span>操作</span>
-                <div class="clear"></div>
-            </dd>
-            <dd v-for="item in contData">
-                <span>{{item.project_name}}</span>
-                <span>￥{{item.contract_price}}</span>
-                <span>{{item.company}}</span>
-                <span>{{item.customer_people}}</span>
-                <span>{{item.customer_phone}}</span>
-                <span>{{item.status_text}}</span>
-                <span>
-                    <em>
-                        <i @click="contDetails(item.id)" v-show="item.status=='0'?false:true">详情</i>
-                        <i v-show="item.status=='0'" class="btn" @click="enterContract(item.id)">确认合同</i>
-                        <i v-show="item.status=='1'||item.status=='4'||item.status=='6'||item.status=='9'?true:false" class="btn">{{item.status|filterStat}}</i>
-                    </em>
-                </span>
-                <div class="clear"></div>
-            </dd>
-        </dl>
+        <div class="contractRow">
+            <GeminiScrollbar>
+                <dl>
+                    <dd v-for="(item,index) in contData" :key="index">
+                        <div class="title">
+                            <Dropdown>
+                                <a href="javascript:void(0)">
+                                    <Icon type="ios-more" size="20"></Icon>
+                                </a>
+                                <DropdownMenu slot="list" v-if="item.status<='0'">
+                                    <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
+                                    <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
+                                </DropdownMenu>
+                                <DropdownMenu slot="list" v-else>
+                                    <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </div>
+                        <div class="projectName">
+                            {{item.contract_name}}
+                        </div>
+                        <div class="projectName">
+                            ￥{{item.contract_price}}
+                        </div>
+                        <div class="projectStatus">
+                            <span class="status">
+                                {{item.status_text}}
+                            </span>
+                            <span class="line">&nbsp;</span>
+                        </div>
+                        <div class="projectInfo">
+                            <span class="company">
+                                <i class="iconfont icon-ren"></i> {{item.customer_name}}
+                            </span>
+                            <span class="date">
+                                {{item.create_time}}
+                            </span>
+                        </div>
+                    </dd>
+                </dl>
+            </GeminiScrollbar>
+        </div>
     </div>
 </template>
 <script>

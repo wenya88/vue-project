@@ -37,11 +37,11 @@
             <TabPane label="权限设置" name="auth">
                 <Layout>
                     <Sider>
-                        <auth-type title="成都有限公司" number="41" :authList="authList"></auth-type>
+                        <auth-type title="成都有限公司" number="41" :postList="postList" @openAuth="authData"></auth-type>
                     </Sider>
                     <Layout>
                         <Content>
-                            <auth-message></auth-message>
+                            <auth-message ref="authMesg" :tabs="authList"></auth-message>
                         </Content>
                     </Layout>
                 </Layout>
@@ -134,6 +134,7 @@ export default {
         ...mapGetters({
             deptList: 'getDeptList',
             dutyList: 'getDutyList',
+            postList: 'getPostList',
             authList: 'getAuthList'
         })
     },
@@ -160,12 +161,10 @@ export default {
             this.$store.dispatch('fetchDutyList', qs.stringify(data));
         },
         /**
-         * 获取权限成员列表
+         * 获取权限列表
          */
         authListData() {
-            let data = {
-                token: localStorage.token
-            }
+            let data = {}
             this.$store.dispatch('fetchAuthList', qs.stringify(data));
         },
         /**
@@ -185,6 +184,12 @@ export default {
             sessionStorage.memberStyle = 'duty';
             sessionStorage.comId = comId;
             sessionStorage.dutyId = dutyId;
+        },
+        // 切换职位类型获取对应数据
+        authData(index, postId) {
+            // this.$refs.authMesg.authData(postId)
+            this.$bus.emit("changeAuth",postId)
+            console.log(121212)
         },
         addDept() {
             this.deptStatus = 'add';

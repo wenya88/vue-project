@@ -216,7 +216,7 @@ export default {
         },
         handleClickUserDropdown(name) {
             if(name == 'loginout') {
-                this.$axios.get(this.GLOBAL.baseRouter+'/system/login/info')
+                this.$axios.get(this.GLOBAL.baseRouter+'/system/login/logout')
                 .then( res => res.data)
                 .then( res => {
                     if(res.err_code == 0){

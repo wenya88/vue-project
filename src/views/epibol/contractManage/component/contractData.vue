@@ -81,7 +81,7 @@ export default {
         contractInfo(){
             if(this.contractID!=null){
                 this.$Loading.start();
-                let url=this.GLOBAL.baseRouter+"task/company/contract-info";
+                let url=this.GLOBAL.baseRouter+"task/contract/contract-info";
                 let params={
                     "contract_id":this.contractID
                 }
@@ -124,10 +124,10 @@ export default {
             }
             if(this.contractID==null){
                 delete parms.contract_id
-                url=this.GLOBAL.baseRouter+"task/company/add-contract";
+                url=this.GLOBAL.baseRouter+"task/contract/add-contract";
                 this.addInfo='添加成功!'
             }else{
-                url=this.GLOBAL.baseRouter+"task/company/edit-contract";
+                url=this.GLOBAL.baseRouter+"task/contract/edit-contract";
                 this.addInfo='修改成功!'
             }
             this.$axios.post(url,qs.stringify(parms)).then(msg=>{

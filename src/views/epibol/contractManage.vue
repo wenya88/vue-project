@@ -47,7 +47,7 @@ export default {
         // 初始化列表数据
         contractData(search=this.search){
             let _this=this;
-            let url=_this.GLOBAL.baseRouter+'task/company/get-contract-list';
+            let url=_this.GLOBAL.baseRouter+'task/contract/get-contract-list';
             let params={
                 search:search,
                 company_id:1
