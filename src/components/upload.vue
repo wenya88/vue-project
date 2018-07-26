@@ -38,7 +38,7 @@
                    return [
                         { title : "Image files", extensions : "jpg,gif,png,bmp" },
                         { title : "Zip files", extensions : "zip,rar" },
-                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv"},
+                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv,fbx"},
                    ]
                 }
             } ,
@@ -107,6 +107,8 @@
 
                 /*上传*/
                 uploader.bind('FilesAdded',  (uploader, files)=> {
+                    console.log(33,uploader)
+                    console.log(44,files)
                     this.clearfileUrl();
                     this.getImgkey()
                         .then(() => {
@@ -114,10 +116,11 @@
                                 let name = files[index].name.split('.')[1];
                                 let postfix = (name == 'rar' || name == 'zip')?name:'';
                                 //获取签名
+                                console.log('key',this.uploadKey.dir + files[index].name.split('.')[0] + item.name)
                                 let configure = {
                                     'url': this.uploadKey.host,
                                     'multipart_params': {
-                                        'key': this.uploadKey.dir + files[index].name.split('.')[0] + Math.random() + postfix,
+                                        'key': this.uploadKey.dir + files[index].name.split('.')[0] + item.name ,
                                         'policy': this.uploadKey.policy,
                                         'OSSAccessKeyId': this.uploadKey.accessid,
                                         'success_action_status': '200', //让服务端返回200,不然，默认会返回204
@@ -139,7 +142,6 @@
                     let obj = {uploader:uploader,files:files,data:data}
                     this.imgsrc = JSON.parse(data.response);
 
-                    console.log(33,obj)
                     this.setfileUrl(obj);
 
                     this.$bus.emit("FileUploaded");

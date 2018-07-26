@@ -30,7 +30,7 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
-        <v-upload></v-upload>
+        <!--<v-upload></v-upload>-->
     </div>
 </template>
 <script>
@@ -150,15 +150,16 @@
                             item.rank = rank;
                             item.btnShow = false;
                             item.editText = false;
-
+                            item.expand = true;
                             if (item.tasktype) {
                                 item.children = item.tasktype;
                                 item.isTasktype = true;
+                                item.expand = true;
                                 if (item.children) {
                                     item.children.map((children) => {
                                         if (this.defId === null) {
 //                                            item.children.expand = true
-                                            this.$set(item.children,'expand',true)
+                                            this.$set(item.children,'expand',true);
                                             this.setDefIdAction(children.id);
                                         }
                                     })
@@ -380,11 +381,9 @@
                         parent_id: treeData.cate_id
                     }
                 } else {
-                    console.log(33,treeData)
-                    treeData.children.push({name:'新建分类',rank:2})
+                    treeData.children.push({name:'新建分类',parent_id: treeData.cate_id,rank:2,temporary:true,btnShow:false});
                     this.$bus.emit('addType', treeData);
                     return false
-//                    this.treeMap[0].children;
                 }
 
                 let {data} = await api.taskCateAdd(obj);
@@ -400,7 +399,12 @@
             /*点击进入详情*/
             goTaskList(data) {
 
-                this.$bus.emit('typesDetail', data);
+                if(data.temporary){
+                    this.$bus.emit('addType', data);
+                }else{
+                    this.$bus.emit('typesDetail', data);
+
+                }
             },
             /*打开右边菜单*/
             showSetting(data, e) {

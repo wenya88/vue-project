@@ -6,6 +6,11 @@
         </div>
         <div class="my_strip"></div>
      </div>
+     <!-- 显示延期任务 -->
+      <div class="no_left_msgs">
+        <p class="no_msg_lefts"></p>
+        <p class="no_msg_titles">5</p>
+      </div>
      <!-- 显示未读任务 -->
       <div class="no_msg">
         <p class="no_msg_sj"></p>
@@ -20,7 +25,7 @@
              <div class="clearfix task_describe_title">
                <div class="task_icon">
                  <p v-show="elems.isDelay">延期</p>
-                 <span class="iconfont icon-bofang" v-show="elems.status == 1"></span>
+                 <span class="iconfont icon-bofang" v-show="elems.status == 1" @click="getAgin(elems)"></span>
                  <span class="iconfont icon-shangchuandengdai" v-show="elems.status == 2"></span>
                </div>
                <div>
@@ -79,7 +84,7 @@
         <p class="upload_page_close" @click="getclose">x</p>
         <div class="upload_page_header">
            <span class="upload_header_ce">测试</span>
-           <span class="upload_header_title">变形金刚之大黄蜂</span>
+           <span class="upload_header_title">{{task_name}}</span>
         </div>
         <div class="upload_page_main">
            <p class="Choice_page_title">选者上传阶段</p>
@@ -116,6 +121,8 @@
                    <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
                         your browser does not support the video tag
                     </video>
+                    <three-module v-show="filesStatus==3">
+                    </three-module>
                    <!-- <video width="100%" height="300px;">
                     <source :src="feilsUrl"/>
                   </video> -->
@@ -128,12 +135,20 @@
            <p class="sure_title" @click="uploadImg">确认</p>
         </div>
       </div>
+      <div class="is_angin" v-if="isAngin">
+        <p>是否开始任务</p>
+        <div class="is_angin_box">
+          <p @click="sureAngin">是</p>
+          <p @click="noAngin">否</p>
+        </div>
+      </div>
      <!-- 上传界面end -->
    </div>
 </template>
 <script>
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
+import threeModule from '../project/components/threeModule.vue'
 // import {mapState} from 'vuex'
 export default {
   data () {
@@ -144,11 +159,13 @@ export default {
       widthAll: '',
       left: 0,
       isclose: false,
+      isAngin: false,
       tastList: [],
       examinList: [],
       solt: {},
       index: 0,
       boxHg: '',
+      task_name: '',
       isToday: true,
       boxHgs: '',
       boxHight: '',
@@ -166,7 +183,8 @@ export default {
     }
   },
   components: {
-    uploadBox
+    uploadBox,
+    threeModule
   },
   mounted () {
     // this.getShowTime()
@@ -190,6 +208,30 @@ export default {
     }
   },
   methods: {
+    // 确定开始
+    sureAngin () {
+      const url = this.GLOBAL.baseRouter+"/task/task/start"
+      const items = {
+         id: this.task_id
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         if (data.data.err_code == 0) {
+           this.$Message.success(data.data.err_message)
+         } else {
+           this.$Message.error(data.data.err_message)
+         }
+        //  console.log('开始任务', data)
+       })
+    },
+    // 取消开始
+    noAngin () {
+      this.isAngin = false
+    },
+    // 是否开始
+    getAgin (data) {
+      this.task_id = data.id
+      this.isAngin = true
+    },
     // 重新上传
     againFun () {
       this.nameList = []
@@ -225,6 +267,7 @@ export default {
           filesStatus = 2
         } else if (names == 'fbx') {
           filesStatus = 3
+          this.$store.state.ImgVedioStatus.FileURl =  JSON.parse(list[index].response).file_url
         }
         this.filesStatus = filesStatus
         this.nameList = nameList
@@ -249,6 +292,7 @@ export default {
     getUpload (data) {
       this.task_id = data.id
       // console.log(data)
+      this.task_name = data.name
       this.isclose = true
       this.getStageList()
     },
@@ -359,6 +403,7 @@ export default {
          const nowList = data.data.data
          let list = Object.assign(afterLists, nowList, beforeLists);
         //  this.listAll = list
+        // console.log('获取时间', list)
          this.getView(list)
        }, error => {
          console.log('错误', error)
@@ -375,17 +420,29 @@ export default {
         // console.log('时间列表1', i, lists)
         tastList = tastList.concat(list[i])
       }
+      let objList = []
+      tastList.forEach((items, i) => {
+        let flag = true
+        objList.forEach((elems, j) => {
+          if (items.id == elems.id) {
+            flag = false
+          }
+        })
+        if (flag) {
+          objList.push(items);
+        }
+      })
       const index = lists.length - 1
       this.startTime = lists[0]
       this.endTime = lists[index]
-      this.tastList = tastList
+      this.tastList = objList
       this.getTimeSlot()
       this.getTast()
       this.getFeedback(list)
     },
     // 获取任务
     getTast () {
-      const list = this.tastList
+      let list = this.tastList
       let startTimes = this.startTime
       let endTimes = this.endTime
       const todays = this.getTimes(Date.now()).times
@@ -758,7 +815,7 @@ export default {
            file: obj.file_url,
            is_main: items.is_main,
            thumb: obj.file_url + '?x-oss-process=image/resize,l_50',
-           type: obj.mimeType
+           type: obj.fileType
          })
        })
        const items = {
@@ -959,12 +1016,28 @@ export default {
   top: 80px;
   cursor: pointer;
 }
+.no_msgs{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 10px;
+  top: 80px;
+  cursor: pointer;
+}
 .no_left_msg{
   position: absolute;
   width: 50px;
   height: 50px;
   left: 10px;
   bottom: 80px;
+  cursor: pointer;
+}
+.no_left_msgs{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 10px;
+  top: 80px;
   cursor: pointer;
 }
 .no_left_msg>p:nth-child(2){
@@ -979,6 +1052,17 @@ export default {
   /* margin-left: 84px; */
   border-top: 10px solid transparent;
   border-right: 20px solid rgb(72,197,183);
+  border-bottom: 10px solid transparent;
+}
+.no_msg_lefts{
+  position: absolute;
+  left: 0;
+  top: 10px;
+  height: 0px;
+  width: 0px;
+  /* margin-left: 84px; */
+  border-top: 10px solid transparent;
+  border-right: 20px solid rgb(255,92,50);
   border-bottom: 10px solid transparent;
 }
 .no_msg_sj {
@@ -999,6 +1083,17 @@ export default {
   text-align: center;
   line-height: 40px;
   background: rgb(72,197,183);
+  font-size: 16px;
+  color: #ffffff;
+}
+.no_msg_titles{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left: 10px;
+  text-align: center;
+  line-height: 40px;
+  background: rgb(255,92,50);
   font-size: 16px;
   color: #ffffff;
 }
@@ -1236,5 +1331,45 @@ export default {
 .again_upload_father{
  width: 100%;
  height: 30px;
+}
+.is_angin{
+ width: 200px;
+ height: 160px;
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ margin-top: -100px;
+ margin-left: -100px;
+ background: rgb(240,240,240);
+ border-radius: 4px;
+}
+.is_angin>p{
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  line-height: 160px;
+}
+.is_angin_box{
+  width: 100%;
+  height: 40px;
+}
+.is_angin_box>p{
+  width: 60px;
+  height: 30px;
+  float: left;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  color: #ffffff;
+  margin-top: 5px;
+}
+.is_angin_box>p:first-child{
+ background: rgb(24,191,164);
+ margin-left: 30px;
+}
+.is_angin_box>p:last-child{
+ background: rgb(215,215,215);
+ margin-left: 20px;
 }
 </style>

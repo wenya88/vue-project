@@ -18,7 +18,8 @@
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
                                 <p v-for="(item,index) in specification" :key="index"
-                                   @click="selecSpecification(item.children)">
+                                   :class="menuColor === index?'fonsW':''"
+                                   @click="selecSpecification(item.children,index)">
                                     {{item.name}}({{item.children.length}})</p>
                             </div>
                             <dl v-for="(item,i) in StandardizeSec" :key="i">
@@ -44,15 +45,15 @@
         <!--规范表单-->
         <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
-                <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
+                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
                     <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px" :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
@@ -73,21 +74,22 @@
                     <Button type="text" @click="closeattrContent()">取消</Button>
                 </template>
 
-                <Button v-if="!attrContentW.show" icon="plus-round" type="dashed" long
+                <Button v-if="!attrContentW.show && !disabled" icon="plus-round" type="text" long
+                        style="width:140px;color: #31bb9f"
                         @click.native="attrContentW.show=!attrContentW.show"
-                        style="width:718px">
+                      >
                     增加内容规范
                 </Button>
 
-                <h4 :style="{paddingBottom:'10px'}">规格规范</h4>
+                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规格规范</h4>
                 <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
                     <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
+                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px" :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
@@ -108,8 +110,8 @@
                     <Button type="text" @click="closeruleList()">取消</Button>
                 </template>
 
-                <Button v-if="!ruleListW.show" icon="plus-round" type="dashed" long
-                        @click="ruleListW.show=!ruleListW.show" style="width:718px">
+                <Button  v-if="!ruleListW.show && !disabled" icon="plus-round" type="text" long
+                        @click="ruleListW.show=!ruleListW.show" style="width:140px;color: #31bb9f">
                     增加制作规范
                 </Button>
             </div>
@@ -129,10 +131,11 @@
         mounted() {
             this.menuInit();
             this.infoinit()
-
         },
         data() {
             return {
+                disabled:false,
+                menuColor:0,
                 infoUpdate:null,
                 tabsTypeId: null,
                 project_id: sessionStorage.getItem('projectID'),
@@ -244,10 +247,7 @@
                             this.$Message.error(data.err_message);
                         }
             },
-            // 提交时更新info
-            infoUpdate(){
-//                this.projectTasktype(this.infoUpdate.item,this.infoUpdate.index)
-            },
+
             /*删除*/
             closeType(item) {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/delete', qs.stringify({id: item.id}))
@@ -260,8 +260,9 @@
                         }
                     });
             },
-            selecSpecification(data) {
+            selecSpecification(data,index) {
                 this.StandardizeSec = data;
+                this.menuColor = index
             },
             addAttrContent() {
                 this.attrContent.push({
@@ -371,6 +372,7 @@
                     font-size: 16px;
                     border-bottom: 1px solid @green;
                     cursor: pointer;
+
                     &:hover {
                         .closeSign {
                             opacity: 1;
@@ -408,7 +410,7 @@
                     top: 18px;
                     right: 30px;
                     .ivu-dropdown, .ivu-select-dropdown {
-                        top: 0 !important;
+                        top: 50px !important;
                     }
                 }
                 .typeMenu {
@@ -420,6 +422,10 @@
                     margin-bottom: 25px;
                     font-size: 16px;
                     color: #6b6b6b;
+                    .fonsW{
+                      font-weight: bold;
+                        color: black;
+                    }
                     p {
                         min-width: 100px;
                         text-align: center;
@@ -436,7 +442,6 @@
                     font-size: 14px;
                     color: black;
                     font-weight: 600;
-                    background: #e4e4e4;
                 }
                 .typeList {
                     display: flex;
