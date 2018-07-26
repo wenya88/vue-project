@@ -4,7 +4,7 @@ import { router } from './router/index';
 import store from './store';
 import App from './app.vue';
 import VueResource from 'vue-resource';
-import axios from 'axios'
+import axios from './store/request';
 import 'iview/dist/styles/iview.css';
 import './theme/dist/iview.css';
 import vueEventCalendar from '../src/views/main-components/calend/vue-event-calendar/dist/index'
@@ -23,15 +23,15 @@ import soket from './views/chatInterface/websoket.js'
 import config from './config/config.js'
 import global from './components/Global'//引用全局变量文件
 // axios.defaults.baseURL = 'http://106.14.150.55';
-axios.defaults.baseURL = 'http://59.111.95.148';
-axios.defaults.withCredentials = false
+// axios.defaults.baseURL = 'http://59.111.95.148';
+// axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
-Vue.$axios = axios;
+// Vue.$axios = axios;
 Vue.prototype.GLOBAL = global
 Vue.prototype.$connectSoket = soket
-// if (localStorage.token) {
-//   axios.defaults.headers.common['token'] = localStorage.token;
-// }
+if (localStorage.token) {
+  axios.defaults.headers.common['token'] = localStorage.token;
+}
 localStorage.pid = 1
 Vue.use(vueEventCalendar, { locale: 'zh' })
 Vue.use(iView);
@@ -55,24 +55,24 @@ router.beforeEach((to, from, next) => {
   next();
 })
 // http response 拦截器
-axios.interceptors.response.use(
-response => {
-  return response;
-},
-error => {
-  if (error.response) {
-    switch (error.response.status) {
-      case 600:
-        // 返回 600 清除token信息并跳转到登录页面
-        store.commit(types.LOGOUT);
-        router.replace({
-          path: '/login',
-          query: {redirect: router.currentRoute.fullPath}
-        })
-    }
-  }
-  return Promise.reject(error.response.data)   // 返回接口返回的错误信息
-});
+// axios.interceptors.response.use(
+// response => {
+//   return response;
+// },
+// error => {
+//   if (error.response) {
+//     switch (error.response.status) {
+//       case 600:
+//         // 返回 600 清除token信息并跳转到登录页面
+//         store.commit(types.LOGOUT);
+//         router.replace({
+//           path: '/login',
+//           query: {redirect: router.currentRoute.fullPath}
+//         })
+//     }
+//   }
+//   return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+// });
 
 new Vue({
   el: '#app',

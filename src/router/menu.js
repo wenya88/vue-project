@@ -36,7 +36,13 @@ export const menu = [
                 path: '/epibol/home',
                 name: 'eHome',
                 title: '概况页',
-            }, {
+            },
+            // {
+            //     path: '/manager/manager',
+            //     name: 'manager',
+            //     title: '经理工作台',
+            // }, 
+            {
                 path: '/epibol/bidManage',
                 name: 'bidManage',
                 title: '投标',
