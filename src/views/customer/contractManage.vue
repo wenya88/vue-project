@@ -1,21 +1,14 @@
 <template>
   <div>
-    <div class="contract">
+    <div class="newContract">
         <dl>
             <dt>
-                <em>
-                    <Input v-model="search" style="width:300px" placeholder="项目名称/合同编号/项目经理/市场人员" @on-enter="searchCommit">
-                        <Button slot="append" icon="ios-search" @click.native="searchCommit"></Button>
-                    </Input>
-                </em>
-                <em>
-                  <Select v-model="status" style="width:110px">
-                        <Option v-for="item in filterSataus" :value="item.status" :key="item.status">{{ item.statusText }}</Option>
-                    </Select>
-                </em>
+                <span class="span">
+                    <Input v-model="search" placeholder="合同/项目名称" style="width: 300px" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Input>
+                </span>
                 <div class="clear"></div>
             </dt>
-            <contract-list :contData="contData"></contract-list>
+            <contract-list :contData="contData" ref="contractRef"></contract-list>
         </dl>
     </div>
   </div>
@@ -64,9 +57,7 @@ export default {
         _this.$axios.post(url,qs.stringify(params)).then(msg=>{
             _this.$Loading.finish();
               if(msg.data.err_code==0){
-
                 _this.contData=msg.data.data;
-
                 if(_this.loadNum==0){
                     _this.contData.forEach(val=>{
                         let obj={

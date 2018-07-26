@@ -74,7 +74,7 @@ export default {
         //删除
         deleteContract(id){
             if(window.confirm('是否确认删除?')){
-                let url=this.GLOBAL.baseRouter+'task/company/delete-contract';
+                let url=this.GLOBAL.baseRouter+'task/contract/delete-contract';
                 let params={
                     id:id
                 }
