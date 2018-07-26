@@ -157,6 +157,8 @@
                                 if (item.children) {
                                     item.children.map((children) => {
                                         if (this.defId === null) {
+//                                            item.children.expand = true
+                                            this.$set(item.children,'expand',true)
                                             this.setDefIdAction(children.id);
                                         }
                                     })
@@ -368,18 +370,21 @@
                 /*添加分类*/
                 if (type === 'all') {
                     obj = {
-                        name: '新建文件夹',
+                        name: '新建规范分类',
                         company_id: this.company_id
                     }
                 } else if (treeData.rank === 0) {
                     /*添加类型*/
                     obj = {
-                        name: '新建文件夹',
+                        name: '新建子分类',
                         parent_id: treeData.cate_id
                     }
                 } else {
+                    console.log(33,treeData)
+                    treeData.children.push({name:'新建分类',rank:2})
                     this.$bus.emit('addType', treeData);
                     return false
+//                    this.treeMap[0].children;
                 }
 
                 let {data} = await api.taskCateAdd(obj);

@@ -277,18 +277,16 @@
             },
             //点击切换任务项
             changeTaskListItem(currentRow, oldRow) {
-                console.log(1,currentRow)
-                console.log(2,this.subtask)
+
                 if (this.subtask === 'true') {
                     this.$emit('editWindow', currentRow)
                 } else if (currentRow != null)//clearCurrentRow有BUG会重复调用，第二次进来就会是个空数据
                 {
                     this.$emit('showTaskDetails', currentRow);
-//        this.$refs.table.clearCurrentRow();
+//                    this.$refs.table.clearCurrentRow();
                     this.setPrimaryMission(currentRow)
-                    this.setDetailAll(currentRow);
+//                    this.setDetailAll(currentRow);
 
-                    this.$router.push({path:'/project/details'});
                 }
             },
             //删除
@@ -378,19 +376,13 @@
                     msg = {user_id: msg, project_id: this.projectId, project_child_id: child_id}
                 } else if (this.primaryMission && this.subtask) {
                     // 子任务 只需要father 其余都不要
-//            this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info', qs.stringify({id: this.primaryMission.id}))
-//                .then(({data}) => {
-//                    this.dataList = data.child
-//                    this.typeSelection();
-//                    console.log(this.dataList)
-//                })
-//            this.dataList = this.primaryMission.child;
                     msg = {father: this.primaryMission.id}
                 }
                 // 进入任务详情，只展示子任务
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/list', qs.stringify(msg))
                     .then(res => res.data)
                     .then(res => {
+
                             this.dataList = res.data;
                             this.formatTaskList(this.dataList);//颠倒顺序
                             this.typeSelection();

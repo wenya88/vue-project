@@ -25,6 +25,9 @@ export default {
     mounted(){
         this.$bus.on('closeModel',()=>{
             this.filetype="NULL";
+        });
+        this.$bus.on('initFileBrowse',({taskid,type}) => {
+            this.initFileBrowse(taskid,type)
         })
     },
     components: {
@@ -42,10 +45,13 @@ export default {
     methods: {
         initFileBrowse(taskid,type)
         {
+            if (type.indexOf('image') !== -1) {
+                this.filetype = 'IMG';
+                this.getFileDetails(taskid);
+                return false
+            }
             //显示不同的组件
-            switch(type)
-           
-            {
+            switch (type) {
                 case 'image':
                     // console.log("file type is "+type);
                     this.filetype = 'IMG';
@@ -72,13 +78,13 @@ export default {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/task-stage',qs.stringify({task_id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
-                        //sessionStorage.TaskID = taskid;
+//                        sessionStorage.TaskID = taskid;
                         this.$refs.imgeditor.initImgEditor();
                     }
                 )
                 .catch(error => {
                     console.log(error);
-                    this.$Message.error("获取任务信息失败，请重试！");
+//                    this.$Message.error("获取任务信息失败，请重试！");
                 });
             }
         }

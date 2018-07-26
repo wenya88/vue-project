@@ -44,5 +44,8 @@ export default {
     projectTaskInfo: (data) => {
         return Vue.$axios.post(url + 'task/project-tasktype/info', qs.stringify(data))                            // 新增类型
     },
+    taskStageInfo: (data) => {
+        return Vue.$axios.post(url + 'task/task/stage-info', qs.stringify(data))                            // 任务详情里面的阶段详情
+    },
 
 }

@@ -9,7 +9,7 @@
             </FormItem>
             <FormItem  label="负责人">
                 <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
-                    <Option v-for="item in principal" :value="item.member_id" :key="item.user_id">{{ item.remark_name }}</Option>
+                    <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
                 </Select>
             </FormItem>
             <!--<FormItem  v-else label="负责人">-->
@@ -39,8 +39,8 @@
                 placeholder=""
                 >
                     <Option
-                        v-for="item in childProjectsList"
-                        :key="item.child_id"
+                        v-for="(item,index) in childProjectsList"
+                        :key="'children'+index"
                         :value="item.id"
                         >
                         {{item.name}}
@@ -55,14 +55,14 @@
                                    icon="android-color-palette"
                     >
                         <Option v-for="(item,index) in taskTypesList"
-                                :key="index"
+                                :key="'taskManagement'+index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
                         </Option>
                     </AutoComplete>
                     <Card :bordered="true" style="text-align: center">
-                        <div v-for="item in taskTypeInfo" :key="item.id">
+                        <div v-for="(item,index) in taskTypeInfo" :key="'file'+index">
                            <p>
                                <span>尺寸</span><span>{{item.require[0].value?item.require[0].value:'无'}}</span>
                            </p>
@@ -82,7 +82,7 @@
                                    :disabled="editDisabled"
                     >
                         <Option v-for="(item,index) in taskTypesList"
-                                :key="index"
+                                :key="'taskTypesList'+index"
                                 :value="item.tasktype_name"
                         >
                             <span> {{item.tasktype_name}}</span>
@@ -91,7 +91,7 @@
                 </FormItem>
                 <FormItem  label="文件要求">
                     <Card :bordered="true" style="text-align: center">
-                        <p v-for="item in taskTypeInfo" :key="item.id">
+                        <p v-for="(item,index) in taskTypeInfo" :key="'taskTypeInfo'+index">
                             {{item.file_format}}&#160&#160{{item.require[0].value}}
                         </p>
                     </Card>
@@ -202,14 +202,22 @@ export default{
                 this.getChildProject()
                 this.taskID = id;
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
+//                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
                 .then( res => res.data)
                 .then( res => {
                         this.initTaskDetailFromData(res);
                         this.getTaskTypeRequire(res.tasktype_id);
                         this.clickMenberDropdown();
-                        this.callFatherFunction(fatherFunctions);
+                        this.callFatherFunction(fatherFunctions)  ;
                         this.principalName = res.member_id;
-                        this.setTaskInfo(res)
+                        this.setTaskInfo(res)  // vux存储info
+//                    if(data.stage_file){
+//                        let TaskID = data.stage_file.task_id;
+//                        let file = data.stage_file.file;
+//                        this.$store.commit('changeComponentTaskID', TaskID);
+//                        this.$store.commit('changeComponentFileURl', file);
+//                    }
+
                     }
                 )
                 .catch(error => {

@@ -19,7 +19,7 @@
               <!--显示列表-->
               <div v-if="editShow" class="rightRow">
                   <div class="Listall"  @click="changeTaskListData('all')">全部</div>
-                  <div class="line" v-for="(item,index) in ChildMsgData">
+                  <div class="line" v-for="(item,index) in ChildMsgData" :key="'show'+index">
                      <section  class="titleList"  @click="changeTaskListData(item,null,'alone',item)"    :class="[{'activeTask':item.run_uid === aloneActive},{'activeTask':item.child_id === itemActive}]"  :key="index" >
                          <div class=" headTitle">
                                  <!--子项目头部-->
@@ -42,7 +42,7 @@
                      </section>
 
                       <!--有项目的成员-->
-                      <section v-if="member.run_uid"  v-for="(member,index) in item.child_project"  :key="index" @click="changeTaskListData(member,'member','team',item)"
+                      <section v-if="member.run_uid"  v-for="(member,i) in item.child_project"  :key="'show'+i" @click="changeTaskListData(member,'member','team',item)"
                                :class="member.run_uid === teamActive && item.child_id === memberItemActive ? 'activeTask':''" class="projectMemberList"  >
                             <template  >
                                 <p class=" memberTitle"  >{{member.user}}</p>
@@ -54,7 +54,7 @@
               </div>
               <!--编辑-->
               <div v-else class="rightRow">
-                  <div class="line editList"  v-for="(item,index) in ChildMsgData" :key="index">
+                  <div class="line editList"  v-for="(item,index) in ChildMsgData" :key="'edit'+index">
                       <template v-if="item.child_project">
                           <div>
                               <Input style="width: 100px;" type="text" @on-blur="changeName(item,$event)"
@@ -63,8 +63,8 @@
                                       size="small"/>&nbsp;&nbsp;
                               <Select v-model="item.leader" @on-change="changePrincipal(item,item.leader)"
                                       style="width:100px">
-                                  <Option v-for="(leader,index) in companyMember" :value="leader.user_id"
-                                          :key="index">{{ leader.realname}}
+                                  <Option v-for="(leader,i) in companyMember" :value="leader.user_id"
+                                          :key="i">{{ leader.realname}}
                                   </Option>
                               </Select>
                           </div>
@@ -75,7 +75,7 @@
                   </div>
                   <div class="projectPlanButton">
                       <Select v-model="subProjectManager" style="width:100px">
-                      <Option v-for="item in companyMember" :value="item.user_id" :key="item.value">{{ item.realname}}
+                      <Option v-for="(item,i) in companyMember" :value="item.user_id" :key="index">{{ item.realname}}
                       </Option>
                       </Select>
                       <Input v-model="subProjectName" placeholder="项目名称" style="width: 200px"></Input>
@@ -85,7 +85,7 @@
               </div>
           </div>
 
-           <!--&lt;!&ndash;主视图:列表/甘特图 &ndash;&gt;-->
+           <!--主视图:列表/甘特图 -->
           <Tabs  class="task-tab">
               <Tab-pane label="看板"  >
                   <tasklist style="padding-left: 450px;" ref="list"
@@ -256,14 +256,16 @@ export default {
       //进入任务详情
       showTaskDetails(data)
       {
-          let TaskID = data.stage_file.task_id;
-          let file = data.stage_file.file;
-
-          this.$store.commit('changeComponentTaskID', TaskID);
-          this.$store.commit('changeComponentFileURl', file);
+//          if(data.stage_file){
+//              console.log(333,TaskID)
+//              let TaskID = data.stage_file.task_id;
+//              let file = data.stage_file.file;
+//              this.$store.commit('changeComponentTaskID', TaskID);
+//              this.$store.commit('changeComponentFileURl', file);
+//          }
 
           this.setDetailAll(data);
-          this.$router.push({path: '/project/details', query: {type: 'taskManagement'}})
+          this.$router.push({path: '/project/details'})
       },
       //编辑后关闭modal
       closeTaskDetails() {

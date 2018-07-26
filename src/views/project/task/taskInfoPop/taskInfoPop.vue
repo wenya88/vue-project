@@ -83,7 +83,7 @@
         },
         mounted() {
             this.initTaskDetail();
-            this.initTaskDetailProjecInfo();
+//            this.initTaskDetailProjecInfo();
         },
         data() {
             return {
@@ -107,7 +107,8 @@
             initTaskDetail() {
                 if (!this.$store.state.project.detail.setDetailAll) {
 //                    this.$router.push({path: '/project/task'})
-                    this.$router.back(-1)
+                    this.$router.go(-1);
+//                    return false
                 }
                 let taskData = this.$store.state.project.detail.setDetailAll;
                 this.isInitTask = true;

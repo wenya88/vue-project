@@ -353,7 +353,7 @@
 
        /* let _this=this;
         _this.isTabModal=true;
-        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
+
         this.$refs.browsetask.setEditDisabled(true);//设置弹窗能否编辑*/
         // 本地缓存信息
 
@@ -362,6 +362,7 @@
 
         this.$store.commit('changeComponentTaskID',TaskID);
         this.$store.commit('changeComponentFileURl',file);
+        this.$refs.browsetask.initBrowseTaskPop(TaskID,type);//根据ID和类型初始化弹窗
 
         // 是否显示编辑信息
         //sessionStorage.AllowEdit=_this.AllowEdit;
