@@ -129,11 +129,6 @@ export default {
         this.deptListData();
         this.dutyListData();
         this.authListData();
-        // 600
-        this.$axios.get(this.GLOBAL.baseRouter + 'system/auth/test')
-        .then(res => {
-            console.log(res)
-        })
     },
     computed: {
         ...mapGetters({
