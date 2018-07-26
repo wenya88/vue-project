@@ -21,7 +21,7 @@ let Axios = axios.create({
 //   });
 
 Axios.interceptors.request.use((config) => config, (err) => {
-  console.log(err);
+  // console.log(err);
 });
 
 // http response 拦截器
@@ -30,10 +30,10 @@ Axios.interceptors.response.use(
     return response;
   },
   error => {
-    console.log(error.response, '----------------------');
+    // console.log(error.response, '----------------------');
     if (error.response) {
       if(error.response.status == '600') {
-        console.log('600');
+        // console.log('600');
         Cookies.remove('user');
         localStorage.removeItem('token');
         router.push('/login');

@@ -77,7 +77,7 @@
                 <dd>
                     <Tag v-for="(item,index) in manageCount" :key="item.name" :name="item.name" closable @on-close="CloseManage" @click.native="editTtag(index)">{{ item.name }}</Tag>
                     <Button icon="ios-plus-empty" type="dashed" size="small" @click.native="AddManage" v-if="manageCount.length>0?false:true">
-                        添加项目经理    
+                        添加项目经理 
                         <div class="addLabel" v-show="addManageDIV" style="width:245px;">
                             <Select v-model="MangageVal" filterable  style="width: 140px;" class="MangaSelect">
                                 <Option v-for="item in manageData" :value="item.id" :key="item.id">{{ item.realname }}</Option>
@@ -218,11 +218,17 @@ export default {
         // 获取公司合同和管理人员列表
         getCont(){
             let _this=this;
-            let url=_this.$axios.get(_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1);
-            let manageURL=_this.$axios.get(_this.GLOBAL.baseRouter+'task/project/get-company-member');
-            _this.$axios.all([url,manageURL]).then(([msgData,ManageData])=>{
-                _this.ContList=msgData.data.data;
-                _this.manageData=ManageData.data.data;
+            let url=_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1;
+            let manageURL=_this.GLOBAL.baseRouter+'task/project/get-company-member';
+            // _this.$axios.all([url,manageURL]).then(([msgData,ManageData])=>{
+            //     _this.ContList=msgData.data.data;
+            //     _this.manageData=ManageData.data;
+            // })
+            _this.$axios.get(url).then(msgData=>{
+                 _this.ContList=msgData.data.data;
+            });
+            _this.$axios.get(manageURL).then(ManageData=>{
+                 _this.manageData=ManageData.data.data;
             })
         },
         // 发送数据
