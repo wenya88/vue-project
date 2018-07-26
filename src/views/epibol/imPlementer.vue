@@ -116,6 +116,8 @@
                    <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
                         your browser does not support the video tag
                     </video>
+                    <three-module v-show="filesStatus==3">
+                    </three-module>
                    <!-- <video width="100%" height="300px;">
                     <source :src="feilsUrl"/>
                   </video> -->
@@ -134,6 +136,7 @@
 <script>
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
+import threeModule from '../project/components/threeModule.vue'
 // import {mapState} from 'vuex'
 export default {
   data () {
@@ -167,7 +170,8 @@ export default {
     }
   },
   components: {
-    uploadBox
+    uploadBox,
+    threeModule
   },
   mounted () {
     // this.getShowTime()
@@ -226,6 +230,7 @@ export default {
           filesStatus = 2
         } else if (names == 'fbx') {
           filesStatus = 3
+          this.$store.state.ImgVedioStatus.FileURl =  JSON.parse(list[index].response).file_url
         }
         this.filesStatus = filesStatus
         this.nameList = nameList
@@ -760,7 +765,7 @@ export default {
            file: obj.file_url,
            is_main: items.is_main,
            thumb: obj.file_url + '?x-oss-process=image/resize,l_50',
-           type: obj.mimeType
+           type: obj.fileType
          })
        })
        const items = {
