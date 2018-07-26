@@ -5,13 +5,13 @@
             <!--内容规范-->
             <slot name="item"></slot>
             <!--任务类型名称-->
-            <h4 :style="{paddingBottom:'10px'}">规范名称</h4>
+            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规范名称</h4>
             <section v-if="!project" class="taskTypeName">
                 <div v-show="boxShow" class="taskTypeNameBox">
                     <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
                         <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
                         <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
-                              <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon"></Icon>-->
+                              <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon":disabled="disabled"></Icon>-->
                         <div @click="secMarkers(item)" class="identification"
                              :class="{'iconColor':identification.iconColor === item.color}">
                             <p class="signColor" :style="{background:item.color}"></p>
@@ -20,38 +20,38 @@
                     <Button @click="addMarkers(true)" type="text">确认</Button>
                     <Button @click="addMarkers(false)" type="text">取消</Button>
                 </div>
-                  <Input   :style="{width:'300px',paddingBottom:'20px'}" placeholder="新建任务类型" v-model="typename.typename"></Input>
+                  <Input   :style="{width:'306px',paddingBottom:'20px',marginRight:'20px'}" placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
                   <button @click="showMarkers" class="btn">
                       <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
                            style="height:36px;margin-top:30px;">
-                      <template v-else>任务标识</template>
+                      <template v-else>识别图标</template>
                   </button>
             </section>
-            <h4 :style="{paddingBottom:'10px'}">制作规范</h4>
+            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">制作规范</h4>
           <template v-if="pstandard.length>0" >
               <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
                   <Col span="5">
-                  <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
+                  <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
                       <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                   </AutoComplete>
                   </Col>
                   <Col span="10">
-                  <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                  <AutoComplete v-model="item.values" placeholder="描述" clearable style="margin-left:20px" :disabled="disabled">
                       <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                   </AutoComplete>
                   </Col>
-                  <Icon @click.native="removeFileat(index)" type="trash-b" class="delIcon"></Icon>
+                  <Icon v-if="!disabled" @click.native="removeFileat(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
               </Row>
           </template>
             <!--文件添加-->
             <template v-if="fileShow" :style='{margin:"10px 0"}'>
                 <Col span="5">
-                <AutoComplete v-model="fileAddName" placeholder="额外属性名称" clearable>
+                <AutoComplete v-model="fileAddName" placeholder="规范名称" clearable :disabled="disabled">
                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                 </AutoComplete>
                 </Col>
                 <Col span="10">
-                <AutoComplete v-model="fileAddMain" placeholder="额外属性说明" clearable style="margin-left:20px">
+                <AutoComplete v-model="fileAddMain" placeholder="描述" clearable style="margin-left:20px" :disabled="disabled">
                     <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                 </AutoComplete>
                 </Col>
@@ -59,15 +59,15 @@
                 <Button type="text" @click="closeFileat()">取消</Button>
             </template>
 
-            <Button v-if="!fileShow" icon="plus-round" type="dashed" long @click="fileListAdd" style="width:718px">
+            <Button v-if="!fileShow&& !disabled" icon="plus-round"  long @click="fileListAdd" type="text" style="width:140px;color: #31bb9f">
                 增加制作规范
             </Button>
 
             <!--流程规范-->
             <!--规范增加-->
-            <h4 :style="{paddingBottom:'10px'}">制作流程规范</h4>
-            <Button type="primary" @click="modal1 = true">增加标签</Button>
-            <Button type="primary" @click="modal2 = true">删除标签</Button>
+            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">制作流程规范</h4>
+            <!--<Button type="primary" @click="modal1 = true">增加标签</Button>-->
+            <!--<Button type="primary" @click="modal2 = true">删除标签</Button>-->
             <Modal
                     v-model="modal1"
                     title="增加标签"
@@ -76,7 +76,7 @@
                 <section>
                     <div style="margin-bottom: 5px">
                         <span>规范标签&emsp;：&emsp;</span>
-                        <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
+                        <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px":disabled="disabled"></Input>
                     </div>
                 </section>
             </Modal>
@@ -95,7 +95,7 @@
             <div style="display: flex;padding: 10px 0 0 40px;">
                 <div style="flex: 12">
                     <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
-                        <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
+                        <Step v-for="(step,index) in fstandard" class="stepContainer"  style="padding-bottom: 70px;" :key="index">
                             <!--步骤名称-->
                             <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
                             <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
@@ -104,23 +104,23 @@
                             <ul class="stepsUl">
 
                                 <li class="stepsList" v-for="(list,i) in step.require" :key="i">
-                                    <Input v-model="list.text" placeholder="Enter something..."
-                                           style="width: 400px"></Input>
+                                    <Input v-model="list.text" placeholder="输入对该阶段要求"
+                                           style="width: 400px":disabled="disabled"></Input>
                                     <!--规范列表-->
-                                    <Select v-model="list.norm" size="small" class="standard">
+                                    <Select v-model="list.norm" size="small" class="standard" :disabled="disabled">
                                         <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
                                             {{ item.name }}
                                         </Option>
                                     </Select>
-                                    <div class="priorityContainer">
+                                    <div  class="priorityContainer" >
                                         <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
-                                        <div class="priorityList" >
+                                        <div v-if="!disabled" class="priorityList" >
                                             <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
                                             <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
                                             <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
                                         </div>
                                     </div>
-                                    <Icon type="trash-b" class="delIcon" @click="delFlowNorm(index,i)"></Icon>
+                                    <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
                                 </li>
                                 <!--审核选项-->
                                 <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
@@ -132,7 +132,7 @@
                                 {{step.show}}
                                 <div v-show="step.show" class="stepsList">
                                     <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
-                                           style="width: 400px"></Input>
+                                           style="width: 400px":disabled="disabled"></Input>
                                     <Select v-model="stepInfoList.norm" class="standard" size="small">
                                         <Option v-for="item in norms" :value="item.id" :key="item.id">
                                             {{ item.name }}
@@ -149,14 +149,14 @@
                                     <Button @click="stepAdd(index)" type="text">确认</Button>
                                     <Button @click="closeStepList(index)" type="text">取消</Button>
                                 </div>
-                                    <Icon v-show="!step.show" @click.native="flowAddShow(index)" type="plus"
-                                      style="margin-left:10px;font-size: 12px;cursor: pointer"></Icon>
+                                    <Icon v-show="!step.show" v-if="!disabled" @click.native="flowAddShow(index)" type="plus"
+                                      style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
                             </div>
                         </Step>
                     </Steps>
                 </div>
                 <div style="flex: 12" >
-                    <Icon @click.native="addSteps" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled"></Icon>
+                    <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
                 </div>
 
             </div>
@@ -165,28 +165,28 @@
             <template v-if="tstandard.length>0">
                 <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" :style='{margin:"20px 0"}'>
                     <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="输入格式，如“max”" clearable></AutoComplete>
+                    <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="附加文件描述..." clearable
+                    <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"
                                   style="margin-left:20px"></AutoComplete>
                     </Col>
-                    <Icon @click.native="delOtherfile(index)" type="trash-b" class="delIcon"></Icon>
+                    <Icon v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
                 </div>
             </template>
 
             <template v-if="OtherfileShow">
                 <Col span="5">
-                <AutoComplete v-model="OtherfileName" placeholder="输入格式，如“max”" clearable></AutoComplete>
+                <AutoComplete v-model="OtherfileName" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
                 </Col>
                 <Col span="10">
-                <AutoComplete v-model="OtherfileMain" placeholder="附加文件描述..." clearable
+                <AutoComplete v-model="OtherfileMain" placeholder="描述" clearable :disabled="disabled"
                               style="margin-left:20px"></AutoComplete>
                 </Col>
                 <Button type="text" @click="addJunctShow">确认</Button>
                 <Button type="text" @click="closeOtherfile">取消</Button>
             </template>
-            <Button v-if="!OtherfileShow" style="width:718px" icon="plus-round" type="dashed" @click="OtherfileAdd">
+            <Button v-if="!OtherfileShow&&!disabled" style="width:140px;color:#31bb9f;" icon="plus-round" type="text" @click="OtherfileAdd">
                 增加文稿规范
             </Button>
         </Form>
@@ -226,6 +226,7 @@
         },
         data() {
             return {
+                disabled:true, // 禁用
                 goinfo:null,
                 createInfo:false,
                 delnormsValue:'',
@@ -398,6 +399,7 @@
             async submitCompany(){
                 let url = 'task/task-type/add';
                 let obj = null;
+                /*更新*/
                  if(this.updateId !== null || this.createInfo){
                     url = 'task/task-type/update';
                      obj = {
@@ -409,8 +411,9 @@
                          color:this.identification.iconColor,
                      };
                 }else{
+                     /*新增*/
                      obj = {
-                         category_id:this.newData.cate_id,
+                         category_id:this.goinfo.parent_id,
                          name:this.typename.typename,
                          stage:JSON.stringify(this.fstandard),
                          standard : JSON.stringify(this.tstandard.concat(this.pstandard)),

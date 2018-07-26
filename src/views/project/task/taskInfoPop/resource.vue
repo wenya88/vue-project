@@ -45,7 +45,9 @@
              init(data){
                 if(data){
                     data.stage_list.map((item,index) => {
-                         this.getstage(item.id,data.stage[index].stage_name)
+                        if(data.stage[index]){
+                            this.getstage(item.id,data.stage[index].stage_name)
+                        }
                     })
                 }
 

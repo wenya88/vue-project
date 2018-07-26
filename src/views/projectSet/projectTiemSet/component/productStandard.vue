@@ -44,7 +44,7 @@
         <!--规范表单-->
         <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
-                <h4 :style="{paddingBottom:'10px'}">内容规范</h4>
+                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
                     <Col span="5">
                     <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
@@ -73,13 +73,14 @@
                     <Button type="text" @click="closeattrContent()">取消</Button>
                 </template>
 
-                <Button v-if="!attrContentW.show" icon="plus-round" type="dashed" long
+                <Button v-if="!attrContentW.show" icon="plus-round" type="text" long
+                        style="width:140px;color: #31bb9f"
                         @click.native="attrContentW.show=!attrContentW.show"
-                        style="width:718px">
+                      >
                     增加内容规范
                 </Button>
 
-                <h4 :style="{paddingBottom:'10px'}">规格规范</h4>
+                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规格规范</h4>
                 <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
                     <Col span="5">
                     <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable>
@@ -108,8 +109,8 @@
                     <Button type="text" @click="closeruleList()">取消</Button>
                 </template>
 
-                <Button v-if="!ruleListW.show" icon="plus-round" type="dashed" long
-                        @click="ruleListW.show=!ruleListW.show" style="width:718px">
+                <Button v-if="!ruleListW.show" icon="plus-round" type="text" long
+                        @click="ruleListW.show=!ruleListW.show" style="width:140px;color: #31bb9f">
                     增加制作规范
                 </Button>
             </div>

@@ -210,13 +210,12 @@ export default{
                         this.clickMenberDropdown();
                         this.callFatherFunction(fatherFunctions)  ;
                         this.principalName = res.member_id;
-                        this.setTaskInfo(res)  // vux存储info
-//                    if(data.stage_file){
-//                        let TaskID = data.stage_file.task_id;
-//                        let file = data.stage_file.file;
-//                        this.$store.commit('changeComponentTaskID', TaskID);
-//                        this.$store.commit('changeComponentFileURl', file);
-//                    }
+                        this.setTaskInfo(res);  // vux存储info
+                    if(res.stage_file){
+                        this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
+                        this.$store.commit('changeComponentTaskID', res.id);
+                        this.$store.commit('changeComponentFileURl', res.stage_file);
+                    }
 
                     }
                 )

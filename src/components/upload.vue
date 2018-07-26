@@ -38,7 +38,7 @@
                    return [
                         { title : "Image files", extensions : "jpg,gif,png,bmp" },
                         { title : "Zip files", extensions : "zip,rar" },
-                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv"},
+                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv,fbx"},
                    ]
                 }
             } ,
