@@ -135,12 +135,7 @@
            li{
                padding:8px 0px;
                &:hover .deletPrice{display:inline-block;}
-               &:nth-of-type(1):hover .deletPrice{
-                    display:none;
-               }
-               &:nth-last-of-type(2):hover .deletPrice{
-                    display:none;
-               }
+               
            }
            .line{
                &:extend(.newContractData .basicInfo ul .line);
@@ -159,6 +154,14 @@
            }
        }
        .contractPay{
+           li{
+                &:nth-of-type(1):hover .deletPrice{
+                    display:none;
+                }
+                &:nth-last-of-type(2):hover .deletPrice{
+                        display:none;
+                }
+           }
            .span{
                &:nth-of-type(2){
                    .ivu-input{
