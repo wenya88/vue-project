@@ -117,7 +117,11 @@ export default {
             ],
             contractPayDate:[
                 {
-                    key:'',
+                    key:'首笔款',
+                    num:'',
+                    amount:'',
+                },{
+                    key:'尾款',
                     num:'',
                     amount:'',
                 }
@@ -206,7 +210,7 @@ export default {
                 num:'',
                 amount:'',
             }
-            this.contractPayDate.push(obj)
+            this.contractPayDate.splice(this.contractPayDate.length-1,0,obj)
         },
         // deletePay
         deletPay(index){

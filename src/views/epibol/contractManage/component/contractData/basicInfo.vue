@@ -92,9 +92,7 @@
                     </li>
                     <li>
                         <span class="span">
-                            <Select v-model="oneAccess" filterable>
-                                <Option v-for="item in projectUserData" :value="item.user_id" :key="item.user_id">{{ item.realname }}</Option>
-                            </Select>
+                            <Input v-model="oneAccess" placeholder="请输入合同名称"></Input>
                         </span>
                         <span class="span">
                             <Input v-model="contact" placeholder="请输入联系方式"></Input>
@@ -105,9 +103,27 @@
             </div>
             
             <!-- contractSchedle -->
-            <div class="contractSchedle">
+            <div class="contractSchedle" v-show="contractStatus.length!=0">
                 <div class="Flex">
-                    1
+                    <h1>合同进度</h1>
+                    <div class="schedle">
+                        <ul>
+                            <li v-for="(item,index) in contractStatus" :key="index">
+                                <div>
+                                    <span :class="[item.status==1?'state':'']" :title="item.key">{{item.key}}</span>
+                                    <em class="statusInfo">
+                                        <em class="Constate">{{item.status==1?'已完成':''}}</em><br/>
+                                        <em>{{item.action_time}}</em>
+                                    </em>
+                                    <div class="clear"></div>
+                                </div>
+                                <p>
+                                    <em v-if="index==Iindex&&contractStatus.length!=index+1">实施中</em>
+                                </p>
+                                
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -137,6 +153,8 @@ export default {
             oneAccess:'',//对接人
             contact:'',//联系方式
             contractTime:[],
+            contractStatus:[],
+            Iindex:null
         }
     },
     computed:{
@@ -156,7 +174,6 @@ export default {
     },
     updated(){
         this.updataContract();
-       
     },
     methods:{
         routerGet(){
@@ -178,6 +195,16 @@ export default {
             this.contractEndTime=data.end_time;
             this.contractTime[0]=data.start_time;
             this.contractTime[1]=data.end_time;
+            this.contractStatus=data.status_list;
+            
+            let Iindex=null
+            for(let i=0;i<this.contractStatus.length;i++){
+                if(this.contractStatus[i].status==1){
+                    Iindex=i
+                }
+            }
+            this.Iindex=Iindex;
+
         },
         // autoH
         autoHeight(){

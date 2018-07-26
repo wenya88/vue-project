@@ -1,7 +1,7 @@
 <template>
     <div class="membermanager">
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
-        <Tabs size="small" v-model="tabsType" @on-click="changeTabs()">
+        <Tabs size="small" v-model="tabsType">
             <TabPane label="成员管理" name="member">
                 <Layout>
                     <Sider>
@@ -34,14 +34,14 @@
                     </Layout>
                 </Layout>
             </TabPane>
-            <TabPane label="权限设置" name="auto">
+            <TabPane label="权限设置" name="auth">
                 <Layout>
                     <Sider>
-                        
+                        <auth-type title="成都有限公司" number="41" :authList="authList"></auth-type>
                     </Sider>
                     <Layout>
                         <Content>
-                            
+                            <auth-message></auth-message>
                         </Content>
                     </Layout>
                 </Layout>
@@ -71,6 +71,9 @@ import membertype from './mmComponents/memberType.vue';
 import memberinvite from './mmComponents/memberInvite.vue';
 import membermessage from './mmComponents/memberMessage.vue';
 
+import authType from './mmComponents/authType.vue';
+import authMessage from './mmComponents/authMessage.vue';
+
 export default {
     // data() {
     //     ownMemberTypes:[],
@@ -81,11 +84,13 @@ export default {
         membertype,
         // membercontroller,
         memberinvite,
-        membermessage
+        membermessage,
+        authType,
+        authMessage
     },
     data() {
         return {
-            tabsType: 'member',
+            tabsType: 'auth',
             num: 1,
             showAddNewTodo: false,
             newToDoItemValue: '',
@@ -123,18 +128,16 @@ export default {
     mounted() {
         this.deptListData();
         this.dutyListData();
-        sessionStorage.tabsType = this.tabsType;
+        this.authListData();
     },
     computed: {
         ...mapGetters({
             deptList: 'getDeptList',
-            dutyList: 'getDutyList'
+            dutyList: 'getDutyList',
+            authList: 'getAuthList'
         })
     },
     methods: {
-        changeTabs() {
-            sessionStorage.tabsType = this.tabsType;
-        },
         updateDate(memberType) {
             this.$emit('init');
         },
@@ -155,6 +158,15 @@ export default {
                 company_id: 1
             }
             this.$store.dispatch('fetchDutyList', qs.stringify(data));
+        },
+        /**
+         * 获取权限成员列表
+         */
+        authListData() {
+            let data = {
+                token: localStorage.token
+            }
+            this.$store.dispatch('fetchAuthList', qs.stringify(data));
         },
         /**
          * 根据成员部门获取列表

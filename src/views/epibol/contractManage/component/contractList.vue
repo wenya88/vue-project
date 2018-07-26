@@ -9,11 +9,11 @@
                                 <a href="javascript:void(0)">
                                     <Icon type="ios-more" size="20"></Icon>
                                 </a>
-                                <DropdownMenu slot="list" v-if="item.status<'1'">
+                                <DropdownMenu slot="list" v-if="item.status<='0'">
                                     <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
                                     <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
                                 </DropdownMenu>
-                                <DropdownMenu slot="list">
+                                <DropdownMenu slot="list" v-else>
                                     <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
@@ -89,6 +89,7 @@ export default {
         //编辑
         editContract(item){
             this.$store.commit('getContractIDCommit',item);//传contrac_ID
+            this.$store.commit('getContractServerButton',true);//保存按钮
             this.newAddData();
         },
         // 新增合同
