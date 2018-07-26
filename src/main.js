@@ -4,7 +4,7 @@ import { router } from './router/index';
 import store from './store';
 import App from './app.vue';
 import VueResource from 'vue-resource';
-import axios from 'axios'
+import axios from './store/request';
 import 'iview/dist/styles/iview.css';
 import './theme/dist/iview.css';
 import vueEventCalendar from '../src/views/main-components/calend/vue-event-calendar/dist/index'
@@ -23,10 +23,10 @@ import soket from './views/chatInterface/websoket.js'
 import config from './config/config.js'
 import global from './components/Global'//引用全局变量文件
 // axios.defaults.baseURL = 'http://106.14.150.55';
-axios.defaults.baseURL = 'http://59.111.95.148';
-axios.defaults.withCredentials = false
+// axios.defaults.baseURL = 'http://59.111.95.148';
+// axios.defaults.withCredentials = false
 Vue.prototype.$axios = axios
-Vue.$axios = axios;
+// Vue.$axios = axios;
 Vue.prototype.GLOBAL = global
 Vue.prototype.$connectSoket = soket
 if (localStorage.token) {
