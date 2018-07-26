@@ -5,6 +5,8 @@ import axios from 'axios'
 import Cookies from 'js-cookie';
 let Axios = axios.create({
   timeout:30000,
+  baseURL: 'http://59.111.95.148',
+  withCredentials: false
 });
 // http request 拦截器
 // Axios.interceptors.request.use(
@@ -18,15 +20,20 @@ let Axios = axios.create({
 //     return Promise.reject(err);
 //   });
 
+Axios.interceptors.request.use((config) => config, (err) => {
+  console.log(err);
+});
+
 // http response 拦截器
 Axios.interceptors.response.use(
   response => {
     return response;
   },
   error => {
-    console.log(error.response);
+    console.log(error.response, '----------------------');
     if (error.response) {
       if(error.response.status == '600') {
+        console.log('600');
         Cookies.remove('user');
         localStorage.removeItem('token');
         router.push('/login');
