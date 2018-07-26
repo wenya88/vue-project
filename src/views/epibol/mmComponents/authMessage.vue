@@ -40,7 +40,11 @@ export default {
     tabs: {
       type: Array,
       default: []
-    }
+    },
+    // authLists: {
+    //   type: Array,
+    //   default: []
+    // }
   },
   data() {
     return {
