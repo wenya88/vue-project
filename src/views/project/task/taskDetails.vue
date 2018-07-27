@@ -193,7 +193,7 @@ export default{
         },
     },
     methods:{
-        ...mapMutations(['setTaskInfo']),
+        ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
             // console.log('详情',id,fatherFunctions)
@@ -211,10 +211,14 @@ export default{
                         this.callFatherFunction(fatherFunctions)  ;
                         this.principalName = res.member_id;
                         this.setTaskInfo(res);  // vux存储info
-                    if(res.stage_file){
+                    if(res.stage_file && res.stage_file_type === 'image'){
                         this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
                         this.$store.commit('changeComponentTaskID', res.id);
                         this.$store.commit('changeComponentFileURl', res.stage_file);
+                    }else if(res.stage_file && res.stage_file_type === '3d'){
+                        this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
+                        this.changeComponentTaskID(res.id)
+                        this.changeComponentFileURl(res.stage_file)
                     }
 
                     }
@@ -294,7 +298,6 @@ export default{
                 .then( res => res.data)
                 .then( ({data}) => {
                     this.taskTypesList = data
-                    console.log(78,this.taskTypesList)
 //                    this.taskTypesList = [];
 //                    if (data) {
 //                        data.map((items, index) => {
@@ -480,7 +483,6 @@ export default{
 
             this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
                 .then(({data})=>{
-                // console.log(33,data)
                 this.childProjectsList = data.data
                 })
         },

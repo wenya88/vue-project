@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Tree class="treeMapContainer" :data="treeMap" :render="renderContent"></Tree>
+        <Tree class="treeMapContainer" @on-toggle-expand="showTree" :data="treeMap" :render="renderContent"></Tree>
         <!--复制-->
         <Modal
                 class="treeMapWindow"
@@ -30,6 +30,7 @@
                 @on-cancel="changName.show = false">
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
+        <!--上传组件测试-->
         <!--<v-upload></v-upload>-->
     </div>
 </template>
@@ -41,7 +42,9 @@
 
     export default {
         mounted() {
+            /*树状图初始化*/
             this.init();
+            /*事件监听取消...菜单*/
             document.body.onclick = (e) => {
                 e.stopPropagation();
                 let arrData = (data) => {
@@ -54,15 +57,15 @@
                 };
                 arrData(this.treeMap[0].children);
             };
+            /*info触发树状图更新*/
             this.$bus.on('treeUpdate', (data) => {
                 this.init();
             });
-
-
         },
         data() {
             return {
-
+                expandArray:JSON.parse(sessionStorage.getItem('expand'))||[],
+                expandDetails:JSON.parse(sessionStorage.getItem('expandDetails'))||[],
                 company_id: sessionStorage.getItem('userId'),
                 copy: {
                     show: false,
@@ -142,56 +145,80 @@
             async init() {
                 let {data} = await api.taskCateList();
                 if (data.err_code === 0) {
-                    /*递归遍历获得层级*/
+                    /*一级处理*/
                     let rank = 0;
-                    const arrData = (data, rank, status) => {
-                        data.map((item) => {
-                            item.status = status;
-                            item.rank = rank;
-                            item.btnShow = false;
-                            item.editText = false;
-                            item.expand = true;
-                            if (item.tasktype) {
-                                item.children = item.tasktype;
-                                item.isTasktype = true;
-                                item.expand = true;
-                                if (item.children) {
-                                    item.children.map((children) => {
-                                        if (this.defId === null) {
-//                                            item.children.expand = true
-                                            this.$set(item.children,'expand',true);
-                                            this.setDefIdAction(children.id);
-                                        }
-                                    })
-                                }
-                            }
-                            if (item.status !== 0 && item.rank === 1) {
-                                this.folder.push(JSON.parse(JSON.stringify(item)))
-                            }
-                            if (item.children) {
-                                arrData(item.children, rank + 1, item.status)
-                            }
-                        })
-                    };
                     if (data && Array.isArray(data.data)) {
-                        data.data.map((item) => {
+                        data.data.map((item,index) => {
+                            let expand = '';
                             item.btnShow = false;    // 右侧菜单
                             item.rank = rank;
+
+                            /*给系统默认添加标识*/
                             if (item.cate_id === '1') {
                                 item.status = 0      // 系统默认
                             }
-                            if (item.children) {
-                                arrData(item.children, rank + 1, item.status)
+                            /*展开之前选中的分类*/
+                            this.showExpand(item);
+                            /*展开点击了详情的分类  默认展示系统默认*/
+                            if(item.cate_id === this.expandDetails[0]){
+                                item.expand = true;
+                            }else  if(index === 0 && !this.expandDetails[0]) {
+                                item.expand = true;
+                                expand = 'expand'
                             }
-
+                            /*二级遍历处理*/
+                            if (item.children) {
+                                this.arrData(item.children, rank + 1, item.status,expand)
+                            }
                         });
                     }
                     this.treeMap[0].children = data.data;
+
                 } else {
                     this.$Message.error(data.err_message)
                 }
-
             },
+            /*递归遍历*/
+            arrData(data, rank, status,expand){
+                data.map((item,index) => {
+                    item.status = status;
+                    item.rank = rank;
+                    item.btnShow = false;
+                    item.editText = false;
+                    /*展开之前选中的分类*/
+                     this.showExpand(item);
+
+                    /*存在类别*/
+                    if (item.tasktype) {
+                        item.children = item.tasktype;
+                        item.isTasktype = true;
+                        /*展开点击了详情的分类  默认展示并获得id*/
+                        if(item.cate_id === this.expandDetails[1]){
+                            item.expand = true;
+                        }else if(index === 0 && expand === 'expand' && !this.expandDetails[1]){
+                            item.expand = true;
+                        }
+                        /*获取类别id 默认加载的类别id*/
+                        if(this.expandDetails[2]){
+                            this.setDefIdAction(this.expandDetails[2])
+                        }else if (item.children) {
+                            item.children.map((children) => {
+                                if (this.defId === null) {
+                                    this.setDefIdAction(children.id);
+                                }
+                            })
+                        }
+                    }
+                    /*复制*/
+                    if (item.status !== 0 && item.rank === 1) {
+                        this.folder.push(JSON.parse(JSON.stringify(item)))
+                    }
+                    /*有分类*/
+                    if (item.children) {
+                        this.arrData(item.children, rank + 1, item.status)
+                    }
+                })
+        },
             renderContent(h, {root, node, data}) {
                 let folderButton = '';
                 let iconFile = false;
@@ -353,7 +380,7 @@
                             },
                             on: {
                                 click: () => {
-                                    this.goTaskList(data)
+                                    this.goTaskList(data,root,node)
                                 }
                             }
 
@@ -397,13 +424,15 @@
             },
 
             /*点击进入详情*/
-            goTaskList(data) {
-
+            goTaskList(data,root,node) {
                 if(data.temporary){
                     this.$bus.emit('addType', data);
                 }else{
                     this.$bus.emit('typesDetail', data);
-
+                }
+                /*详情展开*/
+                if(data.rank === 2){
+                    this.detailsExpand(data,root,node)
                 }
             },
             /*打开右边菜单*/
@@ -418,10 +447,7 @@
                     })
                 };
                 arrData(this.treeMap[0].children);
-
                 this.$set(data, 'btnShow', !data.btnShow)
-
-
             },
             /*删除弹窗*/
             delButton(root, node, data) {
@@ -432,7 +458,7 @@
             /*删除*/
             remove() {
                 let url = 'task/task-type/cate-delete';
-                let obj = {id: this.del.id}
+                let obj = {id: this.del.id};
                 //类型删除
                 if (this.del.data.rank === 2) {
                     url = 'task/task-type/delete';
@@ -480,7 +506,61 @@
                     .then((data) => {
                     });
                 this.copy.show = false;
-            }
+            },
+            /*展开*/
+            showTree(data){
+                /*分类展开*/
+                this.classifyExpand(data);
+
+            },
+            /*分类展开*/
+            classifyExpand(data){
+                if(data.cate_id){
+                    if(this.expandArray.length > 0){
+                        let showExpand = true;
+                        this.expandArray.map((item,index,arr) => {
+                            if(data.cate_id === item.cate_id){
+                                showExpand = false;
+                                item.expand = data.expand
+                            }
+                        });
+                        if(showExpand){
+                            this.expandArray.push({cate_id:data.cate_id,expand:data.expand})
+                        }
+                    }else{
+                        this.expandArray.push({cate_id:data.cate_id,expand:data.expand})
+                    }
+                    sessionStorage.setItem('expand',JSON.stringify(this.expandArray));
+                }
+            },
+            /*详情展开*/
+            detailsExpand(data,root,node){
+               let nodeSecond= null,nodeStair = null;
+                nodeSecond = node.parent;
+                this.expandDetails[2] = data.id;
+                root.map((roots) => {
+                    if(roots.nodeKey === nodeSecond){
+                        this.expandDetails[1] = roots.node.cate_id;
+                        nodeStair = roots.parent
+                    }
+                });
+                if(nodeStair !== null){
+                    root.map((roots) => {
+                        if(roots.nodeKey === nodeStair){
+                            this.expandDetails[0] = roots.node.cate_id;
+                        }
+                    })
+                }
+                sessionStorage.setItem('expandDetails',JSON.stringify(this.expandDetails));
+            },
+            /*展开文件夹具体实现*/
+            showExpand(item){
+                this.expandArray.map((expandObj,i) => {
+                    if(item.cate_id === expandObj.cate_id){
+                        item.expand = expandObj.expand
+                    }
+                });
+            },
         },
         computed: {
             ...mapState({

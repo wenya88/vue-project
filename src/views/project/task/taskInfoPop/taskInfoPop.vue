@@ -83,7 +83,7 @@
         },
         mounted() {
             this.initTaskDetail();
-//            this.initTaskDetailProjecInfo();
+            this.initTaskDetailProjecInfo();
         },
         data() {
             return {

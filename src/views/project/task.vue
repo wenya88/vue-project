@@ -591,7 +591,7 @@ export default {
     float:right;
     right: 17px;
     padding: 4px 10px 10px 24px;
-    z-index:2;
+    z-index:1;
 }
 </style>
 

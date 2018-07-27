@@ -25,6 +25,7 @@
                 </Step>
             </Steps>
         </div>
+        <h1>{{imgEditorWH}}</h1>
     </div>
 </template>
 
@@ -79,6 +80,10 @@
             ...mapState({
                 infoDetails(data){
                     return data.project.detail.taskInfo
+                },
+                imgEditorWH(data){
+                    console.log(31,data.paySkip.imgEditorWH)
+                    return data.paySkip.imgEditorWH
                 }
             })
         },
