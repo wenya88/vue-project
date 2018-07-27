@@ -113,7 +113,6 @@ export default {
             addLabDIV:false,
             addManageDIV:false,
             manageData:[],
-            FocusLabelVal:false,
             projectTitle:'新建项目'
         }
     },
@@ -145,9 +144,9 @@ export default {
             this.LabelVal=''
         },
         submitLabel(){
+            
             this.count.push(this.LabelVal);
             this.addLabDIV=false;
-            this.FocusLabelVal=true;
         },
         closeAddDIV(){
             this.addLabDIV=false;
@@ -269,7 +268,6 @@ export default {
            this.state=val.EPstatus==2?false:true;
            this.MangageVal=val.EPleader;
            this.projectTitle="编辑项目";
-           console.log(val)
 
            if(val.EpmanangeName.name!="NotName"){//管理人员姓名
                this.manageCount.push(val.EpmanangeName);
