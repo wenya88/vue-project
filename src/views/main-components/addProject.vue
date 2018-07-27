@@ -220,10 +220,6 @@ export default {
             let _this=this;
             let url=_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1;
             let manageURL=_this.GLOBAL.baseRouter+'task/project/get-company-member';
-            // _this.$axios.all([url,manageURL]).then(([msgData,ManageData])=>{
-            //     _this.ContList=msgData.data.data;
-            //     _this.manageData=ManageData.data;
-            // })
             _this.$axios.get(url).then(msgData=>{
                  _this.ContList=msgData.data.data;
             });

@@ -28,12 +28,12 @@
                         </span>
                         <div class="clear"></div>
                     </li>
-                    <li>甲方公司</li>
+                    <li>乙方公司</li>
                     <li class="line">
                         {{companyA}}
                     </li>
                     <li>
-                        <span class="span">对接人</span><span class="span">联系方式</span>
+                        <span class="span">负责人</span><span class="span">联系方式</span>
                         <div class="clear"></div>
                     </li>
                     <li class="line">
@@ -48,7 +48,7 @@
                 </ul>
             </div>
             <!-- contractSchedle -->
-            <div class="contractSchedle" v-show="contractStatus.length!=0">
+            <div class="contractSchedle">
                 <div class="Flex">
                     <h1>合同进度</h1>
                     <div class="schedle">
@@ -99,8 +99,8 @@ export default {
     methods:{
         // autoH
         autoHeight(){
-            $(".newContractData .autoHeight").height($(window).height()-212);
-            $(".contractSchedle").height($(window).height()-280);
+            $(".newContractData .autoHeight").height($(window).height()-270);
+            $(".contractSchedle").height($(window).height()-310);
         },
         // contractInfo
         editContract(data){
