@@ -9,7 +9,8 @@ const paystatus={
         fileUpload:"http://192.168.2.19/index.php?r=file/file/file-upload",
         contrateCommit:false,
         contrateButton:false,
-        contractID:null
+        contractID:null,
+        imgEditorWH:[]
     },
     mutations:{
         actionPaySkip(state,pData){
@@ -32,6 +33,9 @@ const paystatus={
         },
         getContractServerButton(state,pData){
             state.contrateButton=pData;
+        },
+        getImgEditorWH(state,pData){
+            state.imgEditorWH=pData
         }
 
     }

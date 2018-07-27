@@ -126,8 +126,12 @@ export default {
                     amount:'',
                 }
             ],
+            // ------------
             fileCount:1,
             priceNum:0,
+
+            contFileConunt:1,
+            // ------------
             amount:0,
             dateIndex:0
         }
@@ -228,8 +232,8 @@ export default {
         priceChange(){
             let sum=0;
             let amsum=0;
-            let jsum=0;
-            let jamsum=0;
+            let csum=0;
+            let camsum=0;
             for(let i=0;i<this.priceData.length;i++){
                 if(this.priceData.length==1){
                     sum=Number(this.priceData[i].count);
@@ -242,6 +246,21 @@ export default {
             }
             this.fileCount=sum;
             this.priceNum=amsum;
+
+            for(let j=0;j<this.contractPayDate.length;j++){
+                csum+=Number(this.contractPayDate[j].num);
+                camsum+=Number(this.contractPayDate[j].amount)
+            }
+            if(csum>sum){
+                this.$Message.error('对不起,文件数大于合同文件数据！');
+                this.$bus.emit("Bdisabled",true);
+            }else if(camsum>amsum){
+                this.$Message.error('对不起,金额大于合同金额！');
+                this.$bus.emit("Bdisabled",true);
+            }else{
+                this.$bus.emit("Bdisabled",false);
+            }
+
         }
     },
     updated(){
