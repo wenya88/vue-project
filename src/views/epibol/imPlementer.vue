@@ -25,7 +25,7 @@
              <div class="clearfix task_describe_title">
                <div class="task_icon">
                  <p v-show="elems.isDelay">延期</p>
-                 <span class="iconfont icon-bofang" v-show="elems.status == 1"></span>
+                 <span class="iconfont icon-bofang" v-show="elems.status == 1" @click="getAgin(elems)"></span>
                  <span class="iconfont icon-shangchuandengdai" v-show="elems.status == 2"></span>
                </div>
                <div>
@@ -135,6 +135,13 @@
            <p class="sure_title" @click="uploadImg">确认</p>
         </div>
       </div>
+      <div class="is_angin" v-if="isAngin">
+        <p>是否开始任务</p>
+        <div class="is_angin_box">
+          <p @click="sureAngin">是</p>
+          <p @click="noAngin">否</p>
+        </div>
+      </div>
      <!-- 上传界面end -->
    </div>
 </template>
@@ -152,6 +159,7 @@ export default {
       widthAll: '',
       left: 0,
       isclose: false,
+      isAngin: false,
       tastList: [],
       examinList: [],
       solt: {},
@@ -200,6 +208,30 @@ export default {
     }
   },
   methods: {
+    // 确定开始
+    sureAngin () {
+      const url = this.GLOBAL.baseRouter+"/task/task/start"
+      const items = {
+         id: this.task_id
+       }
+       this.$axios.post(url, qs.stringify(items)).then(data => {
+         if (data.data.err_code == 0) {
+           this.$Message.success(data.data.err_message)
+         } else {
+           this.$Message.error(data.data.err_message)
+         }
+        //  console.log('开始任务', data)
+       })
+    },
+    // 取消开始
+    noAngin () {
+      this.isAngin = false
+    },
+    // 是否开始
+    getAgin (data) {
+      this.task_id = data.id
+      this.isAngin = true
+    },
     // 重新上传
     againFun () {
       this.nameList = []
@@ -371,6 +403,7 @@ export default {
          const nowList = data.data.data
          let list = Object.assign(afterLists, nowList, beforeLists);
         //  this.listAll = list
+        // console.log('获取时间', list)
          this.getView(list)
        }, error => {
          console.log('错误', error)
@@ -387,17 +420,29 @@ export default {
         // console.log('时间列表1', i, lists)
         tastList = tastList.concat(list[i])
       }
+      let objList = []
+      tastList.forEach((items, i) => {
+        let flag = true
+        objList.forEach((elems, j) => {
+          if (items.id == elems.id) {
+            flag = false
+          }
+        })
+        if (flag) {
+          objList.push(items);
+        }
+      })
       const index = lists.length - 1
       this.startTime = lists[0]
       this.endTime = lists[index]
-      this.tastList = tastList
+      this.tastList = objList
       this.getTimeSlot()
       this.getTast()
       this.getFeedback(list)
     },
     // 获取任务
     getTast () {
-      const list = this.tastList
+      let list = this.tastList
       let startTimes = this.startTime
       let endTimes = this.endTime
       const todays = this.getTimes(Date.now()).times
@@ -1286,5 +1331,45 @@ export default {
 .again_upload_father{
  width: 100%;
  height: 30px;
+}
+.is_angin{
+ width: 200px;
+ height: 160px;
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ margin-top: -100px;
+ margin-left: -100px;
+ background: rgb(240,240,240);
+ border-radius: 4px;
+}
+.is_angin>p{
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  line-height: 160px;
+}
+.is_angin_box{
+  width: 100%;
+  height: 40px;
+}
+.is_angin_box>p{
+  width: 60px;
+  height: 30px;
+  float: left;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  color: #ffffff;
+  margin-top: 5px;
+}
+.is_angin_box>p:first-child{
+ background: rgb(24,191,164);
+ margin-left: 30px;
+}
+.is_angin_box>p:last-child{
+ background: rgb(215,215,215);
+ margin-left: 20px;
 }
 </style>

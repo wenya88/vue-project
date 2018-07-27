@@ -189,7 +189,7 @@ export default {
         authData(index, postId) {
             // this.$refs.authMesg.authData(postId)
             this.$bus.emit("changeAuth",postId)
-            console.log(121212)
+            // console.log(121212)
         },
         addDept() {
             this.deptStatus = 'add';

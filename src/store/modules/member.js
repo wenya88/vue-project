@@ -69,15 +69,17 @@ const actions = {
     .then(res => {
       // console.log(res)
       let fetchList = res.data
-      let postNamaList = [];
+      let postNameList = [];
       let authList = [];
       fetchList.forEach((item) => {
-        postNamaList.push(item)
+        postNameList.push(item)
       });
-      postNamaList.forEach((item,index) => {
-        authList.push(item.all_auth.auth)
+      postNameList.forEach((item,index) => {
+        authList.push(item.auth)
+        // authList.push({auth:item.auth, postid: item.id})
       })
-      commit('updatePostList', postNamaList);
+      console.log(postNameList)
+      commit('updatePostList', postNameList);
       commit('updatAuthList', authList);
     })
   }
