@@ -355,7 +355,8 @@ export default {
          xdays: number
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const list = data.data.data
+        //  console.log('数据', data.data.data)
+         const list = data.data.data.dates
          const beforeData = this.beforeData
         //  console.log('数据', data)
          let lists = Object.assign(beforeData, list);
@@ -382,7 +383,7 @@ export default {
          xdays: -number
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const list = data.data.data
+         const list = data.data.data.dates
          const afterData = this.afterData
          let lists = Object.assign(list, afterData);
          this.afterData = lists
@@ -412,7 +413,7 @@ export default {
        const items = {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const nowList = data.data.data
+         const nowList = data.data.data.dates
          let list = Object.assign(afterLists, nowList, beforeLists);
         //  this.listAll = list
         // console.log('获取时间', list)
