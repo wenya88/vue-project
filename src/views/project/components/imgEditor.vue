@@ -338,6 +338,8 @@
                 let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
                 _this.$axios.get(url).then(function(msg){
                     let Sdate=msg.data;
+                    console.log(337,Sdate)
+
                     if(Sdate.err_code==0){
 
                         _this.IMGlist = [];
