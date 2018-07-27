@@ -9,31 +9,77 @@
                <div class="mangaer_box_rve">
                   <p class="income_msg">收入</p>
                   <div class="clearfix income_msg_details">
-                    <p>
-                     <span></span>
-                     <span></span>
+                    <p class="receivables">
+                     <span>已收款：</span>
+                     <span>￥198455</span>
                     </p>
-                    <p>
-                      <span></span>
-                      <span></span>
+                    <p class="payment">
+                      <span>未付款：</span>
+                      <span>￥6456465</span>
                     </p>
                   </div>
                </div>
             </div>
             <div class="mag-5 mangaer_rvs">
                <div class="mangaer_box_rves">
+                  <p class="income_msg">支付</p>
+                  <div class="clearfix income_msg_details">
+                    <p class="receivables">
+                     <span>已支付：</span>
+                     <span>￥198455</span>
+                    </p>
+                    <p class="payment">
+                      <span>未支付：</span>
+                      <span>￥6456465</span>
+                    </p>
+                  </div>
                </div>
             </div>
          </div>
       </div>
+      <!-- main -->
+      <div class="clearfix mangaer_main">
+        <Row>
+        <!-- 投标 -->
+        <Col class="mangaer_main_bid" span="8">
+           <mangaer-bid></mangaer-bid>
+        </Col>
+        <!-- 签单 -->
+        <Col class="mangaer_main_Sign" span="16">
+           <div class="mangaer_Sign_children">
+
+            </div>
+        </Col>
+        <!-- 项目 -->
+        <Col class="mangaer_main_project" span="8">
+
+        </Col>
+         <!-- 质量 -->
+        <Col class="mangaer_main_quality" span="8">
+           <div class="mangaer_quality_children">
+
+           </div>
+        </Col>
+         <!-- 团队 -->
+        <Col class="mangaer_main_team" span="8">
+            <div class="mangaer_team_children">
+
+           </div>
+        </Col>
+        </Row>
+      </div>
    </div>
 </template>
 <script>
+import mangaerBid from './managerBid.vue'
 export default {
   data () {
     return {      
     }
-  }
+  },
+  components: {
+    mangaerBid
+  },
 }
 </script>
 <style scoped>
@@ -90,6 +136,7 @@ export default {
 }
 .manager_head_left{
   width: 200px;
+  padding-top: 10px;
   float: left;
 }
 .manager_head_right{
@@ -115,13 +162,68 @@ export default {
   width: 80%;
   height: 100%;
   margin: auto;
-  background: red;
+  padding-top: 10px;
+  /* background: red; */
 }
 .income_msg{
  font-size: 20px;
 }
 .income_msg_details{
  width: 100%;
+ margin-top: 20px;
+}
+.receivables{
+  float: left;
+}
+.receivables>span:first-child,
+.payment>span:first-child{
+  font-size: 16px;
+}
+.receivables>span:last-child,
+.payment>span:last-child{
+  font-size: 20px;
+  Color: rgb(24,191,164);
+  font-weight: bold;
+}
+.payment{
+  float: right;
+}
+.mangaer_main{
+ width: 100%;
+ padding-top: 30px;
+}
+.mangaer_main_bid{
+  height: 300px;
+  background: rgb(240,240,240);
+}
+.mangaer_Sign_children{
+  width: 100%;
+  height: 100%;
+  background-Color: black;
+}
+.mangaer_main_Sign{
+  height: 300px;
+  padding-left: 10px;
+}
+.mangaer_main_project,
+.mangaer_main_quality,
+.mangaer_main_team{
+  /* width: 33.333333%; */
+  height: 300px;
+  margin-top: 20px;
+  /* float: left; */
+}
+.mangaer_main_quality,
+.mangaer_main_team{
+  padding-left: 10px;
+}
+.mangaer_quality_children{
+  width: 100%;
+  height: 100%;
+}
+.mangaer_team_children{
+  width: 100%;
+  height: 100%;
 }
 </style>
 

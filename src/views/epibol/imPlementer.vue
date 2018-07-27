@@ -127,9 +127,17 @@
                     <source :src="feilsUrl"/>
                   </video> -->
                  </div>
-                 <p class="yulan_span">
-                   <span v-for="(items, index) in nameList" :key="index" @click="getYu(index)" :class="items.backClass">{{items.name}}</span>
-                 </p>
+                 <div class="yulan_span">
+                   <div v-for="(items, index) in nameList" :key="index" :class="`yulanBacks ${items.backClass}`">
+                     <p @click="getYu(index)" class="xe_title">{{items.name}}</p>
+                      <div class="yulan_bx">
+                        <p class="yulan_sanjiao"></p>
+                        <p class="yulan_zhujian"  @click="getYus(index)">
+                          设置主文件
+                        </p>
+                      </div>
+                    </div>
+                 </div>
                </div>
            </div>
            <p class="sure_title" @click="uploadImg">确认</p>
@@ -240,7 +248,7 @@ export default {
       this.feilsList = []
     },
     // 预览
-    getYu (index) {
+    getYus (index) {
       const list = this.feilsList
       list.forEach((items, idx) => {
         if (index === idx) {
@@ -249,6 +257,10 @@ export default {
           items.is_main = 0
         }
       })
+    },
+    // 预览
+    getYu (index) {
+      const list = this.feilsList
       const nameList = this.nameList
       if (nameList.length) {
         const name = nameList[index].name
@@ -270,7 +282,7 @@ export default {
           this.$store.state.ImgVedioStatus.FileURl =  JSON.parse(list[index].response).file_url
         }
         this.filesStatus = filesStatus
-        this.nameList = nameList
+        // this.nameList = nameList
         this.feilsUrl = JSON.parse(list[index].response).file_url
       }
     },
@@ -343,7 +355,8 @@ export default {
          xdays: number
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const list = data.data.data
+        //  console.log('数据', data.data.data)
+         const list = data.data.data.dates
          const beforeData = this.beforeData
         //  console.log('数据', data)
          let lists = Object.assign(beforeData, list);
@@ -370,7 +383,7 @@ export default {
          xdays: -number
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const list = data.data.data
+         const list = data.data.data.dates
          const afterData = this.afterData
          let lists = Object.assign(list, afterData);
          this.afterData = lists
@@ -400,7 +413,7 @@ export default {
        const items = {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
-         const nowList = data.data.data
+         const nowList = data.data.data.dates
          let list = Object.assign(afterLists, nowList, beforeLists);
         //  this.listAll = list
         // console.log('获取时间', list)
@@ -1300,10 +1313,12 @@ export default {
  width: 100%;
  margin-top: 10px;
 }
-.yulan_span>span{
+.yulan_span>div{
   padding: 5px 10px;
   background: rgb(210,210,210);
   margin-left: 10px;
+  float: left;
+  position: relative;
   cursor: pointer;
   border-radius: 4px;
 }
@@ -1371,5 +1386,38 @@ export default {
 .is_angin_box>p:last-child{
  background: rgb(215,215,215);
  margin-left: 20px;
+}
+.xe_title{
+ width: 100%;
+ height: 100%;
+}
+.yulanBacks:hover .yulan_bx{
+  display: block;
+}
+.yulan_bx{
+  width: 100%;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  top: 30px;
+  display: none;
+}
+.yulan_sanjiao{
+  height: 0px;
+  width: 0px;
+  margin-left: 20px;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid rgb(255,153,0);
+  border-left: 5px solid transparent;
+}
+.yulan_zhujian{
+ width: 100%;
+ height: 30px;
+ border-radius: 4px;
+ background: rgb(255,153,0);
+ text-align: center;
+ line-height: 30px;
+ cursor: pointer;
+ color: #ffffff;
 }
 </style>

@@ -8,22 +8,35 @@
         </div>
         <!-- ContractComponent -->
         <keep-alive>
-            <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
+            <basic-info v-if="nIndex==0" ref="ContractInfo"></basic-info>
             <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
-            <!-- <confir-contract v-if="nIndex==2" :filesData="filesData" ref="emitFile"></confir-contract> -->
+            <confir-contract v-if="nIndex==2" :filesData="filesData"></confir-contract>
         </keep-alive>
+        <div class="enterContract">
+            <div  v-if="ContractCtatus==0">
+                 <span><Icon type="information-circled" size="20" color="#f19000"></Icon>&nbsp;&nbsp;确认合同无误请仔细核对合同信息！ </span>
+                <em>
+                    <Button type="error" @click.native="setContractStatus">确认合同无误</Button>
+                </em>
+            </div>
+            <div v-else>
+                <span><Icon type="checkmark" size="20" color="green"></Icon> 合同已确认！</span>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 var qs=require('querystring');
 import basicInfo from './contractData/basicInfo';
 import contractCost from './contractData/contractCost';
+import confirContract from './contractData/confirContract';
 import {mapGetters,mapState} from 'vuex';
 export default {
     data(){
         return{
             nIndex:0,
-            basicInfoData:[]
+            basicInfoData:[],
+            ContractCtatus:null
         }
     },
     computed:{
@@ -36,15 +49,15 @@ export default {
     },
     components:{
         basicInfo:basicInfo,
-        contractCost:contractCost
+        contractCost:contractCost,
+        confirContract:confirContract
     },
     mounted(){
         this.contractInfo();
     },
     methods:{
-         contractInfo(){
+        contractInfo(){
                 if(this.contractID==null){
-                    this.$Message.error("合同ID失效");
                     this.$router.go(-1);
                 }
                 this.$Loading.start();
@@ -61,6 +74,8 @@ export default {
                            "step_list":msg.data.step_list
                        }
                     ];
+                    this.ContractCtatus=msg.data.status;
+
                     // 清单及付款
                     this.contractCostData=contractCost;
 
@@ -71,16 +86,48 @@ export default {
                     this.basicInfoData=msg.data;
                     delete this.basicInfoData.price_list;
                     delete this.basicInfoData.step_list;
-                    this.$refs.editContract.editContract(this.basicInfoData);
+                    this.$refs.ContractInfo.editContract(this.basicInfoData);
                
                 },()=>{
                     this.$Message.error("请求失败!")
                     this.$Loading.error();
                 })
         },
+        setContractStatus(){
+            this.$Loading.start();
+            let url=this.GLOBAL.baseRouter+'task/demand-contract/set-contract-status';
+            let params={
+                "contract_id":this.contractID,
+                "status":0
+            }
+            this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                this.$Loading.finish();
+                if(msg.data.err_code==0){
+                    this.$Modal.success({
+                        title: "合同确认成功",
+                        content: "请立即支付首付款",
+                        okText:'立即支付'
+                    });
+                }else{
+                    this.$Message.error(msg.data.err_message)
+                }
+            })
+            
+        }
     }
 }
 </script>
 <style scoped lang="less">
 @import '../../../epibol/contractManage/style/contractData.less';
+
+.enterContract{
+    position:relative;z-index:11;bottom:0px;background:#fff3c5;width:100%;height:50px;line-height:50px;
+    span{
+        padding-left:10px;
+    }
+    em{
+        float:right;padding-right:10px;
+    }
+}
+
 </style>

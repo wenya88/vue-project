@@ -16,7 +16,7 @@
         <keep-alive>
             <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
             <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
-            <confir-contract v-if="nIndex==2" :filesData="filesData" ref="emitFile"></confir-contract>
+            <confir-contract v-if="nIndex==2" :filesData="filesData"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
         <div class="nextRow"  v-if="!lineFlag">
