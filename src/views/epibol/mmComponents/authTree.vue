@@ -1,41 +1,7 @@
 <template>
   <div>
-    <!-- <Tree :data="data" show-checkbox ref="tree" empty-text></Tree> -->
-    <!-- <ul>
-      <li>
-        <Checkbox v-model="single">全部项目</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">负责的项目</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">负责的子项目</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">负责的任务</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">关联的任务</Checkbox>
-      </li>
-    </ul>
     <ul>
-      <li>
-        <Checkbox v-model="single">全部投标</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">负责的投标</Checkbox>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <Checkbox v-model="single">全部合同</Checkbox>
-      </li>
-      <li>
-        <Checkbox v-model="single">负责的合同</Checkbox>
-      </li>
-    </ul> -->
-    <ul>
-      <CheckboxGroup v-model="project">
+      <CheckboxGroup v-model="project" >
         <li><Checkbox label="全部项目"></Checkbox></li>
         <li><Checkbox label="负责的项目"></Checkbox></li>
         <li><Checkbox label="负责的子项目"></Checkbox></li>
@@ -62,59 +28,35 @@
 export default {
   data() {
     return {
-      single: false,
       project: [],
       bid: [],
       contract: []
-      // data: [{
-      //   title: '全部项目',
-      //   expand: true,
-      //   children: [{
-      //     title: '负责的项目',
-      //     expand: true,
-      //     children: [{
-      //       title: '负责的子项目',
-      //       expand: true,
-      //       children: [{
-      //         title: '负责的任务'
-      //       }, {
-      //         title: '关联的任务'
-      //       }, {
-      //         title: '',
-      //         checked: true
-      //       }]
-      //     }, {
-      //     title: '',
-      //     checked: true
-      //   }]
-      //   }, {
-      //     title: '',
-      //     checked: true
-      //   }]
-      // }, {
-      //   title: '全部投标',
-      //   expand: true,
-      //   children: [{
-      //     title: '负责的投标',
-      //   }, {
-      //     title: '',
-      //     checked: true
-      //   }]
-      // }, {
-      //   title: '全部合同',
-      //   expand: true,
-      //   children: [{
-      //     title: '负责的合同',
-      //   }, {
-      //     title: '',
-      //     checked: true
-      //   }]
-      // }]
     }
   },
   mounted () {
-    // console.log(this.$refs.tree.getCheckedNodes())
+    this.changeType();
   },
+  methods: {
+    changeType() {
+      let project = [],bid = [],contract = []
+      this.$bus.on("changeAuth", (val,list) => {
+        for(let i=0;i<list.length;i++){
+          if(list[i].id==val){
+            project.push(list[i].project_auth.name);
+            bid.push(list[i].bid_auth.name);
+            contract.push(list[i].contract_auth.name);
+            this.project = [...new Set(project)];
+            this.bid = [...new Set(bid)];
+            this.contract = [...new Set(contract)];
+          }
+        }
+      })
+    },
+    updateType() {}
+  },
+  updated() {
+    this.changeType();
+  }
 }
 </script>
 

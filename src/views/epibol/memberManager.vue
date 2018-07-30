@@ -181,6 +181,7 @@ export default {
         // 切换职位类型获取对应数据
         authData(index, postId, postList) {
             // console.log(index, postId, postList)
+            sessionStorage.postId = postId;
             this.$bus.emit("changeAuth",postId,postList)
         },
         addDept() {
