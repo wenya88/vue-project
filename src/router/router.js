@@ -188,13 +188,13 @@ export const appRouter = [
                 title: '项目',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             },
-            // {
-            //     path: '/manager/manager',
-            //     icon: 'ios-paper-outline',
-            //     name: 'manager',
-            //     title: '经理管理平台',
-            //     component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
-            // },
+            {
+                path: '/manager/manager',
+                icon: 'ios-paper-outline',
+                name: 'manager',
+                title: '经理工作台',
+                component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
+            },
             {
                 path: '/epibol/memberManager',
                 icon: 'ios-paper-outline',

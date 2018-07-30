@@ -185,7 +185,12 @@
                 this.onLoad();
                 this.clearSession();
             },
+            GetImgInfo(width,height){
+                let arrWH=[width,height]
+                this.$store.commit('getImgEditorWH',arrWH);
+            },
             onLoad(cControl="false"){
+                let _this=this;
                 let el=document.getElementsByClassName("ImgOnlod")[0];
                 let el2=document.getElementById("onload");
                 let sgin=document.getElementsByClassName("sginCanvas")[0];
@@ -195,7 +200,7 @@
                     el2.style.display="none";
                     let maxH=parseInt(imgFocus.style.height)
                     let maxW=parseInt(imgFocus.style.width);
-
+                    _this.GetImgInfo(el.naturalWidth,el.naturalHeight);
                     //  autoZoom
                     if((el.height-maxH)>50){
                         AutoResizeImage(0,maxH,el);
@@ -338,6 +343,8 @@
                 let url=this.GLOBAL.baseRouter+'task/task/task-stage&task_id='+TaskID;
                 _this.$axios.get(url).then(function(msg){
                     let Sdate=msg.data;
+                    console.log(337,Sdate)
+
                     if(Sdate.err_code==0){
 
                         _this.IMGlist = [];

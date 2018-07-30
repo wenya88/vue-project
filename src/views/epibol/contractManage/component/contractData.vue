@@ -16,12 +16,12 @@
         <keep-alive>
             <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
             <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
-            <confir-contract v-if="nIndex==2" :filesData="filesData" ref="emitFile"></confir-contract>
+            <confir-contract v-if="nIndex==2" :filesData="filesData"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
         <div class="nextRow"  v-if="!lineFlag">
-            <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
-            <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true">下一步</Button>
+            <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep" :disabled="Bdisabled">上一步</Button>
+            <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true" :disabled="Bdisabled">下一步</Button>
             <Button type="warning" v-show="contrateButton&&nIndex==2" @click="commitContract">保存合同</Button>
         </div>
         <!-- stop -->
@@ -43,7 +43,8 @@ export default {
             addInfo:'',
             contractCostData:[],
             basicInfoData:{},
-            filesData:[]
+            filesData:[],
+            Bdisabled:false
         }
     },
     components:{
@@ -74,6 +75,9 @@ export default {
         });
         this.$bus.on("ContractUploadFile",(val)=>{
             this.newFileLoad=val;
+        })
+        this.$bus.on("Bdisabled",val=>{
+            this.Bdisabled=val
         })
         this.contractInfo();
     },

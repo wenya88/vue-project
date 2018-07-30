@@ -186,7 +186,12 @@
         this.onLoad();
         this.clearSession();
       },
+      GetImgInfo(width,height){
+         let arrWH=[width,height]
+         this.$store.commit('getImgEditorWH',arrWH);
+      },
       onLoad(cControl="false"){
+          let _this=this;
           let el=document.getElementsByClassName("ImgOnlod")[0];
           let el2=document.getElementById("onload");
           let sgin=document.getElementsByClassName("sginCanvas")[0];
@@ -196,7 +201,7 @@
                el2.style.display="none";
                let maxH=parseInt(imgFocus.style.height)
                let maxW=parseInt(imgFocus.style.width);
-              
+               _this.GetImgInfo(el.naturalWidth,el.naturalHeight);
               //  autoZoom
                if((el.height-maxH)>50){
                  AutoResizeImage(0,maxH,el);

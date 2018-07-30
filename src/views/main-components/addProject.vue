@@ -113,7 +113,6 @@ export default {
             addLabDIV:false,
             addManageDIV:false,
             manageData:[],
-            FocusLabelVal:false,
             projectTitle:'新建项目'
         }
     },
@@ -145,9 +144,9 @@ export default {
             this.LabelVal=''
         },
         submitLabel(){
+            
             this.count.push(this.LabelVal);
             this.addLabDIV=false;
-            this.FocusLabelVal=true;
         },
         closeAddDIV(){
             this.addLabDIV=false;
@@ -220,10 +219,6 @@ export default {
             let _this=this;
             let url=_this.GLOBAL.baseRouter+'task/project/get-contract-list&company_id='+1;
             let manageURL=_this.GLOBAL.baseRouter+'task/project/get-company-member';
-            // _this.$axios.all([url,manageURL]).then(([msgData,ManageData])=>{
-            //     _this.ContList=msgData.data.data;
-            //     _this.manageData=ManageData.data;
-            // })
             _this.$axios.get(url).then(msgData=>{
                  _this.ContList=msgData.data.data;
             });
@@ -273,7 +268,6 @@ export default {
            this.state=val.EPstatus==2?false:true;
            this.MangageVal=val.EPleader;
            this.projectTitle="编辑项目";
-           console.log(val)
 
            if(val.EpmanangeName.name!="NotName"){//管理人员姓名
                this.manageCount.push(val.EpmanangeName);

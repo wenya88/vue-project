@@ -135,6 +135,7 @@ export default {
         this.mainWidth = bodyWidth - 121
     },
     mounted() {
+        this.bodySize();
         this.init();
         this.updateMenu();
         /**
@@ -155,6 +156,13 @@ export default {
         }
     },
     methods: {
+        bodySize(){
+            let body = document.body;
+            body.onresize = () => {
+                let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+                this.mainWidth = bodyWidth - 121
+            }
+        },
         /**
          * 刷新当前页面
          */
