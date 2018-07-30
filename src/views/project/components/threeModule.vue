@@ -56,6 +56,10 @@ export default {
       }
     }
   },
+  created() {
+    console.log()
+    // this.onload();
+  },
   mounted() {
     this.getSign();
   },
@@ -118,7 +122,7 @@ export default {
     },
     onload() {
       if (window.THREE) {
-        // console.log('THREE has ready1')
+        console.log('THREE has ready1')
         this.newFBXMedel();
       } else {
         $LAB
@@ -127,12 +131,13 @@ export default {
           .script("./src/views/project/components/threeFile/js/FBXLoader.js").wait()
           .script("./src/views/project/components/threeFile/js/CSS3DRenderer.js").wait()
           .script("./src/views/project/components/threeFile/js/OrbitControls.js").wait(() => {
-            // console.log('THREE is ready2');
+            console.log('THREE is ready2');
             this.newFBXMedel();
           })
       }
     },
     newFBXMedel() {
+      console.log('加载3D模型')
       // this.getThreeFileKey();
       var container, stats, controls;//容器、统计?、控制器
       var camera, scene, renderer, light, renderer2;//相机、场景、渲染、灯光
@@ -147,11 +152,11 @@ export default {
       var urlObject;
 
       var divHeight = 100%
-      init(this.storeFileURl);//初始化
-      // init();
+      // init(this.storeFileURl);//初始化
+      init();
       showSign(this.signData)  // 显示获取到的标记
       animate();//动画
-      function init(url) {
+      function init() {
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
@@ -198,7 +203,8 @@ export default {
         // let url = '../src/views/project/components/threeFile/M_atk.fbx';
         // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
         // console.log(loader);
-        // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
+        let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
+        // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/file-upload/2018/07/27/S_atkS_atk.FBX'
         
         loader.load(url, function(object) {
           // console.log(url);
@@ -449,6 +455,7 @@ export default {
       this.$axios.get(url)
       .then(res => res.data)
       .then(res => {
+        // console.log(res)
         if(res.err_code == 0) {
           this.signList = res.data
           this.signList.forEach((item,index) => {

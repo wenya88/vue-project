@@ -4,12 +4,9 @@
       <div class="content-left">
         <div class="title">设置角色功能权限</div>
         <Tabs type="card" @on-click="changeTabs">
-            <!-- <div v-for="(list,index) in tabs" :key="index">  -->
-          <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab[index].name" :name="tab[index].name">
-            <auth-list :authList="tab[index].children"></auth-list>
+          <TabPane v-for="(tab,index) in tabList" :key="index" :label="tab.name" :name="tab.name">
+            <auth-list :authList="tab.children"></auth-list>
           </TabPane>  
-          <!-- {{list.auth}}
-           </div>  -->
         </Tabs>
       </div>
       <div class="content-right">
@@ -64,23 +61,29 @@ export default {
         modelName: '我的任务清单',
         modelMessage: '拥有管理的权限的成员，可对任务进行(开启任务，上传文件，查看任务详情等操作)'
       }],
+      tabList: [],
       authlist: []
     }
   },
   mounted() {
-    // this.authData();
-    this.$bus.on("changeAuth", (val) => {
-      console.log(val,this.tabs)
-      // switch (val) {
-      //   case "1":
-      //   this.authlist = this.tabs[0]
-      // }
-    })
+    this.changeType();
   },
   methods: {
     changeTabs(name) {  //根据name的不同加载不同的权限列表
       console.log(name)
     },
+    changeType() {
+      this.$bus.on("changeAuth", (val,list) => {
+        for(let i=0;i<list.length;i++){
+          if(list[i].id==val){
+            this.tabList=list[i].auth;
+          }
+        }
+      })
+    }
+  },
+  updated() {
+    this.changeType();
   }
 }
 </script>

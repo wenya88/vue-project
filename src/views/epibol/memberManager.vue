@@ -106,23 +106,7 @@ export default {
             dutyStatus: 'add',
             dutyId: 0,
             dutyName: '',
-            param: {},
-            // inviteData: {
-            //     company_id: 1,
-            //     email: '',
-            //     remark_name: '',
-            //     department_id: '',
-            //     post_id: ''
-            // },
-            // addData: {
-            //     company_id: 1,
-            //     remark_name: '',
-            //     password: '',
-            //     email: '',
-            //     phone: '',
-            //     department_id: '',
-            //     post_id: ''
-            // }
+            param: {}
         };
     },
     mounted() {
@@ -138,7 +122,16 @@ export default {
             authList: 'getAuthList'
         })
     },
+    updated() {
+        this.initialLoad();
+    },
     methods: {
+        initialLoad(){
+            if(this.postList.length>0){
+                // console.log("/////"+this.postList)
+                this.authData(0, 1, this.postList)
+            }
+        },
         updateDate(memberType) {
             this.$emit('init');
         },
@@ -186,10 +179,9 @@ export default {
             sessionStorage.dutyId = dutyId;
         },
         // 切换职位类型获取对应数据
-        authData(index, postId) {
-            // this.$refs.authMesg.authData(postId)
-            this.$bus.emit("changeAuth",postId)
-            // console.log(121212)
+        authData(index, postId, postList) {
+            // console.log(index, postId, postList)
+            this.$bus.emit("changeAuth",postId,postList)
         },
         addDept() {
             this.deptStatus = 'add';
