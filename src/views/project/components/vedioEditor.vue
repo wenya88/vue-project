@@ -30,9 +30,33 @@
         <div class='V_markVjs' style="display:none;top:0px;left:0px;"></div>
         <!-- 进度条 -->
         <div class="V_progressBar" style="top:0px;left:0px;"></div>
-        <video id="my-video" class="video-js" controls preload="auto" width="810" height="480" data-setup="{}">
-            <source :src="VideoURL" type="video/mp4">
-        </video>
+      <section class="canvasContainer">
+          <!--<video id="my-video" class="video-js" controls   width="810" height="480" data-setup="{}">-->
+              <!--<source :src="VideoURL" type="video/mp4">-->
+          <!--</video>-->
+          <video id="haha"  controls    width="810" height="480">
+              <source :src="VideoURL" type="video/mp4">
+          </video>
+          <canvas  v-show="isCanvas" id="myCanvas" class="videoCanvas" width="810" height="480" style="border:1px solid #d3d3d3;">
+              Your browser does not support the HTML5 canvas tag.
+          </canvas>
+          <canvas   v-show="isCanvas" id="tu" class="drawMain" @mousedown="paletteInit" width="810" height="480"
+                    style="border:1px solid #d3d3d3;">
+              Your browser does not support the HTML5 canvas tag.
+          </canvas>
+          <canvas   v-show="isCanvas" id="tu2" class="drawTrans" width="810" height="480" style="border:1px solid #d3d3d3;">
+              Your browser does not support the HTML5 canvas tag.
+          </canvas>
+          <input   v-show="drawTextShow"  @blur="drawText" v-model="drawTextValue" type="text" class="textInput"  :style="{'top':top+'px','left':left+'px'}">
+      </section>
+        <div>
+            <!--<Icon type="md-backspace" size="20" />-->
+            <Icon @click.native="isRect = true;isLine = false" type="android-checkbox-outline-blank" >asd</Icon>
+            <Icon @click.native="isText = true;isLine = false" type="paintbrush" >ddd</Icon>
+            <Button @click="startCanvas" type="text">开启画布</Button>
+            <Button @click="baocun" type="text">保存</Button>
+            <Button @click="next" type="text">下一帧</Button>
+        </div>
         <!-- 标注提交 -->
         <div v-if="AllowEditRow" class="VideoAllowEdit">
             <span class="EditInput">
@@ -65,6 +89,26 @@ var qs=require('querystring');
 export default {
     data(){
         return{
+            drawTextValue:'',
+            drawTextShow:false,
+            isCanvas: false,
+            video: null,
+            videoCas: null,
+            ctx: null,
+            canvas: null,
+            currnt_time: 0,
+            color: 'black',
+            lineWidth: 5,
+            x: null,
+            y: null,
+            newX: null,
+            newY: null,
+            isRect: false,
+            isLine: true,
+            isText: false,
+            top: null,
+            left: null,
+/*上面是标注*/
             data:[],
             TID:49,
             fileID:10,
@@ -110,6 +154,7 @@ export default {
             this.vedioLoad();
         });
         this.VedioGet();
+        this.init()
     },
     created(){
         this.AddVedioJS();
@@ -444,10 +489,168 @@ export default {
         hideStageList(){
           document.getElementsByClassName('controlListRow')[0].style.display='block';
           document.getElementsByClassName('stageListRow')[0].style.display='none';
+        },
+        startCanvas(){
+            this.isCanvas = !this.isCanvas;
+            this.init();
+            this.currnt_time = this.video.currentTime
+},
+        init() {
+            if (!this.isCanvas) {
+                return false
+            }
+            this.video = document.getElementById("haha");
+            this.videoCas = document.getElementById("myCanvas");
+            this.canvas = document.getElementById("tu");
+            this.canvasTans = document.getElementById("tu2");
+            this.videoCtx = this.videoCas.getContext('2d');
+            this.ctx = this.canvas.getContext('2d');
+            this.ctxTans = this.canvasTans.getContext('2d');
+            this.video.pause();
+            setInterval(() => {
+                this.videoCtx.drawImage(this.video, 0, 0, 810, 480)
+            }, 30);
+
+        },
+        /*画板初始化*/
+        paletteInit(e) {
+            e.stopPropagation()
+            //鼠标点击在canvas中的位置
+            this.x = e.offsetX;
+            this.y = e.offsetY;
+
+            //记录旧的点
+            this.newX = this.x - 1;
+            this.newY = this.y - 1;
+
+            //画笔功能
+            if(!this.isText){
+                this.drawLine();
+            }
+
+            if (this.isLine) {
+                this.canvas.addEventListener("mousemove", this._move);
+                document.body.addEventListener("mouseup", this._up);
+            } else if (this.isText && !this.drawTextShow) {
+                this.top = this.y ;
+                this.left = this.x;
+                this.drawTextShow = true;
+//                    this.ctx.font = "30px Verdana";
+//                    this.ctx.fillText("Hello World!", 10, 50);
+            }
+            else if (this.isRect) {
+                this.canvas.addEventListener("mousemove", this._drawRectTans);
+                document.body.addEventListener("mouseup", this._drawRect);
+            }
+
+
+        },
+        /*画笔功能*/
+        drawLine() {
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.color;
+            //线的宽度
+            this.ctx.lineWidth = this.lineWidth;
+            //线的样式
+            this.ctx.lineCap = "round";
+            this.ctx.moveTo(this.x, this.y);
+            this.ctx.lineTo(this.newX, this.newY);
+            this.ctx.stroke();
+            this.ctx.closePath();
+        },
+        drawText(){
+            this.drawTextShow = false;
+            this.ctx.font = "20px Arial";
+            this.ctx.fillText(this.drawTextValue,this.left+8, this.top+12);
+            this.drawTextValue = '';
+        },
+        baocun(){
+
+            let img = this.canvas.toDataURL("image/png");
+            var file1;
+            this.canvas.toBlob((blob)=>{file1=blob
+                console.log(11,file1)
+            },"image/jpeg",0.6);
+
+        },
+        /*鼠标移动画矩形*/
+        _drawRectTans(e) {
+            let width = this.newX - this.x,
+                height = this.newY - this.y;
+            this.newX = e.offsetX;
+            this.newY = e.offsetY;
+            this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight)
+            this.ctxTans.strokeRect(this.x, this.y, width, height)
+        },
+        /*鼠标离开画矩形*/
+        _drawRect(e) {
+            let width = this.newX - this.x,
+                height = this.newY - this.y;
+            this.newX = e.offsetX;
+            this.newY = e.offsetY;
+            this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight)
+            this.ctx.strokeRect(this.x, this.y, width, height);
+            this.canvas.removeEventListener("mousemove", this._drawRectTans);
+        },
+        /*画笔移动*/
+        _move(e) {
+            this.x = e.offsetX;
+            this.y = e.offsetY;
+
+            //画笔功能
+            this.drawLine();
+            this.newX = this.x
+            this.newY = this.y
+
+        },
+        /*鼠标离开*/
+        _up() {
+            this.canvas.removeEventListener("mousemove", this._move);
+        },
+        /*视频上一阵 下一阵*/
+        next() {
+            this.currnt_time += 0.03;
+            this.video.currentTime = this.currnt_time;
         }
     }
 }
 </script>
 <style lang="less">
      @import '../../../styles/vedioEditor.less';
+    .canvasContainer{
+        position: relative;
+        .video-js{
+
+        }
+        .videoCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 104;
+
+        }
+        .drawMain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 106;
+
+        }
+        .drawTrans {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 105;
+
+        }
+        .textInput {
+            position: absolute;
+            width: 70px;
+            z-index: 110;
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: 2px solid #ff512e;
+            outline: none;
+        }
+    }
 </style>

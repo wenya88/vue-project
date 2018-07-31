@@ -2,7 +2,7 @@
 <template>
     <div class="taskinfopop">
         <div class="title">
-        <span>任务名称</span>
+            <span></span>
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
         <div class="taskinfopopContainer">
@@ -37,37 +37,20 @@
              <filebrowse ref="filebrowse"
                          class="filebrowseContainer"
              ></filebrowse>
-             <div class="reviewPanel">
-
-             </div>
          </section>
         </div>
-        <div class="taskButton">
-            <!--<router-link to="/project/task" tag="button" >返回</router-link>-->
-            <!--<button @click="leaveInfo">返回</button>-->
-            <!--<button @click="saveTaskDetail" style="background: #39f;color: #fff">保存</button>-->
-        </div>
     </div>
-
-    <!-- </div> -->
-    <!-- </div> -->
-    <!-- </transition> -->
 </template>
 <script>
     import {mapState,mapMutations} from 'vuex'
+    import qs from 'querystring'
 
-    var qs = require("querystring");
     import maintask from "../taskDetails";
     import subtasklist from "../subtask";
     import tasklog from "../taskLog";
     import filebrowse from "../../components/fileBrowseManager";
     import vStandard from "./standard";
     import vResource from "./resource";
-
-    // import {
-    //     cateList,
-    //     deletetaskData,
-    // } from "@/config/env.js";
 
     export default {
         props: [
@@ -271,7 +254,6 @@
         computed:{
             ...mapState({
                 userStatus(value){
-                    console.log(19,value.project.userStatus)
                     return value.project.userStatus
                 }
             })

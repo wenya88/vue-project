@@ -2,7 +2,7 @@
 <template>
     <div >
         <Timeline>
-        <TimelineItem v-for="item in taskLogData" :key="item.time">
+        <TimelineItem v-for="(item,index) in taskLogData" :key="index">
             {{ item.time+"----"}}
             <span>{{ "["+item.nickname +"]"}}</span>
             <!-- <span>{{" "+item.action+" "}}</span> -->

@@ -102,25 +102,6 @@
           </Tabs>
       </div>
 
-     <!--编辑任务组件-->
-    <!--<Modal-->
-          <!--v-model="isShowTaskDetails"-->
-          <!--width="1200"-->
-          <!--:styles="{top: '100px'}"-->
-          <!--:loading = "isSaveLoading"-->
-          <!--:closable="false"-->
-          <!--okText= '保存'-->
-          <!--cancelText='取消'-->
-          <!--@on-ok="saveTaskInfoPop"-->
-          <!--&gt;-->
-        <!--<taskinfopop ref="details"-->
-                     <!--v-bind:taskID="taskId"-->
-                     <!--v-on:refreshCurrentTaskList = 'refreshCurrentTaskList'-->
-                     <!--v-on:delTask="closeTaskDetails"-->
-                     <!--&gt;-->
-        <!--</taskinfopop>-->
-    <!--</Modal>-->
-
     <!-- 新增任务组件 -->
     <Modal
            v-model="isAccretionTask"
@@ -256,39 +237,12 @@ export default {
       //进入任务详情
       showTaskDetails(data)
       {
-//          if(data.stage_file){
-//              console.log(333,TaskID)
-//              let TaskID = data.stage_file.task_id;
-//              let file = data.stage_file.file;
-//              this.$store.commit('changeComponentTaskID', TaskID);
-//              this.$store.commit('changeComponentFileURl', file);
-//          }
-
-          this.setDetailAll(data);
+          this.setDetailAll(data); // 存储list数据
           this.$router.push({path: '/project/details'})
       },
       //编辑后关闭modal
       closeTaskDetails() {
         this.isShowTaskDetails = false;
-      },
-      //保存编辑任务信息弹窗  !已改成跳转页面
-      saveTaskInfoPop()
-      {
-        let result = this.$refs.details.saveTaskDetail();
-        if(result)
-        {
-          this.isSaveLoading = false;
-          this.isShowTaskDetails = false;
-          this.$Message.success('保存任务成功');
-        }
-        else
-        {
-            setTimeout(() => {
-                this.isSaveLoading = false;
-                this.isShowTaskDetails = false;
-                this.$Message.success('保存任务失败');
-                }, 1000);
-        }
       },
       //保存新建任务弹窗
       saveAccretionTaskPop()

@@ -47,5 +47,10 @@ export default {
     taskStageInfo: (data) => {
         return Vue.$axios.post(url + 'task/task/stage-info', qs.stringify(data))                            // 任务详情里面的阶段详情
     },
+    // 老的上传
+    imageUpload: (data) => {
+        return Vue.$axios.post(url + 'file/file/file-upload', qs.stringify(data))                             // 任务详情里面的阶段详情
+    },
+
 
 }
