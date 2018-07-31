@@ -20,13 +20,13 @@
      <div class="tiemSolt" :style="`height: ${boxHight}`" @mousedown="down">
       <div :style="`width: ${widthAll}`" class="clearfix timeSoltFather">
         <div class="task_ka" :style="`height:${boxHg}`">
-         <div class="task_top_box" v-for="(elems, index) in tastList" :key="index" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
+         <div class="task_top_box" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
            <div class="task_describe">
              <div class="clearfix task_describe_title">
                <div class="task_icon">
                  <p v-show="elems.isDelay">延期</p>
-                 <span class="iconfont icon-bofang" v-show="elems.status == 1" @click="getAgin(elems)"></span>
-                 <span class="iconfont icon-shangchuandengdai" v-show="elems.status == 2"></span>
+                 <span class="iconfont icon-bofang" v-show="elems.status == '1'" @click="getAgin(elems)"></span>
+                 <span class="iconfont icon-shangchuandengdai" v-show="elems.status == '2'"></span>
                </div>
                <div>
                  <p class="task_describe_msg">{{elems.name}}</p>
@@ -38,18 +38,18 @@
                <span>{{elems.startDay}}~{{elems.endDay}}</span>
              </p>
            </div>
-           <div class="upload_preview_box" @click="getUpload(elems)">
+           <div class="upload_preview_box"  v-show="elems.status !== '1'"  @click="getUpload(elems)">
              <p class="iconfont icon-jiahao"></p>
            </div>
          </div>
         </div>
-        <div v-for="(item, index) in dateList" :key="index" :style="`width: ${widths}`" class="times_box">
+        <div v-for="(item, indexed) in dateList"  :style="`width: ${widths}`" class="times_box" :key="indexed">
           <span>{{item.dateStr}}</span>
           <span v-show='item.weeks'>{{item.weeks}}</span>
         </div>
         <!-- 审核任务box -->
      <div class="examine_task">
-        <div class="examin_msg_task" v-for="(item, index) in examinList" :key="index" :style="`width:${item.centWidths};top:${item.top};left:${item.left}`">
+        <div class="examin_msg_task" v-for="(item, indexed) in examinList" :key="indexed" :style="`width:${item.centWidths};top:${item.top};left:${item.left}`">
            <p class="examin_sanjiao" :style="`margin-left:${item.chilrenLeft}`"></p>
            <div class="eaxmin_msg" :style="`${item.status == 1 ? '150' : '300'}px`">
              <div class="eaxmin_title_all">
@@ -59,7 +59,7 @@
              <p class="msg_stauts" v-if="item.status == '1'">等待反馈中...</p>
              <div v-if="item.status !== '1'">
                <p class="clearfix msg_couple"><span></span><span>反馈</span><span>已反馈</span></p>
-               <p class="msg_couple_p"></p>
+               <p class="msg_couple_p">{{item.feedback}}</p>
              </div>
            </div>
         </div>
@@ -89,55 +89,52 @@
         <div class="upload_page_main">
            <p class="Choice_page_title">选者上传阶段</p>
            <ul class="choice_page_ul">
-             <li v-for="(items,index) in stageList" :key="index" :class="items.elementClass" @click="getClick(index)" >
+             <li v-for="(items,indexs) in stageList" :class="items.elementClass" @click="getClick(index)" :key="indexs" >
                <p>{{items.stage_name}}</p>
                 <span class="iconfont icon-tongyong-quan upload_gou"></span>
-                <span class="upload_jiao" v-if="index == stageList.length-1">交稿阶段</span>
+                <span class="upload_jiao" v-if="indexs == stageList.length-1">交稿阶段</span>
              </li>
            </ul>
            <p class="Choice_page_title">文件交稿规范</p>
-           <p class="clearfix choice_title_Stand">
-             <span>命名要求</span>
-             <span>空间命名以s_开头</span>
-           </p>
-           <p class="clearfix choice_title_Stand">
-             <span>储存要求</span>
-             <span>贴图文件存在IMG目录下</span>
-           </p>
+           <div class="Choice_page_box">
+             <GeminiScrollbar class="crollbar">
+              <p class="clearfix choice_title_Stand" v-for="(itd, indexs) in standardList" :key="indexs">
+                <span>{{itd.name}}</span>
+                <span>{{itd.values}}</span>
+              </p>
+             </GeminiScrollbar>
+           </div>
            <!-- 上传文件 -->
            <div class="upload_box">
-               <upload-box v-if="!nameList.length">
+               <upload-box v-if="!nameLists.length">
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
                    <p class="title_all"><span class='iconfont icon-shangchuan3 font_class'></span><span class="prompt_title">拖入/点击上传任务文件</span></p>
                  </template>
                </upload-box>
                <div class='all_upload_page' v-else>
+                <GeminiScrollbar class="crollbar">
                  <div class="again_upload_father">
                    <p class="again_upload" @click="againFun">重新上传</p>
                  </div>
                  <div class="yu_lan">
-                   <img :src="feilsUrl" v-show="filesStatus==1"></img>
+                   <img :src="feilsUrl" v-show="filesStatus==1"/>
                    <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
                         your browser does not support the video tag
                     </video>
                     <three-module v-show="filesStatus==3">
                     </three-module>
-                   <!-- <video width="100%" height="300px;">
-                    <source :src="feilsUrl"/>
-                  </video> -->
                  </div>
-                 <div class="yulan_span">
-                   <div v-for="(items, index) in nameList" :key="index" :class="`yulanBacks ${items.backClass}`">
-                     <p @click="getYu(index)" class="xe_title">{{items.name}}</p>
-                      <div class="yulan_bx">
-                        <p class="yulan_sanjiao"></p>
-                        <p class="yulan_zhujian"  @click="getYus(index)">
-                          设置主文件
-                        </p>
-                      </div>
+                  <div class="yulan_span">
+                    <div :class="`yulanBacks ${element.backClass}`" v-for="(element, indexs) in nameList" :key="indexs">
+                       <div class="yulan_bx" @click="getYus(indexs)">
+                          <p class="yulan_sanjiao"></p>
+                          <p class="yulan_zhujian">设为主文件</p>
+                       </div>
+                       <p class="xe_title" @click="getYu(indexs)"><span class="precond" v-show="element.is_precond">预</span><span>{{element.name}}</span></p>
                     </div>
                  </div>
+                 </GeminiScrollbar>
                </div>
            </div>
            <p class="sure_title" @click="uploadImg">确认</p>
@@ -171,6 +168,7 @@ export default {
       tastList: [],
       examinList: [],
       solt: {},
+      nameList: [],
       index: 0,
       boxHg: '',
       task_name: '',
@@ -180,8 +178,9 @@ export default {
       beforeData: {},
       afterData: {},
       listAll: {},
-      nameList: [],
+      nameLists: [],
       feilsList: [],
+      standardList: [],
       filesStatus: 0,
       feilsUrl: '',
       task_id: '',
@@ -242,7 +241,7 @@ export default {
     },
     // 重新上传
     againFun () {
-      this.nameList = []
+      this.nameLists = []
       this.feilsUrl = ''
       this.filesStatus = 0
       this.feilsList = []
@@ -250,6 +249,7 @@ export default {
     // 预览
     getYus (index) {
       const list = this.feilsList
+      const nameListed = this.nameLists
       list.forEach((items, idx) => {
         if (index === idx) {
           items.is_main = 1
@@ -257,19 +257,32 @@ export default {
           items.is_main = 0
         }
       })
+      const newList = nameListed.map((items, idx) => {
+        if (idx == index) {
+          items.is_precond = true
+        } else {
+          items.is_precond = false
+        }
+        return items
+      })
+      // this.feilsList = list
+      // this.nameLists = nameLists
+      this.nameList = newList
+      this.$set(this, 'nameLists', nameListed)
     },
     // 预览
     getYu (index) {
       const list = this.feilsList
-      const nameList = this.nameList
-      if (nameList.length) {
-        const name = nameList[index].name
-        nameList.forEach((items, idx) => {
+      const nameLists = this.nameLists
+      if (nameLists.length) {
+        const name = nameLists[index].name
+        const newList = nameLists.map((items, idx) => {
           if (idx == index) {
             items.backClass = 'yulanBack'
           } else {
             items.backClass = ''
           }
+          return items
         })
         const names = name.split('.')[1]
         let filesStatus = 0
@@ -282,23 +295,25 @@ export default {
           this.$store.state.ImgVedioStatus.FileURl =  JSON.parse(list[index].response).file_url
         }
         this.filesStatus = filesStatus
-        // this.nameList = nameList
+        this.$set(this, 'nameLists', nameLists)
+        this.nameList = newList
+        console.log('点击', index, newList)
         this.feilsUrl = JSON.parse(list[index].response).file_url
       }
     },
     // 获取队列
     getList (list) {
-      const nameList = []
+      const nameLists = []
       list.forEach(item => {
         const nameObj = {
           name: item.name
         }
-        nameList.push(nameObj)
-        // console.log('地址', item)
+        nameLists.push(nameObj)
       })
-      this.nameList = nameList
+      this.nameLists = nameLists
       this.feilsList = list
       this.getYu(0)
+      this.getYus(0)
     },
     // 上传
     getUpload (data) {
@@ -317,15 +332,6 @@ export default {
       let that = this
       this.stage = index + 1
       const list = this.stageList
-      // list.forEach((item, idx) => {
-      //   if (index === idx) {
-      //     item.elementClass = 'choice_page_active'
-      //     item.isGou = true
-      //   } else {
-      //     item.elementClass = ''
-      //     item.isGou = false
-      //   }
-      // })
        $('.choice_page_ul>li').click(function() {
         $('.choice_page_ul>li').each(function() {
           $(this).removeClass("choice_page_active")
@@ -812,11 +818,14 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
          this.stageList = data.data.stage
-        //  console.log('阶段', data.data.stage)
+         this.standardList = data.data.standard
+         console.log('阶段', data)
        })
     },
     // 上传
     uploadImg () {
+      //  console.log(this.nameLists)
+      //  return
        const url = this.GLOBAL.baseRouter+"/task/task/stage-upload"
        const list = this.feilsList
        const objList = []
@@ -1194,6 +1203,10 @@ export default {
   font-size: 14px;
   color: rgb(218,218,218);
 }
+.Choice_page_box{
+ width: 100%;
+ height: 120px;
+}
 .choice_page_ul {
   width: 100%;
   height: 40px;
@@ -1254,7 +1267,7 @@ export default {
 .upload_box{
   width: 100%;
   height: 400px;
-  margin-top: 50px;
+  margin-top: 20px;
   border: 1px dashed black;
 }
 .sure_title{
@@ -1274,7 +1287,7 @@ export default {
    background: rgba(24,191,164, .8);
 }
 .yulanBack {
-  border: 1px solid rgb(24,191,164);
+  border: 1px solid rgb(24,191,164)!important;
   color: rgb(24,191,164);
 }
 .prompt_title{
@@ -1312,12 +1325,15 @@ export default {
 .yulan_span{
  width: 100%;
  margin-top: 10px;
+ /* overflow-y: scroll; */
 }
 .yulan_span>div{
-  padding: 5px 10px;
+  display: inline-block;
   background: rgb(210,210,210);
   margin-left: 10px;
-  float: left;
+  /* float: left; */
+  border:1px solid #ffffff;
+  margin-top: 10px;
   position: relative;
   cursor: pointer;
   border-radius: 4px;
@@ -1390,13 +1406,21 @@ export default {
 .xe_title{
  width: 100%;
  height: 100%;
+ padding: 5px 10px;
+}
+.precond{
+  background: rgb(255,153,0);;
+  color: #ffffff;
+  padding: 3px;
+  margin-right: 3px;
 }
 .yulanBacks:hover .yulan_bx{
   display: block;
 }
 .yulan_bx{
-  width: 100%;
+  width: 100px;
   height: 40px;
+  z-index: 9999;
   position: absolute;
   left: 0;
   top: 30px;

@@ -57,7 +57,7 @@ export default {
           axisLine: {
             show: false
           },
-          data: ['周一','周二','周三','周四','周五','周六','周日']
+          data: ['周一/n2018','周二','周三','周四','周五','周六','周日']
         },
         yAxis: {
           type: 'value',
@@ -70,7 +70,7 @@ export default {
             stack: '总量',
             itemStyle:{
               normal: {
-                color: 'black',
+                color:'rgb(255,153,0)',
                 lineStyle:{
                   type:'dotted'
                 }
@@ -84,6 +84,7 @@ export default {
             stack: '总量',
             itemStyle:{
               normal: {
+                color:'rgb(49,187,159)',
                 lineStyle:{
                   type:'dotted'
                 }
