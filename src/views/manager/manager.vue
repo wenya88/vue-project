@@ -47,8 +47,8 @@
         <!-- 签单 -->
         <Col class="mangaer_main_Sign" span="16">
            <div class="mangaer_Sign_children">
-
-            </div>
+             <mangaer-sign></mangaer-sign>
+           </div>
         </Col>
         <!-- 项目 -->
         <Col class="mangaer_main_project" span="8">
@@ -72,13 +72,15 @@
 </template>
 <script>
 import mangaerBid from './managerBid.vue'
+import mangaerSign from './mangaerSign.vue'
 export default {
   data () {
     return {      
     }
   },
   components: {
-    mangaerBid
+    mangaerBid,
+    mangaerSign
   },
 }
 </script>
@@ -199,7 +201,7 @@ export default {
 .mangaer_Sign_children{
   width: 100%;
   height: 100%;
-  background-Color: black;
+  background: rgb(240,240,240);
 }
 .mangaer_main_Sign{
   height: 300px;

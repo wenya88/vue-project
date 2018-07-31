@@ -4,12 +4,9 @@
       <div class="content-left">
         <div class="title">设置角色功能权限</div>
         <Tabs type="card" @on-click="changeTabs">
-            <!-- <div v-for="(list,index) in tabs" :key="index">  -->
-          <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab[index].name" :name="tab[index].name">
-            <auth-list :authList="tab[index].children"></auth-list>
+          <TabPane v-for="(tab,index) in tabList" :key="index" :label="tab.name" :name="tab.name">
+            <auth-list :authList="tab.children"></auth-list>
           </TabPane>  
-          <!-- {{list.auth}}
-           </div>  -->
         </Tabs>
       </div>
       <div class="content-right">
@@ -22,7 +19,7 @@
             <span>2</span>勾选"关联的任务"后，默认拥有所关联任务的权限
           </div>
         </div>
-        <auth-tree></auth-tree>
+        <auth-tree :project="projectAuth" :bid="bidAuth" :contract="contractAuth"></auth-tree>
       </div>
     </div>
   </div>
@@ -64,23 +61,41 @@ export default {
         modelName: '我的任务清单',
         modelMessage: '拥有管理的权限的成员，可对任务进行(开启任务，上传文件，查看任务详情等操作)'
       }],
-      authlist: []
+      tabList: [],
+      authlist: [],
+      bidAuth: [],
+      contractAuth: [],
+      projectAuth: []
     }
   },
   mounted() {
-    // this.authData();
-    this.$bus.on("changeAuth", (val) => {
-      console.log(val,this.tabs)
-      // switch (val) {
-      //   case "1":
-      //   this.authlist = this.tabs[0]
-      // }
-    })
+    this.changeType();
   },
   methods: {
     changeTabs(name) {  //根据name的不同加载不同的权限列表
       console.log(name)
     },
+    changeType() {
+      let project = [],bid = [],contract = []
+      this.$bus.on("changeAuth", (val,list) => {
+        for(let i=0;i<list.length;i++){
+          if(list[i].id==val){
+            this.tabList=list[i].auth;
+            // project.push(list[i].project_auth.name);
+            // bid.push(list[i].bid_auth.name);
+            // contract.push(list[i].contract_auth.name);
+            // // const arr = [1, 1, 2, 2, 3, 4, 5, 5];
+            // this.projectAuth = [...new Set(project)];
+            // this.bidAuth = [...new Set(bid)];
+            // this.contractAuth = [...new Set(contract)];
+            // console.log(this.tabList, this.projectAuth, this.bidAuth, this.contractAuth)
+          }
+        }
+      })
+    }
+  },
+  updated() {
+    this.changeType();
   }
 }
 </script>

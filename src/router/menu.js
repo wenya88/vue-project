@@ -37,11 +37,11 @@ export const menu = [
                 name: 'eHome',
                 title: '概况页',
             },
-            {
-                path: '/manager/manager',
-                name: 'manager',
-                title: '经理工作台',
-            }, 
+            // {
+            //     path: '/manager/manager',
+            //     name: 'manager',
+            //     title: '经理工作台',
+            // }, 
             {
                 path: '/epibol/bidManage',
                 name: 'bidManage',
@@ -62,10 +62,10 @@ export const menu = [
                 path: '/epibol/statistics',
                 name: 'eStatistics',
                 title: '统计',
-            // }, {
-            //     path: '/epibol/3D',
-            //     name: '3D',
-            //     title: '3D',
+            }, {
+                path: '/epibol/3D',
+                name: '3D',
+                title: '3D',
             // }, {
             //     path: '/epibol/list',
             //     name: 'list',

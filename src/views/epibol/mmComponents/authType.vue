@@ -7,7 +7,7 @@
     </div>
     <div class="auth">
       <ul class="fMenu">
-        <li v-for="(item,index) in postList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.id)">
+        <li v-for="(item,index) in postList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.id,postList)">
           {{item.name}}
           <span class="numStyle">{{item.member_count}}</span>
         </li>
@@ -50,9 +50,9 @@ export default {
       this.$emit('on-change', active);
       console.log(active);
     },
-    openTable(index, postId) {
+    openTable(index, postId, postList) {
       this.FMenuIndex = index
-      this.$emit('openAuth', index, postId);
+      this.$emit('openAuth', index, postId, postList);
     },
   },
   computed: {
