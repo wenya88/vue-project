@@ -37,6 +37,10 @@ export default {
     taskTypeAdd: (data, changeUrl) => {
         return Vue.$axios.post(url + changeUrl, qs.stringify(data))                            // 新增类型
     },
+    insideAudit: (data) => {
+        return Vue.$axios.post(url + 'task/task/inside-audit', qs.stringify(data))   // 内部审核                          // 任务详情里面的阶段详情
+    },
+
     /*项目级类型库*/
     projectTaskList: (data) => {
         return Vue.$axios.post(url + 'task/project-tasktype/list', qs.stringify(data))                            // 新增类型
@@ -47,6 +51,8 @@ export default {
     taskStageInfo: (data) => {
         return Vue.$axios.post(url + 'task/task/stage-info', qs.stringify(data))                            // 任务详情里面的阶段详情
     },
+
+
     // 老的上传
     imageUpload: (data) => {
         return Vue.$axios.post(url + 'file/file/file-upload', qs.stringify(data))                             // 任务详情里面的阶段详情
