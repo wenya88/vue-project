@@ -37,21 +37,26 @@
                 <video id="haha" width="810" height="480">
                     <source :src="VideoURL" type="video/mp4">
                 </video>
-                <div class="controls">
-                    <Icon @click.native="videoStart" type="play" size="30"
-                          style="padding-left: 5px;color: #39f;"></Icon>
-                    <span class="circle" id="circle">
-                   <i class="circleSign"></i>
-                </span>
+                <div v-show="!isCanvas" class="controls">
+                    <span  id="circle" class="circleSign" ></span>
+                    <!--<Icon  id="circleSign" class="circleSign"  type="record"></Icon>-->
+                    <!--进度条-->
                     <span class="progressBar" @click="pictureJump">
-                    <i class="strip"></i>
-                </span>
+                        <i class="strip"></i>
+                        <ul class="progressSignUl">
+                             <li v-for="(item,index) in timeList" class="progressSign" :style="{'left':item.left+'px'}" :key="index"></li>
+                        </ul>
+                    </span>
+               <!--时间显示和视频开关-->
+                    <Icon v-show="switchIcon"  @click.native.prevent="videoStart"  class="startButton" type="play" ></Icon>
+                    <Icon v-show="!switchIcon" @click.native.prevent="pauseButton" class="startButton" type="pause" ></Icon>
+                    <span v-if="video" class="controlsTime"  >{{currnt_time|dateType}}/{{video.duration|dateType}}</span>
                 </div>
                 <canvas v-show="isCanvas" id="myCanvas" class="videoCanvas" width="810" height="480"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
-                <canvas id="tu" class="drawMain" @mousedown="paletteInit" width="810" height="480"
+                <canvas id="tu" class="drawMain" @mousedown.prevent="paletteInit" width="810" height="480"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
@@ -63,27 +68,27 @@
                        :style="{'top':top+'px','left':left+'px'}">
             </section>
             <div class="canvasEdit">
-                <ul>
-                    <li v-for="(item,index) in timeList" :key="index">11</li>
-                </ul>
-                <Icon @click.native="changeRect" type="android-checkbox-outline-blank"></Icon>
-                <Icon @click.native="changeText" type="paintbrush"></Icon>
 
-                <i class="little" @click="changelineWidth(1)"></i>
-                <i class="middle" @click="changelineWidth(5)"></i>
-                <i class="big" @click="changelineWidth(8)"></i>
+                <Button @click.prevent="updateFrame('before')" type="text">上一帧</Button>
+                <Button @click.prevent="updateFrame('after')" type="text">下一帧</Button>
+                <Button @click.prevent="startCanvas" type="text">{{isCanvas ? '关闭画布':'开启画布'}}</Button>
+                <template v-if="isCanvas">
+                    <!--<Icon @click.native.prevent="changeRect" size="18" type="android-checkbox-outline-blank"></Icon>-->
+                    <!--<Icon @click.native.prevent="changeText" size="18" type="paintbrush"></Icon>  -->
+                    <Button @click.native.prevent="changeRect"  type="text">矩形</Button>
+                    <Button @click.native.prevent="changeText"  type="text">文字</Button>
 
-                <i class="black " @click="changeColor('#black')"></i>
-                <i class="red" @click="changeColor('#ff512e')"></i>
-                <i class="blue" @click="changeColor('#66DAFF')"></i>
-                <i class="orange" @click="changeColor('#FFB14D')"></i>
+                    <i class="little" @click.prevent="changelineWidth(1)"></i>
+                    <i class="middle" @click.prevent="changelineWidth(5)"></i>
+                    <i class="big" @click.prevent="changelineWidth(8)"></i>
 
-                <Button @click="startCanvas" type="text">开启画布</Button>
-                <Button @click="baocun" type="text">保存</Button>
-                <Button @click="updateFrame('before')" type="text">上一帧</Button>
-                <Button @click="updateFrame('after')" type="text">下一帧</Button>
-                <Button @click="videoStart" type="text">开始</Button>
-                <Button @click="zanting" type="text">暂停</Button>
+                    <i class="black " @click.prevent="changeColor('#black')"></i>
+                    <i class="red" @click.prevent="changeColor('#ff512e')"></i>
+                    <i class="blue" @click.prevent="changeColor('#66DAFF')"></i>
+                    <i class="orange" @click.prevent="changeColor('#FFB14D')"></i>
+                    <Button @click.prevent="saveCanvas" type="text">保存</Button>
+                </template>
+
             </div>
             <!-- 标注提交 -->
             <div v-if="AllowEditRow" class="VideoAllowEdit">
@@ -108,6 +113,15 @@
             </div>
             <img id="img" :src="img" alt="">
         </div>
+        <Modal
+                v-model="saveCanvasShow"
+                title="画布保存"
+                width="300"
+                @on-ok="saveCanvas"
+                @on-cancel="clearCanvas"
+        >
+            <p>是否保存画布?</p>
+        </Modal>
     </div>
 </template>
 <script>
@@ -119,6 +133,10 @@
     export default {
         data() {
             return {
+                saveCanvasWindow:true,
+                saveCanvasShow:false,
+                videoWidth:810,
+                switchIcon:true, //开始暂停按钮
                 linshishuju: JSON.parse(sessionStorage.getItem('videoTime')),
                 timeList: [],
                 img: '',
@@ -147,7 +165,6 @@
                 /*上面是标注*/
                 data: [],
                 TID: 49,
-                fileID: 10,
                 AllowEdit: String,
                 AllowEditRow: false,
                 SataeInfo: false,
@@ -181,6 +198,9 @@
                 } else {
                     return '--'
                 }
+            },
+            dateType(time){
+                return time.toFixed(2)
             }
         },
         mounted() {
@@ -191,11 +211,15 @@
             });
             this.VedioGet();
             this.init();
-            this.showVideoSign()
+            this.showVideoSign();
 
         },
         created() {
             this.AddVedioJS();
+        },
+        destroyed(){
+
+            clearInterval(this.timeId)
         },
         computed: {
             storeTaskID() {
@@ -535,43 +559,50 @@
 
             /*启动视频*/
             videoStart() {
+                this.switchIcon = false;
                 this.video.play();
-                this.timeNum();
                 clearInterval(this.timeId);
                 this.videoInit();
 
             },
             /*临时的暂停*/
-            zanting() {
+            pauseButton() {
+                this.switchIcon = true;
                 this.video.pause();
                 clearInterval(this.timeId)
             },
             /*进度条*/
             timeNum() {
                 if (this.video.readyState > 0) {
-                    let zhen = parseInt(this.video.duration);
-                    this.percentage = this.video.currentTime / zhen;
-                    document.querySelector('#circle').style.left = this.percentage * 778 + 'px';
+                    this._proportion();
+                 document.querySelector('#circle').style.width = this.percentage * (this.videoWidth-10)  + 'px';
                 }
             },
             /*开启画布*/
             startCanvas() {
+                if(this.isCanvas && this.saveCanvasWindow){
+                    this.saveCanvasShow = true;
+                }else if(!this.isCanvas){
+                    this.saveCanvasWindow = true
+                }
                 this.isCanvas = !this.isCanvas;
                 this.init();
                 clearInterval(this.timeId);
                 this.timeNum();
             },
+
             /*画面跳转*/
             pictureJump(e) {
-//                this.video.duration*e.target.offsetX/778
-                let time = this.video.duration * e.offsetX / 778;
+//                this.video.duration*e.target.offsetX/videoWidth
+
+                let time = this.video.duration * e.offsetX / (this.videoWidth-10);
                 this.video.currentTime = time;
                 this.timeNum();
                 clearInterval(this.timeId);
-                this.videoInit();
+                this.videoInit(true);
             },
             /*播放插入标注*/
-            videoInit() {
+            videoInit(isPictureJump) {
                 this.currnt_time = this.video.currentTime;
 
                 this.timeId = setInterval(() => {
@@ -579,11 +610,28 @@
                     this.getVasList();
                     /*进度条*/
                     this.timeNum();
+                    if(this.currnt_time>=this.video.duration){
+                        this.currnt_time = this.video.duration;
+                        clearInterval(this.timeId)
+                    }
+                    if(isPictureJump){
+                        clearInterval(this.timeId)
+                    }
                 }, 30);
 
             },
+            /* 显示进度条标注 */
             showVideoSign() {
-                this.timeList = this.linshishuju
+                let timeId = setInterval(() => {
+                    if (this.video.readyState > 0) {
+                        this.timeList = this.linshishuju;
+                        this.timeList.map((item, index) => {
+                            item.left = parseInt(item.time / this.video.duration * (this.videoWidth-10))
+                        });
+                        clearInterval(timeId)
+                    }
+                }, 20);
+
 
             },
             /*canvas初始化*/
@@ -603,7 +651,7 @@
                 /*点击开启画布*/
                 this.video.pause();
                 setInterval(() => {
-                    this.videoCtx.drawImage(this.video, 0, 0, 810, 480);
+                    this.videoCtx.drawImage(this.video, 0, 0, this.videoWidth, 480);
                 }, 30)
             },
             /*点击矩形*/
@@ -628,10 +676,10 @@
             },
             /*画板初始化*/
             paletteInit(e) {
+
                 if (!this.isCanvas) {
                     return false
                 }
-                e.stopPropagation()
                 //鼠标点击在canvas中的位置
                 this.x = e.offsetX;
                 this.y = e.offsetY;
@@ -685,20 +733,28 @@
                 this.ctx.fillText(this.drawTextValue, this.left + 8, this.top + 12);
                 this.drawTextValue = '';
             },
+            /*渲染二进制图片*/
             getVasList() {
-                this.linshishuju.map((item) => {
-                    if (this.currnt_time >= (parseFloat(item.time) + 0.03)) {
-                        this.ctx.clearRect(0, 0, 810, 480);
-                    }
-                    this.img = item.image;
-                    if (this.currnt_time >= (parseFloat(item.time) - .25) && this.currnt_time <= (parseFloat(item.time) + .25)) {
-                        this.ctx.drawImage(document.querySelector('#img'), 0, 0, 810, 480);
-                    }
-                });
-
+                if(this.linshishuju){
+                    this.linshishuju.map((item) => {
+                        if (this.currnt_time >= (parseFloat(item.time) + 0.03)) {
+                            this.ctx.clearRect(0, 0, this.videoWidth, 480);
+                        }
+                        this.img = item.image;
+                        if (this.currnt_time >= (parseFloat(item.time) -.1) && this.currnt_time <= (parseFloat(item.time)+.2 )) {
+                            this.ctx.drawImage(document.querySelector('#img'), 0, 0, this.videoWidth, 480);
+                            this.video.pause();
+                            this.switchIcon = true;
+                            clearInterval(this.timeId)
+                        }
+                    });
+                }
             },
             /*保存 暂时还是假数据*/
-            async baocun() {
+            async saveCanvas() {
+                if(this.saveCanvasShow){
+                    this.saveCanvasShow = false;
+                }
 
                 let audit = this.StateFeedBack === '5' ? 1 : 2,
                     img = this.canvas.toDataURL("image/png"),
@@ -707,7 +763,7 @@
                         "image": img
                     },
                         {
-                            "time": 3.01,
+                            "time": 8.01,
                             "image": img
                         }];
 //                    file = JSON.stringify([{
@@ -717,7 +773,15 @@
 
                 sessionStorage.setItem('videoTime', JSON.stringify(json));
 //                const data = await api.insideAudit({stage_id:this.stageID,audit:audit})
-
+            this.saveCanvasWindow = false
+            },
+            clearCanvas(){
+                this.saveCanvasShow = false;
+                this.ctx.clearRect(0, 0, this.videoWidth, 480);
+            },
+            _proportion(){
+                let zhen = parseInt(this.video.duration);
+                this.percentage = this.video.currentTime / zhen;
             },
             /*鼠标移动画矩形*/
             _drawRectTans(e) {
@@ -725,7 +789,7 @@
                     height = this.newY - this.y;
                 this.newX = e.offsetX;
                 this.newY = e.offsetY;
-                this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight)
+                this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight);
                 this.ctxTans.strokeRect(this.x, this.y, width, height)
             },
             /*鼠标离开画矩形*/
@@ -734,7 +798,7 @@
                     height = this.newY - this.y;
                 this.newX = e.offsetX;
                 this.newY = e.offsetY;
-                this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight)
+                this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight);
                 this.ctx.strokeRect(this.x, this.y, width, height);
                 this.canvas.removeEventListener("mousemove", this._drawRectTans);
             },
@@ -776,41 +840,51 @@
     .canvasContainer {
         position: relative;
         .controls {
-            display: flex;
             position: absolute;
             bottom: 20px;
             left: 0;
             width: 100%;
+            padding: 0 5px;
             z-index: 112;
             .progressBar {
-                flex: 1;
-                height: 20px;
-                margin-top: 5px;
+                display: block;
+                height: 8px;
                 .strip {
                     display: block;
                     width: 100%;
-                    height: 5px;
-                    margin-top: 7px;
+                    height: 4px;
                     background: #fff;
 
                 }
-            }
-            .circle {
-                display: block;
-                position: relative;
-                top: 7px;
-                left: 4px;
-                width: 16px;
-                height: 16px;
-                /*background: red;*/
-                .circleSign {
-                    display: block;
-                    width: 8px;
-                    height: 8px;
-                    margin: 4px 0 0 5px;
-                    background: blue;
-                    border-radius: 50%;
+                .progressSignUl {
+                    width: 100%;
+                    .progressSign {
+                        position: absolute;
+                        top:0;
+                        width: 12px;
+                        height: 4px;
+                        background: #22d7bb;
+                    }
                 }
+            }
+            .circleSign ,.circleSign{
+                display: block;
+                position: absolute;
+
+                width: 8px;
+                height: 4px;
+                background: #39f;
+            }
+            .startButton{
+                margin: 0 6px;
+                font-size: 18px;
+                color: #39f;
+                vertical-align: middle;
+            }
+            .controlsTime{
+                font-size: 16px;
+                color: #fff;
+                vertical-align: middle;
             }
         }
         .video-js {

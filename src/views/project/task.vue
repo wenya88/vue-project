@@ -398,7 +398,8 @@ export default {
             top:77px;
             left: -11px;
             width: 457px;
-            height: 916px;
+            /*height: 916px;*/
+            height: 85%;
             padding: 10px 23px;
             z-index: 333;
             background: #f5f7f6;
@@ -545,7 +546,7 @@ export default {
     float:right;
     right: 17px;
     padding: 4px 10px 10px 24px;
-    z-index:1;
+    z-index:2;
 }
 </style>
 
