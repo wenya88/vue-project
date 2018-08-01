@@ -220,51 +220,15 @@
                 })
         },
             renderContent(h, {root, node, data}) {
-                let folderButton = '';
                 let iconFile = false;
                 let menu = '';
-                let button = h('div', {
-                    style: {
-                        fontSize: '12px',
-                        padding: '2px 25px',
-                        background: '#e4e4e4'
-                    },
-                    on: {
-                        click: () => {
-                            this.changeName(data)
-                        }
-                    }
-                }, [
-                    h('div', '修改'),
-                ]);
-                let copyButton = h('div', {
-                    style: {
-                        fontSize: '12px',
-                        padding: '2px 25px',
-                        background: '#e4e4e4'
-                    },
-                    on: {
-                        click: () => {
-                            this.copyButton(root, node, data)
-                        }
-                    }
-                }, [
-                    h('div', '复制'),
-                ]);
-                let delButton = h('div', {
-                    style: {
-                        fontSize: '12px',
-                        padding: '2px 25px',
-                        background: '#e4e4e4'
-                    },
-                    on: {
-                        click: () => {
-                            this.delButton(root, node, data)
-                        }
-                    }
-                }, [
-                    h('div', '删除'),
-                ]);
+                let buttonArr  = this.buttonInit(h,root, node, data)
+
+                let folderButton = buttonArr[0];
+                let button = buttonArr[1];
+                let copyButton = buttonArr[2];
+                let delButton = buttonArr[3];
+
                 let textTitle = h('span', data.name ? data.name : data.tasktype_name);
 
                 // 名称可以编辑的
@@ -287,21 +251,8 @@
                     button = ''
                 }
                 // 需要文件夹按钮的
-                if (data.rank === 0 || data.rank === 1) {
-                    folderButton = h('div', {
-                        style: {
-                            fontSize: '12px',
-                            padding: '2px 25px',
-                            background: '#e4e4e4'
-                        },
-                        on: {
-                            click: () => {
-                                this.append(data)
-                            }
-                        }
-                    }, [
-                        h('div', '新增'),
-                    ])
+                if (data.rank !== 0 && data.rank !== 1) {
+                    folderButton = '';
                 }
                 // 图标为文件夹的
                 if (data.rank !== 2) {
@@ -309,89 +260,160 @@
                 }
                 // 右侧菜单
                 if (data.status !== 0) {
-                    menu = h('section', {
-                        props: {
-                            type: 'ios-more'
-                        },
-                        style: {
-                            display: 'inline-block',
-                            float: 'right',
-                            marginRight: '32px',
-                            marginTop: '6px',
-                            fontSize: '20px',
-                            cursor: 'pointer',
-                            opacity: 0
-                        },
-                        on: {
-                            click: (e) => {
-                                this.showSetting(data, e)
-                            }
-                        }
-                    }, [
-                        h('icon', {
-                                props: {
-                                    type: 'ios-more'
-                                },
-                                style: {
-                                    display: 'inline-block',
-                                    float: 'right',
-                                    marginRight: '32px',
-                                    fontSize: '20px',
-                                    cursor: 'pointer'
-                                },
-                            }
-                        ),
-                        h('h1', {
-                                style: {
-                                    position: 'absolute',
-                                    top: '0px',
-                                    right: '0px',
-                                    display: 'inline-block',
-                                    marginRight: '32px',
-                                    zIndex: '3'
-                                }
-                            },
-                            data.btnShow ? [folderButton, button, copyButton, delButton] : ''
-                        )
-                    ])
+                    menu = this.setmenu(h,data,folderButton, button, copyButton, delButton)
                 }
 
-                return h('p', {
+                return this.renderingTree(h,root,node,data,iconFile,textTitle,menu)
+            },
+            /*按钮初始化*/
+            buttonInit(h,root, node, data){
+                let buttonArr = [];
+                 buttonArr[0] = h('div', {
                     style: {
-                        display: 'inline-block',
-                        width: '100%',
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.append(data)
+                        }
                     }
                 }, [
-                    h('span', [
-                        h('Icon', {
-                            props: {
-                                type: iconFile ? 'ios-folder-outline' : 'ios-paper-outline'
-                            },
-                            style: {
-                                marginRight: '8px',
-                                fontSize: '20px'
-                            }
-                        }),
-                        h('span', {
-                            style: {
-                                width: '100px',
-                                fontSize: '14px',
-                                cursor: 'pointer'
-                            },
-                            on: {
-                                click: () => {
-                                    this.goTaskList(data,root,node)
-                                }
-                            }
-
-                        }, [
-                            textTitle
-                        ])
-                    ]),
-                    menu
+                    h('div', '新增'),
                 ]);
+                 buttonArr[1] = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.changeName(data)
+                        }
+                    }
+                }, [
+                    h('div', '修改'),
+                ]);
+                 buttonArr[2] = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.copyButton(root, node, data)
+                        }
+                    }
+                }, [
+                    h('div', '复制'),
+                ]);
+                 buttonArr[3] = h('div', {
+                    style: {
+                        fontSize: '12px',
+                        padding: '2px 25px',
+                        background: '#e4e4e4'
+                    },
+                    on: {
+                        click: () => {
+                            this.delButton(root, node, data)
+                        }
+                    }
+                }, [
+                    h('div', '删除'),
+                ]);
+                return buttonArr
             },
 
+            /*...菜单*/
+            setmenu(h,data,folderButton, button, copyButton, delButton){
+                 return (h('section', {
+                     props: {
+                         type: 'ios-more'
+                     },
+                     style: {
+                         display: 'inline-block',
+                         float: 'right',
+                         marginRight: '32px',
+                         marginTop: '6px',
+                         fontSize: '20px',
+                         cursor: 'pointer',
+                         opacity: 0
+                     },
+                     on: {
+                         click: (e) => {
+                             this.showSetting(data, e)
+                         }
+                     }
+                 }, [
+                     h('icon', {
+                             props: {
+                                 type: 'ios-more'
+                             },
+                             style: {
+                                 display: 'inline-block',
+                                 float: 'right',
+                                 marginRight: '32px',
+                                 fontSize: '20px',
+                                 cursor: 'pointer'
+                             },
+                         }
+                     ),
+                     h('h1', {
+                             style: {
+                                 position: 'absolute',
+                                 top: '0px',
+                                 right: '0px',
+                                 display: 'inline-block',
+                                 marginRight: '32px',
+                                 zIndex: '3'
+                             }
+                         },
+                         data.btnShow ? [folderButton, button, copyButton, delButton] : ''
+                     )
+                 ]))
+            },
+            /*渲染所有*/
+            renderingTree(h,root,node,data,iconFile,textTitle,menu){
+                return (
+                    h('p', {
+                        style: {
+                            display: 'inline-block',
+                            width: '100%',
+                        }
+                    }, [
+                        h('span', [
+                            h('Icon', {
+                                props: {
+                                    type: iconFile ? 'ios-folder-outline' : 'ios-paper-outline'
+                                },
+                                style: {
+                                    marginRight: '8px',
+                                    fontSize: '20px'
+                                }
+                            }),
+                            h('span', {
+                                style: {
+                                    width: '100px',
+                                    fontSize: '14px',
+                                    cursor: 'pointer'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.goTaskList(data,root,node)
+                                    }
+                                }
+
+                            }, [
+                                textTitle
+                            ])
+                        ]),
+                        menu
+                    ])
+                )
+            },
             /* 添加 */
             async append(treeData, type) {
                 let obj = null;

@@ -34,32 +34,37 @@
                 <!--<video id="my-video" class="video-js" controls   width="810" height="480" data-setup="{}">-->
                 <!--<source :src="VideoURL" type="video/mp4">-->
                 <!--</video>-->
+                <!--视频-->
                 <video id="haha" width="810" height="480">
                     <source :src="VideoURL" type="video/mp4">
                 </video>
+                <!--进度条-->
                 <div v-show="!isCanvas" class="controls">
+                    <!--移动小圆点-->
                     <span  id="circle" class="circleSign" ></span>
-                    <!--<Icon  id="circleSign" class="circleSign"  type="record"></Icon>-->
-                    <!--进度条-->
                     <span class="progressBar" @click="pictureJump">
                         <i class="strip"></i>
+                        <!--canvas标注-->
                         <ul class="progressSignUl">
-                             <li v-for="(item,index) in timeList" class="progressSign" :style="{'left':item.left+'px'}" :key="index"></li>
+                             <li v-for="(item,index) in timeList" @click.stop="pictureJump(false,item)" class="progressSign" :style="{'left':item.left+'px'}" :key="index"></li>
                         </ul>
                     </span>
                <!--时间显示和视频开关-->
                     <Icon v-show="switchIcon"  @click.native.prevent="videoStart"  class="startButton" type="play" ></Icon>
                     <Icon v-show="!switchIcon" @click.native.prevent="pauseButton" class="startButton" type="pause" ></Icon>
-                    <span v-if="video" class="controlsTime"  >{{currnt_time|dateType}}/{{video.duration|dateType}}</span>
+                    <!--<span v-if="video" class="controlsTime"  >{{currnt_time|dateType}}/{{video.duration|dateType}}</span>-->
                 </div>
+                <!--video画布-->
                 <canvas v-show="isCanvas" id="myCanvas" class="videoCanvas" width="810" height="480"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
+                <!--画板画布-->
                 <canvas id="tu" class="drawMain" @mousedown.prevent="paletteInit" width="810" height="480"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
+                <!--move画布-->
                 <canvas v-show="isCanvas" id="tu2" class="drawTrans" width="810" height="480"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
@@ -67,6 +72,7 @@
                 <input v-show="drawTextShow" @blur="drawText" v-model="drawTextValue" type="text" class="textInput"
                        :style="{'top':top+'px','left':left+'px'}">
             </section>
+            <!--操作按钮-->
             <div class="canvasEdit">
 
                 <Button @click.prevent="updateFrame('before')" type="text">上一帧</Button>
@@ -592,14 +598,13 @@
             },
 
             /*画面跳转*/
-            pictureJump(e) {
-//                this.video.duration*e.target.offsetX/videoWidth
-
-                let time = this.video.duration * e.offsetX / (this.videoWidth-10);
+            pictureJump(e,item) {
+                let time = e?this.video.duration * e.offsetX / (this.videoWidth - 10):parseInt(item.time);
                 this.video.currentTime = time;
                 this.timeNum();
                 clearInterval(this.timeId);
                 this.videoInit(true);
+
             },
             /*播放插入标注*/
             videoInit(isPictureJump) {
@@ -848,7 +853,9 @@
             z-index: 112;
             .progressBar {
                 display: block;
-                height: 8px;
+                height: 25px;
+                padding-top: 20px;
+                margin-top: -20px;
                 .strip {
                     display: block;
                     width: 100%;
@@ -870,7 +877,6 @@
             .circleSign ,.circleSign{
                 display: block;
                 position: absolute;
-
                 width: 8px;
                 height: 4px;
                 background: #39f;
