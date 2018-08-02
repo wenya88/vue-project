@@ -4,9 +4,17 @@
         <div class="projectMenu">
             <dl>
                 <dt>
-                    123
+                    <em @click="cutProjectList" :class="{showEm:comFlag}" >
+                        <i class="iconfont icon-kongzhi"></i>
+                    </em>
+                    <em @click="cutProjectChart" :class="{showEm:!comFlag}">
+                        <i class="iconfont icon-kuaizhuang"></i>
+                    </em>
                 </dt>
                 <dd>
+                    <Button type="primary" @click="addProject"><Icon type="plus"></Icon> 新建项目</Button>
+                </dd>
+                <dd v-show="comFlag">
                     <span  v-for="(item,index) in sortList" :key="index">
                         <a @click="sortAction(index,item.action)" :class="{show:index==SLindex}">
                             <i :class="[
@@ -32,7 +40,6 @@
                             <Button slot="append" icon="ios-search"  @click.native="ProSearch"></Button>
                         </Input>    
                     </span>
-                    <Button type="primary" @click="addProject"><Icon type="plus"></Icon> 新建项目</Button>
                 </dd>
                 <div class="clear"></div>
             </dl>
@@ -41,12 +48,16 @@
         <Modal v-model="modal"  @on-ok="subOk" @on-cancel="cancel"  width="700">
                <Add-Probox></Add-Probox>
         </Modal>
-        <project-list :MsgData="MsgData"></project-list>
+        <keep-alive>
+             <project-list :MsgData="MsgData" v-if="comFlag"></project-list>
+             <project-chart></project-chart>
+        </keep-alive>
     </div>
 </template>
 <script>
 import AddProbox from '../main-components/addProject.vue';
 import projectList from './projectManage/projectList';
+import projectChart from './projectManage/projectChart';
 var qs=require('querystring');
 export default {
   data(){
@@ -80,6 +91,7 @@ export default {
         Prostatus:'',
         remIconUp:true,
         remIconDown:false,
+        comFlag:true
       }
   },
   computed:{
@@ -88,7 +100,8 @@ export default {
  
   components:{
       AddProbox:AddProbox,
-      projectList:projectList
+      projectList:projectList,
+      projectChart:projectChart
   },
   mounted(){
       this.$bus.on("AddProInfo",(val)=>{
@@ -100,6 +113,12 @@ export default {
       this.getData();
   },
   methods:{
+    cutProjectList(){
+        this.comFlag=true;
+    },
+    cutProjectChart(){
+        this.comFlag=false;
+    },
     //   筛选选择
     sortAction(index,action){
         this.SLindex=index;
