@@ -145,7 +145,7 @@ export default {
                     _this.ProSytsData=Math.ceil(MsData.syts);
                     _this.ProTaskData=MsData.tasking_num;
                     _this.ProPauseNum=MsData.pause_num;
-                    
+
                     // 子项目进度
                     _this.ChildMsgData=childMsg.data.data;
 

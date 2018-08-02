@@ -501,7 +501,7 @@
         .WaitingToStart, .perform, .complete, .suspended {
             float: left;
             width: 33.3%;
-            height: 700px;
+            /*height: 700px;*/
             .title {
                 margin: 5px 0;
                 font-size: 16px;

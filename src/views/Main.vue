@@ -275,7 +275,7 @@ export default {
 <style lang="less">
 @import "./main.less";
 .main-header-avator{
-    z-index: 2;
+    z-index: 4;
 }
 .layout-logo {
     width: 100px;

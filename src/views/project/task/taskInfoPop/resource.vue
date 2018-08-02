@@ -9,22 +9,21 @@
                             <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>
                             <p>{{item.create_time|time}}</p>
                         </div>
-                        <div class="file">
+
+                        <div class="file" >
                             <p>上传文件规格</p>
                             <ul>
-                                <li class="fileList">
-                                    <span>大小</span>
-                                    <span>1212*3465</span>
-                                </li><li class="fileList">
-                                <span>大小</span>
-                                <span>1212*3465</span>
-                            </li>
+                                <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
+                                    <span>宽高</span>
+                                    <span>{{item}}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                 </Step>
             </Steps>
         </div>
+        <!--<h1>{{imgEditorWH}}</h1>-->
     </div>
 </template>
 
@@ -79,6 +78,9 @@
             ...mapState({
                 infoDetails(data){
                     return data.project.detail.taskInfo
+                },
+                imgEditorWH(data){
+                    return data.paySkip.imgEditorWH
                 }
             })
         },
