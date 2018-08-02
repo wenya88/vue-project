@@ -78,7 +78,6 @@ const actions = {
         authList.push(item.auth)
         // authList.push({auth:item.auth, postid: item.id})
       })
-      console.log(postNameList)
       commit('updatePostList', postNameList);
       commit('updatAuthList', authList);
     })

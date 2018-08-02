@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     changeTabs(name) {  //根据name的不同加载不同的权限列表
-      console.log(name)
+      // console.log(name)
     },
     changeType() {
       let project = [],bid = [],contract = []

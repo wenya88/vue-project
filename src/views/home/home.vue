@@ -26,6 +26,7 @@ export default {
             // console.log(invateCode)
             this.invateInfo(invateCode);
         }
+        console.log(Cookies.get('company'))
     },
     methods: {
         linkTo(url, params) {

@@ -44,11 +44,11 @@ export default {
      */
     changeFMenu(active) {
       this.$emit('on-change', active);
-      console.log(active);
+      // console.log(active);
     },
     changeSMenu(active) {
       this.$emit('on-change', active);
-      console.log(active);
+      // console.log(active);
     },
     openTable(index, postId, postList) {
       this.FMenuIndex = index
