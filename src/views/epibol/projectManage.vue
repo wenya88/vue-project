@@ -49,8 +49,8 @@
                <Add-Probox></Add-Probox>
         </Modal>
         <keep-alive>
-             <project-list :MsgData="MsgData" v-if="comFlag"></project-list>
-             <project-chart></project-chart>
+            <project-list :MsgData="MsgData" v-if="comFlag"></project-list>
+            <project-chart></project-chart>
         </keep-alive>
     </div>
 </template>
@@ -94,10 +94,6 @@ export default {
         comFlag:true
       }
   },
-  computed:{
-  
-  },
- 
   components:{
       AddProbox:AddProbox,
       projectList:projectList,
@@ -217,7 +213,8 @@ export default {
             _this.$axios.post(url,qs.stringify(obj)).then(()=>{
                 _this.$Message.info('提交成功');
                 _this.getData();
-                _this.$bus.emit("submitOk")
+                _this.$bus.emit("submitOk");
+                
             },()=>{
                 _this.$Message.error('提交失败！')
             })
