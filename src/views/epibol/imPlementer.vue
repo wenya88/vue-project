@@ -297,7 +297,6 @@ export default {
         this.filesStatus = filesStatus
         this.$set(this, 'nameLists', nameLists)
         this.nameList = newList
-        console.log('点击', index, newList)
         this.feilsUrl = JSON.parse(list[index].response).file_url
       }
     },
@@ -369,19 +368,6 @@ export default {
          this.beforeData = lists
        })
     },
-    // 添加数据到前面
-    // getBefores (number) {
-    //    const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-    //    const items = {
-    //      xdays: number
-    //    }
-    //    this.$axios.post(url, qs.stringify(items)).then(data => {
-    //      const beforeData = data.data.data
-    //      const lists = this.listAll
-    //      let list = Object.assign(lists, beforeData);
-    //      this.getView(list)
-    //    })
-    // },
     // 获取后面的数据
     getAfter (number) {
        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
@@ -393,24 +379,8 @@ export default {
          const afterData = this.afterData
          let lists = Object.assign(list, afterData);
          this.afterData = lists
-        //  console.log('数据1', list)
-        //  const lists = this.listAll
-        //  let list = Object.assign(afterData, lists);
        })
     },
-      // 插入到后面的数据
-    // getAfters (number) {
-    //    const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-    //    const items = {
-    //      xdays: number
-    //    }
-    //    this.$axios.post(url, qs.stringify(items)).then(data => {
-    //      const afterData = data.data.data
-    //      const lists = this.listAll
-    //      let list = Object.assign(afterData, lists);
-    //      this.getView(list)
-    //    })
-    // },
     // 获取任务时间数据
     getAll () {
        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
@@ -685,15 +655,9 @@ export default {
       const fun = function (e) {
          isClick = true
          endDisX = e.clientX - startDisX + lefts
-        //  const widths = width * 8 + 70
-        //  const endDisXAbs = Math.abs(endDisX)
          that.left = endDisX
          const movePx = endDisX + 'px'
-        //  if (endDisX < 0) {
-           element.setAttribute('style', `width: ${widthAll}; left: ${movePx}`)
-        //  } else {
-        //    element.setAttribute('style', `width: ${widthAll}; left: ${movePx}`)
-        //  }
+         element.setAttribute('style', `width: ${widthAll}; left: ${movePx}`)
       }
       let unFun = function (e) {
         document.removeEventListener('mousemove', fun, false)
@@ -701,13 +665,6 @@ export default {
         if (!isClick) {
           return
         }
-        // const widths = width + 10
-        // const objectNum = Math.round(endDisX / widths)
-        // const movePxs = objectNum * widths
-        // console.log('数数数', objectNum,endDisX / widths, endDisX, movePxs)
-        // that.left = movePxs
-        // let moves = movePxs + 'px'
-        // element.setAttribute('style', `width: ${widthAll}; left: ${moves}`)
       }
       document.addEventListener('mousemove', fun, false)
       document.addEventListener('mouseup', unFun, false)
@@ -819,7 +776,6 @@ export default {
       this.$axios.post(url, qs.stringify(items)).then(data => {
          this.stageList = data.data.stage
          this.standardList = data.data.standard
-         console.log('阶段', data)
        })
     },
     // 上传

@@ -52,18 +52,18 @@
         </Col>
         <!-- 项目 -->
         <Col class="mangaer_main_project" span="8">
-
+           <mangaer-pject></mangaer-pject>
         </Col>
          <!-- 质量 -->
         <Col class="mangaer_main_quality" span="8">
            <div class="mangaer_quality_children">
-
+               <mangaer-qua></mangaer-qua>
            </div>
         </Col>
          <!-- 团队 -->
         <Col class="mangaer_main_team" span="8">
             <div class="mangaer_team_children">
-
+               <mangaer-tem></mangaer-tem>
            </div>
         </Col>
         </Row>
@@ -73,6 +73,9 @@
 <script>
 import mangaerBid from './managerBid.vue'
 import mangaerSign from './mangaerSign.vue'
+import mangaerPject from './mangaerPject.vue'
+import mangaerQua from './mangaerQua.vue'
+import mangaerTem from './managaerTem.vue'
 export default {
   data () {
     return {      
@@ -80,7 +83,10 @@ export default {
   },
   components: {
     mangaerBid,
-    mangaerSign
+    mangaerSign,
+    mangaerPject,
+    mangaerQua,
+    mangaerTem
   },
 }
 </script>
@@ -156,7 +162,7 @@ export default {
   border-left: 1px solid rgb(210,210,210);
 }
 .scope_overview{
-  font-size: 20px;
+  font-size: 26px;
   letter-spacing: 5px;
 }
 .mangaer_box_rve,
@@ -183,9 +189,9 @@ export default {
 }
 .receivables>span:last-child,
 .payment>span:last-child{
-  font-size: 20px;
+  font-size: 30px;
   Color: rgb(24,191,164);
-  font-weight: bold;
+  font-weight: 400;
 }
 .payment{
   float: right;
@@ -222,10 +228,12 @@ export default {
 .mangaer_quality_children{
   width: 100%;
   height: 100%;
+  background: rgb(240,240,240);
 }
 .mangaer_team_children{
   width: 100%;
   height: 100%;
+  background: rgb(240,240,240);
 }
 </style>
 

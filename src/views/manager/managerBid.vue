@@ -92,14 +92,14 @@ export default {
  margin-right: 30px;
 }
 .bid_baifen{
-  font-size: 26px;
+  font-size: 40px;
   color: rgb(24,191,164);
-  font-weight: bold;
+  font-weight: 400;
 }
 .bid_right_msg{
-  font-size: 26px;
+  font-size: 40px;
   color: rgb(206,206,206);
-  font-weight: bold;
+  font-weight: 400;
 }
 .bid_left_title{
  color: rgb(255,51,0);

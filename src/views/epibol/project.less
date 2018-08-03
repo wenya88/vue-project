@@ -1,0 +1,217 @@
+.page_group_all{
+    width: 100%;
+    height: 100%;
+   }
+   .page_group_row{
+     width: 100%;
+     height: 100%!important;
+   }
+   .group_header{
+     width: 100%;
+     height: 110px;
+     background: rgb(228,228,228);
+     padding: 10px;
+   }
+   .group_left{
+     padding: 20px;
+   }
+   .group_head_left{
+     width: 220px;
+     height: 100%;
+     float: left;
+     text-align: center;
+     border-right: 1px solid rgb(201,201,201);
+   }
+   .group_obj_num{
+     width: 50px;
+     height: 50px;
+     margin: 0 auto;
+     line-height: 50px;
+     border-radius: 50%;
+     text-align: center;
+     color: #ffffff;
+     font-weight: bold;
+     font-size: 30px;
+     background: rgb(24,191,164);
+   }
+   .group_obj_msg{
+     font-size: 16px;
+     margin-top: 10px;
+   }
+   .tables_all_father{
+     height: 100%;
+     padding-top: 20px;
+   .tables_all{
+      width: 100%;
+      height: 100%;
+      background: rgb(240,240,240);
+    .ivu-tabs-nav-container{
+      &:focus{
+        .ivu-tabs-tab-focused{
+          border: 1px solid #dcdedd!important;
+          border-bottom: 2px solid #f0f0f0!important;
+        }
+      }
+     .ivu-tabs-nav{
+        width: 100%;
+        padding: 0px 10px;
+        .ivu-tabs-tab{
+          padding: 0px 16px;
+          position: relative;
+          top: 2px;
+          z-index: 5;
+          &:hover{
+            color: #4ac4b5;
+          }
+        }
+        .ivu-tabs-tab-active{
+          border: 1px solid #dcdedd;
+          border-bottom: 2px solid #f0f0f0;
+        }
+      }
+     }
+    .ivu-tabs-tabpane{
+      padding: 0 20px;
+      .task_msg_bx{
+        width: 100%;
+        height: 80px;
+        border-bottom: 1px solid rgb(228,228,228);
+      }
+    }
+  }
+}
+.group_head_right{
+   @diff : 220px;
+   width : calc(~"100% - @{diff}");
+   height: 100%;
+   padding: 0px 60px;
+   float: left;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   .group_rank{
+      text-align: center;
+      //   width:80px; 
+      .group_rank_num{
+        font-size: 30px;
+        color: rgb(24,191,164);
+        font-weight: bold;
+      }
+      .group_rank_title{
+         color: rgb(180,180,180);
+         font-size: 16px;
+         margin-top: 10px;
+      }
+   }
+}
+.group_left_main{
+  width: 100%;
+//   padding-top: 20px;
+  .group_main_msg{
+    width: 100%;
+    // height: 350px;
+    margin-top: 20px;
+    padding: 20px;
+    position: relative;
+    background: rgb(240,240,240);
+    .group_head_title{
+      font-size: 30px;
+    }
+    .open_botton{
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .group_progress{
+     width: 100%;
+     height: 30px;
+     background: rgb(230,230,230);
+     .group_color_block{
+       height: 100%;
+       width: 20%;
+       background: red;
+     }
+    }
+    .close_box{
+      width: 100%;
+      height: 80px;
+      .ivu-progress-inner{
+        background-color: #e6e6e6;
+      }
+      .close_box_child{
+       width: 100%;
+       height: 40px;
+       .close_box_left{
+         float: left;
+         height: 100%;
+         padding-top: 10px;
+         @leftWidth: 100px;
+         width:calc(~"100% - @{leftWidth}");
+       }
+       .close_box_right{
+        float: left;
+        width: 90px;
+        height: 100%;
+        line-height: 40px;
+        margin-left: 10px;
+        .close_popress_msg{
+          float: left;
+          font-size: 16px;
+        }
+        .close_popress_num{
+          float: left;
+          margin-left: 10px;
+          font-size: 16px;
+        }
+       }
+      }
+    }
+  }
+}
+.open_box{
+  margin-top:30px;
+}
+.project_all{
+ width: 100%;
+ height: 150px;
+ margin-top: 10px;
+ .complany_name{
+   padding-left: 80px;
+ }
+ .tem_person{
+   padding-left: 80px;
+ }
+ .title_name,
+ .cpy_person{
+   font-size: 16px;
+   color: rgb(174,174,174);
+ }
+ .cpy_person{
+  margin-top: 10px;
+ }
+ .people_name{
+  margin-right: 10px;
+ }
+ .msg_name{
+  font-size: 16px;
+  margin-top: 10px;
+ }
+}
+.propress_box{
+  width: 100%;
+  .propress_surplus{
+    float: right;
+    color:rgb(174,174,174);
+    .propress_surplus_time{
+      font-size: 20px;
+      font-weight: 400;
+      margin: 0 5px;
+      color: rgb(255,130,0);
+    }
+  }
+  .ivu-progress-inner{
+    background-color: #e6e6e6;
+  }
+}
