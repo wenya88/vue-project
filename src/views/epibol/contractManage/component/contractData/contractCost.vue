@@ -16,7 +16,7 @@
                         <li v-for="(item,index) in priceData" :key="index">
                             <span class="span line">{{item.key}}</span>
                             <span class="span line">{{item.finish_date}}</span>
-                            <span class="span line">{{item.unitprice}}</span>
+                            <span class="span line">￥{{item.unitprice}}</span>
                             <span class="span line">{{item.count}}</span>
                             <span class="span line bigFont">￥{{item.amount}}</span>
                             <div class="clear"></div>
@@ -25,13 +25,14 @@
                     <div v-if="!lineFlag">
                         <li v-for="(item,index) in priceData">
                             <span class="span">
-                                <Input v-model="item.key" placeholder="输入文件类型名称"></Input>
+                                <Input v-model="item.key" placeholder="输入文件类型名称1"></Input>
                             </span>
                             <span class="span">
                                 <DatePicker type="date" :value="item.finish_date" :options="dateTime" placeholder="选择完成时间" style="width:200px" @on-change="finishDate" @click.native="changeDate(index)"></DatePicker>
                             </span>
                             <span class="span">
-                                <Input v-model="item.unitprice" placeholder="0" style="width:100px"></Input>
+                                 <Input v-model="item.unitprice" placeholder="0.00" style="width:100px"></Input>
+                                 <em style="position:relative;z-index:11;top:-30px;left:2px;">￥</em>
                             </span>
                             <span class="span">
                                 <InputNumber :min="1" v-model="item.count" style="width:100px"></InputNumber>
@@ -133,7 +134,7 @@ export default {
             contFileConunt:1,
             // ------------
             amount:0,
-            dateIndex:0
+            dateIndex:0,
         }
     },
     computed:{
@@ -209,8 +210,43 @@ export default {
         },
         // addPay
         addPay(){
+            let payNum=''
+            switch(this.contractPayDate.length){
+                case 1:
+                    payNum='一';
+                    break;
+                case 2:
+                    payNum='二';
+                    break;
+                case 3:
+                    payNum='三';
+                    break;
+                case 4:
+                    payNum='四';
+                    break;
+                case 5:
+                    payNum='五';
+                    break;
+                case 6:
+                    payNum='六';
+                    break;
+                case 7:
+                    payNum='七';
+                    break;
+                case 8:
+                    payNum='八';
+                    break;
+                case 9:
+                    payNum='九';
+                    break;
+                case 10:
+                    payNum='十';
+                    break;
+                default:
+                    payNum="N"
+            }
             let obj={
-                key:'',
+                key:payNum+'笔款',
                 num:'',
                 amount:'',
             }
@@ -218,15 +254,8 @@ export default {
         },
         // deletePay
         deletPay(index){
-            if(this.contractPayDate.length>1){
-                this.contractPayDate.splice(index,1)
-            }else{
-                this.contractPayDate.splice(index,1,{
-                key:'',
-                num:'',
-                amount:'',
-            })
-            }
+            this.contractPayDate.splice(index,1);
+
         },
         // priceChange
         priceChange(){

@@ -218,6 +218,8 @@ export default {
                     // console.log(res)
                     sessionStorage.userId = res.user.id
                     Cookies.set('post_id', res.company.post_id)
+                    Cookies.set('user_type', res.user.user_type)
+                    Cookies.set('company', res.company)
                     this.avatorPath = res.user.headimage
                 }
             })

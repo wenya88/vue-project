@@ -85,12 +85,21 @@
 
 // 项目管理
 .projectManage{
-    padding:20px 20px 0px 20px;display:block;
+    padding:20px 20px 0px 20px;display:block;background:#fff;
 }
 .projectMenu{
     display:block;
     dt{
         float:left;
+        em{
+            background:#f7fbf9;border:1px solid #737694;color:#343634;font-size:12px;padding:0px 4px;display:inline-block;cursor:pointer;
+            &:hover{
+                color:#1ebca4;border-color:#1ebca4;
+            }
+        }
+        .showEm{
+            color:#1ebca4;border-color:#1ebca4;
+        }
     }
     dd{
         float:right;
@@ -186,5 +195,88 @@
             }
         }
         .ivu-progress-show-info .ivu-progress-outer{padding-right:80px;margin-right:-80px;}
+    }
+}
+
+// ----------------------------------------------------风骚的一B啊。-----------------------------------------------------------------、
+.chartNavBox{
+    background:#fffbeb;margin-top:10px;overflow:hidden;position:absolute;height:68px;z-index:11;
+    .chartNav{
+        display:block;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAuCAIAAACnCq6RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1MTE5MDk1RTk0OEYxMUU4QTYyNjg3RTg2N0FEMUU5RiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1MTE5MDk1Rjk0OEYxMUU4QTYyNjg3RTg2N0FEMUU5RiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjUxMTkwOTVDOTQ4RjExRThBNjI2ODdFODY3QUQxRTlGIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjUxMTkwOTVEOTQ4RjExRThBNjI2ODdFODY3QUQxRTlGIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+idQn5QAAADNJREFUeNpifP37BQO5gImBAjCqeVTzqOZRzaOaRzWPah7VPKqZfM3Pr78aDTASAECAAQDiZwXS+/bAUAAAAABJRU5ErkJggg==') #ebfbeb;
+        border-bottom:2px solid #d7d7d7;position:absolute;height:42px;padding-left:20px;background-position-y:-5px;
+        .week{
+            position:absolute;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxQjlFNkUzQTk0NjkxMUU4QkE1RERCMzY3NDMwRTQyQSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxQjlFNkUzQjk0NjkxMUU4QkE1RERCMzY3NDMwRTQyQSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjFCOUU2RTM4OTQ2OTExRThCQTVEREIzNjc0MzBFNDJBIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjFCOUU2RTM5OTQ2OTExRThCQTVEREIzNjc0MzBFNDJBIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+ue8LBAAAAaZJREFUeNpi/P//PwM6uP/tmeW5N89czr5+ZvXq21edX3//SjIzMT0X5+K+oissfsxcTHqPCrfscXR9jMiGvfnzRvn0y6cpC26eT/zy57c4Aw7Axcz6MkpNd76tpPwcERaRuxiGPfz+zHTejfNVZ14/C2AgEugLi29I0jBsA7ryNIjPBHMRqQaBwMW3LwOmXzlTBdIPNwzkNVINgoEbH98E7H5yJwVsGCiwQWHEQAFYfedq4o0vjyyZQLGGL7CJAT///RM/+PSBC9PxBw+sGKgATj19bMX09s8PHWoY9gZoDhPQiZLUMOwPwz9JJi42lufUMAyYLJ4zSQGzCDUMk+LkucJkBMxr1DDMGGgOk42o1B4OJqaXFHrxpZuU/B4mER654wkq2vMpMSxCQX2+goDycXB28pVRmaPLL7KBHIOUuPk2RChozIHnTQZgMVKibdymziu0gVSDynTN2pjZxO5ilGd/f71S3gDMtIvvXk/8/f+fOL4wAnkN5CKYQRiGwcDjT/ctDzx/7HL89XOrZ9+/6AANlgSlI1D0g2INFNigMELXBxBgAFLUwdyt/ZP2AAAAAElFTkSuQmCC');
+            width:20px;background-repeat:no-repeat;height:42px;top:30px;
+            .weekValue{
+                position:absolute;top:-20px;color:#949494;left:-20px;width:70px;
+            }
+        }
+    }
+}
+.projectChart{
+    background:#fffbeb;margin-top:60px;position:absolute;overflow:hidden;overflow-y:auto;
+    .chartRow{
+        display:block;position:absolute;top:8px;padding-left:20px;padding-top:15px;overflow:hidden;
+        .chartList{
+           margin:5px 0px;float:left;width:100%;
+            h1{
+                font-size:14px;font-weight:normal;
+            }
+        }
+        .chartFloat{
+            background:#fff;display:inline-block;border:1px solid #e4e4e4;overflow:hidden;height:89px;
+            .ivu-progress-bg{
+                background:#18bfa4;border-radius:0px;
+            }
+            .ivu-progress-inner{
+                border-radius:0px;
+            }
+            .ivu-progress-normal{
+                line-height:3px;
+            }
+            
+        }
+        .projectOver{
+            .chartFloat{
+                background:#f0fbf0;border-color:#d2e2d2;
+            }
+            h1{
+                color:#00d07e;
+            }
+        }
+        .projectInfo{
+            display:block;padding:10px 10px 0px 10px;line-height:22px;height:76px;
+            .infoShow{
+                display:block;
+            }
+            .infoHidden{
+              margin:-10px;
+              .span{
+                  display:block;height:100px;cursor:pointer;padding-top:30px;overflow: hidden; text-overflow:ellipsis; white-space: nowrap;
+              }
+            }
+            .company{
+                float:left;
+                .title{
+                    color:#c9c9c9;
+                }
+            }
+            .perInfo{
+                float:right;text-align:right;
+                img{
+                    width:20px;height:20px;border-radius:100%;
+                }
+                .over{
+                    color:#16c097;
+                }
+            }
+        }
+    }
+}
+.projectScrollNav{
+    position:absolute;bottom:15px;height:30px;background:#f2f2f2;border:1px solid #e4e4e4;line-height:30px;
+    .navWidth{
+        height:30px;position:absolute;background:#c2ebc2;border-color:#b6dfb6 #49c800;border-style:solid;border-width:1px;top:-1px;cursor:move;
+       
     }
 }

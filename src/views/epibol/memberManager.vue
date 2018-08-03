@@ -5,7 +5,7 @@
             <TabPane label="成员管理" name="member">
                 <Layout>
                     <Sider>
-                        <membertype title="成都有限公司" number="41" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
+                        <membertype :title="title" :number="number" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
                             <div slot="addDept">
                                 <div class="addDept" @click="addDept()">
                                     <Icon type="plus" color="#31BB9F" size="16"></Icon>增加部门</div>
@@ -37,7 +37,7 @@
             <TabPane label="权限设置" name="auth">
                 <Layout>
                     <Sider>
-                        <auth-type title="成都有限公司" number="41" :postList="postList" @openAuth="authData"></auth-type>
+                        <auth-type :title="title" :number="number" :postList="postList" @openAuth="authData"></auth-type>
                     </Sider>
                     <Layout>
                         <Content>
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 var qs = require('querystring');
 import { mapGetters } from 'vuex'
 import memberlist from './mmComponents/memberList.vue';
@@ -90,7 +91,7 @@ export default {
     },
     data() {
         return {
-            tabsType: 'auth',
+            tabsType: 'member',
             num: 1,
             showAddNewTodo: false,
             newToDoItemValue: '',
@@ -106,8 +107,16 @@ export default {
             dutyStatus: 'add',
             dutyId: 0,
             dutyName: '',
-            param: {}
+            param: {},
+            title: '',
+            number: ''
         };
+    },
+    created() {
+        let company = JSON.parse(Cookies.get('company'))
+        console.log(typeof company.member_id)
+        this.title = company.company_name;
+        this.number = company.member_id+''
     },
     mounted() {
         this.deptListData();
@@ -466,7 +475,7 @@ export default {
 .addBtn {
     position: absolute;
     right: 10px;
-    z-index: 10;
+    z-index: 1;
     margin-top: 15px;
 }
 .addDept {
