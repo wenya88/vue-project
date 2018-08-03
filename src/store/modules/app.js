@@ -20,19 +20,38 @@ const app = {
     mutations: {
         updateMenulist(state) {
             let accessCode = parseInt(Cookies.get('post_id'));
-            let menuList = [];
+            let userType = Cookies.get('user_type')
+            let menuList = [], childrenList = [];
             menu.forEach((item, index) => {
-            //     if (item.access) {
-            //         if(accessCode == 3) {
-            //             if(item.access == 3){
-            //                 menuList.push(item);
-            //             }
-            //         } else if(accessCode != 3 && item.access != 3) {
-            //             menuList.push(item);
-            //         }
-            //     } else {
+                // 模拟权限
+                // if (item.access) {
+                //     if(accessCode == 3) {
+                //         if(item.access == 3){
+                //             menuList.push(item);
+                //         }
+                //     } else if(accessCode != 3 && item.access != 3) {
+                //         menuList.push(item);
+                //     }
+                // } else {
                     menuList.push(item);
                 // }
+                // 甲方乙方权限配置
+                // console.log(item)
+                if(item.name == "epibol") {
+                    item.children.forEach((child,idx) => {
+                        if(child.auth) {
+                            if(userType == 1) {
+                                if(child.auth == 1){
+                                    // 甲方
+                                    menuList[1].children.splice(1,1)
+                                }
+                            } else if(userType != 1 && item.auth != 1) {
+                                // 乙方
+                                menuList[1].children.splice(2,1)
+                            }
+                        }
+                    })
+                }
             });
             state.menuList = menuList;
         },

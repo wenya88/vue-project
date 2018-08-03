@@ -218,6 +218,8 @@ export default {
                     // console.log(res)
                     sessionStorage.userId = res.user.id
                     Cookies.set('post_id', res.company.post_id)
+                    Cookies.set('user_type', res.user.user_type)
+                    Cookies.set('company', res.company)
                     this.avatorPath = res.user.headimage
                 }
             })
@@ -273,7 +275,7 @@ export default {
 <style lang="less">
 @import "./main.less";
 .main-header-avator{
-    z-index: 2;
+    z-index: 4;
 }
 .layout-logo {
     width: 100px;

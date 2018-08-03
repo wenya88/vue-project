@@ -362,6 +362,7 @@
                                 _this.liIndex=index;
                                 _this.fileID=val.file.id;
                                 _this.stageID=val.file.stage_id;
+                                console.log(233,_this.stageID)
                             }
                         })
                         _this.changeState(_this.StateFeedBack);

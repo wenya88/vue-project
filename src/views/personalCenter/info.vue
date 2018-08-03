@@ -486,23 +486,18 @@
             },
             // 修改密码
             async passwordCorrelation() {
-                await this._encryption();
+                const {data} = await this._encryption();
+                if (data.err_code == 0) {
+                                this.secretKey = data.public_key;
+                }
                 const is_success = await this._verifyPassword();
                 this._editPassword(is_success);
 
             },
             // 获取秘钥
             _encryption() {
-                return new Promise((resolve) => {
                     this.$axios.get(this.GLOBAL.baseRouter + 'system/login/get-public-secret-key')
-                        .then(res => res.data)
-                        .then(res => {
-                            if (res.err_code == 0) {
-                                this.secretKey = res.public_key;
-                                resolve()
-                            }
-                        })
-                })
+
             },
             // 验证密码
             _verifyPassword(data) {

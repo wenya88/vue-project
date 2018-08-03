@@ -84,7 +84,6 @@
         },
         watch:{
             infoDetails(data){
-                console.log(99,data)
             }
         },
         components: {}

@@ -193,7 +193,7 @@ export default{
         },
     },
     methods:{
-        ...mapMutations(['setTaskInfo']),
+        ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
         //获取任务详情
         initTaskDetailFromID(id,fatherFunctions) {
             // console.log('详情',id,fatherFunctions)
@@ -211,11 +211,10 @@ export default{
                         this.callFatherFunction(fatherFunctions)  ;
                         this.principalName = res.member_id;
                         this.setTaskInfo(res);  // vux存储info
-                    if(res.stage_file){
-                        this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
-                        this.$store.commit('changeComponentTaskID', res.id);
-                        this.$store.commit('changeComponentFileURl', res.stage_file);
-                    }
+
+                    this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
+                    this.changeComponentTaskID(res.id)
+                    this.changeComponentFileURl(res.stage_file)
 
                     }
                 )
@@ -289,40 +288,10 @@ export default{
         //获得全部任务类型列表-DONE
         getTaskTypeList()
         {
-            //console.log("===");
             this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
                 .then( res => res.data)
                 .then( ({data}) => {
                     this.taskTypesList = data
-                    console.log(78,this.taskTypesList)
-//                    this.taskTypesList = [];
-//                    if (data) {
-//                        data.map((items, index) => {
-//                            if (items.children) {
-//                                items.children.map((item) => {
-//                                    console.log(111,item)
-//                                    this.taskTypesList = this.taskTypesList.concat(item.tasktype)
-////                                    console.log(33,this.taskTypesList)
-//                                })
-//                            }
-//                        })
-//                    }
-
-//                    res.data.forEach((res)=>{
-//                        if(res.tasktype)
-//                        {
-//                            this.taskTypesList = [];
-//                            this.taskTypesList = res.tasktype;
-//                            // res.tasktype.forEach((res)=>{
-//                            //     console.log(res);
-//                            //     this.taskTypesList.push({
-//                            //         tasktype_name:res.tasktype_name,
-//                            //         cate_id:res.cate_id
-//                            //     });
-//                            // })
-//                        }
-//
-//                    })
                     })
                 .catch(error => {
                     //this.$Message.error("获取任务信息失败，请重试！");
@@ -480,7 +449,6 @@ export default{
 
             this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
                 .then(({data})=>{
-                // console.log(33,data)
                 this.childProjectsList = data.data
                 })
         },
