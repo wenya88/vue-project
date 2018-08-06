@@ -2,7 +2,6 @@
     <div class="projectChartBox">
         <!-- ChartNav -->
         <div class="chartNavBox">
-            
             <div class="chartNav" :style="`width:${pWeek.length*140}px`">
                 <span class="week" v-for="(item,index) in pWeek" :key="index" :style="`left:${index==0?10:(index*140)+10}px`">
                     <span class="weekValue">{{item}}</span>

@@ -5,10 +5,10 @@
             <dl>
                 <dt>
                     <em @click="cutProjectList" :class="{showEm:comFlag}" >
-                        <i class="iconfont icon-kongzhi"></i>
+                        <i class="iconfont icon-kuaizhuang"></i>
                     </em>
                     <em @click="cutProjectChart" :class="{showEm:!comFlag}">
-                        <i class="iconfont icon-kuaizhuang"></i>
+                        <i class="iconfont icon-kongzhi"></i>
                     </em>
                 </dt>
                 <dd>
