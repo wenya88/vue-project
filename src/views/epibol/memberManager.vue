@@ -474,7 +474,7 @@ export default {
 }
 .addBtn {
     position: absolute;
-    right: 10px;
+    right: 18px;
     z-index: 1;
     margin-top: 15px;
 }

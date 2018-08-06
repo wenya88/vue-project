@@ -24,17 +24,17 @@ const app = {
             let menuList = [], childrenList = [];
             menu.forEach((item, index) => {
                 // 模拟权限
-                // if (item.access) {
-                //     if(accessCode == 3) {
-                //         if(item.access == 3){
-                //             menuList.push(item);
-                //         }
-                //     } else if(accessCode != 3 && item.access != 3) {
-                //         menuList.push(item);
-                //     }
-                // } else {
+                if (item.access) {
+                    if(accessCode == 3) {
+                        if(item.access == 3){
+                            menuList.push(item);
+                        }
+                    } else if(accessCode != 3 && item.access != 3) {
+                        menuList.push(item);
+                    }
+                } else {
                     menuList.push(item);
-                // }
+                }
                 // 甲方乙方权限配置
                 // console.log(item)
                 if(item.name == "epibol") {
