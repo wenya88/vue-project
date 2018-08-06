@@ -20,7 +20,8 @@ const app = {
     mutations: {
         updateMenulist(state) {
             let accessCode = parseInt(Cookies.get('post_id'));
-            let userType = Cookies.get('user_type')
+            // let userType = Cookies.get('user_type')
+            let userType = sessionStorage.user_type
             let menuList = [], childrenList = [];
             menu.forEach((item, index) => {
                 // 模拟权限

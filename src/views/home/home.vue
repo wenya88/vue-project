@@ -47,7 +47,9 @@ export default {
                 if(res.err_code == 0){
                     // console.log(res)
                     sessionStorage.userId = res.user.id
+                    sessionStorage.user_type = res.user.user_type
                     Cookies.set('post_id', res.company.post_id)
+                    // Cookies.set('user_type', res.user.user_type)
                 }
                 this.$store.commit('updateMenulist');
             })
