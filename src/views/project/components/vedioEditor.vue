@@ -484,7 +484,7 @@
                     "feedback": this.FeedbackValue,
                     "file": JSON.stringify([{
                         "file_id": this.fileID,
-                        "tag": sessionStorage.ImgData != undefined ? JSON.parse(sessionStorage.ImgData) : '[]'
+                        "tag":JSON.parse(sessionStorage.getItem('videoTime'))||[]
                     }])
                 }
                 if (type == 'edit') {
@@ -538,7 +538,7 @@
                 let TaskID = _this.storeTaskID;
                 let url = _this.GLOBAL.baseRouter + 'task/task/task-stage&task_id=' + TaskID;
                 _this.$axios.get(url).then(function (msg) {
-                    console.log(12, msg)
+                    console.log(122, msg)
                     let Sdate = msg.data;
                     if (Sdate.err_code == 0) {
                         _this.IMGlist = [];
@@ -625,16 +625,16 @@
                 });
             },
             /*进入编辑标注模式*/
-            editCanvasDate(){
+            editCanvasDate() {
                 this.editCas = !this.editCas;
                 this.labelHighlight = null;
-               if(this.editCas){
-                   this.linshishuju.map((item, index, arr) => {
-                       if(this.nowImageTime[0] === item.time[0] &&  this.nowImageTime[1] === this.nowImageTime[1]){
-                           this.labelHighlight = index
-                       }
-                   });
-               }
+                if (this.editCas) {
+                    this.linshishuju.map((item, index, arr) => {
+                        if (this.nowImageTime[0] === item.time[0] && this.nowImageTime[1] === this.nowImageTime[1]) {
+                            this.labelHighlight = index
+                        }
+                    });
+                }
             },
             /*进度条拖拽*/
             pictureMove() {
@@ -647,13 +647,12 @@
                 let time = this.video.duration * e.offsetX / (this.videoWidth - 10);
                 /*编辑进度条*/
                 if (!this.editCas) {
+                    this.getVasList();
+                    this.videoInit(true);
+//                    this.timeNum();
                     this.video.currentTime = time;
-//                this.timeNum();
                     /*暂停时跳转后暂停*/
                     this.currnt_time = time;
-                    this.getVasList();
-                    this.timeNum();
-                this.videoInit(true);
                 }
                 /*编辑标注*/
                 else {
@@ -696,7 +695,7 @@
                 this.currnt_time = this.video.currentTime;
 //                this.ctx.clearRect(0, 0, this.videoWidth, 480);
                 let timeId = setInterval(() => {
-                    this.currnt_time += 0.03;
+                    this.currnt_time = this.video.currentTime;
 
                     /*暂停播放*/
                     if (isPictureJump || this.switchIcon || this.isCanvas) {
@@ -711,7 +710,7 @@
 
                     /*进度条*/
                     this.timeNum();
-                        this.getVasList();
+                    this.getVasList();
 
 
                 }, 30);
@@ -842,32 +841,22 @@
             /*渲染二进制图片*/
             getVasList() {
                 if (this.linshishuju) {
-                    let haha =false
                     this.linshishuju.map((item) => {
                         /*离开标记清除画布*/
                         if (this.currnt_time < (parseFloat(item.time[0])) || this.currnt_time >= (parseFloat(item.time[1]))) {
-                            haha = true
-//                            this.ctx.clearRect(0, 0, this.videoWidth, 480);
+                            this.ctx.clearRect(0, 0, this.videoWidth, 480);
                         }
                         this.nowImageTime = null;
                         /*渲染画布 时间段*/
-                        if (this.currnt_time >= item.time[0] && this.currnt_time <= item.time[1]) {
-
-                            this.img = item.image;
+                        if (this.currnt_time > item.time[0] && this.currnt_time < item.time[1]) {
                             this.video.pause();
+                            this.img = item.image;
                             this.switchIcon = true;
                             this.nowImageTime = item.time;
-
                             setTimeout(() => {
-                                    console.log('xxxx')
-
                                 this.ctx.drawImage(document.querySelector('#img'), 0, 0, this.videoWidth, 480);
-
-                            },50)
-                        }
-                        if(haha){
-console.log('qqqqq')
-                            this.ctx.clearRect(0, 0, this.videoWidth, 480);
+//
+                            }, 30)
                         }
                     });
                 }
@@ -881,7 +870,7 @@ console.log('qqqqq')
                 let isExist = true;
                 let image = this.canvas.toDataURL("image/png");
                 let json = {
-                    "time": [this.currnt_time-.015,this.currnt_time+.015],
+                    "time": [this.currnt_time-.05,this.currnt_time+.05],
                     "image": image
                 };
 
