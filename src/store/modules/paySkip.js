@@ -37,7 +37,6 @@ const paystatus={
         getImgEditorWH(state,pData){
             state.imgEditorWH=pData
         }
-
     }
 }
 export default paystatus
