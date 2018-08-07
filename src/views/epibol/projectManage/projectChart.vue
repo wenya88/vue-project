@@ -9,13 +9,16 @@
             </div>
         </div>
         <!-- ChartData -->
+        
         <div class="projectChart" id="range">
+           <GeminiScrollbar>
             <div class="dataSelet" v-if="dataFlgt">
                 <Select v-model="dataValue" style="width:50px" size="small">
                     <Option v-for="item in dateList" :value="item.type" :key="item.val">{{ item.val }}</Option>
                 </Select>
             </div>
             <div class="chartRow" id="move" :style="`width:${pWeek.length*140}px;`">
+               
                 <!--当前时间线-->
                 <div class="projectSignLien" :style="`left:${(dayLine*20)+20}px`"></div>
                 <!-- 项目 -->
@@ -60,7 +63,9 @@
                     </div>
                 </div>
             </div>
+            </GeminiScrollbar>
         </div>
+        
     </div>
 </template>
 <script>
