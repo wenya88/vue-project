@@ -11,7 +11,6 @@
         <!-- ChartData -->
         
         <div class="projectChart" id="range">
-           <GeminiScrollbar>
             <div class="dataSelet" v-if="dataFlgt">
                 <Select v-model="dataValue" style="width:50px" size="small">
                     <Option v-for="item in dateList" :value="item.type" :key="item.val">{{ item.val }}</Option>
@@ -63,7 +62,6 @@
                     </div>
                 </div>
             </div>
-            </GeminiScrollbar>
         </div>
         
     </div>
