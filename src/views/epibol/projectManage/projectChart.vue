@@ -10,7 +10,7 @@
         </div>
         <!-- ChartData -->
         <div class="projectChart" id="range">
-            <div class="dataSelet">
+            <div class="dataSelet" v-if="dataFlgt">
                 <Select v-model="dataValue" style="width:50px" size="small">
                     <Option v-for="item in dateList" :value="item.type" :key="item.val">{{ item.val }}</Option>
                 </Select>
@@ -77,7 +77,8 @@ export default {
                 {"val":"月","type":"month"},
                 {"val":"周","type":"week"},
             ],
-            dataValue:'week'
+            dataValue:'week',
+            dataFlgt:false
 
         }
     },
