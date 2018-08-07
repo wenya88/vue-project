@@ -9,6 +9,7 @@
             </div>
         </div>
         <!-- ChartData -->
+        
         <div class="projectChart" id="range">
             <div class="dataSelet" v-if="dataFlgt">
                 <Select v-model="dataValue" style="width:50px" size="small">
@@ -16,6 +17,7 @@
                 </Select>
             </div>
             <div class="chartRow" id="move" :style="`width:${pWeek.length*140}px;`">
+               
                 <!--当前时间线-->
                 <div class="projectSignLien" :style="`left:${(dayLine*20)+20}px`"></div>
                 <!-- 项目 -->
@@ -61,6 +63,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 <script>
