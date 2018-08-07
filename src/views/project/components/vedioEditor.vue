@@ -72,6 +72,7 @@
                 </canvas>
                 <!--画板画布-->
                 <canvas   id="tu"  class="drawMain" :style="[isCanvas?{'z-index':'113'}:{},hideSign?{'opacity':0}:{'opacity':1}]" @click.stop="drawText" @mousedown.prevent="paletteInit" width="810" height="480"
+                       @click="pauseButton"
                         style="border:1px solid #d3d3d3;opacity: 0">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
@@ -85,17 +86,20 @@
             </section>
             <!--操作按钮-->
             <div class="canvasEdit">
-
-                <Button @click="updateFrame('before')" type="text">上一帧</Button>
-                <Button @click="updateFrame('after')" type="text">下一帧</Button>
-                <Button @click="hideSign = !hideSign" type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>
-                <Button @click="startCanvas" type="text">{{isCanvas ? '关闭画布' : '开启画布'}}</Button>
-                <template v-if="isCanvas">
+                <Icon  @click.native="updateFrame('before')" type="skip-backward" size="18" style="padding:0 5px;" title="上一帧"></Icon>
+                <Icon   @click.native="updateFrame('after')" type="skip-forward" size="18" style="padding:0 5px;" title="下一帧"></Icon>
+                <Icon   v-show="!isCanvas"  @click.native="startCanvas"  type="paintbrush" size="18" style="padding: 0 5px 0 15px" title="修改标记"></Icon>
+                <Button v-show="isCanvas"   @click="saveCanvas" type="text">保存</Button>
+                <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
+               <template v-if="isCanvas">
                     <!--<Icon @click.native.prevent="changeRect" size="18" type="android-checkbox-outline-blank"></Icon>-->
                     <!--<Icon @click.native.prevent="changeText" size="18" type="paintbrush"></Icon>  -->
-                    <Button @click=" isRect = false;isLine = true;isText = false" type="text">画笔</Button>
-                    <Button @click="changeRect" type="text">矩形</Button>
-                    <Button @click="changeText" type="text">文字</Button>
+                    <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit" size="18" style="padding:0 5px;" title="画笔"></Icon>
+                    <!--<Button  type="text">画笔</Button>-->
+
+                    <!--<Button @click="changeRect" type="text">矩形</Button>-->
+
+                    <Button @click="changeText" type="text"  style="font-weight: bold;font-size: 20px;">T</Button>
 
                     <i class="little" @click="changelineWidth(1)"></i>
                     <i class="middle" @click="changelineWidth(5)"></i>
@@ -106,8 +110,10 @@
                     <i class="red" @click="changeColor('#ff512e')"></i>
                     <i class="blue" @click="changeColor('#66DAFF')"></i>
                     <i class="orange" @click="changeColor('#FFB14D')"></i>
-                    <Button @click="saveCanvas" type="text">保存</Button>
                 </template>
+                <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;" title="显示标记" ></Icon>
+                <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" size="18" style="padding:0 5px;"  title="隐藏标记" ></Icon>
+
 
             </div>
             <!-- 标注提交 -->
@@ -586,7 +592,6 @@
                 document.getElementsByClassName('controlListRow')[0].style.display = 'block';
                 document.getElementsByClassName('stageListRow')[0].style.display = 'none';
             },
-
             /*启动视频*/
             videoStart() {
                 this.switchIcon = false;
@@ -610,6 +615,7 @@
             },
             /*开启画布*/
             startCanvas() {
+                this.switchIcon = !this.switchIcon; // 暂停按钮
                 if (this.isCanvas && this.saveCanvasWindow) {
                     this.saveCanvasShow = true;
                 } else if (!this.isCanvas) {
@@ -835,14 +841,14 @@
             /*渲染二进制图片*/
             getVasList() {
                 if (this.linshishuju) {
-                    let show = true
+                    let show = true;
                     this.linshishuju.map((item) => {
                         /*渲染画布 时间段*/
                         if (this.currnt_time >= item.time[0] && this.currnt_time <= item.time[1]) {
-                            this.video.pause();
+                            // this.video.pause(); // 遇到标记暂停
                             show = false;
                             this.img = item.image;
-                            this.switchIcon = true;
+//                            this.switchIcon = true; // 遇到标记暂停
                             setTimeout(() => {
                                 this.ctx.drawImage(document.querySelector('#img'), 0, 0, this.videoWidth, 480);
                             }, 30);
@@ -851,8 +857,6 @@
                     if(show){
                         this.ctx.clearRect(0, 0, this.videoWidth, 480);
                     }
-
-
                 }
             },
             /*保存 暂时还是假数据*/
@@ -882,10 +886,10 @@
                     this.linshishuju.push(json);
                 }
 
-
                 sessionStorage.setItem('videoTime', JSON.stringify(this.linshishuju));
 //                const data = await api.insideAudit({stage_id:this.stageID,audit:audit})
-                this.saveCanvasWindow = false
+                this.isCanvas = !this.isCanvas
+//                this.saveCanvasShow = true;
             },
             /*清空画布*/
             clearCanvas() {
