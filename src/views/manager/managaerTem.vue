@@ -18,34 +18,49 @@
 </template>
 <script>
 export default {
+  props:['teamList'],
   data () {
     return {
+      ability: {},
+      free: 0
     }
   },
   mounted() {
-    this.getRadar()
-    this.getFree()
+    // this.getRadar()
+    // this.getFree()
+  },
+  watch: {
+    teamList: function(e) {
+      this.ability = e.ability
+      this.free = e.average_free.split('%')[0]
+      this.getRadar()
+      this.getFree()
+      // console.log('团队', average_free)
+    }
   },
   methods: {
     // 获取雷达图
     getRadar () {
        let echarts = require('echarts');
        var myCharts = echarts.init(document.getElementById('rader'))
+       const list = this.ability
+       const data = []
+       const textList = []
+       for (let i in list) {
+         data.push(list[i].count)
+         textList.push({
+           text: list[i].name
+         })
+       }
        myCharts.setOption({
          tooltip: {
            trigger: 'axis'
          },
          radar: [
            {
-              indicator: [
-                {text: '次时代', max: 80},
-                {text: '图标', max: 80},
-                {text: '动作', max: 80},
-                {text: 'ul', max: 80},
-                {text: '原画', max: 80}
-              ],
-              center: ['50%','55%'],
-              radius: 80
+              indicator: textList,
+              center: ['50%','60%'],
+              radius: 50
            },
          ],
          series: [
@@ -64,7 +79,7 @@ export default {
               },
               data: [
                 {
-                  value: [60,73,85,40,80],
+                  value: data,
                 }
               ]
            },
@@ -75,22 +90,24 @@ export default {
     getFree () {
        const echarts = require('echarts');
        var myCharts = echarts.init(document.getElementById('free'))
+       const free = this.free
+       const data = [
+         {value: free, name:'空闲'},
+         {value: 100 - free, name:'不空闲'},
+        ]
        myCharts.setOption({
          tooltip : {
            trigger: 'item',
-           formatter: "{a} <br/>{b} : {c} ({d}%)"
+           formatter: "{a} <br/>{b} {d}%"
          },
          color:['rgb(213,220,148)', 'rgb(248,225,130)'],
          series : [
            {
-              name: '访问来源',
+              name: '空闲率',
               type: 'pie',
               radius : '55%',
               center: ['50%', '60%'],
-              data:[
-                {value:335, name:'25%'},
-                {value:310, name:'75%'},
-              ],
+              data: data,
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,

@@ -58,10 +58,6 @@ export const menu = [
                 path: '/epibol/statistics',
                 name: 'eStatistics',
                 title: '统计',
-            }, {
-                path: '/manager/manager',
-                name: 'manager',
-                title: '经理工作台',
             }
         ]
     }, {
@@ -162,7 +158,7 @@ export const menu = [
         access: 3,
         // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
     }, {
-        path: '/epibol/ProjectWork',
+        path: '/epibol/ProjectWorks',
         name: 'workbench',
         title: '工作台',
         access: 1,
@@ -171,5 +167,39 @@ export const menu = [
     //     path: '/epibol/taskClass',
     //     name: 'setting',
     //     title: '设置',
+    },
+    {
+        path: '/manager/manager',
+        name: 'manager',
+        title: '经理工作台',
+        children: [
+            {
+                path: '/epibol/home',
+                name: 'eHome',
+                title: '概况页',
+            }, {
+                path: '/epibol/bidManage',
+                name: 'bidManage',
+                title: '投标',
+                auth: 0,
+            }, {
+                path: '/epibol/contractManage',
+                name: 'contractManage',
+                title: '合同',
+                auth: 1,
+            }, {
+                path: '/epibol/projectManage',
+                name: 'projectManage',
+                title: '项目',
+            }, {
+                path: '/epibol/memberManager',
+                name: 'memberManager',
+                title: '团队',
+            }, {
+                path: '/epibol/statistics',
+                name: 'eStatistics',
+                title: '统计',
+            }
+        ]
     }
 ];

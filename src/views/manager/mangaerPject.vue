@@ -7,21 +7,21 @@
     <div class="pjt_main">
        <div class="pjc_main_left">
           <div>
-             <p><span class="numClass">3</span><span class="titleClass">个</span></p>
+             <p><span class="numClass">{{jectList.doing}}</span><span class="titleClass">个</span></p>
              <p class="pjc_name">实施项目</p>
           </div>
           <div class="pjc_last_bx">
-             <p><span class="numClass">20</span><span class="titleClass">个</span></p>
+             <p><span class="numClass">{{jectList.inside}}</span><span class="titleClass">个</span></p>
              <p class="pjc_name">内部项目</p>
           </div>
        </div>
        <div class="pjc_main_right">
           <div>
-            <p><span class="numClass">5</span><span class="titleClass">个</span></p>
+            <p><span class="numClass">{{jectList.pause}}</span><span class="titleClass">个</span></p>
             <p class="pjc_name">已暂停</p>
           </div>
           <div class="pjc_last_bx">
-            <p><span class="numClass">38</span><span class="titleClass">个</span></p>
+            <p><span class="numClass">{{jectList.outside}}</span><span class="titleClass">个</span></p>
             <p class="pjc_name">外包项目/子项目</p>
           </div>
        </div>
@@ -30,6 +30,7 @@
 </template>
 <script>
 export default {
+  props: ['jectList'],
   data () {
     return {
     }

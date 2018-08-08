@@ -7,15 +7,15 @@
     <div class="sign_main">
       <div class="sign_main_left">
         <div class="sign_left_head">
-          <span class="sign_baifen">￥585245.4</span>
+          <span class="sign_baifen">￥{{total}}</span>
           <span class="sign_wan">万</span>
         </div>
-        <p class="sign_lefe_alt"><span>去年同比</span><span class="sign_left_title"><i class="iconfont icon-xiangshang01"/>+2%</span></p>
+        <p class="sign_lefe_alt"><span>去年同比</span><span class="sign_left_title"><i class="iconfont icon-xiangshang01"/>+{{add}}</span></p>
        </div>
         <div class="sign_main_right" id="sign_box">
        </div>
        <ul class="year_bx">
-         <li v-for="(item, index) in yearList" :key="index">
+         <li v-for="(item, index) in constobj" :key="index">
            <p @click="getYear(index)" :class="item.backClass">{{item.year}}</p>
          </li>
        </ul>
@@ -24,23 +24,35 @@
 </template>
 <script>
 export default {
+  props:['contList'],
   data () {
     return {
-      yearList: [
-        {year: 2018, backClass: 'yearClass'},
-        {year: 2017, backClass: ''},
-        {year: 2016, backClass: ''}
-      ],
-      yearName: 0
+      // yearList: [
+      //   {year: 2018, backClass: 'yearClass'},
+      //   {year: 2017, backClass: ''},
+      //   {year: 2016, backClass: ''}
+      // ],
+      constobj: [],
+      yearName: 0,
+      total: '',
+      add: ''
+    }
+  },
+  watch: {
+    contList: function(e) {
+       this.constobj = e
+       this.getYear(0)
+       console.log('数据', e)
     }
   },
   mounted () {
-    this.getYear(0)
+    // this.getYear(0)
+    //  console.log('数据', this.contList)
   },
   methods: {
     // 获取数据
     getYear (index) {
-      const list = this.yearList
+      const list = this.constobj
       list.forEach((item, idx) => {
         if (index === idx) {
           item.backClass =  'yearClass'
@@ -48,20 +60,32 @@ export default {
           item.backClass =  ''
         }
       })
-      this.yearName = list[index].year
-      this.getEcharts()
+      // console.log('数据ss', list[index])
+      const yearList = list[index]
+      this.yearName = yearList.year
+      this.total = yearList.total
+      this.add = yearList.add
+      // this.constobj = list
+      this.getEcharts(yearList)
     },
     // echarts 数据图
-    getEcharts () {
+    getEcharts (list) {
       let echarts = require('echarts');
+      const lists = list.list
       const myCharts = echarts.init(document.getElementById('sign_box'))
       const yearName = this.yearName
-      const bidNum = [120, 132, 101, 134, 90, 230, 210, 120, 132, 101, 134, 90] // 合同数量
-      const bidMeng = [220, 182, 191, 234, 290, 330, 310,191, 234, 290, 330, 310 ] // 合同金额
+      const bidNum = [] // 合同数量
+      const bidMeng = [] // 合同金额
+      for(let i in lists) {
+        const num = lists[i].num
+        const price = lists[i].price
+        bidNum.push(num)
+        bidMeng.push(price)
+      }
       let textMsg = function (parames) {
         const  tempStr = parames + "\n" + yearName;
         return tempStr
-          console.log('数据', parames)
+          // console.log('数据', parames)
       }
       myCharts.setOption({
         tooltip: {

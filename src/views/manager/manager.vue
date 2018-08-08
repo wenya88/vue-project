@@ -11,11 +11,11 @@
                   <div class="clearfix income_msg_details">
                     <p class="receivables">
                      <span>已收款：</span>
-                     <span>￥198455</span>
+                     <span>￥{{business_concept.income}}</span>
                     </p>
                     <p class="payment">
                       <span>未付款：</span>
-                      <span>￥6456465</span>
+                      <span>￥{{business_concept.wait_income}}</span>
                     </p>
                   </div>
                </div>
@@ -26,11 +26,11 @@
                   <div class="clearfix income_msg_details">
                     <p class="receivables">
                      <span>已支付：</span>
-                     <span>￥198455</span>
+                     <span>￥{{business_concept.pay}}</span>
                     </p>
                     <p class="payment">
                       <span>未支付：</span>
-                      <span>￥6456465</span>
+                      <span>￥{{business_concept.wait_pay}}</span>
                     </p>
                   </div>
                </div>
@@ -42,28 +42,28 @@
         <Row>
         <!-- 投标 -->
         <Col class="mangaer_main_bid" span="8">
-           <mangaer-bid></mangaer-bid>
+           <mangaer-bid :bidList='bid'></mangaer-bid>
         </Col>
         <!-- 签单 -->
         <Col class="mangaer_main_Sign" span="16">
            <div class="mangaer_Sign_children">
-             <mangaer-sign></mangaer-sign>
+             <mangaer-sign :contList='contract'></mangaer-sign>
            </div>
         </Col>
         <!-- 项目 -->
         <Col class="mangaer_main_project" span="8">
-           <mangaer-pject></mangaer-pject>
+           <mangaer-pject :jectList='project'></mangaer-pject>
         </Col>
          <!-- 质量 -->
         <Col class="mangaer_main_quality" span="8">
            <div class="mangaer_quality_children">
-               <mangaer-qua></mangaer-qua>
+               <mangaer-qua :quaList='quality'></mangaer-qua>
            </div>
         </Col>
          <!-- 团队 -->
         <Col class="mangaer_main_team" span="8">
             <div class="mangaer_team_children">
-               <mangaer-tem></mangaer-tem>
+               <mangaer-tem :teamList='team'></mangaer-tem>
            </div>
         </Col>
         </Row>
@@ -71,6 +71,7 @@
    </div>
 </template>
 <script>
+var qs = require('querystring')
 import mangaerBid from './managerBid.vue'
 import mangaerSign from './mangaerSign.vue'
 import mangaerPject from './mangaerPject.vue'
@@ -78,7 +79,13 @@ import mangaerQua from './mangaerQua.vue'
 import mangaerTem from './managaerTem.vue'
 export default {
   data () {
-    return {      
+    return {
+      bid: {},
+      team: {},
+      quality: {},
+      project: {},
+      contract: [],
+      business_concept: {}   
     }
   },
   components: {
@@ -88,6 +95,27 @@ export default {
     mangaerQua,
     mangaerTem
   },
+  mounted () {
+    this.getData()
+  },
+  methods: {
+    // 获取数据
+    getData () {
+      const url = this.GLOBAL.baseRouter+"/task/working-place/manager-wp"
+      const items = {
+      }
+      this.$axios.post(url, qs.stringify(items)).then(data => {
+        const objData = data.data
+        console.log('经理数据', data.data)
+        this.bid = objData.bid
+        this.team = objData.team
+        this.quality = objData.quality
+        this.project = objData.project
+        this.contract = objData.contract
+        this.business_concept = objData.business_concept
+      })
+    }
+  }
 }
 </script>
 <style scoped>

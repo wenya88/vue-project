@@ -7,8 +7,8 @@
     <div class="qua_main">
        <div class="qua_main_left">
           <div class="qua_left_radius">
-             <p><span class="quaScore">{{valueHalf}}</span><span class="scoreTitle">分</span></p>
-             <Rate disabled  allow-half v-model="valueHalf" />
+             <p><span class="quaScore">{{quaList.average}}</span><span class="scoreTitle">分</span></p>
+             <Rate disabled  allow-half v-model="quaList.average" />
           </div>
           <div class="qua_left_msg">
              <p class="qua_msg_score">任务平均分值</p>
@@ -16,8 +16,8 @@
        </div>
        <div class="qua_main_position">
           <div>
-             <p class="qua_poition_msg">平均修改3次</p>
-             <p class="qua_poition_score">25%</p>
+             <p class="qua_poition_msg">平均修改{{quaList.inside_average}}次</p>
+             <p class="qua_poition_score">{{quaList.inside_pass}}</p>
           </div>
            <div class="qua_poistion_title">
              <p class="qua_msg_score">内部通过率</p>
@@ -25,8 +25,8 @@
        </div>
        <div class="qua_main_right">
            <div>
-             <p class="qua_poition_msg">平均修改2次</p>
-             <p class="qua_poition_score">72%</p>
+             <p class="qua_poition_msg">平均修改{{quaList.outside_average}}次</p>
+             <p class="qua_poition_score">{{quaList.outside_pass}}</p>
           </div>
            <div class="qua_poistion_title">
              <p class="qua_msg_score">客户通过率</p>
@@ -37,6 +37,7 @@
 </template>
 <script>
 export default {
+  props: ['quaList'],
   data () {
     return {
      valueHalf: 4.5

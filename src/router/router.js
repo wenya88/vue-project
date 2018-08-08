@@ -188,13 +188,13 @@ export const appRouter = [
                 title: '项目',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             },
-            // {
-            //     path: '/manager/manager',
-            //     icon: 'ios-paper-outline',
-            //     name: 'manager',
-            //     title: '经理工作台',
-            //     component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
-            // },
+            {
+                path: '/manager/manager',
+                icon: 'ios-paper-outline',
+                name: 'manager',
+                title: '经理工作台',
+                component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
+            },
             {
                 path: '/epibol/memberManager',
                 icon: 'ios-paper-outline',
@@ -222,11 +222,11 @@ export const appRouter = [
                 title: '实施人员',
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
             }, {
-                path: '/epibol/ProjectWork',
+                path: '/epibol/ProjectWorks',
                 icon: 'ios-paper-outline',
                 name: 'workbench',
                 title: '工作台',
-                component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
+                component: resolve => { require(['@/views/epibol/ProjectWorks.vue'], resolve); }
             }, {
                 path: '/epibol/3D',
                 icon: 'ios-paper-outline',
