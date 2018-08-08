@@ -60,8 +60,7 @@
 
                     <!--时间显示和视频开关-->
                     <Icon v-show="switchIcon&&!isCanvas" @click.native.prevent="videoStart" class="startButton" type="play"></Icon>
-                    <Icon v-show="!switchIcon&&!isCanvas" @click.native.prevent="pauseButton" class="startButton"
-                          type="pause"></Icon>
+                    <Icon v-show="!switchIcon&&!isCanvas" @click.native.prevent="pauseButton" class="startButton" type="pause"></Icon>
                     <span v-if="video"
                           class="controlsTime">{{currnt_time | dateType}}/{{video.duration | dateType}}</span>
                 </div>
@@ -72,7 +71,6 @@
                 </canvas>
                 <!--画板画布-->
                 <canvas   id="tu"  class="drawMain" :style="[isCanvas?{'z-index':'113'}:{},hideSign?{'opacity':0}:{'opacity':1}]" @click.stop="drawText" @mousedown.prevent="paletteInit" width="810" height="480"
-                       @click="pauseButton"
                         style="border:1px solid #d3d3d3;opacity: 0">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
@@ -81,6 +79,13 @@
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
+
+                <div v-show="switchIcon&&!isCanvas"   class="masking" @click="videoStart" >
+                    <Icon class="circleIcon"  type="play"></Icon>
+                </div>
+                <div v-show="!switchIcon&&!isCanvas" class="masking" @click="pauseButton" >
+                    <Icon class="circleIcon"  type="pause"></Icon>
+                </div>
                 <input v-show="drawTextShow" @blur="drawText" v-model="drawTextValue" type="text" class="textInput"
                        :style="{'top':top+'px','left':left+'px'}">
             </section>
@@ -1087,7 +1092,27 @@
             top: 0;
             left: 0;
             z-index: 105;
-
+        }
+        .masking{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 420px;
+            text-align: center;
+            background:rgba(0,0,0,0.4);
+            z-index: 167;
+            opacity: 0;
+            .circleIcon{
+                position: absolute;
+                top:50%;
+                transform: translateY(-50%);
+                font-size: 90px;
+                color: rgba(255,255,255,0.3);
+            }
+            &:hover{
+                opacity: 1;
+            }
         }
         .textInput {
             position: absolute;
