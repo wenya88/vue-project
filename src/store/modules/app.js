@@ -20,6 +20,7 @@ const app = {
     mutations: {
         updateMenulist(state) {
             let accessCode = parseInt(Cookies.get('post_id'));
+            console.log('权限', accessCode)
             // let userType = Cookies.get('user_type')
             let userType = sessionStorage.user_type
             let menuList = [], childrenList = [];
@@ -30,8 +31,10 @@ const app = {
                         if(item.access == 3){
                             menuList.push(item);
                         }
-                    } else if(accessCode != 3 && item.access != 3) {
-                        menuList.push(item);
+                    } else if(accessCode != 3) {
+                        if (item.access != 3) {
+                          menuList.push(item)
+                        }
                     }
                 } else {
                     menuList.push(item);

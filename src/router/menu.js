@@ -161,7 +161,7 @@ export const menu = [
         path: '/epibol/ProjectWorks',
         name: 'workbench',
         title: '工作台',
-        access: 1,
+        access: 2,
         // component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
     // }, {
     //     path: '/epibol/taskClass',
@@ -172,6 +172,7 @@ export const menu = [
         path: '/manager/manager',
         name: 'manager',
         title: '经理工作台',
+        access: 1,
         children: [
             {
                 path: '/epibol/home',

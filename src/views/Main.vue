@@ -215,7 +215,7 @@ export default {
             .then( res => res.data )
             .then( res => {
                 if(res.err_code == 0){
-                    // console.log(res)
+                    console.log(res)
                     sessionStorage.userId = res.user.id
                     sessionStorage.user_type = res.user.user_type
                     Cookies.set('post_id', res.company.post_id)
