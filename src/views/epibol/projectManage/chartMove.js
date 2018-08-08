@@ -27,7 +27,8 @@ const runMove=()=>{
 const initW=(val)=>{
 	let oBox = document.getElementById('move');
 	let nBox= document.getElementsByClassName('chartNav')[0];
-	oBox.style.left = -val + 'px';
-    nBox.style.left = -val + 'px';
+	let oRangeW= document.getElementById('range').clientWidth/4;
+	oBox.style.left = -((val*20)-oRangeW) + 'px';
+	nBox.style.left = -((val*20)-oRangeW) + 'px';
 }
 export {runMove,initW}

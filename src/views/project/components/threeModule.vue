@@ -152,11 +152,11 @@ export default {
       var urlObject;
 
       var divHeight = 100%
-      // init(this.storeFileURl);//初始化
-      init();
+      init(this.storeFileURl);//初始化
+      // init();
       showSign(this.signData)  // 显示获取到的标记
       animate();//动画
-      function init() {
+      function init(url) {
         //获得div并添加容器
         container = document.createElement('div');
         document.getElementById("maind").appendChild(container);
@@ -199,11 +199,7 @@ export default {
         scene.add(grid);
         //加载
         var loader = new THREE.FBXLoader();
-        // let url3 = "http://192.168.2.19/index.php?r=file/file/get-file&fid=1145";
-        // let url = '../src/views/project/components/threeFile/M_atk.fbx';
-        // let url4 = "https://threejs.org/examples/models/fbx/Samba%20Dancing.fbx";
-        // console.log(loader);
-        let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
+        // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/test/M_atk.FBX'
         // let url = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/file-upload/2018/07/27/S_atkS_atk.FBX'
         
         loader.load(url, function(object) {

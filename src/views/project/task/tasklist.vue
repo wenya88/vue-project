@@ -495,7 +495,7 @@
 <style lang="less">
     @import "../../../styles/task/task.css";
     .taskListContainer {
-        height: 90%;
+        height: 87%;
         padding-left: 10px;
         overflow: auto;
         .WaitingToStart, .perform, .complete, .suspended {

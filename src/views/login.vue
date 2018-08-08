@@ -1,5 +1,8 @@
 <style lang="less">
 @import './login.less';
+.loginFooder{
+    position:fixed;z-index:1111;width:100%;color:#fff;bottom:10px;text-align:center;
+}
 </style>
 
 <template>
@@ -53,6 +56,7 @@
                 </Form>
             </div>
         </div>
+        <div class="loginFooder">蜀ICP备18023414号</div>
     </div>
 </template>
 

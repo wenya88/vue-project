@@ -3,15 +3,24 @@
         <!-- ChartNav -->
         <div class="chartNavBox">
             <div class="chartNav" :style="`width:${pWeek.length*140}px`">
-                <span class="week" v-for="(item,index) in pWeek" :key="index" :style="`left:${index==0?20:index*140}px`">
+                <span class="week" v-for="(item,index) in pWeek" :key="index" :style="`left:${index==0?10:(index*140)+10}px`">
                     <span class="weekValue">{{item}}</span>
                 </span>
             </div>
         </div>
         <!-- ChartData -->
+        
         <div class="projectChart" id="range">
+            <div class="dataSelet" v-if="dataFlgt">
+                <Select v-model="dataValue" style="width:50px" size="small">
+                    <Option v-for="item in dateList" :value="item.type" :key="item.val">{{ item.val }}</Option>
+                </Select>
+            </div>
             <div class="chartRow" id="move" :style="`width:${pWeek.length*140}px;`">
-
+               
+                <!--当前时间线-->
+                <div class="projectSignLien" :style="`left:${(dayLine*20)+20}px`"></div>
+                <!-- 项目 -->
                 <div :class="[item.status==3?'projectOver chartList':'chartList']" v-for="(item,index) in projectData" :key="item.id"
                   :style="`margin-left:${item.xdays*20+'px'};margin-top:${item.xdays>item.dayGap&&index>0?'-100px':''}
                       ;margin-top:${item.xdays+item.total_day<item.MindayGap&&index>0?'-100px':''}`" 
@@ -54,6 +63,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 <script>
@@ -63,7 +73,15 @@ export default {
     data(){
         return{
             pWeek:[],
-            projectData:[]
+            projectData:[],
+            dayLine:null,
+            dateList:[
+                {"val":"年","type":"year"},
+                {"val":"月","type":"month"},
+                {"val":"周","type":"week"},
+            ],
+            dataValue:'week',
+            dataFlgt:false
 
         }
     },
@@ -71,6 +89,9 @@ export default {
         this.getChartData();
         this.autoH();
         runMove();
+        this.$bus.on('submitOk',()=>{
+            this.getChartData();
+        })
     },
     filters:{
         fileContent(val){
@@ -78,29 +99,40 @@ export default {
         }
     },
     updated(){
-        initW("1000");
+        initW(this.dayLine);
     },
     methods:{
         autoH(){
             let pcH=document.getElementById('range');
             let pcB=document.getElementsByClassName("projectChartBox")[0];
             let pcNav=document.getElementsByClassName('chartNavBox')[0];
-            
             let dH=document.documentElement.offsetHeight;
             let dW=document.documentElement.offsetWidth;
             pcH.style.height=dH-183+"px";
             pcH.style.width=dW-160+"px";
             pcB.style.height=dH-118+"px";
             pcNav.style.width=pcH.style.width;//chartNav
+           
         },
         getChartData(){
             let url=this.GLOBAL.baseRouter+'task/project/page';
-            let params={
-               
-            }
+            let params={}
             this.$axios.post(url,qs.stringify(params)).then(msg=>{
                 if(msg.data.err_code==0){
-                    this.pWeek=msg.data.date
+                    this.pWeek=msg.data.date;
+
+                    // DayLine
+                    let day=new Date();
+                    let y=day.getFullYear();
+                    let m=day.getMonth()+1;
+                    let d=day.getDate();
+                    let cuDate=y+'/'+m+'/'+d;
+                    let cTime=Math.round(new Date(cuDate)/1000);
+                    let pDate=this.pWeek[0].replace(/-/g,'/');
+                    let pTime=Math.round(new Date(pDate)/1000);
+
+                    this.dayLine=(cTime-pTime)/86400;
+
                     let gap_num=[];
                     let gap_numMin=[];
                     msg.data.project.forEach(val => {
@@ -120,7 +152,6 @@ export default {
                         msg.data.project[i].MindayGap=gap_numMin[i].MindayGap;
                     }
                     this.projectData=msg.data.project;
-                    console.log(this.projectData)  
                 }else{
                     this.$Message.error(msg.data.err_message)
                 }
