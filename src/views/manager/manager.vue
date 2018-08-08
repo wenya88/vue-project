@@ -106,7 +106,7 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
         const objData = data.data
-        console.log('经理数据', data.data)
+        // console.log('经理数据', data.data)
         this.bid = objData.bid
         this.team = objData.team
         this.quality = objData.quality

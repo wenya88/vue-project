@@ -42,7 +42,7 @@ export default {
     contList: function(e) {
        this.constobj = e
        this.getYear(0)
-       console.log('数据', e)
+      //  console.log('数据', e)
     }
   },
   mounted () {

@@ -305,7 +305,7 @@ export default {
       // this.groupList = list
       const taskList = list[index].task_list
       this.taskChild = this.getTaskList(taskList)
-      console.log('项目', this.taskChild)
+      // console.log('项目', this.taskChild)
     },
     // 获取任务
     getTaskList (lists) {
