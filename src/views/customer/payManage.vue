@@ -8,7 +8,7 @@
         </div>
         <div class="payStyle">
             <dl>
-                <dt>线上支付</dt>{{payStore}}
+                <dt>线上支付</dt>
                 <dd>
                     <RadioGroup v-model="payStatus">
                         <Radio label="1"><img src="./epibolCompany/images/1.png" alt="微信支付"></Radio>
@@ -19,6 +19,8 @@
             </dl>
         </div>
         <Button type="warning" class="payBtn" @click.native="atoncePay">立即支付</Button>
+        {{ value }}
+        <Button @click="handleRender">Custom content</Button>
     </div>
 </template>
 <script>
@@ -27,7 +29,8 @@ export default {
     data(){
         return{
             payStatus:'1',
-            data:{}
+            data:{},
+            value: '1231231'
         }
     },
     computed:{
@@ -44,7 +47,6 @@ export default {
            }
            this.$axios.post(url,qs.stringify(parmas)).then(msg=>{
                if(typeof(msg.data.msg)=='object'){
-                   
                   //传信息到Vuex
                   this.$store.commit('actionPaySkip',msg.data.msg)
                   this.$router.push('/customer/paySkip');
@@ -53,7 +55,23 @@ export default {
                    this.$$Message.error(msg.data.err_message);
                }
            })
-        }
+        },
+         handleRender () {
+                this.$Modal.confirm({
+                    render:(h)=>{
+                        return h('Input',{
+                            props:{
+                                value:this.value
+                            },
+                            on:{
+                                input:(val)=>{
+                                    this.value=val
+                                }
+                            }
+                        })
+                    }
+                })
+            }
     }
 }
 </script>

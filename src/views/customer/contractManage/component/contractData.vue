@@ -23,6 +23,15 @@
                 <span><Icon type="checkmark" size="20" color="green"></Icon> 合同已确认！</span>
             </div>
         </div>
+        <Modal v-model="payModel" width="360">
+            <div style="text-align:center">
+                <p style="color:#00cc00;font-size:22px;font-weight:blod;"><Icon type="checkmark-circled"></Icon> 合同确认成功</p>
+                <p style="font-size:16px;color:#ff6600;margin-top:10px;">请立即支付首付款</p>
+            </div>
+            <div slot="footer">
+                <Button type="success" size="large" long @click="immPay">立即支付</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 <script>
@@ -36,13 +45,11 @@ export default {
         return{
             nIndex:0,
             basicInfoData:[],
-            ContractCtatus:null
+            ContractCtatus:null,
+            payModel:false
         }
     },
     computed:{
-        ...mapGetters([
-            'contractID'
-        ]),
         ...mapState({
             contractID:state=>state.paySkip.contractID,
         })
@@ -95,25 +102,30 @@ export default {
         },
         setContractStatus(){
             this.$Loading.start();
+            this.payModel=true;
             let url=this.GLOBAL.baseRouter+'task/demand-contract/set-contract-status';
             let params={
                 "contract_id":this.contractID,
                 "status":0
             }
-            this.$axios.post(url,qs.stringify(params)).then(msg=>{
-                this.$Loading.finish();
-                if(msg.data.err_code==0){
-                    this.$Modal.success({
-                        title: "合同确认成功",
-                        content: "请立即支付首付款",
-                        okText:'立即支付'
-                    });
-                }else{
-                    this.$Message.error(msg.data.err_message)
-                }
-            })
+            // this.$axios.post(url,qs.stringify(params)).then(msg=>{
+            //     this.$Loading.finish();
+            //     if(msg.data.err_code==0){
+            //         this.$Modal.success({
+            //             title: "合同确认成功",
+            //             content: "请立即支付首付款",
+            //             okText:'立即支付'
+            //         });
+            //     }else{
+            //         this.$Message.error(msg.data.err_message)
+            //     }
+            // })
             
+        },
+        immPay(){
+            this.$router.push('/customer/payManage/'+this.contractID)
         }
+
     }
 }
 </script>
