@@ -99,7 +99,11 @@ export default {
             this.$router.push('/epibol/bidManage');
         },
         contract(){
-            this.$router.push('/epibol/contractManage')
+            if(sessionStorage.user_type==1){
+                this.$router.push('/customer/contractManage');
+            }else{
+                this.$router.push('/epibol/contractManage');
+            }
         },
         group(){
             this.$router.push('/epibol/memberManager');

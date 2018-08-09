@@ -11,29 +11,33 @@
         <!-- ChartData -->
         
         <div class="projectChart" id="range">
-            <div class="dataSelet" v-if="dataFlgt">
+            <div class="dataSelet">
                 <Select v-model="dataValue" style="width:50px" size="small">
                     <Option v-for="item in dateList" :value="item.type" :key="item.val">{{ item.val }}</Option>
                 </Select>
             </div>
             <div class="chartRow" id="move" :style="`width:${pWeek.length*140}px;`">
-               
                 <!--当前时间线-->
                 <div class="projectSignLien" :style="`left:${(dayLine*20)+20}px`"></div>
-                <!-- 项目 -->
+                <!-- 项目/周 -->
                 <div :class="[item.status==3?'projectOver chartList':'chartList']" v-for="(item,index) in projectData" :key="item.id"
                   :style="`margin-left:${item.xdays*20+'px'};margin-top:${item.xdays>item.dayGap&&index>0?'-100px':''}
-                      ;margin-top:${item.xdays+item.total_day<item.MindayGap&&index>0?'-100px':''}`" 
+                      ;margin-top:${item.xdays+item.total_day<item.MindayGap&&index>0?'-100px':''};`" 
+                  v-if="dataValue=='week'"
                 >
                     <div class="chartFloat" :style="`width:${Math.abs(item.total_day)*20+'px'}`">
                         
                         <div class="projectInfo">
                             <div class="infoShow" v-if="item.total_day*20>100">
                                 <div class="company">
-                                    <h1>
-                                        {{item.name}}
-                                        <i class="iconfont icon-g-status-zanting" v-if="item.status==2"></i>
-                                        <i class="iconfont icon-wancheng" v-if="item.status==3"></i>
+                                    <h1 >
+                                        <!-- 已暂停 -->
+                                        <i class="projectStatus stop" @click="homePage(item.id)" v-if="item.status==2" :style="`z-index:${index+1}`"></i>
+                                        <!-- 已完成 -->
+                                        <i class="projectStatus over" @click="homePage(item.id)" v-if="item.status==3" :style="`z-index:${index+1}`"></i>
+                                        <!-- 已终止 -->
+                                        <i class="projectStatus" @click="homePage(item.id)" v-if="item.status==4" :style="`z-index:${index+1}`"></i>
+                                        <i @click="homePage(item.id)" class="projectTitle">{{item.name}}</i>
                                     </h1>
                                     <div class="title">
                                         {{item.company==null?'-':item.company}}
@@ -52,7 +56,7 @@
 
                             <div v-else class="infoHidden">
                                 <Tooltip :content="item|fileContent" placement="top-start">
-                                    <span class="span">{{item.name}}</span>
+                                    <span class="span" @click="homePage(item.id)">{{item.name}}</span>
                                 </Tooltip>
                             </div>
                         </div>
@@ -62,8 +66,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 项目/月 -->
+            <div 
+                :class="[item.status==3?'projectOver chartList':'chartList']"
+                v-if="dataValue=='month'"
+            >
+                111
+            </div>
+
         </div>
-        
     </div>
 </template>
 <script>
@@ -76,7 +88,6 @@ export default {
             projectData:[],
             dayLine:null,
             dateList:[
-                {"val":"年","type":"year"},
                 {"val":"月","type":"month"},
                 {"val":"周","type":"week"},
             ],
@@ -113,6 +124,11 @@ export default {
             pcB.style.height=dH-118+"px";
             pcNav.style.width=pcH.style.width;//chartNav
            
+        },
+        // 跳转到Home页
+        homePage(id){
+            sessionStorage.projectID=id;
+            this.$router.push('/project/home')
         },
         getChartData(){
             let url=this.GLOBAL.baseRouter+'task/project/page';

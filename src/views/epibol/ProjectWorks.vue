@@ -103,7 +103,9 @@
               <TabPane :label="delayLabel" name="name2">
                  <project-task :list="taskChild.delay"></project-task>
               </TabPane>
-              <TabPane label="关注" name="name3">关注</TabPane>
+              <TabPane label="关注" name="name3">
+                <project-task :list="taskChild.distList"></project-task>
+              </TabPane>
               <TabPane :label="examineLabel" name="name4">
                  <project-task :list="taskChild.examine"></project-task>
               </TabPane>
@@ -221,7 +223,6 @@ export default {
       const items = {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
-        console.log('数据', data.data.data)
         if (!data.data.err_code) {
           const list = data.data.data
           list.forEach(element => {
@@ -334,13 +335,14 @@ export default {
         if (!endTime && nowTime > expect_end.times) {
           delay.push(element)
         }
-        if (element.status == '1' || element.status == '2') {
+        if (element.task_status == 1) {
           examine.push(element)
-        } else if (element.status == '3' || element.status == '4') {
+        } else if (element.task_status == 4) {
           backList.push(element)
-        } else {
-          distList.push(element)
         }
+        // else {
+        //   distList.push(element)
+        // }
       })
       return {
         endNow: endNow,
@@ -375,13 +377,14 @@ export default {
           if (!endTime && nowTime > expect_end) {
             delay.push(element)
           }
-          if (element.status == '1' || element.status == '2') {
+          if (element.task_status == 1) {
             examine.push(element)
-          } else if (element.status == '3' || element.status == '4') {
+          } else if (element.task_status == 4) {
             backList.push(element)
-          } else {
-            distList.push(element)
           }
+          // else {
+          //   distList.push(element)
+          // }
         })
       })
       return {
