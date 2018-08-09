@@ -8,10 +8,10 @@
       <div class="bid_main">
          <div class="bid_main_left">
             <div class="bid_left_head">
-               <p class="bid_baifen">30%</p>
+               <p class="bid_baifen">{{bidList.win_rate}}</p>
                <p class="bid_left_title">
                  <span class="iconfont icon-xiangshang01"></span>
-                 <span>+2%</span>
+                 <span>+{{bidList.win_rate}}</span>
                </p>
             </div>
             <p class="bid_lefe_alt">中标率</p>
@@ -20,19 +20,19 @@
          <div class="bid_main_right">
              <div>
                 <div class="bid_right_head">
-                   <p class="bid_right_msg">200</p>
+                   <p class="bid_right_msg">{{bidList.total}}</p>
                 </div>
                 <p class="bid_lefe_alt">已报名</p>
              </div>
              <div>
                 <div class="bid_right_head">
-                   <p class="bid_right_msg">85</p>
+                   <p class="bid_right_msg">{{bidList.file}}</p>
                 </div>
                 <p class="bid_lefe_alt">已交稿</p>
              </div>
              <div>
                 <div class="bid_right_head">
-                   <p class="bid_right_msg">17</p>
+                   <p class="bid_right_msg">{{bidList.win_bid}}</p>
                 </div>
                 <p class="bid_lefe_alt">已中标</p>
              </div>
@@ -42,6 +42,7 @@
 </template>
 <script>
 export default {
+  props:['bidList'],
   data () {
     return {  
     }
@@ -92,14 +93,14 @@ export default {
  margin-right: 30px;
 }
 .bid_baifen{
-  font-size: 26px;
+  font-size: 40px;
   color: rgb(24,191,164);
-  font-weight: bold;
+  font-weight: 400;
 }
 .bid_right_msg{
-  font-size: 26px;
+  font-size: 40px;
   color: rgb(206,206,206);
-  font-weight: bold;
+  font-weight: 400;
 }
 .bid_left_title{
  color: rgb(255,51,0);

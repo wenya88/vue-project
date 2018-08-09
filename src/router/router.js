@@ -168,6 +168,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'eHome',
                 title: '概况页',
+                meta: {role: 'c1_1'},
                 component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
             },
             {
@@ -175,6 +176,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'bidManage',
                 title: '投标',
+                meta: {role: 'c2'},
                 component: resolve => { require(['@/views/epibol/bidManage.vue'], resolve); }
             },
             {
@@ -199,19 +201,19 @@ export const appRouter = [
                 title: '项目',
                 component: resolve => { require(['@/views/epibol/projectManage.vue'], resolve); }
             },
-            // {
-            //     path: '/manager/manager',
-            //     icon: 'ios-paper-outline',
-            //     name: 'manager',
-            //     title: '经理工作台',
-            //     component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
-            // },
+            {
+                path: '/manager/manager',
+                icon: 'ios-paper-outline',
+                name: 'manager',
+                title: '经理工作台',
+                component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
+            },
             {
                 path: '/epibol/memberManager',
                 icon: 'ios-paper-outline',
                 name: 'memberManager',
                 title: '团队',
-                meta:{role:'memberManager'},
+                meta:{role:'c6'},
                 component: resolve => { require(['@/views/epibol/memberManager.vue'], resolve); }
             },
             {
@@ -226,19 +228,21 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'setting',
                 title: '设置',
+                mate:{role:'c7'},
                 component: resolve => { require(['@/views/epibol/typeLibrary/taskClass.vue'], resolve); }
-            }, {
+            },
+            {
                 path: '/epibol/imPlementer',
                 icon: 'ios-paper-outline',
                 name: 'imPlementer',
                 title: '实施人员',
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
             }, {
-                path: '/epibol/ProjectWork',
+                path: '/epibol/ProjectWorks',
                 icon: 'ios-paper-outline',
                 name: 'workbench',
                 title: '工作台',
-                component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
+                component: resolve => { require(['@/views/epibol/ProjectWorks.vue'], resolve); }
             }, {
                 path: '/epibol/3D',
                 icon: 'ios-paper-outline',

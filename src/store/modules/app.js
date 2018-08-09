@@ -33,7 +33,7 @@ const app = {
             projectCustom: false,     //概况
 
             projectQuality: true,    // 资源
-            qualityFrist: true,      //资源管理归档
+            qualityFrist: false,      //资源管理归档
             qualitySecond: true,      //资源管理归档
             qualityThird: true,      //资源管理归档
             qualityFourth: true,      //资源管理归档
@@ -132,7 +132,6 @@ const app = {
         setRole(state, data) {
             state.role = data;
             data = data.split(',');
-            data = ['c4'];
             sessionStorage.setItem('userrole',JSON.stringify(data));
             if (data.indexOf('c1_1')!==-1) {
                 // 公司概况
@@ -262,12 +261,13 @@ const app = {
             menu.forEach((item, index) => {
                 // 模拟权限
                 if (item.access) {
-                    if (accessCode == 3) {
-                        if (item.access == 3) {
+                    if(accessCode == 3) {
+                        // if(item.access == 3){
                             menuList.push(item);
-                        }
-                    } else if (accessCode != 3 && item.access != 3) {
-                        menuList.push(item);
+                        // }
+                    } else if(accessCode != 3) {
+                        // if (item.access != 3) {
+                        menuList.push(item)
                     }
                 } else {
                     menuList.push(item);
