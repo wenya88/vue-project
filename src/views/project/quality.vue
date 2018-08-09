@@ -1,7 +1,7 @@
 <template>
   <div class="quality" id="completed">
     <div class="nav">
-      <div class="frist" @click="finishData(4)">
+      <div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">
         <i-circle
           :size="168"
           :trail-width="0"
@@ -15,7 +15,7 @@
           </div>
         </i-circle>
       </div>
-      <div class="second" @click="resourcesData(1)">
+      <div  v-if="projectSet.qualitySecond" class="second" @click="resourcesData(1)">
         <i-circle
           :size="120"
           :trail-width="0"
@@ -29,7 +29,7 @@
           </div>
         </i-circle>
       </div>
-      <div class="third" @click="resourcesData(3)">
+      <div  v-if="projectSet.qualityThird" class="third" @click="resourcesData(3)">
         <i-circle
           :size="120"
           :trail-width="0"
@@ -43,7 +43,7 @@
           </div>
         </i-circle>
       </div>
-      <div class="fourth" @click="resourcesData(2)">
+      <div  v-if="projectSet.qualityFourth" class="fourth" @click="resourcesData(2)">
         <i-circle
           :size="120"
           :trail-width="0"
@@ -57,7 +57,7 @@
           </div>
         </i-circle>
       </div>
-      <div class="fifth" @click="resourcesData(4)">
+      <div  v-if="projectSet.qualityFifth" class="fifth" @click="resourcesData(4)">
         <i-circle
           :size="120"
           :trail-width="0"
@@ -111,7 +111,7 @@ import browsetask from './task/browseTaskPop';
 import mySort from '../main-components/sort';
 import pigeonhole from './pigeonhole';
 import resourcesList from './components/resourcesList';
-import { mapGetters } from 'vuex'
+import { mapGetters ,mapState} from 'vuex'
 export default {
   components: {
     mySort,
@@ -339,7 +339,14 @@ export default {
         this.loading = false
       }
     }
-  }
+  },
+    computed:{
+        ...mapState({
+            projectSet(data){
+                return data.app.projectSet
+            }
+        })
+    },
 }
 </script>
 

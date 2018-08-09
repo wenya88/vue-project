@@ -80,14 +80,18 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'custom',
                 title: '概况',
+                meta:{role:'c5_2'},
                 component: resolve => { require(['@/views/project/home.vue'], resolve); }
-            }, {
+            },
+            {
                 path: '/project/task',
                 icon: 'ios-paper-outline',
                 name: 'task',
                 title: '任务管理',
+                meta:{role:'c5_3'},
                 component: resolve => { require(['@/views/project/task.vue'], resolve); }
-            }, {
+            },
+            {
                 path: '/project/schedule',
                 icon: 'ios-paper-outline',
                 name: 'schedule',
@@ -99,6 +103,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'quality',
                 title: '质量管理',
+                meta:{role:'c5_4'},
                 component: resolve => { require(['@/views/project/quality.vue'], resolve); }
             }, {
                 path: '/project/pigeonhole',
@@ -112,6 +117,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'statistics',
                 title: '项目统计',
+                meta:{role:'c5_6'},
                 component: resolve => { require(['@/views/project/statistics.vue'], resolve); }
             },
             {
@@ -126,6 +132,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'Psetting',
                 title: '设置',
+                meta:{role:'c5_7'},
                 component:resolve=>{ require (['@/views/projectSet/projectTiemSet.vue'],resolve)}
             },
             {
@@ -138,6 +145,7 @@ export const appRouter = [
             {
                 path:'/project/projectMember',
                 titie:'项目成员',
+                meta:{role:'c5_5'},
                 component: resolve => { require(['@/views/projectSet/projectTiemSet/component/peopleSet.vue'], resolve);},
             },
             {
@@ -168,19 +176,22 @@ export const appRouter = [
                 name: 'bidManage',
                 title: '投标',
                 component: resolve => { require(['@/views/epibol/bidManage.vue'], resolve); }
-            }, {
+            },
+            {
                 path: '/epibol/contractManage',
                 icon: 'ios-paper-outline',
                 name: 'contractManage',
                 title: '合同',
+                meta: {role: 'c4'},
                 component: resolve => { require(['@/views/epibol/contractManage.vue'], resolve); }
-            },{
+            },
+            {
                 path: '/epibol/contractData',
                 icon: 'ios-paper-outline',
                 name: 'contractData',
                 title: '新增合同',
                 component: resolve => { require(['@/views/epibol/contractManage/component/contractData.vue'], resolve); }
-            }, 
+            },
             {
                 path: '/epibol/projectManage',
                 icon: 'ios-paper-outline',
@@ -200,6 +211,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'memberManager',
                 title: '团队',
+                meta:{role:'memberManager'},
                 component: resolve => { require(['@/views/epibol/memberManager.vue'], resolve); }
             },
             {
@@ -261,7 +273,7 @@ export const appRouter = [
                 name: 'epibolCompany',
                 title: '合作',
                 component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); },
-               
+
             }, {
                 path: '/customer/contractManage',
                 icon: 'ios-paper-outline',
@@ -300,7 +312,7 @@ export const appRouter = [
                 title: '支付跳转',
                 component: resolve => { require(['@/views/customer/paySkip.vue'], resolve); }
             }
-            
+
         ]
     }, {
     //     path: '/depot',

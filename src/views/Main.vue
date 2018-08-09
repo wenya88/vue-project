@@ -113,6 +113,11 @@ export default {
         };
     },
     watch: {
+        menuList(data){
+            if(data.length>0){
+                this.updateMenu();
+            }
+        },
         // '$route': {
         //     handler(newVal) {
         //         console.log(newVal.name)

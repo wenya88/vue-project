@@ -41,7 +41,7 @@
                         <h4>{{proData.name}}&nbsp;</h4>
                         <h5>{{proData.description!=null?proData.description:'项目描述和备注'}}</h5>
                     </div>
-                    <div class="companySet" @click="companySet">
+                    <div v-if="projectSet.self" class="companySet" @click="companySet">
                         <span>设置</span>
                     </div>
                     <div class="clear"></div>
@@ -50,12 +50,12 @@
                 <!-- 内容 -->
                 <div class="contentRow">
                     <div class="ManageRow">
-                        <div class="task" @click="task">
+                        <div v-if="projectSet.projectTask" class="task" @click="task">
                              <span class="iconfont icon-renwu"></span>
                              任务
                              <p>制定计划并管理任务或需求</p>
                         </div>
-                        <div class="resouer" ref="resouer">
+                        <div  v-if="projectSet.projectQuality" class="resouer" ref="resouer">
                             <div style="margin-bottom: 10px;">
                                 <span style="padding: 0 25px;font-size: 20px;">资源管理</span><span>浏览和审核资源</span>
                             </div>
@@ -79,14 +79,14 @@
                                 </p>
                                 <span class="iconfont icon-goutong"></span>
                             </dd>
-                            <dd @click="group">
+                            <dd v-if="projectSet.projectMember" @click="group">
                                 <p>
                                     团队<br/>
                                     <span>管理项目团队</span>
                                 </p>
                                 <span class="iconfont icon-tuandui1"></span>
                             </dd>
-                            <dd @click="statistics">
+                            <dd v-if="projectSet.projectStatistics"  @click="statistics">
                                 <p>
                                     统计<br/>
                                     <span>获取你需要的数据</span>
@@ -105,6 +105,7 @@
 <script>
 var qs=require('querystring')
 import vFlare from '@/components/d3flare'
+import {mapState} from 'vuex'
 export default {
     data(){
         return{
@@ -154,6 +155,13 @@ export default {
                 this.width = this.$refs.resouer.offsetWidth+'';
             })
         }
+    },
+    computed:{
+        ...mapState({
+            projectSet(data){
+                return data.app.projectSet
+            }
+        })
     },
     components:{
         vFlare

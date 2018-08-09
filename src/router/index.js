@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import Cookies from 'js-cookie';
 import {routers, otherRouter, appRouter} from './router';
 
+
 Vue.use(VueRouter);
 
 // 路由配置
@@ -18,7 +19,7 @@ export const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     Util.title(to.meta.title);
-    next()
+    next();
     // if (Cookies.get('locking') === '1' && to.name !== 'locking') { // 判断当前是否是锁定状态
     //     next({
     //         replace: true,
@@ -36,7 +37,18 @@ router.beforeEach((to, from, next) => {
             next({
                 name: 'home_index'
             });
-        } else {
+        }
+        /*权限  meta role 控制*/
+        else if(to.meta.role!==undefined) {
+            let allrole = JSON.parse(sessionStorage.getItem('userrole'));
+
+            if (allrole.indexOf(to.meta.role) !== -1) {
+                next({path: '/403'})
+            } else {
+                next()
+            }
+        }
+        else {
             const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
             if (curRouterObj && curRouterObj.access !== undefined) { // 需要判断权限的路由
                 if (curRouterObj.access === parseInt(Cookies.get('access'))) {

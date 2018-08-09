@@ -51,7 +51,7 @@ export default {
                     Cookies.set('post_id', res.company.post_id)
                     // Cookies.set('user_type', res.user.user_type)
                 }
-                this.$store.commit('updateMenulist');
+                this.$store.dispatch('getMenulistRole');
             })
         },
         invateInfo(code) {

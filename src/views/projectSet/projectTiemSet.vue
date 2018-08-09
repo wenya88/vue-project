@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="projectSetMenu">
-            <span v-for="(item,index) in prjectMenu" :class="{checked:index==mIndex}"
+            <span v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}"
                   @click="switchSet(index,item.state)" :key="index">{{item.name}}</span>
         </div>
         <div class="projectSetRow">
@@ -16,14 +16,14 @@
     import timeSet from './projectTiemSet/component/timeSet'
     import peopleSet from './projectTiemSet/component/peopleSet'
     import productStandard from './projectTiemSet/component/productStandard'
-
+    import {mapState} from 'vuex'
     export default {
         data() {
             return {
                 prjectMenu: [
-                    {'name': '项目制作规范', 'state': 'productStandard'},
-                    {'name': '项目工作时间', 'state': 'workTime'},
-                    {'name': '项目成员设置', 'state': 'peopleSet'},
+                    {'name': '项目制作规范', 'state': 'productStandard',role:'projectNorm'},
+                    {'name': '项目工作时间', 'state': 'workTime',role:'projectTitle'},
+                    {'name': '项目成员设置', 'state': 'peopleSet',role:'projectsetMember'},
                 ],
                 mIndex: 0,
                 menuFlag: true,
@@ -52,6 +52,13 @@
                         break;
                 }
             }
+        },
+        computed:{
+            ...mapState({
+                projectSet(data){
+                    return data.app.projectSet
+                }
+            })
         }
     }
 </script>

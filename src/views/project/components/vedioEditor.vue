@@ -133,7 +133,7 @@
                 <button class="subPass" @click="commitEidt('ok')">通过</button>
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
-            </div>
+            </div> b
 
             <!-- 反馈信息 -->
             <div v-if="SataeInfo" class="VideofeedbackInfo">
