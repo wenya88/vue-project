@@ -27,13 +27,12 @@ const app = {
                 // 模拟权限
                 if (item.access) {
                     if(accessCode == 3) {
-                        if(item.access == 3){
+                        // if(item.access == 3){
                             menuList.push(item);
-                        }
+                        // }
                     } else if(accessCode != 3) {
-                        if (item.access != 3) {
-                          menuList.push(item)
-                        }
+                        // if (item.access != 3) {
+                        menuList.push(item)
                     }
                 } else {
                     menuList.push(item);
