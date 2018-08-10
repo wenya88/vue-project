@@ -1,7 +1,7 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
   function connectSocket(msgData) {
-    const wsurl = 'ws://59.111.95.148:8282'
+    const wsurl = 'ws://59.111.95.148'
     window.webSocket = new WebSocket(wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
@@ -14,7 +14,6 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      console.log('推送消息00', evt.data)
       if (data.action === 'ping') {
         const data = JSON.stringify({
           action: 'ping'
