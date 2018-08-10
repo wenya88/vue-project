@@ -1,7 +1,7 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
   function connectSocket(msgData) {
-    const wsurl = 'ws://59.111.95.148'
+    const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
