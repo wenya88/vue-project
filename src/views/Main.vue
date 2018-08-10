@@ -53,7 +53,7 @@
                     </Submenu>
                 </Menu>
             </div>  -->
-            <div class="menuBlock" v-if="showMenu">
+            <div class="menuBlock" v-if="!showMenu">
                  <ul> 
                     <li v-for="(item,index) in menuList" :key="index">
                         <router-link :to="item.path" :class="[item.name]" @click.native="collapsedSider()"></router-link>
@@ -73,7 +73,7 @@
                     </li>   -->
                 </ul>
             </div>   
-            <ul class="menu">
+            <ul class="menu" v-if="!menuListShow">
                 <li v-for="(item,index) in subMenu" :key="index">
                     <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']"></router-link>
                     <span class="name">{{item.title}}</span>
@@ -93,6 +93,7 @@ import Cookies from 'js-cookie';
 import messageTip from './main-components/message-tip.vue';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
 import themeSwitch from './main-components/theme-switch/theme-switch.vue';
+import {mapState} from 'vuex'
 export default {
     components: {
         shrinkableMenu,
@@ -150,6 +151,11 @@ export default {
         // console.log(this.menuList)
     },
     computed: {
+        ...mapState({
+            menuListShow(value){
+                return value.project.detail.setDetailAll
+            }
+        }),
         menuList() {
             return this.$store.state.app.menuList;
         },

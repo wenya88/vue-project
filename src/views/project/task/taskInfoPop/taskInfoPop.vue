@@ -6,7 +6,7 @@
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
         <div class="taskinfopopContainer">
-            <Tabs v-if="!workbench" type="card" class="filebrowse taskManagement">
+            <Tabs   type="card" class="filebrowse taskManagement">
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
                         <maintask ref="main"
@@ -68,6 +68,10 @@
             this.initTaskDetail();
             this.initTaskDetailProjecInfo();
         },
+        beforeDestroy(){
+            /*清空 让左侧菜单显示*/
+            this.setDetailAll(null)
+        },
         data() {
             return {
                 editDataName:null,
@@ -85,7 +89,7 @@
             };
         },
         methods: {
-            ...mapMutations(['setPrimaryMission','setUserStatus']),
+            ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
             //根据任务ID初始化属性
             initTaskDetail() {
                 if (!this.$store.state.project.detail.setDetailAll) {
@@ -255,8 +259,6 @@
             ...mapState({
                 userStatus(value){
                     return value.project.userStatus
-                }  ,workbench(value){
-                    return value.project.workbench
                 }
             })
         }
