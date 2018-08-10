@@ -223,6 +223,7 @@ export default {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
          if (data.data.err_code == 0) {
+           this.isAngin = false
            this.$Message.success(data.data.err_message)
          } else {
            this.$Message.error(data.data.err_message)

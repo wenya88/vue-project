@@ -2,7 +2,7 @@
    <div class="task_page_all">
       <div class="task_msg_bx" v-for="(item, index) in list" :key="index" v-if="list.length">
         <div class="task_msg_left">
-           <p class="task_introduce">{{item.task_name}}</p>
+           <p class="task_introduce" @click="getTask(item.id)">{{item.task_name}}</p>
            <div class="task_man_day">
              <p class="task_work_msg">{{item.workDay}}个工作日</p>
              <p class="task_work_time">{{item.expect_start_time}} ~ {{item.expect_end_time}}</p>
@@ -26,6 +26,12 @@ export default {
   props: ['list'],
   data () {
     return {
+    }
+  },
+  methods: {
+    // 跳转详情页
+    getTask (id) {
+      this.$router.push('/project/details')
     }
   }
 }
@@ -73,6 +79,7 @@ export default {
           width: 100%;
           height: 30px;
           font-size: 16px;
+          cursor: pointer;
         }
         .task_man_day{
            width: 100%;

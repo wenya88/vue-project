@@ -74,7 +74,7 @@
                       <p class="msg_name">{{item.workDay}}个工作日</p>
                       <p class="msg_name">{{item.start_time}}~{{item.end_time}}</p>
                     </Col>
-                    <Col class="complany_name" span= '6'>
+                    <Col class="complany_name" span= '6' v-if="!item.inside">
                       <p class="title_name">甲方公司</p>
                       <p class="msg_name">{{item.company.name}}</p>
                       <p class="cpy_person">{{item.company.legal}}</p>
