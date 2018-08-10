@@ -29,7 +29,7 @@
                  <span class="iconfont icon-shangchuandengdai" v-show="elems.status == '2'"></span>
                </div>
                <div>
-                 <p class="task_describe_msg">{{elems.name}}</p>
+                 <p class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</p>
                  <p class="task_describe_sub">{{elems.project_name}}</p>
                </div>
              </div>
@@ -118,7 +118,12 @@
                    <p class="again_upload" @click="againFun">重新上传</p>
                  </div>
                  <div class="yu_lan">
-                   <img :src="feilsUrl" v-show="filesStatus==1"/>
+                   <img :src="feilsUrl" v-show="filesStatus==1" @load='gets'/>
+                     <Row v-if="ispin">
+                      <Col class="demo-spin-col" span="24">
+                        <Spin size="large"></Spin>
+                      </Col>
+                     </Row>
                    <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
                         your browser does not support the video tag
                     </video>
@@ -151,6 +156,7 @@
    </div>
 </template>
 <script>
+import {mapMutations} from 'vuex'
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
 import threeModule from '../project/components/threeModule.vue'
@@ -185,6 +191,7 @@ export default {
       feilsUrl: '',
       task_id: '',
       stageList: [],
+      ispin: false,
       startTime: '2018-6-20',
       endTime: '2018-8-10'
     }
@@ -196,7 +203,8 @@ export default {
   mounted () {
     // this.getShowTime()
     this.getScreenWidth()
-    this.getMsgList()
+    // this.getMsgList()
+    this.getMsgLists()
   },
   computed: {
     // ...mapState({
@@ -215,6 +223,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setDetailAll']),
+    //跳转业务详情
+    goTask(id) {
+      const item = {
+        id: id
+      }
+      this.setDetailAll(item)
+      this.$router.push('/project/details')
+    },
     // 确定开始
     sureAngin () {
       const url = this.GLOBAL.baseRouter+"/task/task/start"
@@ -223,6 +240,9 @@ export default {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
          if (data.data.err_code == 0) {
+           this.isAngin = false
+           this.getOriginal()
+           this.getMsgLists()
            this.$Message.success(data.data.err_message)
          } else {
            this.$Message.error(data.data.err_message)
@@ -342,44 +362,57 @@ export default {
     },
     // 获取数据
     getMsgList () {
-      for (let i = 1; i < 8; i++) {
-        const indexs = i * 8
-        this.getBefore(indexs)
-        this.getAfter(indexs)
-      }
-      const that = this
-      var times = setTimeout(function () {
-        that.getAll()
-        clearTimeout(times)
-      }, 1000)
+      return new Promise((resove, reject) => {
+         for (let i = 1; i < 8; i++) {
+            const indexs = i * 8
+            this.getBefore(indexs).then(msg => {
+              this.getAfter(indexs).then(msage => {
+                if (msage == 7) {
+                  resove()
+                }
+              })
+            })
+         }
+      })
+    },
+    getMsgLists () {
+      this.getMsgList().then(() => {
+         this.getAll()
+      })
     },
     // 获取前面的数据
     getBefore (number) {
-       const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-       const items = {
+       return new Promise((resove, reject) => {
+        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
+        const items = {
          xdays: number
-       }
-       this.$axios.post(url, qs.stringify(items)).then(data => {
+        }
+        this.$axios.post(url, qs.stringify(items)).then(data => {
         //  console.log('数据', data.data.data)
          const list = data.data.data.dates
          const beforeData = this.beforeData
         //  console.log('数据', data)
          let lists = Object.assign(beforeData, list);
          this.beforeData = lists
+          resove(number/8)
+         })
        })
     },
     // 获取后面的数据
     getAfter (number) {
-       const url = this.GLOBAL.baseRouter+"/task/task/shaft"
-       const items = {
+      return new Promise((resove,reject) => {
+        const url = this.GLOBAL.baseRouter+"/task/task/shaft"
+        const items = {
          xdays: -number
-       }
-       this.$axios.post(url, qs.stringify(items)).then(data => {
+        }
+        this.$axios.post(url, qs.stringify(items)).then(data => {
          const list = data.data.data.dates
          const afterData = this.afterData
          let lists = Object.assign(list, afterData);
          this.afterData = lists
-       })
+         resove(number/8)
+        })
+      })
     },
     // 获取任务时间数据
     getAll () {
@@ -432,6 +465,7 @@ export default {
     // 获取任务
     getTast () {
       let list = this.tastList
+      // console.log('数据', list)
       let startTimes = this.startTime
       let endTimes = this.endTime
       const todays = this.getTimes(Date.now()).times
@@ -538,7 +572,6 @@ export default {
       } else {
         index ++
         let items = list[index]
-        // console.log('数据', index, items)
         let ends = items.ends
         let starts = items.starts
         let object = [] // 计算层级
@@ -803,12 +836,35 @@ export default {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
         if (data.data.err_code === 0) {
+         this.isclose = false
+         this.getOriginal()
+         this.getMsgLists()
          this.$Message.success(data.data.err_message)
         } else {
           this.$Message.error(data.data.err_message)
         }
         this.againFun()
        })
+    },
+    // 是否加载完成
+    gets () {
+      this.ispin = false
+      console.log(1)
+    },
+    // 回到初始状态
+    getOriginal () {
+      this.index = 0
+      this.boxHgs = ''
+      this.boxHight = ''
+      this.tastList = []
+      this.examinList = []
+      this.solt = {}
+      this.nameList = []
+      this.task_name = ''
+      this.isToday = true
+      this.beforeData = {}
+      this.afterData = {}
+      this.listAll = {}
     }
   }
 }
@@ -909,6 +965,7 @@ export default {
 .task_describe_msg{
   font-size: 20px;
   color: #ffffff;
+  cursor: pointer;
 }
 .task_describe_sub{
   font-size: 16px;
@@ -1399,5 +1456,25 @@ export default {
  line-height: 30px;
  cursor: pointer;
  color: #ffffff;
+}
+.demo-spin-container{
+  width: 100%;
+  height: 100%;
+}
+.demo-spin-icon-load{
+  animation: ani-demo-spin 1s linear infinite;
+}
+/* @keyframes ani-demo-spin {
+  from { transform: rotate(0deg)}
+  50%  { transform: rotate(180deg)}
+  to   { transform: rotate(360deg)}
+} */
+.demo-spin-col{
+  height: 100%;
+  position: relative;
+}
+.demo-spin-col>div{
+  width: 50px;
+  margin: 100px auto 0;
 }
 </style>

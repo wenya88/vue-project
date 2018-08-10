@@ -14,7 +14,6 @@
     /*接收服务器推送消息*/
     webSocket.onmessage = evt => {
       let data = JSON.parse(evt.data)
-      console.log('推送消息00', evt.data)
       if (data.action === 'ping') {
         const data = JSON.stringify({
           action: 'ping'
