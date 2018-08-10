@@ -257,7 +257,7 @@
             })
         },
         methods: {
-            ...mapMutations(['setPrimaryMission','setDetailAll']),
+            ...mapMutations(['setPrimaryMission']),
             delButton(items) {
                 this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id: items.id}))
                     .then(res => {
@@ -285,7 +285,7 @@
                     this.$emit('showTaskDetails', currentRow);
 //                    this.$refs.table.clearCurrentRow();
                     this.setPrimaryMission(currentRow)
-//                    this.setDetailAll(currentRow);
+
 
                 }
             },
