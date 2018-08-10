@@ -3,7 +3,7 @@
   <div class="bidManage">
       <Tabs value="application" :animated="false">
         <!-- 已报名招标 -->
-        <TabPane :label="appName" name="application">
+        <TabPane v-if="callForBidsdts.HaveTender" :label="appName" name="application">
             <div class="fileCondition">
                 <em> 
                     <Select v-model="condtionData" size="small" style="width:110px">
@@ -79,7 +79,7 @@
             </div>
         </TabPane>
         <!-- 外包邀请 -->
-        <TabPane :label="inviteName" name="invite">
+        <TabPane v-if="callForBidsdts.invitation" :label="inviteName" name="invite">
             <div class="fileCondition">
                 <em> 
                     <Select v-model="fileInvite" size="small" style="width:110px">
@@ -99,6 +99,7 @@
   </div>
 </template>
 <script>
+    import {mapState} from 'vuex'
 import bidInvite from './bidManage/component/bidInvite'
 import bidDetails from './bidManage/component/bidDetails'
 var qs = require('querystring')
@@ -286,7 +287,14 @@ export default {
                 _this.$Loading.error();
             })
         }
-    }
+    },
+    computed:{
+        ...mapState({
+            callForBidsdts(data){
+                return data.app.callForBidsdts
+            }
+        })
+    },
 }
 </script>
 <style lang="less">

@@ -166,7 +166,7 @@ $.extend(SVGManager.prototype, {
 			}
 		}
 		catch (e) {
-			alert(e);
+			// alert(e);
 		}
 	},
 

@@ -23,7 +23,7 @@
                                 item.Cindex==2?'remIconUp':'',
                                 ]"></i>
                             {{item.label}}
-                        </a>                        
+                        </a>
                     </span>
                     <span class="MLeft">状态：
                         <Select v-model="MSelect" style="width:80px">
@@ -38,7 +38,7 @@
                     <span class="MLeft10">
                         <Input v-model="search" placeholder="项目名称/项目经理/公司" @on-enter="ProSearch">
                             <Button slot="append" icon="ios-search"  @click.native="ProSearch"></Button>
-                        </Input>    
+                        </Input>
                     </span>
                 </dd>
                 <div class="clear"></div>

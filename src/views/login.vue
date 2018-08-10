@@ -10,7 +10,7 @@
         <div class="login-purple" :style="`border-top:${bodyHight}px solid #544c93`"></div>
         <div class="bg" :style="`height:${bodyHight}px`"></div>
         <div class="login-yellow" :style="`border-bottom:${bodyHight}px solid #ffbe36`"></div>
-        <div class="login-con">
+        <div class="login-con"  >
             <div class="title" v-if="isRegister">注册
                 <span @click="changeMode('register')">登录</span>
             </div>

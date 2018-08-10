@@ -2,3 +2,5 @@
 [0723/094251.068:ERROR:crash_report_database_win.cc(428)] unexpected header
 [0724/094828.526:ERROR:crash_report_database_win.cc(428)] unexpected header
 [0727/120804.897:ERROR:process_info.cc(359)] UncheckedAllocate
+[0810/141958.560:ERROR:process_info.cc(359)] UncheckedAllocate
+[0810/142005.221:ERROR:file_io.cc(134)] WriteFile: 管道正在被关闭。 (0xE8)

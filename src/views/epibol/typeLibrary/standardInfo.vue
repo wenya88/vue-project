@@ -741,6 +741,7 @@
 
         .fileAttr, .attachingTask {
             margin: 10px 0;
+            height: 40px;
             .delIcon {
                 margin-left: 30px;
                 padding: 10px;

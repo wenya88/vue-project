@@ -2,7 +2,7 @@
     <div class="membermanager">
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
         <Tabs size="small" v-model="tabsType">
-            <TabPane label="成员管理" name="member">
+            <TabPane v-if="memberMgt" label="成员管理" name="member">
                 <Layout>
                     <Sider>
                         <membertype :title="title" :number="number" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
@@ -34,7 +34,7 @@
                     </Layout>
                 </Layout>
             </TabPane>
-            <TabPane label="权限设置" name="auth">
+            <TabPane v-if="roleMgt" label="权限设置" name="auth">
                 <Layout>
                     <Sider>
                         <auth-type :title="title" :number="number" :postList="postList" @openAuth="authData"></auth-type>
@@ -74,7 +74,7 @@ import membermessage from './mmComponents/memberMessage.vue';
 
 import authType from './mmComponents/authType.vue';
 import authMessage from './mmComponents/authMessage.vue';
-
+import {mapState} from 'vuex'
 export default {
     // data() {
     //     ownMemberTypes:[],
@@ -124,6 +124,14 @@ export default {
         this.authListData();
     },
     computed: {
+        ...mapState({
+            memberMgt(data){
+                return data.app.memberMgt
+            },
+            roleMgt(data){
+                return data.app.roleMgt
+            }
+        }),
         ...mapGetters({
             deptList: 'getDeptList',
             dutyList: 'getDutyList',

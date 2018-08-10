@@ -50,11 +50,14 @@ export const menu = [
                 path: '/epibol/projectManage',
                 name: 'projectManage',
                 title: '项目',
-            }, {
+            },
+             {
                 path: '/epibol/memberManager',
                 name: 'memberManager',
                 title: '团队',
-            }, {
+
+            },
+            {
                 path: '/epibol/statistics',
                 name: 'eStatistics',
                 title: '统计',

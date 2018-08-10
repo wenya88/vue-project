@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="videoM">
-            <div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>
+            <!--<div class="controlListRow" @mouseenter="showStageList">文件上传记录</div>-->
             <div class="stageListRow" @mouseleave="hideStageList">
                 <ul>
                     <li v-for="(item,index) in IMGlist" @click="changCont(
@@ -80,31 +80,29 @@
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
 
-                <div v-show="switchIcon&&!isCanvas"   class="masking" @click="videoStart" >
-                    <Icon class="circleIcon"  type="play"></Icon>
-                </div>
-                <div v-show="!switchIcon&&!isCanvas" class="masking" @click="pauseButton" >
-                    <Icon class="circleIcon"  type="pause"></Icon>
-                </div>
+                <!--<div v-show="switchIcon&&!isCanvas"   class="masking" @click="videoStart" >-->
+                    <!--<Icon class="circleIcon"  type="play"></Icon>-->
+                <!--</div>-->
+                <div v-show="!switchIcon&&!isCanvas" class="masking" @click="pauseButton" ></div>
+
                 <input v-show="drawTextShow" @blur="drawText" v-model="drawTextValue" type="text" class="textInput"
                        :style="{'top':top+'px','left':left+'px'}">
             </section>
             <!--操作按钮-->
             <div class="canvasEdit">
                 <Icon  @click.native="updateFrame('before')" type="skip-backward" size="18" style="padding:0 5px;" title="上一帧"></Icon>
-                <Icon   @click.native="updateFrame('after')" type="skip-forward" size="18" style="padding:0 5px;" title="下一帧"></Icon>
+                <Icon   @click.native="updateFrame('after')" type="skip-forward" size="18" style="padding:0 5px;margin-right: 90px;" title="下一帧"></Icon>
+
                 <Icon   v-show="!isCanvas"  @click.native="startCanvas"  type="paintbrush" size="18" style="padding: 0 5px 0 15px" title="修改标记"></Icon>
-                <Button v-show="isCanvas"   @click="saveCanvas" type="text">保存</Button>
-                <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
-               <template v-if="isCanvas">
+                <template v-if="isCanvas">
                     <!--<Icon @click.native.prevent="changeRect" size="18" type="android-checkbox-outline-blank"></Icon>-->
                     <!--<Icon @click.native.prevent="changeText" size="18" type="paintbrush"></Icon>  -->
-                    <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit" size="18" style="padding:0 5px;" title="画笔"></Icon>
+                    <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit"  :class="[{'editHover':isLine},'edit']"  title="画笔"></Icon>
                     <!--<Button  type="text">画笔</Button>-->
 
                     <!--<Button @click="changeRect" type="text">矩形</Button>-->
 
-                    <Button @click="changeText" type="text"  style="font-weight: bold;font-size: 20px;">T</Button>
+                    <i @click="changeText" :class="[{'textHover':isText},'text']" >T</i>
 
                     <i class="little" @click="changelineWidth(1)"></i>
                     <i class="middle" @click="changelineWidth(5)"></i>
@@ -118,7 +116,8 @@
                 </template>
                 <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;" title="显示标记" ></Icon>
                 <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" size="18" style="padding:0 5px;"  title="隐藏标记" ></Icon>
-
+                <Button v-show="isCanvas"   @click="saveCanvas" type="text">保存</Button>
+                <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
 
             </div>
             <!-- 标注提交 -->
@@ -134,7 +133,6 @@
                 <em @click="InfoRefresh" id="InfoRefresh"></em>
             </span>
             </div>
-
             <!-- 反馈信息 -->
             <div v-if="SataeInfo" class="VideofeedbackInfo">
                 <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
@@ -142,7 +140,7 @@
                 <span><p>审核人</p><br/>{{insTime > cliTiem ? insUid : cliUid}}</span>
                 <div class="clear"></div>
             </div>
-            <img id="img" :src="img" alt="">
+            <img id="img" :src="img" style="opacity:0" alt="">
         </div>
         <Modal
                 v-model="saveCanvasShow"
@@ -1100,19 +1098,7 @@
             width: 100%;
             height: 420px;
             text-align: center;
-            background:rgba(0,0,0,0.4);
             z-index: 167;
-            opacity: 0;
-            .circleIcon{
-                position: absolute;
-                top:50%;
-                transform: translateY(-50%);
-                font-size: 90px;
-                color: rgba(255,255,255,0.3);
-            }
-            &:hover{
-                opacity: 1;
-            }
         }
         .textInput {
             position: absolute;
@@ -1129,6 +1115,18 @@
     .canvasEdit {
         display: flex;
         align-items: center;
+        .edit{
+            padding: 6px;
+            font-size: 18px;
+        }
+        .text {
+            padding: 0 10px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .editHover,.textHover{
+           border: 1px solid #ccc;
+        }
         .little, .middle, .big {
             display: block;
             margin: 5px;

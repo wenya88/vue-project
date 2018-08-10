@@ -141,7 +141,8 @@ export default {
         // 跳转到Home页
         homePage(id){
             sessionStorage.projectID=id;
-            this.$router.push('/project/home')
+
+            this.$router.push('/project')
         },
         //编辑项目
         editPro(item){

@@ -38,6 +38,7 @@ module.exports = merge(webpackBaseConfig, {
         // autoOpenBrowser: true,
         // assetsSubDirectory: 'static',
         // assetsPublicPath: '/',
+        port:80,
         historyApiFallback: true,
         hot: true,
         inline: true,

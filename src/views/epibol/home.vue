@@ -49,7 +49,7 @@
                     <div class="companyTitle">
                         <h4>成都义美游信息技术有限公司</h4>
                     </div>
-                    <div class="companySet" @click="companySet">
+                    <div v-if="standardLibrary" class="companySet" @click="companySet" >
                         <span>设置</span>
                     </div>
                     <div class="clear"></div>
@@ -61,11 +61,11 @@
                         <i class="iconfont icon-xiangmu"></i>
                         <span>项目</span>
                     </div>
-                    <div class="bid" @click="bid">
+                    <div  v-if="epibol.callForBids" class="bid" @click="bid">
                         <i class="iconfont icon-toubiao"></i>
                         <span>招标</span>
                     </div>
-                    <div class="contract" @click="contract">
+                    <div v-if="epibol.contract" class="contract" @click="contract">
                         <i class="iconfont icon-hetong"></i>
                         <span>合同</span>
                     </div>
@@ -86,6 +86,7 @@
     </div>
 </template>
 <script>
+import {mapState} from 'vuex'
 export default {
     methods:{
         companySet(){
@@ -110,6 +111,16 @@ export default {
         statis(){
             this.$router.push('/epibol/statistics');
         }
+    },
+    computed:{
+        ...mapState({
+            standardLibrary(data){
+                return data.app.standardLibrary
+            }  ,
+            epibol(data){
+                return data.app.epibol
+            }
+        })
     }
 }
 </script>

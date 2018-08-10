@@ -53,9 +53,15 @@ export default {
     },
 
 
-    // 老的上传
+    // 之前的上传
     imageUpload: (data) => {
         return Vue.$axios.post(url + 'file/file/file-upload', qs.stringify(data))                             // 任务详情里面的阶段详情
+    },
+
+
+    // 权限
+    getInfoRole: (data) => {
+        return Vue.$axios.post(url + 'system/login/info', qs.stringify(data))                             // 权限
     },
 
 

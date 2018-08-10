@@ -177,6 +177,7 @@ export default {
     };
   },
   mounted() {
+
     this.autoH();
     this.initTaskMain();
     this.$bus.on('refreshCurrentTaskList',()=>{

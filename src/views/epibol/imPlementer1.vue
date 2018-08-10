@@ -437,7 +437,7 @@
               }, this);
             _this.dataUnderway.sort((a,b)=>a.expect_end_time-b.expect_end_time);
           },()=>{
-              alert("请求失败!")
+//              alert("请求失败!")
           })
       },
 
@@ -457,7 +457,7 @@
               }, this);
             _this.dataWait.sort((a,b)=>a.expect_start_time-b.expect_start_time)
           },()=>{
-              alert("请求失败!")
+//              alert("请求失败!")
           })
       },
     //   已完成数据请求

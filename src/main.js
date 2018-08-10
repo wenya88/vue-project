@@ -83,7 +83,8 @@ new Vue({
   created() {
   },
   mounted() {
-    this.$store.commit('updateMenulist');
+    this.$store.dispatch('getMenulistRole');
+
   },
 
 });
