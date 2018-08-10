@@ -60,7 +60,7 @@
                                 </Tooltip>
                             </div>
                         </div>
-                        <div style="margin-bottom:-7px;">
+                        <div style="margin-bottom:-5px;">
                             <Progress :percent="Number(item.rate_task)>100.1?100:Number(item.rate_task)" :stroke-width="3" :hideInfo="true" status="active"/>
                         </div>
                     </div>
