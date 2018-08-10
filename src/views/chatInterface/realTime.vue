@@ -270,7 +270,7 @@ export default {
             if (!$('#sinaEmotion').is(':visible')) {
               $(this).sinaEmotion()
               event.stopPropagation()
-              //  alert(1111)
+
               $('#sina-emotion').attr('style', `bottom:40px;right:105px;display:block;z-index:9999;`)
               $('#sina-emotion').find('.face').attr('style', 'height: 30px;')
             }

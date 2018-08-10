@@ -717,10 +717,10 @@ jQuery.fn.createErrorAlert = function(errorCode, message) {
 function jsonErrorHandling(response){
   if (!response.ok){
     if (response.message)
-      alert("ERROR:\n"+ response.message);
+      // alert("ERROR:\n"+ response.message);
     for (var i in response.clientEntryErrors){
       var err=response.clientEntryErrors[i];
-      $(":input[name="+err.name+"]").createErrorAlert(err.error);
+      // $(":input[name="+err.name+"]").createErrorAlert(err.error);
     }
   }
 }

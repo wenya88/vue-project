@@ -896,7 +896,7 @@ GanttMaster.prototype.endTransaction = function () {
       var err = this.__currentTransaction.errors[i];
       msg = msg + err.msg + "\n\n";
     }
-    alert(msg);
+    // alert(msg);
   }
   //reset transaction
   this.__currentTransaction = undefined;
