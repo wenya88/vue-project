@@ -45,7 +45,7 @@
                     .round(true)
                     .paddingInner(1);
 
-                d3.json("http://localhost:8080/src/static/flare.json", function (error, data) {
+                d3.json("http://localhost:80/src/static/flare.json", function (error, data) {
                     if (error) throw error;
 
                     var root = d3.hierarchy(data)
