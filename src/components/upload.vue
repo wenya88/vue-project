@@ -44,11 +44,11 @@
             },
             maxFileSize: {
                 type: String,
-                default: '10mb'
+                default: '100mb'
             },
             preventDuplicates: {
                 type: Boolean,
-                default: false
+                default: true
             },
             flash_swf_url: {
                 type: String,
@@ -133,6 +133,7 @@
                                     uploader.setOption(configure);  //传入签名
                                     uploader.start(); // 实例化上传
                                 });
+
                             }
 
                         })

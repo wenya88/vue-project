@@ -66,7 +66,6 @@ const app = {
         setfileUrl(state, data) {
             data.data.name = data.files.name
             state.uploadFile.push(data.data);
-            console.log(22,state.uploadFile)
         },
         clearfileUrl(state) {
             state.uploadFile = [];
