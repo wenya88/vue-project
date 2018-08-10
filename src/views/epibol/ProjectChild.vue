@@ -22,6 +22,7 @@
    </div>
 </template>
 <script>
+import {mapMutations} from 'vuex'
 export default {
   props: ['list'],
   data () {
@@ -29,8 +30,13 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setDetailAll']),
     // 跳转详情页
     getTask (id) {
+      const item = {
+        id: id
+      }
+      this.setDetailAll(item)
       this.$router.push('/project/details')
     }
   }
