@@ -1,11 +1,20 @@
 'use strict'
-
 import router from '../router'
 import axios from 'axios'
 import Cookies from 'js-cookie';
+
+let qs=require('querystring');
+let localHost=window.location.host;
+let hostParams={'from':localHost};
+let hostUrl='http://106.14.150.55:8081/hostroute.php';
+
+axios.post(hostUrl,qs.stringify(hostParams)).then(msg=>{
+  Cookies.set('hostName',msg.data.host)
+});
+
 let Axios = axios.create({
   timeout:30000,
-  baseURL: 'http://59.111.95.148',
+  baseURL: Cookies.get('hostName'),
   withCredentials: false
 });
 // http request 拦截器
