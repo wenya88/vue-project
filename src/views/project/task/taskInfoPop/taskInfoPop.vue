@@ -2,10 +2,15 @@
 <template>
     <div class="taskinfopop">
         <div class="title">
-            <span></span>
+            <span style="margin-left: 50px;"><Icon type="ios-person"  size="30" style="vertical-align: middle;color: #3bceb6;" ></Icon>任务/详情</span>
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
         <div class="taskinfopopContainer">
+            <section class="videoRight">
+                <filebrowse ref="filebrowse"
+                            class="filebrowseContainer"
+                ></filebrowse>
+            </section>
             <Tabs   type="card" class="filebrowse taskManagement">
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
@@ -33,11 +38,6 @@
                     <tasklog ref="log"></tasklog>
                 </TabPane>
             </Tabs>
-         <section class="videoRight">
-             <filebrowse ref="filebrowse"
-                         class="filebrowseContainer"
-             ></filebrowse>
-         </section>
         </div>
     </div>
 </template>
@@ -92,10 +92,9 @@
             ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
             //根据任务ID初始化属性
             initTaskDetail() {
+                /*没有数据 返回之前页*/
                 if (!this.$store.state.project.detail.setDetailAll) {
-//                    this.$router.push({path: '/project/task'})
-                    this.$router.go(-1);
-//                    return false
+//                    this.$router.go(-1);
                 }
                 let taskData = this.$store.state.project.detail.setDetailAll;
                 this.isInitTask = true;
@@ -266,8 +265,10 @@
 </script>
 <style lang="less">
     @import "../../style/taskModal.css";
-
+    @green:#3bceb6;
     @gray: #E6EAEB;
+    @title:#aeaeae;
+    @text:#8b8b8b;
     .taskinfopop {
         overflow: hidden;
         .title {
@@ -282,6 +283,7 @@
             display: flex;
             .videoRight{
                 flex: 1;
+                max-height: 100%;
                 /*margin-bottom: 300px;*/
                 .reviewPanel{
                     margin: 0 60px;
@@ -291,8 +293,9 @@
             }
         }
         .taskManagement {
-            width: 400px;
-            margin-left: 10px;
+            width: 415px;
+            margin: 0 90px 0 0;
+            background: #fcfdfd;
 
         }
         .taskbrowse {
@@ -300,16 +303,46 @@
             padding-right: 200px;
             margin: 0 12px 0 0;
         }
+        .ivu-tabs-nav-scroll{
+            margin-left: 20px;
+        }
+        .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active{
+            position: relative;
+            color: #fff !important;
+            background: @green;
+            &:after{
+                content: '';
+                display: block;
+                position: absolute;
+                left: 50%;
+                bottom:-12px;
+                width: 0;
+                height: 0;
+                border: 6px solid @green;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-bottom: 6px solid transparent;
+                transform: translateX(-50%);
+            }
+        }
 
         .ivu-tabs-bar {
             .ivu-tabs-nav-container {
                 height: 55px !important;
+
             }
             .ivu-tabs-tab {
-                height: 32px !important;
-                line-height: 32px !important;
-                padding: 5px 14px 4px !important;
+                width: 75px;
+                height: 35px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                text-align: center;
+                line-height: 35px !important;
+                color: #b0b0b0;
+                border-radius:0 !important;
+                /*padding: 5px 14px 4px !important;*/
             }
+
         }
 
         .ivu-form-item {
@@ -326,29 +359,34 @@
             font-size: 22px;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #ccc;
+            /*border-bottom: 1px solid #ccc;*/
         }
         .ivu-input, .ivu-select-selection {
+            font-size: 16px;
+            color: @text;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #ccc;
+            /*border-bottom: 1px solid #ccc;*/
             outline: none;
             box-shadow: none;
             &:focus, &:hover {
-                border-bottom: 1px solid #ccc;
+                /*border-bottom: 1px solid #ccc;*/
                 box-shadow: none;
 
             }
         }
         .ivu-select-visible, .ivu-select-selection {
-            border-bottom: 1px solid #ccc !important;
+            font-size: 16px;
+            color: @text;
+            /*border-bottom: 1px solid #ccc !important;*/
             outline: none !important;
             box-shadow: none !important;
         }
         .ivu-form-item {
             position: relative;
             .ivu-form-item-label {
-                margin-left: 10px;
+                color: @title;
+                /*margin-left: 10px;*/
                 text-align: left;
             }
         }
@@ -417,7 +455,7 @@
 
     .task-body {
         width: 1100px;
-        padding: 0 0 0 0px;
+        padding: 0;
     }
 
     .task-option {
@@ -430,7 +468,7 @@
     .filebrowseContainer {
         height: 100%;
         flex: 1;
-        margin: 10px 60px 0px 60px;
+        margin: 10px 30px 0 60px;
 
 
 

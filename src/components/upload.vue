@@ -108,42 +108,56 @@
                 uploader.bind('UploadProgress',  (uploader, file) => {
 
                 });
-
+                var fs;
+                var xh = 1;
                 /*上传*/
                 uploader.bind('FilesAdded', (uploader, files) => {
-                    this.setFilenum(files.length);
+                    fs = files;
+//                    this.setFilenum(files.length);
                     this.clearfileUrl();
-                    this.getImgkey()
-                        .then(() => {
-                            if (files) {
-                                files.map((item, index) => {
-                                    //获取签名
-                                    let configure = {
-                                        'url': this.uploadKey.host,
-                                        'multipart_params': {
-                                            'key': this.uploadKey.dir + item.name,
-                                            'policy': this.uploadKey.policy,
-                                            'OSSAccessKeyId': this.uploadKey.accessid,
-                                            'success_action_status': '200', //让服务端返回200,不然，默认会返回204
-                                            'callback': this.uploadKey.callback,
-                                            'signature': this.uploadKey.signature,
-                                        }
-                                    };
+                    if(!this.uploadKey){
+                        this.getImgkey()
+                            .then(() => {
+                                var configure = {
+                                    'url': this.uploadKey.host,
+                                    'multipart_params': {
+                                        'key': this.uploadKey.dir + files[0].name+'pp',
+                                        'policy': this.uploadKey.policy,
+                                        'OSSAccessKeyId': this.uploadKey.accessid,
+                                        'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                                        'callback': this.uploadKey.callback,
+                                        'signature': this.uploadKey.signature,
+                                    }
+                                };
+                                uploader.setOption(configure);  //传入签名
+                                uploader.start(); // 实例化上传
 
-                                    uploader.setOption(configure);  //传入签名
-                                    uploader.start(); // 实例化上传
-                                });
+                            })
+                    }
 
-                            }
-
-                        })
                 });
                 // 图片上传完触发
+
                 uploader.bind('FilesAdded', (uploader, files) => {
 
                 });
                 // 图片上传成功回调
                 uploader.bind('FileUploaded', (uploader, files, data) => {
+                    console.log(fs)
+                    var configure = {
+                        'url': this.uploadKey.host,
+                        'multipart_params': {
+                            'key': this.uploadKey.dir + fs[xh].name,
+                            'policy': this.uploadKey.policy,
+                            'OSSAccessKeyId': this.uploadKey.accessid,
+                            'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                            'callback': this.uploadKey.callback,
+                            'signature': this.uploadKey.signature,
+                        }
+                    };
+                    uploader.setOption(configure);  //传入签名
+                    xh++;
+
                     let obj = {uploader: uploader, files: files, data: data};
                     this.imgsrc = JSON.parse(data.response);
 
@@ -151,7 +165,8 @@
 
                     this.$bus.emit("FileUploaded");
                 });
-                uploader.bind('UploadProgress', (uploader, file) => {
+
+                uploader.bind('FileUploaded', (uploader, file) => {
 
                 });
 

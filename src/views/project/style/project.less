@@ -3,7 +3,7 @@
 @gray: #e8e8e8;
 @blue: #39f;
 .pigeonhole {
-  .ivu-col-span-4{
+  .ivu-col-span-6{
     .card{
       &-table{
         width: 100% !important;
@@ -31,9 +31,10 @@
   // .ivu-tabs{
   //   position: absolute;
   // }
-  .ivu-col-span-4{
-    // padding: 10px 0;
-    // width: calc(100% / 6);
+  .ivu-col-span-6{
+     padding: 10px 0;
+     //width: calc(100% / 6);
+    min-width: 318px;
     .card{
       border: 1px solid @gray;
       // border-radius: 5px;
@@ -44,11 +45,12 @@
       &-box{
         position: relative;
         width: 100%;
-        height: 256px;
+        min-width: 318px;
+       height: 280px;
         &-pic{
           width: 100%;
-          min-width: 200px;
-          height: 256px;
+          min-width: 318px;
+         height: 280px;
           border: none;
           //background: url("../../../images/3d.jpg") no-repeat center center / 100% 100%;
         }
@@ -66,7 +68,7 @@
           background: rgba(0, 0, 0, .2);
           color: @white;
           padding: 0 10px;
-          display: none;
+          //display: none;
           .tag{
             background: @orange;
             padding: 2px 5px;
@@ -74,6 +76,16 @@
           }
           .date{
             float: right;
+          }
+          .userImg{
+            min-width: 100px;
+            img{
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              vertical-align: middle;
+            }
+
           }
         }
       }
@@ -260,28 +272,39 @@
   }
 }
 .quality{
+  .qualityTitle {
+    display: flex;
+    margin-left: 50px;
+    .icon{
+      width: 40px;
+      height: 100px;
+      background: url(../../../images/icon/resources.png) no-repeat center center / 37px 34px;
+
+    }
+  }
   .nav{
     height: 206px;
-    .frist{
-      float: left;
-      width: 168px;
-      height: 168px;
-      margin: 8px 36px;
-      .text{
-        background: #deeeee;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin: 24px;
-        color: #1a99aa;
-        padding: 32px 20px;
-        .big{
-          font-size: 34px;
-          line-height: 50px;
-        }
-      }
-    }
-    .second, .third, .fourth, .fifth{
+    //.frist,.second, .third, .fourth, .fifth{
+    //  float: left;
+    //  width: 168px;
+    //  height: 168px;
+    //  margin: 8px 36px;
+    //  .text{
+    //    background: #deeeee;
+    //    width: 120px;
+    //    height: 120px;
+    //    border-radius: 50%;
+    //    margin: 24px;
+    //    color: #1a99aa;
+    //    padding: 32px 20px;
+    //    .big{
+    //      font-size: 34px;
+    //      line-height: 50px;
+    //    }
+    //  }
+    //}
+
+    .frist,.second, .third, .fourth, .fifth{
       float: left;
       width: 120px;
       height: 120px;
@@ -292,12 +315,15 @@
         height: 87px;
         border-radius: 50%;
         margin: 17px;
-        color: #1a99aa;
-        padding: 22px 0px;
+
+        padding: 22px 0;
         .big{
           font-size: 24px;
           line-height: 40px;
         }
+      }
+      .description{
+        color: #798684;text-align: center;
       }
     }
   }

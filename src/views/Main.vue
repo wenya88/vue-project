@@ -78,6 +78,7 @@
                     <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']"></router-link>
                     <span class="name">{{item.title}}</span>
                 </li>
+
             </ul>
              <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">

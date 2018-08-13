@@ -1,75 +1,81 @@
 <template>
   <div class="quality" id="completed">
+    <div class="qualityTitle"><p class="icon"></p><span style="line-height: 100px;">资源管理</span></div>
     <div class="nav">
-      <div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">
+      <!--<div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">-->
+      <div v-if="true" class="frist" @click="finishData(4)">
         <i-circle
-          :size="168"
+          :size="120"
           :trail-width="0"
           :stroke-width="15"
           :percent="100"
           stroke-linecap="square"
-          stroke-color="#1a99aa">
+          stroke-color="#3bceb6">
           <div class="text">
-            <p>归档</p>
-            <p class="big">{{param.num}}</p>
+            <p class="big"  style="color:#3bceb6;">{{param.num}}</p>
           </div>
         </i-circle>
+        <p class="description">归档</p>
       </div>
       <div  v-if="projectSet.qualitySecond" class="second" @click="resourcesData(1)">
         <i-circle
-          :size="120"
+
+          :size="118"
           :trail-width="0"
           :stroke-width="15"
           :percent="100"
           stroke-linecap="square"
-          stroke-color="#48c5b5">
+          stroke-color="#fcc44a">
           <div class="text">
-            <p>内部待审</p>
-            <p class="big">{{param.num1}}</p>
+            <p class="big" style="color:#fcc44a;">{{param.num1}}</p>
           </div>
         </i-circle>
+        <p class="description">内部待审</p>
+
       </div>
       <div  v-if="projectSet.qualityThird" class="third" @click="resourcesData(3)">
         <i-circle
-          :size="120"
+
+          :size="118"
           :trail-width="0"
           :stroke-width="15"
           :percent="100"
           stroke-linecap="square"
-          stroke-color="#48c5b5">
+          stroke-color="#8cc8ff">
           <div class="text">
-            <p>内审已反馈</p>
-            <p class="big">{{param.num2}}</p>
+            <p class="big"  style="color:#8cc8ff;" >{{param.num2}}</p>
           </div>
         </i-circle>
+        <p class="description">内审已反馈</p>
       </div>
       <div  v-if="projectSet.qualityFourth" class="fourth" @click="resourcesData(2)">
         <i-circle
-          :size="120"
+          :size="118"
           :trail-width="0"
           :stroke-width="15"
           :percent="100"
           stroke-linecap="square"
-          stroke-color="#48c5b5">
+          stroke-color="#ff898e">
           <div class="text">
-            <p>客户待审</p>
-            <p class="big">{{param.num3}}</p>
+            <p class="big" style="color:#ff898e;" >{{param.num3}}</p>
           </div>
         </i-circle>
+        <p class="description">客户待审</p>
       </div>
       <div  v-if="projectSet.qualityFifth" class="fifth" @click="resourcesData(4)">
         <i-circle
-          :size="120"
+
+          :size="118"
           :trail-width="0"
           :stroke-width="15"
           :percent="100"
           stroke-linecap="square"
-          stroke-color="#48c5b5">
+          stroke-color="#78c97c">
           <div class="text">
-            <p>客户已反馈</p>
-            <p class="big">{{param.num4}}</p>
+            <p class="big" style="color:#78c97c;" >{{param.num4}}</p>
           </div>
         </i-circle>
+        <p class="description">客户已反馈</p>
       </div>
     </div>
     <!-- <Affix>

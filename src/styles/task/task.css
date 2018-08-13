@@ -46,7 +46,7 @@
 
 .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {
     border-bottom: 1px solid #d7dde4 !important;
-    border-radius: 4px 4px 4px 4px !important;
+    /*border-radius: 4px 4px 4px 4px !important;*/
     /*background: #00a050 !important;*/
     /*color: #FFFFFF !important;*/
 }
