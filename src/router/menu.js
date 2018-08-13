@@ -89,7 +89,7 @@ export const menu = [
     //             name: 'cProjectManage',
     //             title: '项目管理',
     //         }
-            
+
     //     ]
     // }, {
     //     path: '/depot',

@@ -1,6 +1,6 @@
 <template>
-  <div class="quality" id="completed">
-    <div class="qualityTitle"><p class="icon"></p><span style="line-height: 100px;">资源管理</span></div>
+  <div class="qualityContainer" id="completed">
+    <!--<div class="qualityTitle"><p class="icon"></p><span style="line-height: 100px;">资源管理</span></div>-->
     <div class="nav">
       <!--<div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">-->
       <div v-if="true" class="frist" @click="finishData(4)">

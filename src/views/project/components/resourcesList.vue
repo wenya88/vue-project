@@ -36,8 +36,8 @@
         <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id,item)">
           <div class="card-box">
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
-            <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
-            <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
+            <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="width: 100%;height: 100%" />
+            <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="width: 100%;height: 100%" />
             <div class="tips">
 
              <div>
@@ -49,6 +49,7 @@
                 <div class="userImg">
                   <img class="icon" src="../../../images/leader.png" /> {{item.run_uname}}
                 </div>
+                <i class="line"></i>
                 <table class="card-table">
                   <tr>
                     <td class="w25">待审天数</td>

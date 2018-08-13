@@ -197,5 +197,5 @@
     margin: 0 2px;
 }
 .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover{
-    background:#222a30 !important;
+    background:#222a30 ;
 }
