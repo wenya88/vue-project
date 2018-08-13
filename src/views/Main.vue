@@ -98,6 +98,7 @@
                     <!--</template>-->
                 <!--</Submenu>-->
             <!--</Menu>-->
+
             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
                     <router-view></router-view>
