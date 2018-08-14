@@ -1,6 +1,6 @@
 <template>
   <div class="qualityContainer" id="completed">
-    <!--<div class="qualityTitle"><p class="icon"></p><span style="line-height: 100px;">资源管理</span></div>-->
+    <div class="qualityTitle"><p class="icon"></p><span style="font-size: 18px;line-height: 100px;">资源管理</span></div>
     <div class="nav">
       <!--<div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">-->
       <div v-if="true" class="frist" @click="finishData(4)">
@@ -242,7 +242,7 @@ export default {
         .then(res => {
           if (res.err_code == 0) {
             if (str == 1) {
-              this.param.num1 = res.page.count
+                this.param.num1 = res.page.count
             } else if (str == 3) {
               this.param.num2 = res.page.count
             } else if (str == 2) {
@@ -262,8 +262,10 @@ export default {
       .then(res => res.data)
       .then(res => {
         // console.log(res)
+
         if(res.err_code == 0) {
-          // console.log(res.data);
+
+            // console.log(res.data);
           this.param.num = res.page.count
           // console.log(this.fileData)
         }

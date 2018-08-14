@@ -55,49 +55,48 @@
                </Menu>
            </div>  -->
             <div class="menuBlock" v-if="!showMenu">
-                <ul>
-                    <li v-for="(item,index) in menuList" :key="index">
-                        <router-link :to="item.path" :class="[item.name]"
-                                     @click.native="collapsedSider()"></router-link>
-                        <span class="name">{{item.title}}</span>
-                    </li>
-                    <!-- <li class="work" @click="linkTo('/epibol/ProjectWork')">
-                        个人工作台
-                    </li> 
-                    <li class="comp" @click="linkTo('/epibol')">
-                        公司
-                    </li> 
-                    <li class="project" @click="linkTo('/epibol')">
-                        项目大厅
-                    </li> 
-                    <li class="art" @click="linkTo('/epibol')">
-                        艺术广场
-                    </li>   -->
-                </ul>
+                <!--<ul>-->
+                    <!--<li v-for="(item,index) in menuList" :key="index">-->
+                        <!--<router-link :to="item.path" :class="[item.name]"-->
+                                     <!--@click.native="collapsedSider()"></router-link>-->
+                        <!--<span class="name">{{item.title}}</span>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
+                        <!--个人工作台-->
+                    <!--</li>-->
+                    <!--<li class="comp" @click="linkTo('/epibol')">-->
+                        <!--公司-->
+                    <!--</li>-->
+                    <!--<li class="project" @click="linkTo('/epibol')">-->
+                        <!--项目大厅-->
+                    <!--</li>-->
+                    <!--<li class="art" @click="linkTo('/epibol')">-->
+                        <!--艺术广场-->
+                    <!--</li>   &ndash;&gt;-->
+                <!--</ul>-->
             </div>
-            <ul class="menu" v-if="!menuListShow">
-            <li v-for="(item,index) in subMenu" :key="index">
-            <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']" ></router-link>
-            <span class="name">{{item.title}}</span>
-            </li>
-            </ul>
+            <!--<ul class="menu" v-if="!menuListShow">-->
+            <!--<li v-for="(item,index) in subMenu" :key="index">-->
+            <!--<router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']" ></router-link>-->
+            <!--<span class="name">{{item.title}}</span>-->
+            <!--</li>-->
+            <!--</ul>-->
             
 
 
-            <!--<Menu :width="'200px'" class="leftMenuList">-->
-                <!--<Submenu v-for="(item,index) in haha" :name="item.level" :key="index">-->
-                    <!--<template slot="title">-->
-                        <!--<span :class="[item.name, item.name === activeMenu ? 'active' : '']"></span>-->
-                        <!--{{item.title}}-->
-                    <!--</template>-->
-                    <!--<template v-if="item.children">-->
-                        <!--<MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="children.level" :key="i">-->
-                            <!--{{children.title}}-->
-                            <!--&lt;!&ndash;<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>&ndash;&gt;-->
-                        <!--</MenuItem>-->
-                    <!--</template>-->
-                <!--</Submenu>-->
-            <!--</Menu>-->
+            <Menu :width="'200px'" class="leftMenuList">
+                <Submenu v-for="(item,index) in menuList" v-if="item.path" :name="index" :key="index">
+                    <template slot="title">
+                        {{item.title}}
+                    </template>
+                    <template v-if="item.children">
+                        <MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+                            {{children.title}}
+                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        </MenuItem>
+                    </template>
+                </Submenu>
+            </Menu>
 
             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
@@ -307,6 +306,7 @@
             this.mainWidth = bodyWidth - 121
         },
         mounted() {
+
             this.bodySize();
             this.init();
             this.updateMenu();

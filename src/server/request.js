@@ -63,6 +63,10 @@ export default {
     getInfoRole: (data) => {
         return Vue.$axios.post(url + 'system/login/info', qs.stringify(data))                             // 权限
     },
+    // 项目列表
+    taskProjectPage: (data) => {
+        return Vue.$axios.post(url + 'task/project/page', qs.stringify(data))                             // 权限
+    },
 
 
 }

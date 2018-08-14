@@ -8,6 +8,7 @@ import api from 'api'
 const app = {
     state: {
         menuList: [],
+        projectMenuList: [],
         routers: [
             otherRouter,
             ...appRouter
@@ -104,7 +105,9 @@ const app = {
             menuList[1].children = array.filter((child) => {
                 return child !== ''
             });
-            state.menuList = menuList;
+            state.menuList = menuList.concat(state.projectMenuList);
+            console.log(111,state.menuList)
+            console.log(222,state.projectMenuList)
         },
         /*
             project级权限
@@ -132,11 +135,13 @@ const app = {
             menuList[0].children = array.filter((child) => {
                 return child !== ''
             });
-            state.menuList = menuList;
+            state.menuList = menuList.concat(state.projectMenuList);
         },
         setRole(state, data) {
-            state.role = data;
-            data = data.split(',');
+            state.role = data.id;
+            state.projectMenuList = data.project;
+            console.log(22,data)
+            data = data.id.split(',');
             sessionStorage.setItem('userrole',JSON.stringify(data));
             if (data.indexOf('c1_1')!==-1) {
                 // 公司概况
@@ -244,41 +249,36 @@ const app = {
             }
 
             this.dispatch('updateMenulistRole')
-        }
+        },
     },
     actions: {
         /*
             菜单权限管理
         */
         async getMenulistRole({commit, dispatch}) {
-
             const {data} = await api.getInfoRole();
-            commit('setRole', data.limit.auth_id);
-
-
+            const project = await api.taskProjectPage();
+            console.log(11,project)
+            commit('setRole', {id:data.limit.auth_id,project:project.data.project});
         },
+
         updateMenulistRole({commit}) {
             let accessCode = parseInt(Cookies.get('post_id'));
             // let userType = Cookies.get('user_type')
-            let userType = sessionStorage.user_type;
+            // let userType = sessionStorage.user_type;
             let menuList = [], childrenList = [];
 
             menu.forEach((item, index) => {
-                // 模拟权限
                 if (item.access) {
-                    if(accessCode == 3) {
-                        // if(item.access == 3){
+                    // 工作台
+                    if(item.access === accessCode) {
                             menuList.push(item);
-                        // }
-                    } else if(accessCode != 3) {
-                        // if (item.access != 3) {
-                        menuList.push(item)
                     }
                 } else {
                     menuList.push(item);
                 }
-                // 甲方乙方权限配置
 
+                // 甲方乙方权限配置
                 if (item.name === "epibol") {
                     commit('epibolMenuList', {menuList: menuList, item: item})
                 }
