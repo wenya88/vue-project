@@ -16,13 +16,21 @@
 </template>
 <script>
 var qs=require('querystring');
-import contractList from './contractManage/component/contractList'
+import contractList from './contractManage/component/contractList';
+import {mapState} from 'vuex';
 export default {
     data(){
         return{
             contData:[],
             search:''
         }
+    },
+    computed:{
+       ...mapState({
+            companyID(data){
+                return data.paySkip.company
+            }
+       })
     },
     components:{
         contractList:contractList
@@ -50,7 +58,7 @@ export default {
             let url=_this.GLOBAL.baseRouter+'task/contract/get-contract-list';
             let params={
                 search:search,
-                company_id:1
+                company_id:this.companyID.company_id
             };
             _this.$Loading.start();
             _this.$axios.post(url,qs.stringify(params)).then(msg=>{
@@ -89,7 +97,7 @@ export default {
             let _this=this;
             let url=_this.GLOBAL.baseRouter+'task/company/member-page'
             let params={
-                company_id:1
+                company_id:this.companyID.company_id
             }
             _this.$axios.post(url,qs.stringify(params)).then(msg=>{
                 if(msg.data.err_code==0){
