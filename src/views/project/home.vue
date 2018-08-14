@@ -115,7 +115,8 @@ export default {
     },
     mounted(){
         this.get();
-            this.flare();
+        this.flare();
+
     },
     methods:{
         companySet(){
@@ -165,6 +166,12 @@ export default {
     },
     components:{
         vFlare
+    },
+    watch:{
+        '$route'(){
+            this.get();
+            this.flare();
+        }
     }
 }
 </script>

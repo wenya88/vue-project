@@ -206,6 +206,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'manager',
                 title: '经理工作台',
+                meta:{role:1},
                 component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
             },
             {
@@ -236,12 +237,14 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'imPlementer',
                 title: '实施人员',
+                meta:{role:3},
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
             }, {
                 path: '/epibol/ProjectWorks',
                 icon: 'ios-paper-outline',
                 name: 'workbench',
                 title: '工作台',
+                meta:{role:2},
                 component: resolve => { require(['@/views/epibol/ProjectWorks.vue'], resolve); }
             }, {
                 path: '/epibol/3D',

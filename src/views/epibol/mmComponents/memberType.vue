@@ -185,7 +185,7 @@ export default {
     display: none;
 }
 .ivu-menu-light{
-    background: #fff !important;
+    /*background: #fff !important;*/
 }
 .ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-vertical .ivu-menu-submenu-title:hover{
     background: #f3f3f3 !important;

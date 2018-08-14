@@ -84,13 +84,19 @@
             
 
 
-            <Menu :width="'200px'" class="leftMenuList">
-                <Submenu v-for="(item,index) in menuList" v-if="item.path" :name="index" :key="index">
+            <Menu :width="'200px'"  class="leftMenuList">
+                <Submenu v-for="(item,index) in menuList"  :name="index" :key="index">
                     <template slot="title">
-                        {{item.title}}
+                        {{item.title||item.name}}
                     </template>
                     <template v-if="item.children">
                         <MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+                            {{children.title}}
+                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        </MenuItem>
+                    </template>
+                    <template v-else>
+                        <MenuItem v-for="(children,i) in children" @click.native="projectDetails(children,item.id)" :name="index+'-'+i" :key="i">
                             {{children.title}}
                             <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
                         </MenuItem>
@@ -122,6 +128,7 @@
         },
         data() {
             return {
+
                 haha: [
 //                    {
 //                        path: '/project',
@@ -301,9 +308,9 @@
             // if(bodyWidth <= 1366) {
             //     this.centerHight = bodyHight - 90
             // } else {
-            this.centerHight = bodyHight - 64
+            this.centerHight = bodyHight - 64;
             // }
-            this.mainWidth = bodyWidth - 121
+            this.mainWidth = bodyWidth - 121;
         },
         mounted() {
 
@@ -320,6 +327,9 @@
             ...mapState({
                 menuListShow(value) {
                     return value.project.detail.setDetailAll
+                },
+                children(value){
+                    return value.app.children
                 }
             }),
             menuList() {
@@ -333,6 +343,12 @@
             }
         },
         methods: {
+            projectDetails(children,id){
+                if(id){
+                    sessionStorage.projectID = id;
+                }
+                this.$router.push({path:children.path})
+            },
             bodySize() {
                 let body = document.body;
                 body.onresize = () => {
@@ -452,9 +468,32 @@
 </script>
 <style lang="less">
     @import "./main.less";
-   
+
+
+   .main-content{
+       ::-webkit-scrollbar {/*滚动条整体样式*/
+           width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+           height: 4px;
+       }
+       ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+           border-radius: 5px;
+           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+           background: rgba(0,0,0,0.2);
+       }
+       ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+           border-radius: 0;
+           background: rgba(0,0,0,0.1);
+       }
+       .ivu-menu{
+           overflow-y: auto !important;
+       }
+
+   }
     .leftMenuList {
+background: #19322e !important;
         /*background: #19322e !important;*/
+
         img{
             background: #fff ;
         }
@@ -471,7 +510,6 @@
         }
         .ivu-menu-submenu {
             background: #19322e !important;
-
             /*background: linear-gradient('left',#24655b, #1d433d) !important;*/
         }
         .ivu-menu-vertical, .ivu-menu-submenu-title:hover {

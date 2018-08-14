@@ -364,7 +364,18 @@ export default {
       _ajax(url,data){
           return this.$axios.post(this.GLOBAL.baseRouter+url,qs.stringify(data))
       },
-  }
+  },
+    watch:{
+        '$route'(){
+            this.autoH();
+            this.initTaskMain();
+            this.$bus.on('refreshCurrentTaskList',()=>{
+                this.refreshCurrentTaskList();
+            });
+            this.projectPlan();
+            this.setUserStatus(null)
+        }
+    }
 };
 </script>
 
