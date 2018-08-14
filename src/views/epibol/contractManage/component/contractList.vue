@@ -1,48 +1,45 @@
 <template>
-    <div>
         <div class="contractRow">
             <GeminiScrollbar>
                 <dl>
                     <dd v-for="(item,index) in contData" :key="index">
-                        <div class="title">
-                            <Dropdown>
-                                <a href="javascript:void(0)">
-                                    <Icon type="ios-more" size="20"></Icon>
-                                </a>
-                                <DropdownMenu slot="list" v-if="item.status<='0'">
-                                    <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
-                                    <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
-                                </DropdownMenu>
-                                <DropdownMenu slot="list" v-else>
-                                    <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-                        </div>
-                        <div class="projectName">
-                            {{item.contract_name}}
-                        </div>
-                        <div class="projectName">
-                            ￥{{item.contract_price}}
-                        </div>
-                        <div class="projectStatus">
-                            <span class="status">
+                        <div class="statusRow">
+                            <div :class="[item.status!=0?'status':'status yellow']">
                                 {{item.status_text}}
-                            </span>
-                            <span class="line">&nbsp;</span>
+                            </div>
+                            <div class="title">
+                                <Dropdown trigger="click" placement="bottom-end">
+                                    <a href="javascript:void(0)">
+                                        <Icon type="ios-more" size="38"></Icon>
+                                    </a>
+                                    <DropdownMenu slot="list" v-if="item.status<='0'">
+                                        <DropdownItem @click.native="editContract(item.id)">编辑</DropdownItem>
+                                        <DropdownItem @click.native="deleteContract(item.id)">删除</DropdownItem>
+                                    </DropdownMenu>
+                                    <DropdownMenu slot="list" v-else>
+                                        <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <div class="projectName">
+                             {{item.contract_name}}
+                        </div>
+                        <div class="projectMoney">
+                            ￥<span>{{item.contract_price}}</span>
                         </div>
                         <div class="projectInfo">
-                            <span class="company">
-                                <i class="iconfont icon-ren"></i> {{item.customer_name}}
-                            </span>
-                            <span class="date">
-                                {{item.create_time}}
-                            </span>
+                            <p class="company">
+                                <i class="iconfont icon-loudong"></i> {{item.customer_name}}
+                            </p>
+                            <p class="company">
+                                {{item.start_time}} ~ {{item.end_time}}
+                            </p>
                         </div>
                     </dd>
                 </dl>
             </GeminiScrollbar>
         </div>
-    </div>
 </template>
 <script>
 var qs=require('querystring');
@@ -68,7 +65,7 @@ export default {
     methods:{
         // 初始化高
         autoH(){
-            $('.contractRow').height($(window).height()-170);
+            $('.contractRow').height($(window).height()-160);
             this.$store.commit('changContractStatus',false);
         },
         //删除

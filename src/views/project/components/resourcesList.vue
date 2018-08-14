@@ -32,36 +32,43 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="4" v-for="(item,index) in listData" :key="index">
+        <Col span="6" v-for="(item,index) in listData" :key="index">
         <div class="card" @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id,item)">
           <div class="card-box">
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
-            <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
-            <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="min-width: 50px; width: 50px; height: 50px; margin: 80px;" />
+            <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="width: 100%;height: 100%" />
+            <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="width: 100%;height: 100%" />
             <div class="tips">
-              <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
-              <span class="date">上传：{{item.create_date}}</span>
-              <table class="card-table">
-                <tr>
-                  <td class="w25">待审天数</td>
-                  <td class="w25">完成阶段</td>
-                  <td class="w25">剩余时间</td>
-                  <td class="w25" rowspan="2">
-                    <img class="icon" src="../../../images/leader.png" /> {{item.run_uname}}
-                  </td>
-                </tr>
-                <tr class="fb">
-                  <td class="w25">
-                    <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
-                  <td class="w25">
-                    <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
-                    <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
-                    <span class="orange-span" v-else>暂无上传阶段</span>
-                  </td>
-                  <td class="w25">
-                    <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
-                </tr>
-              </table>
+
+             <div>
+               <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
+               <span class="date">上传：{{item.create_date}}</span>
+             </div>
+
+              <div style="display: flex">
+                <div class="userImg">
+                  <img class="icon" src="../../../images/leader.png" /> {{item.run_uname}}
+                </div>
+                <i class="line"></i>
+                <table class="card-table">
+                  <tr>
+                    <td class="w25">待审天数</td>
+                    <td class="w25">完成阶段</td>
+                    <td class="w25">剩余时间</td>
+                  </tr>
+                  <tr class="fb">
+                    <td class="w25">
+                      <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
+                    <td class="w25">
+                      <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
+                      <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                      <span class="orange-span" v-else>暂无上传阶段</span>
+                    </td>
+                    <td class="w25">
+                      <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
         </div>

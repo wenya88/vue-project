@@ -1,23 +1,27 @@
 <!-- 任务详情组件 -->
 <template>
-    <div>
+    <div class="taskDetailsContainer">
         <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
-            <FormItem   label="任务名称">
-                <Input   v-model="editData.name"  :readonly="editDisabled">
-                <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
-                </Input>
-            </FormItem>
-            <FormItem  label="负责人">
-                <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
-                    <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
-                </Select>
+            <!--<FormItem   label="任务名称">-->
+                <!--<Input   v-model="editData.name"  :readonly="editDisabled">-->
+                <!--<span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>-->
+                <!--</Input>-->
+            <!--</FormItem>-->
+
+            <FormItem label="负责人" class="borBotm" >
+                <div class="head" >
+                    <img src="./QQ图片20180719133401.jpg" class="headImg" alt="">
+                    <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
+                        <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
+                    </Select>
+                </div>
             </FormItem>
             <!--<FormItem  v-else label="负责人">-->
                 <!--<Select v-model="principalName"  placeholder="">-->
                     <!--<Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>-->
                 <!--</Select>-->
             <!--</FormItem>-->
-            <FormItem label="计划时间">
+            <FormItem label="计划时间" class="borBotm">
                 <DatePicker
                 :value="getTimeRange"
                 @on-change="setTimeRange"
@@ -30,7 +34,7 @@
                 >
                 </DatePicker>
             </FormItem>
-            <FormItem label="子项目">
+            <FormItem label="子项目" class="borBotm">
                 <Select
                 @on-change='setChildProject'
                 v-model="editData.project_child"
@@ -47,7 +51,7 @@
                     </Option>
                 </Select>
             </FormItem>
-            <FormItem v-if="taskManagement" label="任务类型">
+            <FormItem v-if="taskManagement" label="任务类型" class="borBotm">
                 <section class="requirement">
                     <AutoComplete  v-model="editData.tasktype_name"
                                    @on-select="selectTaskType"
@@ -75,7 +79,7 @@
                 </section>
             </FormItem>
             <template v-else>
-                <FormItem label="任务类型">
+                <FormItem label="任务类型" class="borBotm">
                     <AutoComplete  v-model="editData.tasktype_name"
                                    placeholder="选择任务类型"
                                    @on-select="selectTaskType"
@@ -97,7 +101,7 @@
                     </Card>
                 </FormItem>
             </template>
-            <FormItem label="参考附件">
+            <FormItem label="参考附件" class="borBotm">
                 <div>
                 <Upload
                 multiple
@@ -114,12 +118,14 @@
                 </div>
                 <!-- <div v-for="item in editData.file" :key="item.url">{{item.url}}</div> -->
             </FormItem>
-            <FormItem label="要求说明">
+            <FormItem label="备注" class="borBotm">
                 <Input
+                class="remark"
                 v-model="editData.description"
                 type="textarea"
                 :autosize="{minRows: 2,maxRows: 5}"
                 :disabled="editDisabled"
+
                 ></Input>
             </FormItem>
         </Form>
@@ -567,7 +573,30 @@ export default{
     }
 };
 </script>
-<style>
+<style lang="less">
+@bor:#f2f9f9;
+    .taskDetailsContainer{
+        .head{
+            display: flex;
+            .headImg{
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+            }
+        }
+        .borBotm{
+            padding-bottom: 14px;
+            padding-left: 20px;
+            border-bottom: 1px solid @bor;
+        }
+
+        textarea.ivu-input{
+            /*height: 30px !important;*/
+            /*min-height: 30px !important;*/
+        }
+    }
+
+
 .taskdetail{
   display:inline-block;
   overflow:hidden;

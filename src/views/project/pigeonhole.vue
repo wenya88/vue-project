@@ -30,7 +30,7 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="4" v-for="(item,index) in fileData" :key="index">
+        <Col span="6" v-for="(item,index) in fileData" :key="index">
         <div class="card">
           <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
             <!-- <Icon type="heart" color="red" v-if=""></Icon>

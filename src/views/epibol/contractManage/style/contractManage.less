@@ -1,4 +1,5 @@
 @import '../../../../styles/common.less';
+@import '../../../../styles/newBase.less';
 .contract{
     dl{
         dt{
@@ -108,60 +109,78 @@
 
 // 这是一个淫荡的分割线
 .newContract{
-    padding:20px 20px 0px 20px;
+    padding-top:@p30;
     dt{
         .span{
-            float:left;
+            float:left;margin-left:1%;
             .ivu-input{
-                height:44px;line-height:44px;
+                height:40px;line-height:40px;border:0px;
             }
             .ivu-input-icon{
                 margin-top:5px;cursor:pointer;
             }
+            .ivu-input-group-append{
+                border:0px;background:@green;color:@white;
+            }
+            .ivu-icon{
+                font-size:@f20;
+            }
+            .ivu-input-group-append:not(:first-child):not(:last-child), .ivu-input-group-prepend:not(:first-child):not(:last-child), .ivu-input-group>.ivu-input:not(:first-child):not(:last-child){
+                border-radius:@r3;
+            }
         }
         .em{
-            float:right;padding-top:7px;
+            float:right;
             .ivu-btn-success{
-                line-height:46px;padding:0px 40px;font-size:@fs14;border-radius:0px;background:@fontColor;border-width:0px;
+                line-height:40px;padding:0px @p15;font-size:@fs14;border-radius:@r3;background:@white;border-width:0px;color:@green;
             }
         }
     }
     .contractRow{
-        margin-top:20px;
+        margin-top:@p25;
         dl{
-            margin-left:-3.33333%;display:block;zoom:1;overflow:auto;margin-top:-20px;
+            margin-left:-1%;display:block;zoom:1;overflow:auto;
         }
         dd{
-            float:left;width:30%;display:inline-block;margin:20px 0px 20px 3.33333%;white-space:nowrap;background:#fcfcfc;
-            padding:14px;
+            width:23%;display:inline-block;margin:0px 0px @p30 2%;white-space:nowrap;background:@white;border-radius:@r3;
             .ivu-icon-ios-more{
                 color:#222222;
             }
-            .title{
-                display:block;text-align:right;position:absolute;margin-left:28%;
-            }
-            .projectName{
-                display:block;text-align:center;font-size:@fs118;color:#222;padding:3px 0px;margin-top:20px;
-            }
-            .projectStatus{
-                display:block;width:100%;text-align:center;height:36px;margin:10px 0px;
-                .line{
-                    height:1px;display:block;background:#bdbdfd;margin-top:-18px;
+            .statusRow{
+                height:54px;border-bottom:1px dashed @line;
+                .ivu-select-dropdown{
+                    margin:-10px;padding:0px;
                 }
                 .status{
-                    line-height:36px;color:#fff;background:@fontColor;padding:0px 20px;display:inline-block;border-radius:4px;
+                    background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHMAAABSCAYAAABns+t1AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAydpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTg4Q0NDMzE5RjkyMTFFODlBQjhBNEJFNzMyRURENTMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTg4Q0NDMzA5RjkyMTFFODlBQjhBNEJFNzMyRURENTMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDpmZjg5MTI5Ny1jMDNhLTI5NGUtYTQ2Ni1kZWRiODgzODhkNDIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6ZmY4OTEyOTctYzAzYS0yOTRlLWE0NjYtZGVkYjg4Mzg4ZDQyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Fyhy2wAAAuhJREFUeNrsnD9rU1Echu/v3ktLgqak2jiURrAO4p+h0EL9M9giQuxSsEugm5DFmvYDCBb8BFcn03YREQQhxSGBLl0CmgR0k5bYweCipEjjEAom8XdtK7U0bcd7Xt4HXkKSm+U+nJNz4ZxXbn7MtS0SFLY0m5p1TUmT2339S2EoceSPbd6/QNGjuaDxrT3RFDUVzYwmdNyPKTP4XNQ816zd+pSfPOpC4TRrHBlNWqfcbY5M80lp8jpKI5SJwZgmq0K7KBOD8d3/UspEmXL3L4oo03w8FRqiTAzimgeUiUOaz5lYjHJk4nCXMnG4Tpk4XKJMHM5SJg6nKRMIysThF2XiUKNMHNYoE4f3lInDist7AEGlMJQocmRi8IyPJhhUNUuUicGsTrENyjSfBRW5vPeGMs2loHm0/wPKNJNVzcTBXe2UaR7+8YSEiqwf/ILPmWatWudUYrbTBZQZfDY0nmZxb9VKmWbgT501a+ewbVmTt3bOaJ5oB6X0vXja8cIfqcfC+2sONoUByeQIBJNJoWAyKRRMJoWCyaRQc5HfhXs8BRYYG+6W5YY3pfvcuhU+X5KeazmJ3SlRJoxg+4tEhz3pn1qSyJUGZWJQlejIrH15fpkyUXDCGXvwYVr6bm9TJgardnx6UgaS9WNXsyTwjLWqr7Ltb29Y6gTCeOvrS5Y6AZFqfphiqRMMzYbX+jzPUicQ4u2fZZY6AZHmowkS4rDUCYZ2k6VOQLDUCQiWOgHBUicgWOqEBGXiwFInIFjqBARLnYBgqRMM4qxQJgYV58Y7ljqBwFInEPwtmCx1gsAJ+XtpWeoEwIIz+palTgAU7Pg0S50A8DdBT8hA8r9d7WwbMe8/MmMPzhx6PIEyzVq1zulih6VO5iIb0jviSf/9RYlcZamTOd7cuuWGa9Id8w/bllVeXqLDRaur92SlTt9fn+l4YSxZ43F4g7ApDEgmRyCYTAoFk0mhYDIpFEzmP6HuKd4dw/gjwAATusRH9cSaQgAAAABJRU5ErkJggg==');
+                    width:115px;height:41px;line-height:34px;color:@white;text-align:center;display:inline-block;font-size:@f14;position:absolute;margin-left:-7px;margin-top:10px;
+                }
+                .yellow{
+                    background-position-y:-41px;
+                }
+            }
+            .title{
+                display:block;text-align:right;position:absolute;margin-left:21%;margin-top:8px;
+            }
+            .ivu-icon-ios-more{
+                color:#eee;
+            }
+            .projectName{
+                display:block;text-align:center;font-size:@f20;color:@seven;margin-top:@p45;font-weight:lighter;
+            }
+            .projectMoney{
+                display:block;text-align:center;color:@seven;margin-top:@p25;
+                span{
+                    font-weight:lighter;color:@green;font-size:@p30;font-family:"Microsoft YaHei";
                 }
             }
             .projectInfo{
-                color:#222;
+                color:@desc;margin:@p40 @p50 0px @p50;padding:@p15 0px;border-top:1px dashed @line;text-align:center;
                 .company{
-                    float:left;
+                    display:block;line-height:22px;
                     .iconfont{
-                        margin-right:5px;
+                        margin-right:3px;
                     }
-                }
-                .date{
-                    float:right;
                 }
             }
         }

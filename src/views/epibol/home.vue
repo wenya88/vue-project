@@ -41,7 +41,6 @@
                     </p>
                 </div>
             </div>
-
             <!-- 公司内容 -->
             <div class="companyContent">
                  <!-- 头部 -->
@@ -86,7 +85,7 @@
     </div>
 </template>
 <script>
-import {mapState} from 'vuex'
+import {mapState} from 'vuex';
 export default {
     methods:{
         companySet(){
@@ -99,7 +98,7 @@ export default {
             this.$router.push('/epibol/bidManage');
         },
         contract(){
-            if(sessionStorage.user_type==1){
+            if(this.companyInfo.type==1){
                 this.$router.push('/customer/contractManage');
             }else{
                 this.$router.push('/epibol/contractManage');
@@ -116,9 +115,12 @@ export default {
         ...mapState({
             standardLibrary(data){
                 return data.app.standardLibrary
-            }  ,
+            },
             epibol(data){
                 return data.app.epibol
+            },
+            companyInfo(data){
+                return data.paySkip.company
             }
         })
     }

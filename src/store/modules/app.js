@@ -15,7 +15,8 @@ const app = {
         menuTheme: 'dark', // 主题
         themeColor: '',
         messageCount: 0,
-        uploadFile: [],
+        uploadFile: [],  // 上传文件路径
+        filenum:null, // 上传文件数量
         /* 以下 8月9日 权限 */
         role: null,              // 权限
         standardLibrary: true, // 公司级规范库
@@ -61,12 +62,16 @@ const app = {
         setMessageCount(state, count) {
             state.messageCount = count;
         },
+        /*上传*/
         setfileUrl(state, data) {
             data.data.name = data.files.name
             state.uploadFile.push(data.data);
         },
         clearfileUrl(state) {
             state.uploadFile = [];
+        },
+        setFilenum(state,data) {
+            state.filenum = data;
         },
         /*
             epibol级权限

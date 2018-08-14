@@ -35,7 +35,7 @@
                 <!--<source :src="VideoURL" type="video/mp4">-->
                 <!--</video>-->
                 <!--视频-->
-                <video id="haha" width="810" height="480" style="object-fit: fill">
+                <video id="haha" height="480" style="width:100%;object-fit: fill">
                     <source :src="VideoURL" type="video/mp4">
                 </video>
                 <!--进度条-->
@@ -609,6 +609,7 @@
             },
             /*进度条*/
             timeNum() {
+
                 if (this.video.readyState > 0) {
                     let zhen = parseFloat(this.video.duration);
                     this.percentage = this.video.currentTime / zhen;

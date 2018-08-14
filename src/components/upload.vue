@@ -1,7 +1,7 @@
 <template>
     <div class="uploadContainer">
         <slot name="upload">
-            <button id="browse" class="browse" >选择文件</button>
+            <button id="browse" class="browse">选择文件</button>
             <p class="button">选择文件</p>
         </slot>
     </div>
@@ -9,7 +9,7 @@
 
 <script>
     import qs from 'querystring'
-    import {mapState,mapMutations} from 'vuex'
+    import {mapState, mapMutations} from 'vuex'
     import plupload from 'plupload/js/plupload.min.js'
 
     /**     传入参数:
@@ -25,38 +25,38 @@
      * */
 
     export default {
-        props:{
-            parameter:{
-                type:Object,
-                default:() => {
-                return {type:'upload'}
+        props: {
+            parameter: {
+                type: Object,
+                default: () => {
+                    return {type: 'upload'}
                 }
-            } ,
-            fileType:{
-                type:Array,
-                default:() => {
-                   return [
-                        { title : "Image files", extensions : "jpg,gif,png,bmp" },
-                        { title : "Zip files", extensions : "zip,rar" },
-                       {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv,fbx"},
-                   ]
-                }
-            } ,
-            maxFileSize:{
-                type:String,
-                default:'10mb'
             },
-            preventDuplicates:{
-                type:Boolean,
-                default:false
-            } ,
-            flash_swf_url:{
-                type:String,
-                default:'js/Moxie.swf'
-            }  ,
-            silverlight_xap_url:{
-                type:String,
-                default:'js/Moxie.xap'
+            fileType: {
+                type: Array,
+                default: () => {
+                    return [
+                        {title: "Image files", extensions: "jpg,gif,png,bmp,jpeg"},
+                        {title: "Zip files", extensions: "zip,rar"},
+                        {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv,fbx"},
+                    ]
+                }
+            },
+            maxFileSize: {
+                type: String,
+                default: '100mb'
+            },
+            preventDuplicates: {
+                type: Boolean,
+                default: true
+            },
+            flash_swf_url: {
+                type: String,
+                default: 'js/Moxie.swf'
+            },
+            silverlight_xap_url: {
+                type: String,
+                default: 'js/Moxie.xap'
             }
         },
         created() {
@@ -68,59 +68,60 @@
         },
         data() {
             return {
-                uploadKey:null,
-                imgsrc:'',
+                uploadKey: null,
+                imgsrc: '',
             }
         },
         methods: {
-            ...mapMutations(['setfileUrl','clearfileUrl']),
+            ...mapMutations(['setfileUrl', 'clearfileUrl','setFilenum']),
             // 获取秘钥
-            getImgkey () {
+            getImgkey() {
                 let url = this.GLOBAL.baseRouter + "/file/oss/oss";
-               return new Promise((resolve, reject) => {
-                   if(this.uploadKey === null ){
-                       this.$axios.post(url, qs.stringify(this.parameter)).then(data => {
-                           this.uploadKey = data.data;
-                           resolve();
-                       })
-                   }else{
-                       resolve();
-                   }
+                return new Promise((resolve, reject) => {
+                    if (this.uploadKey === null) {
+                        this.$axios.post(url, qs.stringify(this.parameter)).then(data => {
+                            this.uploadKey = data.data;
+                            resolve();
+                        })
+                    } else {
+                        resolve();
+                    }
                 })
             },
-            upload(){
+            upload() {
                 window.uploader = new plupload.Uploader({
-                    browse_button : 'browse', // 触发文件选择对话框的按钮，为那个元素id
-                    runtimes : 'html5,flash,silverlight,html4',
-                    url : 'http://59.111.95.148/file/oss/oss', // 服务器端的上传页面地址
-                    flash_swf_url : this.flash_swf_url, // swf文件，当需要使用swf方式进行上传时需要配置该参数
+                    browse_button: 'browse', // 触发文件选择对话框的按钮，为那个元素id
+                    runtimes: 'html5,flash,silverlight,html4',
+                    url: 'http://59.111.95.148/file/oss/oss', // 服务器端的上传页面地址
+                    flash_swf_url: this.flash_swf_url, // swf文件，当需要使用swf方式进行上传时需要配置该参数
                     max_file_size: this.maxFileSize, // 限制为2MB
-                    silverlight_xap_url : this.silverlight_xap_url, // silverlight文件，当需要使用silverlight方式进行上传时需要配置该参数
+                    silverlight_xap_url: this.silverlight_xap_url, // silverlight文件，当需要使用silverlight方式进行上传时需要配置该参数
                     filters: {
-                        mime_types :this.fileType,
-                        max_file_size : this.maxFileSize, //最大只能上传10mb的文件
-                        prevent_duplicates : this.preventDuplicates //不允许选取重复文件
+                        mime_types: this.fileType,
+                        max_file_size: this.maxFileSize, //最大只能上传10mb的文件
+                        prevent_duplicates: this.preventDuplicates //不允许选取重复文件
                     },
                 });
                 // 初始化
                 uploader.init();
 
+                uploader.bind('UploadProgress',  (uploader, file) => {
+
+                });
+                var fs;
+                var xh = 1;
                 /*上传*/
-                uploader.bind('FilesAdded',  (uploader, files)=> {
-                    console.log(33,uploader)
-                    console.log(44,files)
+                uploader.bind('FilesAdded', (uploader, files) => {
+                    fs = files;
+//                    this.setFilenum(files.length);
                     this.clearfileUrl();
-                    this.getImgkey()
-                        .then(() => {
-                            files.map((item,index) => {
-                                let name = files[index].name.split('.')[1];
-                                let postfix = (name == 'rar' || name == 'zip')?name:'';
-                                //获取签名
-                                console.log('key',this.uploadKey.dir + files[index].name.split('.')[0] + item.name)
-                                let configure = {
+                    if(!this.uploadKey){
+                        this.getImgkey()
+                            .then(() => {
+                                var configure = {
                                     'url': this.uploadKey.host,
                                     'multipart_params': {
-                                        'key': this.uploadKey.dir + files[index].name.split('.')[0] + item.name ,
+                                        'key': this.uploadKey.dir + files[0].name+'pp',
                                         'policy': this.uploadKey.policy,
                                         'OSSAccessKeyId': this.uploadKey.accessid,
                                         'success_action_status': '200', //让服务端返回200,不然，默认会返回204
@@ -130,23 +131,42 @@
                                 };
                                 uploader.setOption(configure);  //传入签名
                                 uploader.start(); // 实例化上传
-                            });
-                        })
+
+                            })
+                    }
+
                 });
                 // 图片上传完触发
-                uploader.bind('FilesAdded',(uploader,files)=>{
+
+                uploader.bind('FilesAdded', (uploader, files) => {
 
                 });
                 // 图片上传成功回调
-                uploader.bind('FileUploaded',(uploader,files,data)=>{
-                    let obj = {uploader:uploader,files:files,data:data}
+                uploader.bind('FileUploaded', (uploader, files, data) => {
+                    console.log(fs)
+                    var configure = {
+                        'url': this.uploadKey.host,
+                        'multipart_params': {
+                            'key': this.uploadKey.dir + fs[xh].name,
+                            'policy': this.uploadKey.policy,
+                            'OSSAccessKeyId': this.uploadKey.accessid,
+                            'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                            'callback': this.uploadKey.callback,
+                            'signature': this.uploadKey.signature,
+                        }
+                    };
+                    uploader.setOption(configure);  //传入签名
+                    xh++;
+
+                    let obj = {uploader: uploader, files: files, data: data};
                     this.imgsrc = JSON.parse(data.response);
 
                     this.setfileUrl(obj);
 
                     this.$bus.emit("FileUploaded");
                 });
-                uploader.bind('UploadProgress',(uploader,file)=>{
+
+                uploader.bind('FileUploaded', (uploader, file) => {
 
                 });
 
@@ -158,17 +178,17 @@
 </script>
 
 <style lang="less">
-    .uploadContainer{
+    .uploadContainer {
         position: relative;
-        .browse{
+        .browse {
             width: 120px;
             height: 30px;
             opacity: 0;
             border-radius: 4px;
         }
-        .button{
+        .button {
             position: absolute;
-            top:0;
+            top: 0;
             left: 0;
             width: 120px;
             height: 30px;

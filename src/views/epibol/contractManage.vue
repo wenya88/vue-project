@@ -3,10 +3,12 @@
         <dl>
             <dt>
                 <span class="span">
-                    <Input v-model="search" placeholder="合同/项目名称" style="width: 300px" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Input>
+                    <Input v-model="search" placeholder="请输入您想搜索的合同" style="width: 300px" @on-enter="searchCommit">
+                        <Button slot="append" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Button>
+                    </Input>
                 </span>
                 <span class="em">
-                    <Button type="success" @click.native="newAdd">新增合同</Button>
+                    <Button type="success" @click.native="newAdd"><i class="iconfont icon-xinjian"></i> 新增任务</Button>
                 </span>
                 <div class="clear"></div>
             </dt>
@@ -16,13 +18,21 @@
 </template>
 <script>
 var qs=require('querystring');
-import contractList from './contractManage/component/contractList'
+import contractList from './contractManage/component/contractList';
+import {mapState} from 'vuex';
 export default {
     data(){
         return{
             contData:[],
             search:''
         }
+    },
+    computed:{
+       ...mapState({
+            companyID(data){
+                return data.paySkip.company
+            }
+       })
     },
     components:{
         contractList:contractList
@@ -50,7 +60,7 @@ export default {
             let url=_this.GLOBAL.baseRouter+'task/contract/get-contract-list';
             let params={
                 search:search,
-                company_id:1
+                company_id:this.companyID.company_id
             };
             _this.$Loading.start();
             _this.$axios.post(url,qs.stringify(params)).then(msg=>{
@@ -89,7 +99,7 @@ export default {
             let _this=this;
             let url=_this.GLOBAL.baseRouter+'task/company/member-page'
             let params={
-                company_id:1
+                company_id:this.companyID.company_id
             }
             _this.$axios.post(url,qs.stringify(params)).then(msg=>{
                 if(msg.data.err_code==0){

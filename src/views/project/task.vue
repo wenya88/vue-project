@@ -372,11 +372,14 @@ export default {
   position:relative;
     height: 100%;
     .taskMainContainer{
-        position: relative;
         display: flex;
+        position: relative;
         height: 100%;
         padding-top: 20px;
-
+        background: #eef1f2;
+        .ivu-tabs .ivu-tabs-content-animated{
+            margin-top: 60px;
+        }
         .ivu-tabs-nav-container{
             height: 60px!important;
         }
@@ -540,7 +543,7 @@ export default {
 }
 .task-operation{
     position:absolute;
-    top:39px;
+    top:87px;
     width:220px;
     height:60px;
     /* text-align:right; */
