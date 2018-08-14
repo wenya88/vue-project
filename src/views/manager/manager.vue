@@ -1,40 +1,11 @@
 <template>
    <div class="manager_page_all">
       <div class="clearfix manager_page_header">
-         <div class="manager_head_left">
-            <p class="scope_overview">经营概览</p>
+         <div class='left_manager_head'>
+            <managaer-in :data='business_concept'></managaer-in>
          </div>
-         <div class="clearfix manager_head_right">
-            <div class="mag-5 mangaer_rve">
-               <div class="mangaer_box_rve">
-                  <p class="income_msg">收入</p>
-                  <div class="clearfix income_msg_details">
-                    <p class="receivables">
-                     <span>已收款：</span>
-                     <span>￥{{business_concept.income}}</span>
-                    </p>
-                    <p class="payment">
-                      <span>未付款：</span>
-                      <span>￥{{business_concept.wait_income}}</span>
-                    </p>
-                  </div>
-               </div>
-            </div>
-            <div class="mag-5 mangaer_rvs">
-               <div class="mangaer_box_rves">
-                  <p class="income_msg">支付</p>
-                  <div class="clearfix income_msg_details">
-                    <p class="receivables">
-                     <span>已支付：</span>
-                     <span>￥{{business_concept.pay}}</span>
-                    </p>
-                    <p class="payment">
-                      <span>未支付：</span>
-                      <span>￥{{business_concept.wait_pay}}</span>
-                    </p>
-                  </div>
-               </div>
-            </div>
+         <div class="right_manager_head">
+            <managex :data='business_concept'></managex>
          </div>
       </div>
       <!-- main -->
@@ -77,6 +48,8 @@ import mangaerSign from './mangaerSign.vue'
 import mangaerPject from './mangaerPject.vue'
 import mangaerQua from './mangaerQua.vue'
 import mangaerTem from './managaerTem.vue'
+import managaerIn from './managaIn.vue'
+import managex from './managex.vue'
 export default {
   data () {
     return {
@@ -93,7 +66,9 @@ export default {
     mangaerSign,
     mangaerPject,
     mangaerQua,
-    mangaerTem
+    mangaerTem,
+    managaerIn,
+    managex
   },
   mounted () {
     this.getData()
@@ -106,7 +81,11 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
         const objData = data.data
-        // console.log('经理数据', data.data)
+        console.log('经理数据', data.data)
+        objData.bid.add = objData.bid.add.split('%')[0]
+        objData.bid.win_rate = Number(objData.bid.win_rate.split('%')[0])
+        objData.quality.outside_pass = objData.quality.outside_pass.split('%')[0]
+        objData.quality.inside_pass = objData.quality.inside_pass.split('%')[0]
         this.bid = objData.bid
         this.team = objData.team
         this.quality = objData.quality
@@ -122,13 +101,11 @@ export default {
 .manager_page_all{
   width: 100%;
   min-height: 100%;
-  padding: 20px;
+  padding: 30px 50px;
 }
 .manager_page_header{
   width: 100%;
   height: 120px;
-  padding: 10px 20px;
-  background: rgb(240,240,240);
 }
 .mag-1{
  width: 10%;
@@ -169,6 +146,18 @@ export default {
 .mag-10{
  width: 100%;
  float: left;
+}
+.left_manager_head{
+  width: 50%;
+  height: 100%;
+  float: left;
+  padding-right: 15px;
+}
+.right_manager_head{
+  width: 50%;
+  height: 100%;
+  float: left;
+  padding-left: 15px;
 }
 .manager_head_left{
   width: 200px;
@@ -239,19 +228,19 @@ export default {
 }
 .mangaer_main_Sign{
   height: 300px;
-  padding-left: 10px;
+  padding-left: 30px;
 }
 .mangaer_main_project,
 .mangaer_main_quality,
 .mangaer_main_team{
   /* width: 33.333333%; */
   height: 300px;
-  margin-top: 20px;
+  margin-top: 30px;
   /* float: left; */
 }
 .mangaer_main_quality,
 .mangaer_main_team{
-  padding-left: 10px;
+  padding-left: 30px;
 }
 .mangaer_quality_children{
   width: 100%;
