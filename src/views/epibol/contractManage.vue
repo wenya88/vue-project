@@ -3,10 +3,12 @@
         <dl>
             <dt>
                 <span class="span">
-                    <Input v-model="search" placeholder="合同/项目名称" style="width: 300px" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Input>
+                    <Input v-model="search" placeholder="请输入您想搜索的合同" style="width: 300px" @on-enter="searchCommit">
+                        <Button slot="append" icon="ios-search" @on-click="searchCommit" @on-enter="searchCommit"></Button>
+                    </Input>
                 </span>
                 <span class="em">
-                    <Button type="success" @click.native="newAdd">新增合同</Button>
+                    <Button type="success" @click.native="newAdd"><i class="iconfont icon-xinjian"></i> 新增任务</Button>
                 </span>
                 <div class="clear"></div>
             </dt>
