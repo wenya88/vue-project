@@ -165,7 +165,7 @@ export default {
         bidInvite:bidInvite
     },
     mounted(){
-        this.bidGet();
+        // this.bidGet();
         this.Refresh();
         this.inviteGet();
         this.$bus.on('updataSuccess',()=>{
