@@ -2,7 +2,6 @@
     <!--资源-->
     <div class="resourceContainer">
         <div class="red">
-            1132132132
             <Steps :current="2" class="red" direction="vertical">
                 <Step  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)" >
                     <div class="content">
@@ -128,7 +127,7 @@
     @green:#009900;
     .resourceContainer {
         .ivu-steps-head{
-            background: #f5f7f6 !important;
+            background: #fff !important;
         }
         .red{
             .ivu-steps .ivu-steps-title{
