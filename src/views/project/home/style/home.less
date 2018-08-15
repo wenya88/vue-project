@@ -6,54 +6,79 @@
         font-style:normal;
     }
     .pageHeader{
-        background:#48c5b5;height:370px;display:block;
+        height:352px;display:block;background: url("../image/pageBanner.jpg") no-repeat;background-size: 100% 100%;
     }
     .pageContent{
-        display:block;margin:0px 80px;
+        //display:block;margin:0px 111px;
         .companyInfo{
-            float:left;width:410px;display:inline-block;margin-top:-220px;min-height:780px;
+            //float:left;
+            width:450px;display:inline-block;margin-top:-247px;min-height:756px;margin-left:111px;box-shadow: 0px 0px 10px 1px #d0d8d4;
             .companyLog{
-                height:320px;background-color:rgba(230, 234, 235, 0.5);
+                width: 450px;height:353px;background-color:#fff;padding: 1px;border-radius: 3px;
                 img{
-                    width:100%;height:100%;
+                    width:100%;height:100%;border-radius: 3px;
                 }
             }
             .contentRow{
-                padding:40px;width:410px;min-height:460px;background:#fcfcfc;line-height:24px;font-weight:lighter;
+                padding:20px;width:450px;min-height:402px;height:420px;background:#fcfcfc;line-height:24px;font-weight:lighter;
                 p{
-                    margin-bottom:25px;display:block;font-size:@fs14;
+                    margin-bottom:30px;display:block;font-size:@fs14;
                     span{
-                       display:block;color:#8e9195;
+                       display:block;color:#aeaeae;
                     }
                     em{
-                        display:block;color:#757575;
+                        display:block;color:#666666;
                     }
                 }
             }
         }
         .companyContent{
-            margin-left:460px;display:block;margin-top:-100px;
-            .contentHeader{
-                height:72px;overflow:hidden;
-            }
+            display: inline-block;margin: -110px 0 0 27px;
+            .contentHeader{overflow:hidden;}
             .companyTitle{
-                background:rgba(230, 234, 235, 0.2);padding:15px 30px;min-width:520px;display:inline-block;float:left;line-height:26px;
-                h4{
-                    opacity:1;color:rgba(255, 255, 255, 1);font-size:22px;font-weight:lighter;
-                }
-                h5{
-                    color:rgba(255, 255, 255, 1);font-weight:lighter;
-                }
+                background:url("../image/projectBgPic.png") no-repeat;background-size: 100% 100%;padding:20px;min-width:520px;display:inline-block;
+                h4{color:#033a24;font-size:16px;font-weight:lighter;}
+                h5{color:#2e634e;font-size:13px;font-weight:lighter;}
             }
             .companySet{
-                float:right;display:inline-block;width:95px;height:38px;line-height:38px;border:1px solid #fff;color:#fff;margin-top:16px;text-align:center;font-size:14px;
-                cursor:pointer;transition: all .5s;
-                &:hover{
-                    background:rgba(230, 234, 235, 0.5);
-                }
+                float:right;display:inline-block;width:95px;height:38px;line-height:38px;border:1px solid #fff;color:#fff;margin-top:16px;text-align:center;font-size:14px;cursor:pointer;transition: all .5s;
+                &:hover{background:rgba(230, 234, 235, 0.5);}
             }
             .contentRow{
-               margin-top:60px;background:#fcfcfc;min-height:428px;padding:15px;
+               margin-top:54px;background:#fcfcfc;min-height:483px;padding:20px;
+                .taskTitle{margin-bottom:20px;
+                    b{font-size:16px;color:#666666;font-weight:lighter;}
+                    span{font-size:12px;color:#aeaeae;font-weight:lighter;}
+                }
+                .taskRow{width: 1000px;height: 258px;display: flex;text-align: center;justify-content:space-between;font-size: 16px;color: #fff;background: #fff;cursor: pointer;
+                    .taskLeft{
+                        display: flex;flex-direction: column;justify-content: space-between;width: 670px;
+                        .taskLeftTop{height: 143px;background: #63e0cc;display: flex;align-items: center;justify-content: center;}
+                        .taskLeftBottom{
+                            height: 113px;display: flex;display: flex;margin-top: 2px;justify-content:space-between;
+                            .taskLeftBottomLeft{width: 333px;background: #94ccfe;display: flex;align-items: center;justify-content: center;}
+                            .taskLeftBottomRight{width: 333px;background: #ff9095;display: flex;align-items: center;justify-content: center;}
+                        }
+                    }
+                    .taskCenter{width: 222px;display: flex;align-items: center;justify-content: center;background: #fece66;margin: 0 2px}
+                    .taskRight{
+                        display:flex;flex-direction:column;justify-content: space-between;width: 107px;
+                        div{height: 85px;display: flex;align-items: center;justify-content: center;}
+                        .taskRightTop{background: #60e0cb}
+                        .taskRightCenter{background: #94cbfd}
+                        .taskRightBottom{background: #fecb5d}
+                    }
+                }
+                .MenuRows{
+                    width: 1000px;border: 1px solid #eef1f2;margin-top: 2px;
+                    ul{display: flex;margin-top: 2px;}
+                    li{list-style: none;height: 150px;width: 250px;border-right: 1px solid #eef1f2;display: flex;cursor: pointer;flex-direction: column;justify-content: center;align-items: center;
+                        div{display: flex;justify-content: center;flex-direction: column;align-items: center;
+                            p{font-size: 16px;margin-top: 26px}
+                            span{font-size: 13px;color: #aeaeae;display: inline-block;margin-top: ;}
+                        }
+                    }
+                }
                .ManageRow{
                   height:278px;display:block;
                   .task{
