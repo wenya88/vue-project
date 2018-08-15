@@ -1,8 +1,8 @@
 <template>
     <!--资源-->
     <div class="resourceContainer">
-        <div class="red">
-            <Steps :current="2" class="red" direction="vertical">
+        <div class="box">
+            <Steps :current="0" direction="vertical" >
                 <Step  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)" >
                     <div class="content">
                         <div class="resourceTitle">
@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="file" >
-                            <p >上传文件规格</p>
+                            <p class="textB3" >上传文件规格</p>
                             <ul>
                                 <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
                                     <span>宽高</span>
@@ -127,17 +127,36 @@
     @green:#3bceb6;
     @gray:#c5c5c5;
     .resourceContainer {
-        padding:  0 20px;
         .ivu-steps-head{
+            top:31px;
             background: #fff !important;
         }
-        .ivu-steps-head-inner{
-            width: 30px;
-            height: 30px;
+        .ivu-steps-tail>i{
+            background: transparent !important;
         }
-        .red{
+        .ivu-steps-head-inner{
+            width: 30px !important;
+            height: 30px !important;
+            line-height: 30px !important;
+            font-size: 16px !important;
+            background: @green !important;
+            border: 1px solid @green !important;
+            span{
+                color: #fff !important;
+            }
+        }
+
+
+        .ivu-steps-item{
+            padding: 0 20px;
+            border-bottom: 1px solid #f2f9f9;
+        }
+        .textB3{
+            color: #b3b3b3;
+        }
+        .box{
             .ivu-steps .ivu-steps-title{
-                background: #f5f7f6 ;
+                margin-left: 43px;
                 color: @green !important;
             }
         }
@@ -156,16 +175,18 @@
                 }
                 .fileList{
                     display: flex;
+                    height: 30px;
+                    line-height: 30px;
                     padding: 0 10px;
-                    margin-bottom: 7px;
+                    margin-bottom: 15px;
                     justify-content: space-between;
+                    color: #808181;
                     background: #f2f2f2;
-                    border-radius: 10px;
+                    border-radius: 4px;
                 }
             }
 
             .resourceStatus{
-                margin-top: 17px;
                 color: @green;
             }
 

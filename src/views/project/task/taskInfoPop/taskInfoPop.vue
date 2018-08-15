@@ -327,6 +327,7 @@
         }
 
         .ivu-tabs-bar {
+            border-bottom: 1px solid transparent!important;
             .ivu-tabs-nav-container {
                 height: 55px !important;
 

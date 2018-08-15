@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
                 name: 'home_index'
             });
         }
-        /*权限  meta role 控制*/
+        /*路由权限  meta role 控制*/
         // else if(to.meta.role!==undefined) {
         //     let allrole = JSON.parse(sessionStorage.getItem('userrole'));
         //

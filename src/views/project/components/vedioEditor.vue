@@ -765,7 +765,9 @@
             /*body鼠标离开触发*/
             beyondArea(){
                 this.canvas.removeEventListener("mousemove", this._move);
-                document.querySelector('.progressBar').removeEventListener("mousemove", this.pictureJump);
+                if(document.querySelector('.progressBar')){
+                    document.querySelector('.progressBar').removeEventListener("mousemove", this.pictureJump);  
+                }
             },
             /*点击矩形*/
             changeRect() {
