@@ -498,7 +498,12 @@ html,body{
             // left: 121px;
             // height: 100%;
             // overflow: auto;
-            background-color: #f5f7f6;            // transition: left .3s;
+<<<<<<< HEAD
+            background-color: #eef1f2;
+=======
+            background-color: #eef2ee;
+>>>>>>> raobin
+            // transition: left .3s;
             // float: left;
             // width: calc(100% - 121px);
             // margin-left: 121px;
@@ -517,7 +522,7 @@ html,body{
     }
 }
 .ivu-menu-light{
-    //background: #f2f2f2 !important;
+    background: #f2f2f2 !important;
 }
 .taglist-moving-animation-move{
     transition: transform .3s;
