@@ -2,16 +2,22 @@ export const menu = [
     {
         path: '/epibol/imPlementer',
         name: 'imPlementer',
-        level:'1',
-        title: '实施人员',
+        level: '1',
+        title: '我的工作台',
         access: 3,
         children: [
-                {
-                    path: '/epibol/imPlementer',
-                    name: 'eHome',
-                    level:'1-1',
-                    title: '我的任务',
-                },
+            {
+                path: '/epibol/imPlementer',
+                name: 'eHome',
+                level: '1-1',
+                title: '我的工作',
+            }, {
+                path: '/manager/setSchedule',
+                name: 'eHome',
+                level: '1-1',
+                title: '日程安排',
+            },
+
         ]
 
 
@@ -19,76 +25,114 @@ export const menu = [
     {
         path: '/epibol/ProjectWorks',
         name: 'workbench',
-        level:'1',
-        title: '工作台',
+        level: '1',
+        title: '我的工作台',
         access: 2,
         children: [
-        {
-            path: '/epibol/ProjectWorks',
-            name: 'eHome',
-            level:'1-1',
-            title: '我的任务',
-        },
-    ]
+            {
+                path: '/epibol/ProjectWorks',
+                name: 'eHome',
+                level: '1-1',
+                title: '我的工作',
+            }, {
+                path: '/manager/setSchedule',
+                name: 'eHome',
+                level: '1-1',
+                title: '日程安排',
+            },
+        ]
 
     },
     {
         path: '/manager/manager',
         name: 'manager',
-        title: '经理工作台',
-        level:'1',
+        title: '我的工作台',
+        level: '1',
         access: 1,
         children: [
             {
                 path: '/manager/manager',
                 name: 'eHome',
-                level:'1-1',
-                title: '概况页',
-            }
+                level: '1-1',
+                title: '我的工作',
+            }, {
+                path: '/manager/setSchedule',
+                name: 'eHome',
+                level: '1-1',
+                title: '日程安排',
+            },
         ]
     },
     {
         path: '/epibol',
         name: 'epibol',
-        level:'2',
+
         title: '公司',
         children: [
             {
                 path: '/epibol/home',
                 name: 'eHome',
-                level:'2-1',
+                level: '2-1',
                 title: '概况页',
             },
             {
                 path: '/epibol/bidManage',
                 name: 'bidManage',
-                level:'2-2',
+                level: '2-2',
                 title: '投标',
                 auth: 0,
             }, {
                 path: '/epibol/contractManage',
                 name: 'contractManage',
-                level:'2-3',
+                level: '2-3',
                 title: '合同',
                 auth: 1,
             }, {
                 path: '/epibol/projectManage',
                 name: 'projectManage',
-                level:'2-4',
+                level: '2-4',
                 title: '项目',
             },
             {
                 path: '/epibol/memberManager',
                 name: 'memberManager',
-                level:'2-5',
+                level: '2-5',
                 title: '团队',
 
             },
             {
                 path: '/epibol/statistics',
                 name: 'eStatistics',
-                level:'2-6',
+                level: '2-6',
                 title: '统计',
+            }
+        ]
+    },
+    {
+        path: '/artsquare',
+        name: 'artsquare',
+        title: '项目大厅',
+        children: [
+            {
+                path: '/artsquare/home',
+                name: 'aHome',
+                title: '任务大厅',
+            }, {
+                path: '/artsquare/project',
+                name: 'dProject',
+                title: '项目库',
+            }
+        ]
+    },
+    {
+        path: '/artwiki',
+        name: 'artwiki',
+        title: '艺术大厅',
+        children: [
+            {
+                path: '/artwiki/home',
+                name: 'awkHome',
+                title: '艺术大厅',
             }
         ]
     },
@@ -161,7 +205,8 @@ export const menu = [
 //                 title: '统计',
 //             }
 //         ]
-//     }, {
+//     },
+//     // {
 //         //     path: '/customer',
 //         //     name: 'customer',
 //         //     title: '客户公司管理',
@@ -189,7 +234,8 @@ export const menu = [
 //         //         }
 //
 //         //     ]
-//         // }, {
+//         // },
+// // {
 //         //     path: '/depot',
 //         //     name: 'depot',
 //         //     title: '项目库',
@@ -211,7 +257,8 @@ export const menu = [
 //         //             title: '公司网页',
 //         //         }
 //         //     ]
-//         // }, {
+//         // },
+// // {
 //         //     path: '/artist',
 //         //     name: 'artist',
 //         //     title: '艺术家',
@@ -226,7 +273,8 @@ export const menu = [
 //         //             titie:'项目成员',
 //         //         }
 //         //     ]
-//         // }, {
+//         // },
+// {
 //         path: '/artsquare',
 //         name: 'artsquare',
 //         title: '项目大厅',
@@ -241,7 +289,8 @@ export const menu = [
 //                 title: '项目库',
 //             }
 //         ]
-//     }, {
+//     },
+// {
 //         path: '/artwiki',
 //         name: 'artwiki',
 //         title: '艺术大厅',
@@ -252,13 +301,16 @@ export const menu = [
 //                 title: '艺术大厅',
 //             }
 //         ]
-//     }, {
+//     },
+//
+// {
 //         path: '/epibol/imPlementer',
 //         name: 'imPlementer',
 //         title: '实施人员',
 //         access: 3,
 //         // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
-//     }, {
+//     },
+// {
 //         path: '/epibol/ProjectWorks',
 //         name: 'workbench',
 //         title: '工作台',

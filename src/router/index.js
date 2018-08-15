@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
         /*权限  meta role 控制*/
         else if(to.meta.role!==undefined) {
             let allrole = JSON.parse(sessionStorage.getItem('userrole'));
-            console.log(11, to.meta.role,parseInt(Cookies.get('post_id')))
+
             // if( typeof to.meta.role === 'number' && to.meta.role !== parseInt(Cookies.get('post_id'))){
             if( typeof to.meta.role === 'number' && to.meta.role !==1){
                 next({path: '/403'})

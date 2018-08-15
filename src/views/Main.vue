@@ -4,9 +4,10 @@
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
-                    <div class="layout-logo stem-logo" @click="collapsedSider()">
-                        <img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>
-                    </div>
+                    <!--<div class="layout-logo stem-logo" @click="collapsedSider()">-->
+                        <div class="logo"></div>
+                        <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
+                    <!--</div>-->
                     <!-- <div class="layout-nav stem-l">
                        <Menu mode="horizontal" :active-name="activePath">
                             <Menu-item
@@ -84,7 +85,7 @@
             
 
 
-            <Menu :width="'200px'"  class="leftMenuList">
+            <Menu  style="min-width: 200px;max-width: 200px;" class="leftMenuList">
                 <Submenu v-for="(item,index) in menuList"  :name="index" :key="index">
                     <template slot="title">
                         {{item.title||item.name}}
@@ -330,11 +331,12 @@
                 },
                 children(value){
                     return value.app.children
+                },
+                menuList(value){
+                    return  value.app.menuList;
                 }
             }),
-            menuList() {
-                return this.$store.state.app.menuList;
-            },
+
             mesCount() {
                 return this.$store.state.app.messageCount;
             },
@@ -540,7 +542,13 @@ background: #19322e !important;
         top: 15px;
         left: 20px;
     }
-
+    .logo{
+        width: 199px;
+        height: 64px;
+        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background-size: 48px;
+        border-bottom: 1px solid #42514f;
+    }
     .layout-nav {
         /*width: 500px;*/
         margin: 0 auto;

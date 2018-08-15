@@ -145,7 +145,8 @@ const app = {
             menuList[1].children = array.filter((child) => {
                 return child !== ''
             });
-            state.menuList = menuList.concat(state.projectMenuList);
+            // state.menuList = menuList.concat(state.projectMenuList);
+
 
         },
         /*
@@ -175,6 +176,11 @@ const app = {
 
 
         },
+        /*合并项目二级菜单*/
+        concatProject(state, {menuList, item}){
+            state.menuList = menuList.concat(state.projectMenuList);
+        },
+        /*权限显隐控制*/
         setRole(state, data) {
             state.role = data.id;
             state.projectMenuList = data.project;
@@ -339,15 +345,17 @@ const app = {
                     menuList.push(item);
                 }
 
+                commit('projectMenuList')
 
                 if (item.name === "epibol") {
                     commit('epibolMenuList', {menuList: menuList, item: item})
+                }else if(index === menu.length-1) {
+                    commit('concatProject', {menuList: menuList, item: item})
                 }
                 //  if (item.name === "project") {
                 //
                 // }
             });
-            commit('projectMenuList')
         }
     }
 
