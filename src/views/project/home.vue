@@ -62,45 +62,48 @@
                             <div class="taskRow">
                                 <div class="taskLeft">
                                     <div class="taskLeftTop">
-                                        原画
+                                        原画&nbsp;8/26
                                     </div>
                                     <div class="taskLeftBottom">
-                                        <div class="taskLeftBottomLeft">动作</div>
-                                        <div class="taskLeftBottomRight">任务</div>
+                                        <div class="taskLeftBottomLeft">动作&nbsp;5/12</div>
+                                        <div class="taskLeftBottomRight">任务&nbsp;6/32</div>
                                     </div>
                                 </div>
-                                <div class="taskCenter">模型</div>
+                                <div class="taskCenter">模型&nbsp;7/15</div>
                                 <div class="taskRight">
-                                    <div class="taskRightTop">图标</div>
-                                    <div class="taskRightCenter">线稿</div>
-                                    <div class="taskRightBottom">次世</div>
+                                    <div class="taskRightTop">图标&nbsp;5/15</div>
+                                    <div class="taskRightCenter">线稿&nbsp;9/12</div>
+                                    <div class="taskRightBottom">次世&nbsp;5/60</div>
                                 </div>
                             </div>
                             <div class="MenuRows">
                                 <ul>
-                                    <li>
+                                    <li v-if="projectSet.projectTask" @click="task">
                                         <img src="./home/image/MenuIco1.png"/>
                                         <div>
                                             <p>任务</p>
                                             <span>制作计划并管理任务或需求</span>
                                         </div>
                                     </li>
-                                    <li><img src="./home/image/MenuIco2.png"/>
+                                    <li>
+                                        <img src="./home/image/MenuIco2.png"/>
                                         <div>
-                                            <p>任务</p>
-                                            <span>制作计划并管理任务或需求</span>
+                                            <p>沟通</p>
+                                            <span>沟通关于项目的一切</span>
                                         </div>
                                     </li>
-                                    <li><img src="./home/image/MenuIco3.png"/>
+                                    <li v-if="projectSet.projectMember" @click="group">
+                                        <img src="./home/image/MenuIco3.png"/>
                                         <div>
-                                            <p>任务</p>
-                                            <span>制作计划并管理任务或需求</span>
+                                            <p>团队</p>
+                                            <span>管理项目团队</span>
                                         </div>
                                     </li>
-                                    <li><img src="./home/image/MenuIco4.png"/>
+                                    <li v-if="projectSet.projectStatistics"  @click="statistics">
+                                        <img src="./home/image/MenuIco4.png"/>
                                         <div>
-                                            <p>任务</p>
-                                            <span>制作计划并管理任务或需求</span>
+                                            <p>统计</p>
+                                            <span>获得您所需的数据</span>
                                         </div>
                                     </li>
                                 </ul>
