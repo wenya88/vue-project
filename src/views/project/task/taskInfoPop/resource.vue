@@ -7,11 +7,11 @@
                     <div class="content">
                         <div class="resourceTitle">
                             <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>
-                            <p>{{item.create_time|time}}</p>
+                            <p style="color: #c5c5c5">{{item.create_time|time}}</p>
                         </div>
 
                         <div class="file" >
-                            <p>上传文件规格</p>
+                            <p >上传文件规格</p>
                             <ul>
                                 <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
                                     <span>宽高</span>
@@ -124,15 +124,21 @@
 </script>
 
 <style lang="less" >
-    @green:#009900;
+    @green:#3bceb6;
+    @gray:#c5c5c5;
     .resourceContainer {
+        padding:  0 20px;
         .ivu-steps-head{
             background: #fff !important;
+        }
+        .ivu-steps-head-inner{
+            width: 30px;
+            height: 30px;
         }
         .red{
             .ivu-steps .ivu-steps-title{
                 background: #f5f7f6 ;
-                color: red !important;
+                color: @green !important;
             }
         }
         .content {
