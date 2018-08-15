@@ -1,6 +1,7 @@
 <template>
    <div class="manager_page_all">
-      <div class="clearfix manager_page_header">
+    
+      <div class="clearfix manager_page_header" v-if="manager.manager_page_header">
          <div class='left_manager_head'>
             <managaer-in :data='business_concept'></managaer-in>
          </div>
@@ -12,27 +13,32 @@
       <div class="clearfix mangaer_main">
         <Row>
         <!-- 投标 -->
-        <Col class="mangaer_main_bid" span="8">
+      
+        <Col v-if="manager.mangaer_main_bid" class="mangaer_main_bid" span="8">
            <mangaer-bid :bidList='bid'></mangaer-bid>
         </Col>
         <!-- 签单 -->
-        <Col class="mangaer_main_Sign" span="16">
+       
+        <Col v-if="manager.mangaer_main_Sign" class="mangaer_main_Sign" span="16">
            <div class="mangaer_Sign_children">
              <mangaer-sign :contList='contract'></mangaer-sign>
            </div>
         </Col>
         <!-- 项目 -->
-        <Col class="mangaer_main_project" span="8">
+       
+        <Col v-if="manager.mangaer_main_project" class="mangaer_main_project" span="8">
            <mangaer-pject :jectList='project'></mangaer-pject>
         </Col>
          <!-- 质量 -->
-        <Col class="mangaer_main_quality" span="8">
+       
+        <Col v-if="manager.mangaer_main_quality" class="mangaer_main_quality" span="8">
            <div class="mangaer_quality_children">
                <mangaer-qua :quaList='quality'></mangaer-qua>
            </div>
         </Col>
          <!-- 团队 -->
-        <Col class="mangaer_main_team" span="8">
+       
+        <Col v-if="manager.mangaer_main_team" class="mangaer_main_team" span="8">
             <div class="mangaer_team_children">
                <mangaer-tem :teamList='team'></mangaer-tem>
            </div>
@@ -43,6 +49,7 @@
 </template>
 <script>
 var qs = require('querystring')
+import {mapState} from 'vuex'
 import mangaerBid from './managerBid.vue'
 import mangaerSign from './mangaerSign.vue'
 import mangaerPject from './mangaerPject.vue'
@@ -66,6 +73,7 @@ export default {
     mangaerSign,
     mangaerPject,
     mangaerQua,
+   
     mangaerTem,
     managaerIn,
     managex
@@ -94,14 +102,27 @@ export default {
         this.business_concept = objData.business_concept
       })
     }
-  }
+  },
+    computed:{
+        ...mapState({
+            manager(value){
+                return value.app.manager
+            }
+        })
+    }
 }
 </script>
 <style scoped>
 .manager_page_all{
   width: 100%;
   min-height: 100%;
-  padding: 30px 50px;
+}
+</script>
+<style scoped>
+.manager_page_all{
+  width: 100%;
+  min-height: 100%;
+ 
 }
 .manager_page_header{
   width: 100%;

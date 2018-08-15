@@ -8,6 +8,35 @@ import api from 'api'
 const app = {
     state: {
         menuList: [],
+        projectMenuList: [],
+        children: [
+            {
+                path: '/project/home',
+                name: 'custom',
+                level: '1-1',
+                title: '概况',
+            }, {
+                path: '/project/task',
+                name: 'task',
+                level: '1-2',
+                title: '任务管理',
+            }, {
+                path: '/project/quality',
+                name: 'quality',
+                level: '1-3',
+                title: '资源管理',
+            }, {
+                path: '/project/projectMember',
+                name: 'eMember',
+                level: '1-4',
+                title: '团队',
+            }, {
+                path: '/project/statistics',
+                name: 'statistics',
+                level: '1-5',
+                title: '统计',
+            }
+        ],
         routers: [
             otherRouter,
             ...appRouter
@@ -31,10 +60,10 @@ const app = {
             projectStatistics: true,   //统计
             projectMember: true,     //  成员
             projectTask: true,       // 任务列表
-            projectCustom: false,     //概况
+            projectCustom: true,     //概况
 
             projectQuality: true,    // 资源
-            qualityFrist: false,      //资源管理归档
+            qualityFrist: true,      //资源管理归档
             qualitySecond: true,      //资源管理归档
             qualityThird: true,      //资源管理归档
             qualityFourth: true,      //资源管理归档
@@ -45,10 +74,20 @@ const app = {
             contract: true,              // 合同,
             callForBids: true,           // 招标,
             eHome: true,                 // 概况,
+            projectHome:true,
         },
         callForBidsdts: {
             HaveTender: true,             // 已报名招标
             invitation: true              // 外包邀请
+        },
+        manager:{
+            manager_page_header:true,       // 经营
+            mangaer_main_bid:true,       // 投标
+            mangaer_main_Sign:true,       // 合同
+            mangaer_main_project:true,       // 项目
+            mangaer_main_quality:true,       // 质量
+            mangaer_main_team:true,       // 团队
+
         }
     },
     mutations: {
@@ -86,6 +125,8 @@ const app = {
                     return ''
                 } else if (!state.epibol.memberManager && child.name === 'memberManager') {
                     return ''
+                } else if (!state.epibol.projectHome && child.name === 'projectManage') {
+                    return ''
                 }
                 return child
                 /*if(child.auth) {
@@ -104,13 +145,14 @@ const app = {
             menuList[1].children = array.filter((child) => {
                 return child !== ''
             });
-            state.menuList = menuList;
+            state.menuList = menuList.concat(state.projectMenuList);
+
         },
         /*
             project级权限
         */
-        projectMenuList(state, {menuList, item}) {
-            const array = item.children.map((child, idx) => {
+        projectMenuList(state) {
+            const array = state.children.map((child, idx) => {
                 if (!state.projectSet.projectStatistics && child.name === 'statistics') {
                     return ''
                 }
@@ -129,15 +171,36 @@ const app = {
                 return child
             });
 
-            menuList[0].children = array.filter((child) => {
-                return child !== ''
-            });
-            state.menuList = menuList;
+            state.children = array.filter((child) => {return child !== ''})
+
+
         },
         setRole(state, data) {
-            state.role = data;
-            data = data.split(',');
+            state.role = data.id;
+            state.projectMenuList = data.project;
+
+            data = data.id.split(',');
             sessionStorage.setItem('userrole',JSON.stringify(data));
+
+            if (data.indexOf('w4') !== -1) {
+                state.manager.manager_page_header = false
+            }
+            if (data.indexOf('w5') !== -1) {
+                state.manager.mangaer_main_bid = false
+            }
+            if (data.indexOf('w8') !== -1) {
+                state.manager.mangaer_main_Sign = false
+            }
+            if (data.indexOf('w9') !== -1) {
+                state.manager.mangaer_main_project = false
+            }
+            if (data.indexOf('w10') !== -1) {
+                state.manager.mangaer_main_quality = false
+            }
+            if (data.indexOf('w11') !== -1) {
+                state.manager.mangaer_main_team = false
+            }
+
             if (data.indexOf('c1_1')!==-1) {
                 // 公司概况
                 state.epibol.eHome = false
@@ -168,6 +231,7 @@ const app = {
             }
             if (data.indexOf('c5')!==-1) {
                 // c2 项目
+                state.epibol.projectHome = false
             }
 
             if (data.indexOf('c5_1')!==-1) {
@@ -244,48 +308,46 @@ const app = {
             }
 
             this.dispatch('updateMenulistRole')
-        }
+        },
     },
     actions: {
         /*
             菜单权限管理
         */
         async getMenulistRole({commit, dispatch}) {
-
             const {data} = await api.getInfoRole();
-            commit('setRole', data.limit.auth_id);
-
-
+            const project = await api.taskProjectPage();
+            commit('setRole', {id:data.limit.auth_id,project:project.data.project});
         },
+
         updateMenulistRole({commit}) {
             let accessCode = parseInt(Cookies.get('post_id'));
+            accessCode = 1;
+            // accessCode = 1;
             // let userType = Cookies.get('user_type')
-            let userType = sessionStorage.user_type;
+            // let userType = sessionStorage.user_type;
             let menuList = [], childrenList = [];
 
+
             menu.forEach((item, index) => {
-                // 模拟权限
                 if (item.access) {
-                    if(accessCode == 3) {
-                        // if(item.access == 3){
+                    // 工作台
+                    if(item.access === accessCode) {
                             menuList.push(item);
-                        // }
-                    } else if(accessCode != 3) {
-                        // if (item.access != 3) {
-                        menuList.push(item)
                     }
                 } else {
                     menuList.push(item);
                 }
-                // 甲方乙方权限配置
+
 
                 if (item.name === "epibol") {
                     commit('epibolMenuList', {menuList: menuList, item: item})
                 }
-                else if (item.name === "project") {
-                    commit('projectMenuList', {menuList: menuList, item: item})
-                }
+                //  if (item.name === "project") {
+                //
+                // }
             });
+            commit('projectMenuList')
         }
     }
 

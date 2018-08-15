@@ -74,8 +74,8 @@
 
         },
         mounted() {
-            this.getItems()
-            this.getMemberArray()
+            this.getItems();
+            this.getMemberArray();
         },
         data() {
             return {
@@ -176,7 +176,13 @@
             }
         },
         computed: {},
-        components: {}
+        components: {},
+        watch:{
+            '$route'(){
+                this.getItems();
+                this.getMemberArray();
+            }
+        }
     }
 </script>
 
