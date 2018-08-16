@@ -203,7 +203,7 @@
                 if(id){
                     sessionStorage.projectID = id;
                 }
-                this.$router.push({path:children.path})
+                this.$router.push({path:children.path,query:{id:Math.random()}})
             },
             bodySize() {
                 let body = document.body;
@@ -399,7 +399,7 @@ background: #19322e !important;
     .logo{
         width: 199px;
         height: 64px;
-        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background: #19322e url("../images/navLogo.png") no-repeat 68px 9px;
         background-size: 48px;
         border-bottom: 1px solid #42514f;
     }
