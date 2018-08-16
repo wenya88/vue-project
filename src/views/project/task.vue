@@ -31,11 +31,13 @@
                                  </template>
                                  <!--单独的成员-->
                                  <div v-else class="alone" >
-                                     <div style="margin: 0"  @click="">{{item.realname}}</div>
+                                     <img class="headImg" src="./task/QQ图片20180719133401.jpg" alt="">
+
                                  </div>
                          </div>
                          <!--子项目和单独成员的进度条-->
                          <div    class="lineRow showPlan" :class="item.realname?'':'showPlanColor'">
+                             <div style="margin: 0" >{{item.realname}}</div>
                              <Progress  hide-info :percent="Number(item.progress)"></Progress>
                          </div>
                          <div class="ratio">{{item.complete}}/{{item.total}}</div>
@@ -362,12 +364,23 @@ export default {
       _ajax(url,data){
           return this.$axios.post(this.GLOBAL.baseRouter+url,qs.stringify(data))
       },
-  }
+  },
+    watch:{
+        '$route'(){
+            this.autoH();
+            this.initTaskMain();
+            this.$bus.on('refreshCurrentTaskList',()=>{
+                this.refreshCurrentTaskList();
+            });
+            this.projectPlan();
+            this.setUserStatus(null)
+        }
+    }
 };
 </script>
 
 <style lang="less" >
-    @green:#00FDA3;
+    @green:#3bceb6;
 .task{
   position:relative;
     height: 100%;
@@ -375,7 +388,7 @@ export default {
         display: flex;
         position: relative;
         height: 100%;
-        padding-top: 20px;
+        padding-top: 14px;
         background: #eef1f2;
         .ivu-tabs .ivu-tabs-content-animated{
             margin-top: 60px;
@@ -383,12 +396,17 @@ export default {
         .ivu-tabs-nav-container{
             height: 60px!important;
         }
-        .ivu-tabs-bar{
 
+        .ivu-tabs-ink-bar{
+            margin-left: 16px;
+            height: 6px !important;
+            background: @green !important;
         }
         .ivu-tabs-tab{
-            padding: 8px 41px;
-            font-size: 18px;
+            padding: 8px 6px;
+            margin-left: 16px;
+            margin-right: 0 !important;
+            font-size: 14px;
             line-height: 32px;
             &:hover{
                 color: #48c5b5;
@@ -419,21 +437,23 @@ export default {
             }
             .titleList{
                 display: flex;
-                padding-left: 5px;
-                margin: 10px 0;
+                padding: 17px 0 17px 5px;
+
                 background: #fff;
                 /*border: 1px solid red;*/
                 justify-content: space-between;
                 cursor: pointer;
                 .showPlan{
-                   width: 174px;
-                    padding: 5px ;
-                    margin-top: 3px;
+                    flex:1;
+                    margin-top: 8px;
                 }
                 .headTitle{
-                    flex: 1;
-                    padding: 5px 0;
-
+                    width: 90px;
+                    .headImg{
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                    }
                     .titleText {
                         display: inline-block;
                         width: 40px;
@@ -454,11 +474,9 @@ export default {
                     margin: 0;
                 }
                 .ratio{
-                    width: 40px;
-                    padding: 5px 0;
+                    width: 60px;
+                    margin-top: 27px;
                     text-align: center;
-                    color: #fff;
-                    background: @green;
                 }
                 &:hover{
                     border: 1px solid #48c5b5;
@@ -515,7 +533,7 @@ export default {
             }
             .alone{
                 display: flex;
-                margin-left: 43px;
+               margin-left: 20px;
                 background: #fff;
                 line-height: normal!important;
             }

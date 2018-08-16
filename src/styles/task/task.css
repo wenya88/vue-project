@@ -41,7 +41,8 @@
 }
 
 .ivu-tabs-bar {
-    border-bottom: none !important;
+    /*border-bottom: none !important;*/
+    border-bottom: 1px solid #dfe1e2;
 }
 
 .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {

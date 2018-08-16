@@ -31,7 +31,7 @@
                     <span class="MLeft20">
                         <p>负责人：{{item.realname}}</p>
                     </span>
-                    
+
                     <div class="clear"></div>
                 </div>
                 <!-- Content -->
@@ -86,7 +86,7 @@ export default {
         }
     },
     props:{
-        MsgData:{
+            MsgData:{
             type:Array
         }
     },

@@ -6,11 +6,6 @@
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
         <div class="taskinfopopContainer">
-            <section class="videoRight">
-                <filebrowse ref="filebrowse"
-                            class="filebrowseContainer"
-                ></filebrowse>
-            </section>
             <Tabs   type="card" class="filebrowse taskManagement">
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
@@ -38,6 +33,11 @@
                     <tasklog ref="log"></tasklog>
                 </TabPane>
             </Tabs>
+            <section class="videoRight">
+                <filebrowse ref="filebrowse"
+                            class="filebrowseContainer"
+                ></filebrowse>
+            </section>
         </div>
     </div>
 </template>
@@ -327,6 +327,7 @@
         }
 
         .ivu-tabs-bar {
+            border-bottom: 1px solid transparent!important;
             .ivu-tabs-nav-container {
                 height: 55px !important;
 

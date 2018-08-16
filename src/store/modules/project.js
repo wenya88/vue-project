@@ -73,13 +73,13 @@ const state = {
   ],
   taskType: [],
   subProjectList: [],
-    detail:{
-        projectInfo:null,
-        setDetailAll:null,
-        taskInfo:null,
-    },
-    primaryMission:null,      // 主任务id
-    userStatus:null,          //进入工作台任务的状态 成员或者组长
+  detail:{
+      projectInfo:null,
+      setDetailAll:null,
+      taskInfo:null,
+  },
+  primaryMission:null,      // 主任务id
+  userStatus:null,          //进入工作台任务的状态 成员或者组长
 };
 
 const getters = {
@@ -133,7 +133,7 @@ const mutations = {
     /*获取工作台任务的身份- 成员或者组长*/
     setUserStatus(state, data){
         state.userStatus = data;
-    }, 
+    },
     /*进入任务详情时获得info*/
     setTaskInfo(state,data){
         Vue.set(state.detail, 'taskInfo', data)

@@ -2,23 +2,47 @@
   <div class="sign_all">
     <div class="clearfix sign_head">
         <p class="sign_head_msg">合同</p>
-        <p class="sign_head_but">详情&gt;</p>
+        <p class="sign_head_but iconfont icon-shenglve-"></p>
     </div>
     <div class="sign_main">
-      <div class="sign_main_left">
+      <!-- <div class="sign_main_details"> -->
+        <div class="sign_details_money">
+           <p class="sign_money_title">总金额</p>
+           <p>
+             <span class="money_head">￥</span>
+             <span class="money_num">{{total}}</span>
+             <span class="money_footer">万</span>
+             <span class="rise iconfont icon-xiangshang01"></span>
+             <span class="rise_title">+{{add}}</span>
+             <span class="money_head">(去年同比)</span>
+             </p>
+        </div>
+        <div class="year_bx">
+         <Dropdown trigger="click">
+           <a href="javascript:void(0)" class="xia_style">
+             {{yearName}}
+            <Icon type="ios-arrow-down"></Icon>
+          </a>
+          <DropdownMenu slot="list">
+            <DropdownItem v-for="(item, index) in constobj" :key="index" @click.native="getYear(index)">{{item.year}}</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        </div>
+      <!-- </div> -->
+      <!-- <div class="sign_main_left">
         <div class="sign_left_head">
           <span class="sign_baifen">￥{{total}}</span>
           <span class="sign_wan">万</span>
         </div>
         <p class="sign_lefe_alt"><span>去年同比</span><span class="sign_left_title"><i class="iconfont icon-xiangshang01"/>+{{add}}</span></p>
-       </div>
+       </div> -->
         <div class="sign_main_right" id="sign_box">
        </div>
-       <ul class="year_bx">
+       <!-- <ul class="year_bx">
          <li v-for="(item, index) in constobj" :key="index">
            <p @click="getYear(index)" :class="item.backClass">{{item.year}}</p>
          </li>
-       </ul>
+       </ul> -->
     </div>
   </div>
 </template>
@@ -50,6 +74,10 @@ export default {
     //  console.log('数据', this.contList)
   },
   methods: {
+    // 点击事件
+    numbers(e) {
+      console.log('数据', e)
+    },
     // 获取数据
     getYear (index) {
       const list = this.constobj
@@ -93,7 +121,7 @@ export default {
         },
         legend: {
           icon:'stack',
-          left: 'left',
+          right: '10%',
           data:['合同数量','合同金额']
         },
         grid: {
@@ -120,19 +148,36 @@ export default {
         },
         yAxis: {
           type: 'value',
-          show: false,
+          // show: false,
+          axisTick:{       //y轴刻度线
+            show:false
+          },
+          axisLine:{       //y轴
+             show:false
+           },
         },
         series: [
           {
             name:'合同数量',
             type:'line',
             stack: '总量',
+            areaStyle: {
+              normal: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                   [
+                    {offset: 0, color: 'rgb(254,243,219)'},
+                    // {offset: 0.5, color: 'rgb(255,153,0)'},
+                    {offset: 1, color: 'rgb(253,243,218)'}
+                   ]
+                  )
+            }},
             itemStyle:{
               normal: {
                 color:'rgb(255,153,0)',
-                lineStyle:{
-                  type:'dotted'
-                }
+                // lineStyle:{
+                //   type:'dotted'
+                // }
               }  
             },
             data:bidNum
@@ -141,12 +186,23 @@ export default {
             name:'合同金额',
             type:'line',
             stack: '总量',
+            areaStyle: {
+              normal: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                   [
+                    {offset: 0, color: 'rgb(223,249,244)'},
+                    // {offset: 0.5, color: 'rgb(255,153,0)'},
+                    {offset: 1, color: 'rgb(224,237,208)'}
+                   ]
+                  )
+            }},
             itemStyle:{
               normal: {
                 color:'rgb(49,187,159)',
-                lineStyle:{
-                  type:'dotted'
-                }
+                // lineStyle:{
+                //   type:'dotted'
+                // }
               }
             },
             data:bidMeng
@@ -162,33 +218,79 @@ export default {
   width: 100%;
   height: 100%;
   padding: 20px;
+  background: #fdfdfd;
+  border-radius: 4px;
  }
 .sign_head{
  width: 100%;
- height: 60px;
+ height: 30px;
+ line-height: 30px;
 }
 .sign_head_msg{
   float: left;
-  font-size: 20px;
+  font-size: 16px;
+  color: #bdbdbd;
 }
 .sign_head_but{
   float: right;
-  font-size: 16px;
+  font-size: 30px;
   color: rgb(210,210,210);
   cursor: pointer;
 }
 .sign_main{
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100% - 30px);
   position: relative;
 }
 .sign_main_left{
  float: left;
 }
+/* .sign_main_details{
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */
+.xia_style{
+  color: #bdbdbd;
+}
+.sign_details_money{
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  height: 100%;
+  /* margin-left: 30px; */
+}
+.sign_money_title{
+  font-size: 12px;
+  color: #bdbdbd;
+}
+.money_head{
+  font-size: 12px;
+  color: #bdbdbd;
+}
+.money_num{
+  font-size: 20px;
+  color: #3bceb6;
+}
+.money_footer{
+  font-size: 12px;
+  color: #3bceb6;
+  margin-right: 5px;
+}
+.rise{
+ font-size: 12px;
+ color: rgb(255,51,0);
+}
+.rise_title{
+ font-size: 12px;
+ color: rgb(255,51,0);
+}
 .sign_main_right{
   float: right;
   height: 100%;
-  width: 700px;
+  width: 100%;
 }
 .sign_lefe_alt{
   font-size: 16px;
@@ -212,8 +314,9 @@ export default {
 }
 .year_bx{
   position: absolute;
-  right: 20px;
+  right: 30px;
   top: 10px;
+  z-index: 9999;
 }
 .year_bx>li{
   float: left;

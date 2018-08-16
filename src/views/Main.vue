@@ -4,9 +4,10 @@
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
-                    <div class="layout-logo stem-logo" @click="collapsedSider()">
-                        <img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>
-                    </div>
+                    <!--<div class="layout-logo stem-logo" @click="collapsedSider()">-->
+                        <div class="logo"></div>
+                        <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
+                    <!--</div>-->
                     <!-- <div class="layout-nav stem-l">
                        <Menu mode="horizontal" :active-name="activePath">
                             <Menu-item
@@ -55,49 +56,54 @@
                </Menu>
            </div>  -->
             <div class="menuBlock" v-if="!showMenu">
-                <ul>
-                    <li v-for="(item,index) in menuList" :key="index">
-                        <router-link :to="item.path" :class="[item.name]"
-                                     @click.native="collapsedSider()"></router-link>
-                        <span class="name">{{item.title}}</span>
-                    </li>
-                    <!-- <li class="work" @click="linkTo('/epibol/ProjectWork')">
-                        个人工作台
-                    </li> 
-                    <li class="comp" @click="linkTo('/epibol')">
-                        公司
-                    </li> 
-                    <li class="project" @click="linkTo('/epibol')">
-                        项目大厅
-                    </li> 
-                    <li class="art" @click="linkTo('/epibol')">
-                        艺术广场
-                    </li>   -->
-                </ul>
+                <!--<ul>-->
+                    <!--<li v-for="(item,index) in menuList" :key="index">-->
+                        <!--<router-link :to="item.path" :class="[item.name]"-->
+                                     <!--@click.native="collapsedSider()"></router-link>-->
+                        <!--<span class="name">{{item.title}}</span>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
+                        <!--个人工作台-->
+                    <!--</li>-->
+                    <!--<li class="comp" @click="linkTo('/epibol')">-->
+                        <!--公司-->
+                    <!--</li>-->
+                    <!--<li class="project" @click="linkTo('/epibol')">-->
+                        <!--项目大厅-->
+                    <!--</li>-->
+                    <!--<li class="art" @click="linkTo('/epibol')">-->
+                        <!--艺术广场-->
+                    <!--</li>   &ndash;&gt;-->
+                <!--</ul>-->
             </div>
-            <ul class="menu" v-if="!menuListShow">
-            <li v-for="(item,index) in subMenu" :key="index">
-            <router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']" ></router-link>
-            <span class="name">{{item.title}}</span>
-            </li>
-            </ul>
+            <!--<ul class="menu" v-if="!menuListShow">-->
+            <!--<li v-for="(item,index) in subMenu" :key="index">-->
+            <!--<router-link :to="item.path" :class="[item.name, item.name === activeMenu ? 'active' : '']" ></router-link>-->
+            <!--<span class="name">{{item.title}}</span>-->
+            <!--</li>-->
+            <!--</ul>-->
             
 
 
-            <!--<Menu :width="'200px'" class="leftMenuList">-->
-                <!--<Submenu v-for="(item,index) in haha" :name="item.level" :key="index">-->
-                    <!--<template slot="title">-->
-                        <!--<span :class="[item.name, item.name === activeMenu ? 'active' : '']"></span>-->
-                        <!--{{item.title}}-->
-                    <!--</template>-->
-                    <!--<template v-if="item.children">-->
-                        <!--<MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="children.level" :key="i">-->
-                            <!--{{children.title}}-->
-                            <!--&lt;!&ndash;<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>&ndash;&gt;-->
-                        <!--</MenuItem>-->
-                    <!--</template>-->
-                <!--</Submenu>-->
-            <!--</Menu>-->
+            <Menu  style="min-width: 200px;max-width: 200px;" class="leftMenuList">
+                <Submenu v-for="(item,index) in menuList"  :name="index" :key="index">
+                    <template slot="title">
+                        {{item.title||item.name}}
+                    </template>
+                    <template v-if="item.children">
+                        <MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+                            {{children.title}}
+                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        </MenuItem>
+                    </template>
+                    <template v-else>
+                        <MenuItem v-for="(children,i) in children" @click.native="projectDetails(children,item.id)" :name="index+'-'+i" :key="i">
+                            {{children.title}}
+                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        </MenuItem>
+                    </template>
+                </Submenu>
+            </Menu>
 
             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
@@ -123,151 +129,6 @@
         },
         data() {
             return {
-                haha: [
-//                    {
-//                        path: '/project',
-//                        name: 'project',
-//                        level: '1',
-//                        title: '项目管理',
-//                        children: [
-//                            {
-//                                path: '/project/home',
-//                                name: 'custom',
-//                                level: '1-1',
-//                                title: '概况',
-//                            }, {
-//                                path: '/project/task',
-//                                name: 'task',
-//                                level: '1-2',
-//                                title: '任务管理',
-//                            }, {
-//                                path: '/project/quality',
-//                                name: 'quality',
-//                                level: '1-3',
-//                                title: '资源管理',
-//                            }, {
-//                                path: '/project/projectMember',
-//                                name: 'eMember',
-//                                level: '1-4',
-//                                title: '团队',
-//                            }, {
-//                                path: '/project/statistics',
-//                                name: 'statistics',
-//                                level: '1-5',
-//                                title: '统计',
-//                            }
-//                        ]
-//                    },
-                    {
-                        path: '/epibol',
-                        name: 'epibol',
-                        level: '2',
-                        title: '公司',
-                        children: [
-                            {
-                                path: '/epibol/home',
-                                name: 'eHome',
-                                level: '2-1',
-                                title: '概况页',
-                            }, {
-                                path: '/epibol/bidManage',
-                                name: 'bidManage',
-                                level: '2-2',
-                                title: '投标',
-                                auth: 0,
-                            }, {
-                                path: '/epibol/contractManage',
-                                name: 'contractManage',
-                                level: '2-3',
-                                title: '合同',
-                                auth: 1,
-                            }, {
-                                path: '/epibol/projectManage',
-                                name: 'projectManage',
-                                level: '2-4',
-                                title: '项目',
-                            },
-                            {
-                                path: '/epibol/memberManager',
-                                name: 'memberManager',
-                                level: '2-5',
-                                title: '团队',
-
-                            },
-                            {
-                                path: '/epibol/statistics',
-                                name: 'eStatistics',
-                                level: '2-6',
-                                title: '统计',
-                            }
-                        ]
-                    },
-
-
-
-                    {
-                        path: '/epibol/imPlementer',
-                        name: 'imPlementer',
-                        level: '5',
-                        title: '实施人员',
-                        access: 3,
-                        // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
-                    },
-                    {
-                        path: '/epibol/ProjectWorks',
-                        name: 'workbench',
-                        title: '工作台',
-                        level: '6',
-                        access: 2,
-                        // component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
-                        // }, {
-                        //     path: '/epibol/taskClass',
-                        //     name: 'setting',
-                        //     title: '设置',
-                    },
-                    {
-                        path: '/manager/manager',
-                        name: 'manager',
-                        level: '7',
-                        title: '经理工作台',
-                        access: 1,
-                        children: [
-                            {
-                                path: '/epibol/home',
-                                name: 'eHome',
-                                level: '7-1',
-                                title: '概况页',
-                            }, {
-                                path: '/epibol/bidManage',
-                                name: 'bidManage',
-                                level: '7-2',
-                                title: '投标',
-                                auth: 0,
-                            }, {
-                                path: '/epibol/contractManage',
-                                name: 'contractManage',
-                                level: '7-3',
-                                title: '合同',
-                                auth: 1,
-                            }, {
-                                path: '/epibol/projectManage',
-                                name: 'projectManage',
-                                level: '7-4',
-                                title: '项目',
-                            }, {
-                                path: '/epibol/memberManager',
-                                name: 'memberManager',
-                                level: '7-5',
-                                title: '团队',
-                            }, {
-                                path: '/epibol/statistics',
-                                name: 'eStatistics',
-                                level: '7-6',
-                                title: '统计',
-                            }
-                        ]
-                    }
-                ],
                 shrink: false,
                 showMenu: false,
                 userName: '',
@@ -302,11 +163,12 @@
             // if(bodyWidth <= 1366) {
             //     this.centerHight = bodyHight - 90
             // } else {
-            this.centerHight = bodyHight - 64
+            this.centerHight = bodyHight - 64;
             // }
-            this.mainWidth = bodyWidth - 121
+            this.mainWidth = bodyWidth - 121;
         },
         mounted() {
+
             this.bodySize();
             this.init();
             this.updateMenu();
@@ -320,11 +182,15 @@
             ...mapState({
                 menuListShow(value) {
                     return value.project.detail.setDetailAll
+                },
+                children(value){
+                    return value.app.children
+                },
+                menuList(value){
+                    return  value.app.menuList;
                 }
             }),
-            menuList() {
-                return this.$store.state.app.menuList;
-            },
+
             mesCount() {
                 return this.$store.state.app.messageCount;
             },
@@ -333,6 +199,12 @@
             }
         },
         methods: {
+            projectDetails(children,id){
+                if(id){
+                    sessionStorage.projectID = id;
+                }
+                this.$router.push({path:children.path})
+            },
             bodySize() {
                 let body = document.body;
                 body.onresize = () => {
@@ -452,9 +324,32 @@
 </script>
 <style lang="less">
     @import "./main.less";
-   
+
+
+   .main-content{
+       ::-webkit-scrollbar {/*滚动条整体样式*/
+           width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+           height: 4px;
+       }
+       ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+           border-radius: 5px;
+           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+           background: rgba(0,0,0,0.2);
+       }
+       ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+           border-radius: 0;
+           background: rgba(0,0,0,0.1);
+       }
+       .ivu-menu{
+           overflow-y: auto !important;
+       }
+
+   }
     .leftMenuList {
+background: #19322e !important;
         /*background: #19322e !important;*/
+
         img{
             background: #fff ;
         }
@@ -471,7 +366,6 @@
         }
         .ivu-menu-submenu {
             background: #19322e !important;
-
             /*background: linear-gradient('left',#24655b, #1d433d) !important;*/
         }
         .ivu-menu-vertical, .ivu-menu-submenu-title:hover {
@@ -502,7 +396,13 @@
         top: 15px;
         left: 20px;
     }
-
+    .logo{
+        width: 199px;
+        height: 64px;
+        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background-size: 48px;
+        border-bottom: 1px solid #42514f;
+    }
     .layout-nav {
         /*width: 500px;*/
         margin: 0 auto;

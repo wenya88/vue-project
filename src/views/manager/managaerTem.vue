@@ -2,7 +2,7 @@
    <div class="tem_all">
      <div class="clearfix tem_head">
         <p class="tem_head_msg">团队</p>
-        <p class="tem_head_but">详情&gt;</p>
+        <p class="tem_head_but iconfont icon-shenglve-"></p>
     </div>
     <div class="tem_main">
       <div>
@@ -71,7 +71,7 @@ export default {
               },
               itemStyle: {
                 normal: {
-                  color: 'rgb(224,234,207)',
+                  color: '#3bceb6',
                   areaStyle: {
                     type: 'default'
                   }
@@ -92,21 +92,34 @@ export default {
        var myCharts = echarts.init(document.getElementById('free'))
        const free = this.free
        const data = [
-         {value: free, name:'空闲'},
-         {value: 100 - free, name:'不空闲'},
+         {value: free, name:'空闲率'},
+         {value: 100 - free, name:'工作率'},
         ]
        myCharts.setOption({
          tooltip : {
            trigger: 'item',
            formatter: "{a} <br/>{b} {d}%"
          },
-         color:['rgb(213,220,148)', 'rgb(248,225,130)'],
+         color:['#3bceb6', '#cef2ec'],
          series : [
            {
               name: '空闲率',
               type: 'pie',
               radius : '55%',
               center: ['50%', '60%'],
+              label: {
+                normal: {
+                    formatter: '{c|{c}}{b|%\n{b}}  ',
+                    rich: {
+                        c: {
+                          fontSize: 20
+                        },
+                        b: {
+                            color: '#777777'
+                        }
+                     }
+                }
+              },
               data: data,
               itemStyle: {
                 emphasis: {
@@ -127,18 +140,22 @@ export default {
   width: 100%;
   height: 100%;
   padding: 20px;
+  background: #fdfdfd;
+  border-radius: 4px;
  }
  .tem_head{
  width: 100%;
- height: 60px;
+ height: 30px;
+ line-height: 30px;
 }
 .tem_head_msg{
   float: left;
-  font-size: 20px;
+  font-size: 16px;
+  color: #bdbdbd;
 }
 .tem_head_but{
   float: right;
-  font-size: 16px;
+  font-size: 30px;
   color: rgb(210,210,210);
   cursor: pointer;
 }
