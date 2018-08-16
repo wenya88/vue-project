@@ -5,7 +5,7 @@
             <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon> 未进行（<span class="green">{{dataList_type.start.length}}</span>）</p>
             <template v-if="dataList_type.start.length>0">
                 <div class="list" @click.stop="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start"
-                     :key="index">
+                              :key="index">
                     <p class="title">{{items.name}}</p>
                     <div class="BottomInfo">
                         <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>

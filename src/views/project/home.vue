@@ -48,9 +48,9 @@
                                 <h4>{{proData.name}}&nbsp;</h4>
                                 <h5>{{proData.description!=null?proData.description:'项目描述和备注'}}</h5>
                             </div>
-                            <!--<div v-if="projectSet.self" class="companySet" @click="companySet">-->
-                            <!--<span>设置</span>-->
-                            <!--</div>-->
+                            <div v-if="projectSet.self" class="companySet" @click="companySet">
+                            <span>设置</span>
+                            </div>
                             <div class="clear"></div>
                         </div>
 
