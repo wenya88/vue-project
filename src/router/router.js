@@ -212,7 +212,7 @@ export const appRouter = [
             {
                 path: '/manager/setSchedule',
                 icon: 'ios-paper-outline',
-                name: 'manager',
+                name: 'setSchedule',
                 title: '日程安排',
                 meta:{role:1},
                 component: resolve => { require(['@/views/manager/setSchedule.vue'], resolve); }
