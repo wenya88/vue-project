@@ -4,35 +4,34 @@
             <GeminiScrollbar>
                 <dl>
                     <dd v-for="(item,index) in contData" :key="index">
-                        <div class="title">
-                            <Dropdown>
-                                <a href="javascript:void(0)">
-                                    <Icon type="ios-more" size="20"></Icon>
+                        <div class="statusRow">
+                            <div :class="[item.status!=0?'status':'status yellow']">
+                                {{item.status_text}}
+                            </div>
+                            <div class="title">
+                                <Dropdown trigger="click" placement="bottom-end">
+                                    <a href="javascript:void(0)">
+                                    <Icon type="ios-more" size="38"></Icon>
                                 </a>
                                 <DropdownMenu slot="list">
                                     <DropdownItem @click.native="contDetails(item.id)">详情</DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown>
+                                </Dropdown>
+                            </div>
                         </div>
                         <div class="projectName">
-                            {{item.contract_name}}
+                             {{item.contract_name}}
                         </div>
-                        <div class="projectName">
-                            ￥{{item.contract_price}}
-                        </div>
-                        <div class="projectStatus">
-                            <span class="status">
-                                {{item.status_text}}
-                            </span>
-                            <span class="line">&nbsp;</span>
+                        <div class="projectMoney">
+                            ￥<span>{{item.contract_price}}</span>
                         </div>
                         <div class="projectInfo">
-                            <span class="company">
-                                <i class="iconfont icon-ren"></i> {{item.company}}
-                            </span>
-                            <span class="date">
-                                {{item.create_time}}~{{item.end_time}}
-                            </span>
+                            <p class="company">
+                                <i class="iconfont icon-loudong"></i> {{item.company}}
+                            </p>
+                            <p class="company">
+                                {{item.start_time}} ~ {{item.end_time}}
+                            </p>
                         </div>
                     </dd>
                 </dl>

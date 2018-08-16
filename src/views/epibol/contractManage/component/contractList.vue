@@ -73,7 +73,7 @@ export default {
             if(window.confirm('是否确认删除?')){
                 let url=this.GLOBAL.baseRouter+'task/contract/delete-contract';
                 let params={
-                    id:id
+                    "contract_id":id
                 }
                 this.$axios.post(url,qs.stringify(params)).then(msg=>{
                     this.$Message.success('删除成功！');

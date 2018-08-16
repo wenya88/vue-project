@@ -1,4 +1,5 @@
 @import '../../../../styles/common.less';
+@import '../../../../styles/newBase.less';
 .fileCondition{
     float: right;margin-top:-45px;padding-right:1px;
     em{
@@ -6,16 +7,20 @@
     }
 }
 .bidManage{
-    padding:20px;
-    .ivu-tabs-nav{
-        margin-bottom:-1px;
+    background:#fafbfb;margin-top:@p30;
+    .ivu-tabs-nav-wrap{
+        margin-top:0px;
+        .ivu-tabs-nav{
+           border:0px;
+           .ivu-tabs-ink-bar{
+               background-color:@green;bottom:0px;
+           }
+        }
     }
     .ivu-tabs-nav-scroll{
-        border-bottom:1px solid #ddd;
+        border-bottom:0px dashed #ddd;
     }
-    .ivu-tabs-nav-container{
-        &:extend(.bidManage .ivu-tabs-nav-scroll);
-    }
+
     .bidList{
         margin-top:5px;
         dt{

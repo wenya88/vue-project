@@ -11,7 +11,7 @@ const paystatus={
         contrateButton:false,
         contractID:null,
         imgEditorWH:[],
-        company:JSON.parse(Cookies.get('company'))
+        company:!Cookies.get('company')?{}:JSON.parse(Cookies.get('company'))
     },
     mutations:{
         actionPaySkip(state,pData){
