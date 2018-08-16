@@ -9,6 +9,7 @@
 </template>
 
 <script>
+    import * as d3 from '../static/d3.js';
     export default {
         created() {
         },
@@ -47,13 +48,9 @@
 
                 d3.json("http://localhost:80/src/static/flare.json", function (error, data) {
                     if (error) throw error;
-
-                    var root = d3.hierarchy(data)
-                        .eachBefore(function (d) {
+                    var root = d3.hierarchy(data).eachBefore(function (d) {
                             d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name;
-                        })
-                        .sum(sumBySize)
-                        .sort(function (a, b) {
+                        }).sum(sumBySize).sort(function (a, b) {
                             return b.height - a.height || b.value - a.value;
                         });
 

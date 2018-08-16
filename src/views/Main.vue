@@ -5,8 +5,8 @@
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
                     <!--<div class="layout-logo stem-logo" @click="collapsedSider()">-->
-                        <div class="logo"></div>
-                        <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
+                    <div class="logo"></div>
+                    <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
                     <!--</div>-->
                     <!-- <div class="layout-nav stem-l">
                        <Menu mode="horizontal" :active-name="activePath">
@@ -57,23 +57,23 @@
            </div>  -->
             <div class="menuBlock" v-if="!showMenu">
                 <!--<ul>-->
-                    <!--<li v-for="(item,index) in menuList" :key="index">-->
-                        <!--<router-link :to="item.path" :class="[item.name]"-->
-                                     <!--@click.native="collapsedSider()"></router-link>-->
-                        <!--<span class="name">{{item.title}}</span>-->
-                    <!--</li>-->
-                    <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
-                        <!--个人工作台-->
-                    <!--</li>-->
-                    <!--<li class="comp" @click="linkTo('/epibol')">-->
-                        <!--公司-->
-                    <!--</li>-->
-                    <!--<li class="project" @click="linkTo('/epibol')">-->
-                        <!--项目大厅-->
-                    <!--</li>-->
-                    <!--<li class="art" @click="linkTo('/epibol')">-->
-                        <!--艺术广场-->
-                    <!--</li>   &ndash;&gt;-->
+                <!--<li v-for="(item,index) in menuList" :key="index">-->
+                <!--<router-link :to="item.path" :class="[item.name]"-->
+                <!--@click.native="collapsedSider()"></router-link>-->
+                <!--<span class="name">{{item.title}}</span>-->
+                <!--</li>-->
+                <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
+                <!--个人工作台-->
+                <!--</li>-->
+                <!--<li class="comp" @click="linkTo('/epibol')">-->
+                <!--公司-->
+                <!--</li>-->
+                <!--<li class="project" @click="linkTo('/epibol')">-->
+                <!--项目大厅-->
+                <!--</li>-->
+                <!--<li class="art" @click="linkTo('/epibol')">-->
+                <!--艺术广场-->
+                <!--</li>   &ndash;&gt;-->
                 <!--</ul>-->
             </div>
             <!--<ul class="menu" v-if="!menuListShow">-->
@@ -82,7 +82,7 @@
             <!--<span class="name">{{item.title}}</span>-->
             <!--</li>-->
             <!--</ul>-->
-            
+
 
 
             <Menu  style="min-width: 200px;max-width: 200px;" class="leftMenuList">
@@ -326,34 +326,34 @@
     @import "./main.less";
 
 
-   .main-content{
-       ::-webkit-scrollbar {/*滚动条整体样式*/
-           width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
-           height: 4px;
-       }
-       ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-           border-radius: 5px;
-           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-           background: rgba(0,0,0,0.2);
-       }
-       ::-webkit-scrollbar-track {/*滚动条里面轨道*/
-           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-           border-radius: 0;
-           background: rgba(0,0,0,0.1);
-       }
-       .ivu-menu{
-           overflow-y: auto !important;
-       }
+    .main-content{
+        ::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
+        }
+        ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.2);
+        }
+        ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        .ivu-menu{
+            overflow-y: auto !important;
+        }
 
-   }
+    }
     .leftMenuList {
-background: #19322e !important;
+        background: #19322e !important;
         /*background: #19322e !important;*/
 
         img{
             background: #fff ;
         }
-        
+
         .active1{
             width: 50px;
             height: 50px;
