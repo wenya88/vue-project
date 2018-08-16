@@ -45,11 +45,13 @@ export default {
        var myCharts = echarts.init(document.getElementById('rader'))
        const list = this.ability
        const data = []
+       const colorList = ['#cef2ec', '#7cbefc', '#3bceb6', '#78c97c', '#fcc44a']
        const textList = []
        for (let i in list) {
          data.push(list[i].count)
          textList.push({
-           text: list[i].name
+           text: list[i].name,
+           color: colorList[i]
          })
        }
        myCharts.setOption({

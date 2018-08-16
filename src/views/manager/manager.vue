@@ -1,6 +1,5 @@
 <template>
    <div class="manager_page_all">
-    
       <div class="clearfix manager_page_header" v-if="manager.manager_page_header">
          <div class='left_manager_head'>
             <managaer-in :data='business_concept'></managaer-in>
@@ -37,7 +36,6 @@
            </div>
         </Col>
          <!-- 团队 -->
-       
         <Col v-if="manager.mangaer_main_team" class="mangaer_main_team" span="8">
             <div class="mangaer_team_children">
                <mangaer-tem :teamList='team'></mangaer-tem>
@@ -116,17 +114,12 @@ export default {
 .manager_page_all{
   width: 100%;
   min-height: 100%;
-}
-</script>
-<style scoped>
-.manager_page_all{
-  width: 100%;
-  min-height: 100%;
  
 }
 .manager_page_header{
   width: 100%;
   height: 120px;
+  margin-top: 30px;
 }
 .mag-1{
  width: 10%;
