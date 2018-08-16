@@ -3,100 +3,69 @@
     <div class="taskInfoPopStandardContainer">
         <dl class="standardList">
             <dt class="standardTitle">基础规范</dt>
-            <dd class="standardInfo">
-                <span>尺寸</span>
-                <span>1920*768px</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>风格</span>
-                <span>中国武侠风</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>4边面</span>
-                <span>使用正方形贴图</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>双边显示</span>
-                <span>所有文件 '-s' 开头</span>
-            </dd>
-            <!--<template v-if="infoDetails">-->
-                <!--<dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"-->
-                    <!--v-if="item.type === 'progress' || item.type === 'file' || item.type === 'connect'"-->
-                <!--&gt;-->
-                    <!--<span>{{item.name}}</span>-->
-                    <!--<span>{{item.values}}</span>-->
-                <!--</dd>-->
-            <!--</template>-->
+            <!--<dd class="standardInfo">-->
+            <!--<span>尺寸</span>-->
+            <!--<span>1920*768px</span>-->
+            <!--</dd>-->
+            <!--<dd class="standardInfo">-->
+            <!--<span>风格</span>-->
+            <!--<span>中国武侠风</span>-->
+            <!--</dd>-->
+            <!--<dd class="standardInfo">-->
+            <!--<span>4边面</span>-->
+            <!--<span>使用正方形贴图</span>-->
+            <!--</dd>-->
+            <!--<dd class="standardInfo">-->
+            <!--<span>双边显示</span>-->
+            <!--<span>所有文件 '-s' 开头</span>-->
+            <!--</dd>-->
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'progress' || item.type === 'file' || item.type === 'connect'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">制作流程规范</dt>
+            <!--阶段-->
             <div>
                 <ul class="flowChartUl">
-                    <li class="current">线条<i></i></li>
-                    <li class="current">初稿<i></i></li>
-                    <li>立绘<i></i></li>
-                    <li>精修<i></i></li>
-                   <!--<template v-if="infoDetails">-->
-                       <!--<li v-for="(item,index) in infoDetails.stage" class="flowChart"-->
-                           <!--@click="getFlowInfo(item)"-->
-                       <!--&gt;-->
-                           <!--<span v-if="index !== 0">———</span>{{item.stage_name}}-->
-                       <!--</li>-->
-                   <!--</template>-->
+                    <!--<li class="current">线条<i></i></li>-->
+                    <!--<li class="current">初稿<i></i></li>-->
+                    <!--<li>立绘<i></i></li>-->
+                    <!--<li>精修<i></i></li>-->
+                    <template v-if="infoDetails">
+                        <li v-for="(item,index) in infoDetails.stage" class="flowChart"
+                            @click="getFlowInfo(item)"
+                        >
+                            <span v-if="index !== 0"></span>{{item.stage_name}}
+                        </li>
+                    </template>
                 </ul>
-                <ul class="uploadlist">
-                    <li>
-                        <span>上传规范</span>
-                        <span>提交所有源文件</span>
-                    </li>
-                    <li>
-                        <span>上传规范</span>
-                        <span>提交所有源文件</span>
-                    </li>
-                </ul>
+
             </div>
-            <dd v-if="flowChartText" v-for="(item,index) in flowChartText" :key="index" class="standardInfo">
-            <span>{{item.norm_name}}</span>
-            <div>
-                <span>{{item.text}}</span>
-                <span  class="level" :class="'level'+item.level" >{{item.level}}</span>
-            </div>
+            <!--上传-->
+            <dd v-if="flowChartText" v-for="(item,index) in flowChartText" :key="index" class="uploadlist ">
+                <span>{{item.norm_name}}</span>
+                <div>
+                    <span>{{item.text}}</span>
+                    <span class="level" :class="'level'+item.level">{{item.level|level}}</span>
+                </div>
             </dd>
         </dl>
         <dl class="standardList">
             <dt class="standardTitle">交稿文件规范</dt>
-            <dd class="standardInfo">
-                <span>文件命名</span>
-                <span>1920*768px</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>贴图存储</span>
-                <span>中国武侠风</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>格式要求</span>
-                <span>使用正方形贴图</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>双边显示</span>
-                <span>所有文件 '-s' 开头</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>贴图存储</span>
-                <span>中国武侠风</span>
-            </dd>
-            <dd class="standardInfo">
-                <span>格式要求</span>
-                <span>使用正方形贴图</span>
-            </dd>
-            <!--<template v-if="infoDetails">-->
-                <!--<dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"-->
-                    <!--v-if="item.type === 'hand'"-->
-                <!--&gt;-->
-                    <!--<span>{{item.name}}</span>-->
-                    <!--<span>{{item.values}}</span>-->
-                <!--</dd>-->
-            <!--</template>-->
+            <template v-if="infoDetails">
+                <dd v-for="(item,index) in infoDetails.standard" :key="index" class="standardInfo"
+                    v-if="item.type === 'hand'"
+                >
+                    <span>{{item.name}}</span>
+                    <span>{{item.values}}</span>
+                </dd>
+            </template>
 
         </dl>
     </div>
@@ -104,6 +73,7 @@
 
 <script>
     import {mapState} from 'vuex'
+
     export default {
         created() {
 
@@ -113,80 +83,133 @@
         },
         data() {
             return {
-                standardType:{
-                    progess :[],
-                    file:[],
-                    connect:[],
-                    hand:[],
+                standardType: {
+                    progess: [],
+                    file: [],
+                    connect: [],
+                    hand: [],
                 },
-                flowChartText:[]
+                flowChartText: []
             }
         },
         methods: {
-            getFlowInfo(item){
-                if(item.require){
+            getFlowInfo(item) {
+                if (item.require) {
                     this.flowChartText = item.require
                 }
             }
         },
         computed: {
             ...mapState({
-                infoDetails(data){
+                infoDetails(data) {
                     return data.project.detail.taskInfo
                 }
             })
         },
-        watch:{
-            infoDetails(data){
+        watch: {
+            infoDetails(data) {
             }
         },
-        components: {}
+        components: {},
+        filters:{
+            level(value){
+                if(value === 1){
+                    return '高'
+                }else if(value === 2){
+                    return '中'
+                }else if(value === 3){
+                    return '低'
+                }
+            }
+        }
     }
 </script>
 
 <style lang="less" scoped>
-    .taskInfoPopStandardContainer{
+    .taskInfoPopStandardContainer {
         /*padding: 20px;*/
-        .standardList{
-            padding: 0 20px;border-bottom: 1px solid #f2f9f9;
-            .standardTitle{font-size: 14px;color: #9f9f9f;margin:15px 0};
-            .standardInfo{
-                padding:8px 10px;font-size: 13px;color: #b3b3b3;background: #f6f8f8;display: flex;justify-content: space-between;border-radius: 3px;margin-bottom: 15px;
+        .standardList {
+            padding: 0 20px;
+            border-bottom: 1px solid #f2f9f9;
+            .standardTitle {
+                font-size: 14px;
+                color: #9f9f9f;
+                margin: 15px 0
             }
-            .flowChartUl{
-                display: flex;margin-bottom: 20px;
-                li{list-style: none;position: relative;border: 1px dashed #ccc;padding: 2px 15px;border-radius: 3px;font-size: 13px;margin-left: 35px;
-                    &:nth-child(1){margin-left: 0!important;}
-                    &:last-child{i{display: none}}
-                    i{position: absolute;top:25%;right: -25px;display: inline-block;width:12px;height: 12px;background: url("../../proStat/image/JT2.png") no-repeat}
-                }
-                .current{
-                    border: 1px solid #3dcfb7!important;color: #3dcfb7!important;
-                    i{background: url("../../proStat/image/JT1.png") no-repeat !important;}
-                }
-            }
-            .uploadlist{
-                li{
-                    display: flex;justify-content: space-between;list-style: none;background: url("../../proStat/image/circleIcon.png") no-repeat left center;
-                    padding:10px 0 10px 10px;font-size: 13px;
-                    span{
-                        display: inline-block;
-                        &:last-child{padding-right: 25px;background: url("../../proStat/image/quality.png") no-repeat right center;background-size: contain;}
-                    }
 
-                }
-                /*list-style: url("../../proStat/image/circleIcon.png");*/
+            .standardInfo {
+                padding: 8px 10px;
+                font-size: 13px;
+                color: #b3b3b3;
+                background: #f6f8f8;
+                display: flex;
+                justify-content: space-between;
+                border-radius: 3px;
+                margin-bottom: 15px;
             }
+            .flowChartUl {
+                display: flex;
+                margin-bottom: 20px;
+                li {
+                    list-style: none;
+                    position: relative;
+                    border: 1px dashed #ccc;
+                    padding: 2px 15px;
+                    border-radius: 3px;
+                    font-size: 13px;
+                    margin-left: 35px;
+                    &:nth-child(1) {
+                        margin-left: 0 !important;
+                    }
+                    &:last-child {
+                        i {
+                            display: none
+                        }
+                    }
+                    i {
+                        position: absolute;
+                        top: 25%;
+                        right: -25px;
+                        display: inline-block;
+                        width: 12px;
+                        height: 12px;
+                        background: url("../../proStat/image/JT2.png") no-repeat
+                    }
+                }
+                .current {
+                    border: 1px solid #3dcfb7 !important;
+                    color: #3dcfb7 !important;
+                    i {
+                        background: url("../../proStat/image/JT1.png") no-repeat !important;
+                    }
+                }
+            }
+
+
+            .uploadlist {
+                display: flex;
+                justify-content: space-between;
+                list-style: none;
+                background: url("../../proStat/image/circleIcon.png") no-repeat left center;
+                padding: 10px 0 10px 10px;
+                font-size: 13px;
+
+
+
+        }
+                /*list-style: url("../../proStat/image/circleIcon.png");*/
+
         }
     }
-    /*.taskInfoPopStandardContainer {*/
+
+    .taskInfoPopStandardContainer {
         /*padding: 0 10px;*/
         /*margin-bottom: 40px;*/
-        /*.standardList {*/
-            /*.flowChartUl{*/
+        .standardList {
+            /*.flowChartUl {*/
                 /*display: flex;*/
             /*}*/
-            /*.standardTitle{*/
+            /*.standardTitle {*/
                 /*font-size: 16px;*/
                 /*color: #ccc;*/
             /*}*/
@@ -194,25 +217,25 @@
                 /*display: flex;*/
                 /*justify-content: space-between;*/
             /*}*/
-            /*.level{*/
-                /*padding: 0 5px;*/
-                /*color: #fff;*/
-            /*}*/
-            /*.level3{*/
-              /*background: red;*/
-            /*}*/
-            /*.level2{*/
-                /*background: orange;*/
-            /*}*/
-            /*.level1{*/
-                /*background: #8c8c8c;*/
-            /*}*/
+            .level {
+
+                color: #fff;
+            }
+            .level3 {
+                background: red;
+            }
+            .level2 {
+                background: orange;
+            }
+            .level1 {
+                background: #8c8c8c;
+            }
+        }
+        /*dl {*/
+            /*margin-bottom: 65px;*/
         /*}*/
-        /*dl{*/
-            /*margin-bottom:65px ;*/
-        /*}*/
-        /*dd{*/
+        /*dd {*/
             /*padding: 10px 0;*/
         /*}*/
-    /*}*/
+    }
 </style>

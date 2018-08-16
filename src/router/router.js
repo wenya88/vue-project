@@ -210,6 +210,15 @@ export const appRouter = [
                 component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
             },
             {
+                path: '/manager/setSchedule',
+                icon: 'ios-paper-outline',
+                name: 'manager',
+                title: '日程安排',
+                meta:{role:1},
+                component: resolve => { require(['@/views/manager/setSchedule.vue'], resolve); }
+            },
+
+            {
                 path: '/epibol/memberManager',
                 icon: 'ios-paper-outline',
                 name: 'memberManager',

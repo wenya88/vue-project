@@ -99,6 +99,7 @@
   </div>
 </template>
 <script>
+    import axios from 'axios'
     import {mapState} from 'vuex'
 import bidInvite from './bidManage/component/bidInvite'
 import bidDetails from './bidManage/component/bidDetails'
@@ -165,7 +166,7 @@ export default {
         bidInvite:bidInvite
     },
     mounted(){
-        // this.bidGet();
+         this.bidGet();
         this.Refresh();
         this.inviteGet();
         this.$bus.on('updataSuccess',()=>{
@@ -257,7 +258,8 @@ export default {
                 bid_result:resultData,
                 search:searData
             }))
-            _this.$axios.all([url,ContUrl]).then(([msg,ContMsg])=>{
+
+            axios.all([url,ContUrl]).then(([msg,ContMsg])=>{
                 if(msg.data.err_code==0){
                     _this.$Loading.finish();
                     //招标
@@ -267,7 +269,7 @@ export default {
                 _this.searchData=null;
             },()=>{
                 _this.$Loading.error();
-            })  
+            })
         },
         // 邀请列表
         inviteGet(search=this.searchData,status=this.fileInvite){

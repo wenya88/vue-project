@@ -38,20 +38,20 @@ router.beforeEach((to, from, next) => {
                 name: 'home_index'
             });
         }
-        /*权限  meta role 控制*/
-        else if(to.meta.role!==undefined) {
-            let allrole = JSON.parse(sessionStorage.getItem('userrole'));
-            console.log(11, to.meta.role,parseInt(Cookies.get('post_id')))
-            // if( typeof to.meta.role === 'number' && to.meta.role !== parseInt(Cookies.get('post_id'))){
-            if( typeof to.meta.role === 'number' && to.meta.role !==1){
-                next({path: '/403'})
-            }
-            else if (allrole.indexOf(to.meta.role) !== -1) {
-                next({path: '/403'})
-            } else {
-                next()
-            }
-        }
+        /*路由权限  meta role 控制*/
+        // else if(to.meta.role!==undefined) {
+        //     let allrole = JSON.parse(sessionStorage.getItem('userrole'));
+        //
+        //     // if( typeof to.meta.role === 'number' && to.meta.role !== parseInt(Cookies.get('post_id'))){
+        //     if( typeof to.meta.role === 'number' && to.meta.role !==1){
+        //         next({path: '/403'})
+        //     }
+        //     else if (allrole.indexOf(to.meta.role) !== -1) {
+        //         next({path: '/403'})
+        //     } else {
+        //         next()
+        //     }
+        // }
         else {
             const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
             if (curRouterObj && curRouterObj.access !== undefined) { // 需要判断权限的路由

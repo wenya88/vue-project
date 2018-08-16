@@ -1,7 +1,7 @@
 <!-- 子任务组件 -->
 <template>
     <div class="subtask">
-      <Button v-if="!userStatus" type="success" size="large" @click="showAccretionTask">添加子任务</Button>
+      <Button v-if="!userStatus"  type="success" size="large" @click="showAccretionTask">增加子任务</Button>
       <!--列表-->
       <tasklist subtask="true" ref="list"
       v-on:editWindow="showTaskDetails"

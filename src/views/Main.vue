@@ -4,9 +4,10 @@
         <div :style="{paddingLeft: shrink?'60px':'0'}" class="main-header-con">
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
-                    <div class="layout-logo stem-logo" @click="collapsedSider()">
-                        <img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>
-                    </div>
+                    <!--<div class="layout-logo stem-logo" @click="collapsedSider()">-->
+                        <div class="logo"></div>
+                        <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
+                    <!--</div>-->
                     <!-- <div class="layout-nav stem-l">
                        <Menu mode="horizontal" :active-name="activePath">
                             <Menu-item
@@ -84,7 +85,7 @@
             
 
 
-            <Menu :width="'200px'"  class="leftMenuList">
+            <Menu  style="min-width: 200px;max-width: 200px;" class="leftMenuList">
                 <Submenu v-for="(item,index) in menuList"  :name="index" :key="index">
                     <template slot="title">
                         {{item.title||item.name}}
@@ -128,152 +129,6 @@
         },
         data() {
             return {
-
-                haha: [
-//                    {
-//                        path: '/project',
-//                        name: 'project',
-//                        level: '1',
-//                        title: '项目管理',
-//                        children: [
-//                            {
-//                                path: '/project/home',
-//                                name: 'custom',
-//                                level: '1-1',
-//                                title: '概况',
-//                            }, {
-//                                path: '/project/task',
-//                                name: 'task',
-//                                level: '1-2',
-//                                title: '任务管理',
-//                            }, {
-//                                path: '/project/quality',
-//                                name: 'quality',
-//                                level: '1-3',
-//                                title: '资源管理',
-//                            }, {
-//                                path: '/project/projectMember',
-//                                name: 'eMember',
-//                                level: '1-4',
-//                                title: '团队',
-//                            }, {
-//                                path: '/project/statistics',
-//                                name: 'statistics',
-//                                level: '1-5',
-//                                title: '统计',
-//                            }
-//                        ]
-//                    },
-                    {
-                        path: '/epibol',
-                        name: 'epibol',
-                        level: '2',
-                        title: '公司',
-                        children: [
-                            {
-                                path: '/epibol/home',
-                                name: 'eHome',
-                                level: '2-1',
-                                title: '概况页',
-                            }, {
-                                path: '/epibol/bidManage',
-                                name: 'bidManage',
-                                level: '2-2',
-                                title: '投标',
-                                auth: 0,
-                            }, {
-                                path: '/epibol/contractManage',
-                                name: 'contractManage',
-                                level: '2-3',
-                                title: '合同',
-                                auth: 1,
-                            }, {
-                                path: '/epibol/projectManage',
-                                name: 'projectManage',
-                                level: '2-4',
-                                title: '项目',
-                            },
-                            {
-                                path: '/epibol/memberManager',
-                                name: 'memberManager',
-                                level: '2-5',
-                                title: '团队',
-
-                            },
-                            {
-                                path: '/epibol/statistics',
-                                name: 'eStatistics',
-                                level: '2-6',
-                                title: '统计',
-                            }
-                        ]
-                    },
-
-
-
-                    {
-                        path: '/epibol/imPlementer',
-                        name: 'imPlementer',
-                        level: '5',
-                        title: '实施人员',
-                        access: 3,
-                        // component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
-                    },
-                    {
-                        path: '/epibol/ProjectWorks',
-                        name: 'workbench',
-                        title: '工作台',
-                        level: '6',
-                        access: 2,
-                        // component: resolve => { require(['@/views/epibol/ProjectWork.vue'], resolve); }
-                        // }, {
-                        //     path: '/epibol/taskClass',
-                        //     name: 'setting',
-                        //     title: '设置',
-                    },
-                    {
-                        path: '/manager/manager',
-                        name: 'manager',
-                        level: '7',
-                        title: '经理工作台',
-                        access: 1,
-                        children: [
-                            {
-                                path: '/epibol/home',
-                                name: 'eHome',
-                                level: '7-1',
-                                title: '概况页',
-                            }, {
-                                path: '/epibol/bidManage',
-                                name: 'bidManage',
-                                level: '7-2',
-                                title: '投标',
-                                auth: 0,
-                            }, {
-                                path: '/epibol/contractManage',
-                                name: 'contractManage',
-                                level: '7-3',
-                                title: '合同',
-                                auth: 1,
-                            }, {
-                                path: '/epibol/projectManage',
-                                name: 'projectManage',
-                                level: '7-4',
-                                title: '项目',
-                            }, {
-                                path: '/epibol/memberManager',
-                                name: 'memberManager',
-                                level: '7-5',
-                                title: '团队',
-                            }, {
-                                path: '/epibol/statistics',
-                                name: 'eStatistics',
-                                level: '7-6',
-                                title: '统计',
-                            }
-                        ]
-                    }
-                ],
                 shrink: false,
                 showMenu: false,
                 userName: '',
@@ -330,11 +185,12 @@
                 },
                 children(value){
                     return value.app.children
+                },
+                menuList(value){
+                    return  value.app.menuList;
                 }
             }),
-            menuList() {
-                return this.$store.state.app.menuList;
-            },
+
             mesCount() {
                 return this.$store.state.app.messageCount;
             },
@@ -540,7 +396,13 @@ background: #19322e !important;
         top: 15px;
         left: 20px;
     }
-
+    .logo{
+        width: 199px;
+        height: 64px;
+        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background-size: 48px;
+        border-bottom: 1px solid #42514f;
+    }
     .layout-nav {
         /*width: 500px;*/
         margin: 0 auto;
