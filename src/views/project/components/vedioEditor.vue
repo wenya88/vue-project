@@ -31,78 +31,90 @@
             <!-- 进度条 -->
             <div class="V_progressBar" style="top:0px;left:0px;"></div>
             <section class="canvasContainer">
-                <!--<video id="my-video" class="video-js" controls   width="810" height="480" data-setup="{}">-->
+                <!--<video id="my-video" class="video-js" controls   width="810" height="this.videoHeight" data-setup="{}">-->
                 <!--<source :src="VideoURL" type="video/mp4">-->
                 <!--</video>-->
                 <!--视频-->
-                <video id="haha" height="480" style="width:100%;object-fit: fill">
+                <video id="haha" style="width:100%;object-fit: fill;">
                     <source :src="VideoURL" type="video/mp4">
                 </video>
                 <!--进度条-->
                 <div class="controls">
                     <!--移动小圆点-->
-                    <span v-show="!isCanvas" id="circle" class="circleSign" >
+                    <span v-show="!isCanvas" id="circle" class="circleSign">
                         <span id="circleSpot" class="circleSpot"></span>
                     </span>
-                    <span v-show="!isCanvas" class="progressBar" @click="pictureJump" @mousedown="pictureMove" ></span>
-                        <i v-show="!isCanvas" class="strip"></i>
-                        <!--canvas标注-->
-                        <ul v-show="!isCanvas" class="progressSignUl">
-                            <li v-if="item.left && item.width" v-for="(item,index) in timeList" class="progressSign" :style="{'width':item.width+'px','left':item.left+'px'}"  :class="labelHighlight===index && editCas?'highlight':''" :key="index">
-                                <p class="progressSignText"   @click="editCanvasDate(item,index)" >{{labelHighlight===index && editCas?'存':'改'}}</p>
-                                <p v-if="labelHighlight===index && editCas" class="progressSignText" @click="delCanvas(item)" type="text">删</p>
-                            </li>
-                        </ul>
-                        <!--刻度-->
-                        <ul v-show="!isCanvas" class="scaleUl">
-                            <li v-for="(item,index) in articleScale" class="scale" :key="index"></li>
-                        </ul>
+                    <span v-show="!isCanvas" class="progressBar" @click="pictureJump" @mousedown="pictureMove"></span>
+                    <i v-show="!isCanvas" class="strip"></i>
+                    <!--canvas标注-->
+                    <ul v-show="!isCanvas" class="progressSignUl">
+                        <li v-if="item.left && item.width" v-for="(item,index) in timeList" class="progressSign"
+                            :style="{'width':item.width+'px','left':(item.left<0?-1*item.left:item.left)+'px'}"
+                            :class="labelHighlight===index && editCas?'highlight':''" :key="index">
+                            <p class="progressSignText" @click="editCanvasDate(item,index)">
+                                {{labelHighlight === index && editCas ? '存' : '改'}}</p>
+                            <p v-if="labelHighlight===index && editCas" class="progressSignText"
+                               @click="delCanvas(item)" type="text">删</p>
+                        </li>
+                    </ul>
+                    <!--刻度-->
+                    <ul v-show="!isCanvas" class="scaleUl">
+                        <li v-for="(item,index) in articleScale" class="scale" :key="index"></li>
+                    </ul>
 
                     <!--时间显示和视频开关-->
-                    <Icon v-show="switchIcon&&!isCanvas" @click.native.prevent="videoStart" class="startButton" type="play"></Icon>
-                    <Icon v-show="!switchIcon&&!isCanvas" @click.native.prevent="pauseButton" class="startButton" type="pause"></Icon>
+                    <Icon v-show="switchIcon&&!isCanvas" @click.native.prevent="videoStart" class="startButton"
+                          type="play"></Icon>
+                    <Icon v-show="!switchIcon&&!isCanvas" @click.native.prevent="pauseButton" class="startButton"
+                          type="pause"></Icon>
                     <span v-if="video"
                           class="controlsTime">{{currnt_time | dateType}}/{{video.duration | dateType}}</span>
                 </div>
                 <!--video画布-->
-                <canvas v-show="isCanvas" id="myCanvas" class="videoCanvas" width="810" height="480"
+                <canvas v-show="isCanvas" id="myCanvas" :width="videoWidth" :height="videoHeight" class="videoCanvas"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
                 <!--画板画布-->
-                <canvas   id="tu"  class="drawMain" :style="[isCanvas?{'z-index':'113'}:{},hideSign?{'opacity':0}:{'opacity':1}]" @click.stop="drawText" @mousedown.prevent="paletteInit" width="810" height="480"
+                <canvas id="tu" class="drawMain" :width="videoWidth" :height="videoHeight"
+                        :style="[isCanvas?{'z-index':'113'}:{},hideSign?{'opacity':0}:{'opacity':1}]"
+                        @click.stop="drawText" @mousedown.prevent="paletteInit"
                         style="border:1px solid #d3d3d3;opacity: 0">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
                 <!--move画布-->
-                <canvas v-show="isCanvas" id="tu2" class="drawTrans" width="810" height="480"
+                <canvas v-show="isCanvas" id="tu2" class="drawTrans" :width="videoWidth" :height="videoHeight"
                         style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
 
                 <!--<div v-show="switchIcon&&!isCanvas"   class="masking" @click="videoStart" >-->
-                    <!--<Icon class="circleIcon"  type="play"></Icon>-->
+                <!--<Icon class="circleIcon"  type="play"></Icon>-->
                 <!--</div>-->
-                <div v-show="!switchIcon&&!isCanvas" class="masking" @click="pauseButton" ></div>
+                <div v-show="!switchIcon&&!isCanvas" class="masking" @click="pauseButton"></div>
 
                 <input v-show="drawTextShow" @blur="drawText" v-model="drawTextValue" type="text" class="textInput"
                        :style="{'top':top+'px','left':left+'px'}">
             </section>
             <!--操作按钮-->
             <div class="canvasEdit">
-                <Icon  @click.native="updateFrame('before')" type="skip-backward" size="18" style="padding:0 5px;" title="上一帧"></Icon>
-                <Icon   @click.native="updateFrame('after')" type="skip-forward" size="18" style="padding:0 5px;margin-right: 90px;" title="下一帧"></Icon>
+                <Icon @click.native="updateFrame('before')" type="skip-backward" size="18" style="padding:0 5px;"
+                      title="上一帧"></Icon>
+                <Icon @click.native="updateFrame('after')" type="skip-forward" size="18"
+                      style="padding:0 5px;margin-right: 90px;" title="下一帧"></Icon>
 
-                <Icon   v-show="!isCanvas"  @click.native="startCanvas"  type="paintbrush" size="18" style="padding: 0 5px 0 15px" title="修改标记"></Icon>
+                <Icon v-show="!isCanvas" @click.native="startCanvas" type="paintbrush" size="18"
+                      style="padding: 0 5px 0 15px" title="修改标记"></Icon>
                 <template v-if="isCanvas">
                     <!--<Icon @click.native.prevent="changeRect" size="18" type="android-checkbox-outline-blank"></Icon>-->
                     <!--<Icon @click.native.prevent="changeText" size="18" type="paintbrush"></Icon>  -->
-                    <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit"  :class="[{'editHover':isLine},'edit']"  title="画笔"></Icon>
+                    <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit"
+                          :class="[{'editHover':isLine},'edit']" title="画笔"></Icon>
                     <!--<Button  type="text">画笔</Button>-->
 
                     <!--<Button @click="changeRect" type="text">矩形</Button>-->
 
-                    <i @click="changeText" :class="[{'textHover':isText},'text']" >T</i>
+                    <i @click="changeText" :class="[{'textHover':isText},'text']">T</i>
 
                     <i class="little" @click="changelineWidth(1)"></i>
                     <i class="middle" @click="changelineWidth(5)"></i>
@@ -114,9 +126,11 @@
                     <i class="blue" @click="changeColor('#66DAFF')"></i>
                     <i class="orange" @click="changeColor('#FFB14D')"></i>
                 </template>
-                <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;" title="显示标记" ></Icon>
-                <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" size="18" style="padding:0 5px;"  title="隐藏标记" ></Icon>
-                <Button v-show="isCanvas"   @click="saveCanvas" type="text">保存</Button>
+                <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;"
+                      title="显示标记"></Icon>
+                <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" size="18"
+                      style="padding:0 5px;" title="隐藏标记"></Icon>
+                <Button v-show="isCanvas" @click="saveCanvas" type="text">保存</Button>
                 <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
 
             </div>
@@ -162,14 +176,15 @@
     export default {
         data() {
             return {
-                highlightSign:null,
-                hideSign:false,
-                labelHighlight:null,
-                editCas:false,  //标注编辑
-                articleScale:[],  // 刻度
+                highlightSign: null,
+                hideSign: false,
+                labelHighlight: null,
+                editCas: false,  //标注编辑
+                articleScale: [],  // 刻度
                 saveCanvasWindow: true, // 保存弹窗
                 saveCanvasShow: false,
-                videoWidth: 810,  //canvas 宽度
+                videoWidth: null,  //canvas 宽度
+                videoHeight: null,  //canvas 宽度
                 switchIcon: true, //开始暂停按钮
                 linshishuju: JSON.parse(sessionStorage.getItem('videoTime')) || [], //接口数据
                 timeList: [], //进度条标注
@@ -190,10 +205,10 @@
                 y: null,
                 newX: null,  //更新x
                 newY: null,
-                minx:null,
-                miny:null,
-                maxx:null,
-                maxy:null,
+                minx: null,
+                miny: null,
+                maxx: null,
+                maxy: null,
                 isRect: false,  //画矩形
                 isLine: true, // 画线
                 isText: false,
@@ -247,16 +262,14 @@
                 this.Vdefault();
                 this.vedioLoad();
             });
+            this.video = document.getElementById("haha");           // 视频
             this.VedioGet();
-            this.init();
-            this.showVideoSign();
 
         },
         created() {
             this.AddVedioJS();
         },
         destroyed() {
-
             clearInterval(this.timeId)
         },
         computed: {
@@ -492,7 +505,7 @@
                     "feedback": '',
                     "file": [JSON.stringify({
                         "file_id": this.fileID,
-                        "tag": JSON.parse(sessionStorage.getItem('videoTime'))||[]
+                        "tag": JSON.parse(sessionStorage.getItem('videoTime')) || []
                     })]
                 };
                 let EDITparams = {
@@ -501,7 +514,7 @@
                     "feedback": this.FeedbackValue,
                     "file": JSON.stringify([{
                         "file_id": this.fileID,
-                        "tag":JSON.parse(sessionStorage.getItem('videoTime'))||[]
+                        "tag": JSON.parse(sessionStorage.getItem('videoTime')) || []
                     }])
                 };
                 if (type == 'edit') {
@@ -609,8 +622,9 @@
             },
             /*进度条*/
             timeNum() {
-
                 if (this.video.readyState > 0) {
+                    console.log(33, this.video.offsetWidth)
+                    console.log(44, this.video.offsetHeight)
                     let zhen = parseFloat(this.video.duration);
                     this.percentage = this.video.currentTime / zhen;
                     document.querySelector('#circle').style.width = this.percentage * (this.videoWidth - 10) + 'px';
@@ -636,19 +650,19 @@
             /*删除画布*/
             delCanvas(item) {
                 this.linshishuju.map((item, index, arr) => {
-                    if (this.highlightSign.time[0] === item.time[0] &&  this.highlightSign.time[1] === item.time[1]) {
+                    if (this.highlightSign.time[0] === item.time[0] && this.highlightSign.time[1] === item.time[1]) {
                         arr.splice(index, 1);
                         this.showVideoSign();
-                        this.ctx.clearRect(0, 0, this.videoWidth, 480);
+                        this.ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
                         sessionStorage.setItem('videoTime', JSON.stringify(this.linshishuju));
                         this.editCas = !this.editCas;
                     }
                 });
             },
             /*进入编辑标注模式*/
-            editCanvasDate(item,index) {
+            editCanvasDate(item, index) {
 
-           this.highlightSign = item;
+                this.highlightSign = item;
                 this.editCas = !this.editCas;
                 this.labelHighlight = index
             },
@@ -676,23 +690,23 @@
                 }
             },
             /*编辑标注*/
-            editTag(time){
+            editTag(time) {
                 let newTime = null;
 
-                    let average = (this.highlightSign.time[0] + this.highlightSign.time[1]) /2;
-                    /*点击标记左边*/
-                    if(time<average){
-                        this.highlightSign.time[0]  = time;
-                        newTime = this.highlightSign.time;
-                    }
-                    /*点击标记右边*/
-                    else if(time>average) {
-                        this.highlightSign.time[1]  = time;
-                        newTime = this.highlightSign.time;
-                    }
+                let average = (this.highlightSign.time[0] + this.highlightSign.time[1]) / 2;
+                /*点击标记左边*/
+                if (time < average) {
+                    this.highlightSign.time[0] = time;
+                    newTime = this.highlightSign.time;
+                }
+                /*点击标记右边*/
+                else if (time > average) {
+                    this.highlightSign.time[1] = time;
+                    newTime = this.highlightSign.time;
+                }
 
                 this.linshishuju.map((item, index, arr) => {
-                    if(this.highlightSign.time[0] === item.time[0] &&  this.highlightSign.time[1] === item.time[1]){
+                    if (this.highlightSign.time[0] === item.time[0] && this.highlightSign.time[1] === item.time[1]) {
                         item.time = newTime;
                         this.timeNum();
                         this.showVideoSign();
@@ -703,7 +717,7 @@
             /*播放插入标注*/
             videoInit(isPictureJump) {
                 this.currnt_time = this.video.currentTime;
-//                this.ctx.clearRect(0, 0, this.videoWidth, 480);
+//                this.ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
                 let timeId = setInterval(() => {
                     this.currnt_time = this.video.currentTime;
 
@@ -729,29 +743,47 @@
                     if (this.video.readyState > 0) {
                         this.timeList = this.linshishuju;
                         this.timeList.map((item, index) => {
-                                item.left = parseFloat(item.time[0] / this.video.duration * (this.videoWidth - 10));
-                                item.width = parseFloat((item.time[1]-item.time[0]) / this.video.duration * (this.videoWidth - 10));
+                            item.left = parseFloat(item.time[0] / this.video.duration * (this.videoWidth - 10));
+                            item.width = parseFloat((item.time[1] - item.time[0]) / this.video.duration * (this.videoWidth - 10));
                         });
                         this.articleScaleList();
                         clearInterval(timeId)
-                    }}, 25);
+                    }
+                }, 25);
             },
             /*刻度*/
-            articleScaleList(){
-                this.articleScale = Array.from(new Array(parseInt(this.video.duration)+1))
+            articleScaleList() {
+                this.articleScale = Array.from(new Array(parseInt(this.video.duration) + 1))
 //                this.articleScale
             },
             /*canvas初始化*/
             init() {
-                this.video = document.getElementById("haha");           // 视频
+//                this.video = document.getElementById("haha");           // 视频
                 this.videoCas = document.getElementById("myCanvas");    // 获取视频图像的画布
                 this.canvas = document.getElementById("tu");            // 画板
                 this.canvasTans = document.getElementById("tu2");       // 矩形move画板
+
+                this.video.volume = 0;  // 音量为0 方便调试
+
+                const width = this.video.offsetWidth;
+                const height = this.video.offsetHeight;
+
+                this.videoWidth = width;
+                this.videoHeight = height;
+                this.videoCas.style.width = width + 'px';
+                this.videoCas.style.height = height + 'px';
+                this.canvas.style.width = width + 'px';
+                this.canvas.style.height = height + 'px';
+                this.canvasTans.style.width = width + 'px';
+                this.canvasTans.style.height = height + 'px';
+
                 this.videoCtx = this.videoCas.getContext('2d');
                 this.ctx = this.canvas.getContext('2d');
                 this.ctxTans = this.canvasTans.getContext('2d');
-                this.video.volume = 0;  // 音量为0 方便调试
-                document.body.addEventListener('mouseup',this.beyondArea);
+
+                document.body.addEventListener('mouseup', this.beyondArea);
+
+
 //                this.timeNum(); // 进度条
                 if (!this.isCanvas) {
                     return false
@@ -759,14 +791,15 @@
                 /*点击开启画布*/
                 this.video.pause();
                 setInterval(() => {
-                    this.videoCtx.drawImage(this.video, 0, 0, this.videoWidth, 480);
+
+                    this.videoCtx.drawImage(this.video, 0, 0, this.videoWidth, height);
                 }, 25)
             },
             /*body鼠标离开触发*/
-            beyondArea(){
+            beyondArea() {
                 this.canvas.removeEventListener("mousemove", this._move);
-                if(document.querySelector('.progressBar')){
-                    document.querySelector('.progressBar').removeEventListener("mousemove", this.pictureJump);  
+                if (document.querySelector('.progressBar')) {
+                    document.querySelector('.progressBar').removeEventListener("mousemove", this.pictureJump);
                 }
             },
             /*点击矩形*/
@@ -820,7 +853,8 @@
 
                     this.canvas.addEventListener("mousemove", this._drawRectTans);
                     this.canvas.addEventListener("mouseup", this._drawRect);
-                };
+                }
+                ;
 
 
             },
@@ -856,12 +890,12 @@
                             this.img = item.image;
 //                            this.switchIcon = true; // 遇到标记暂停
                             setTimeout(() => {
-                                this.ctx.drawImage(document.querySelector('#img'), 0, 0, this.videoWidth, 480);
+                                this.ctx.drawImage(document.querySelector('#img'), 0, 0, this.videoWidth, this.videoHeight);
                             }, 30);
                         }
                     });
-                    if(show){
-                        this.ctx.clearRect(0, 0, this.videoWidth, 480);
+                    if (show) {
+                        this.ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
                     }
                 }
             },
@@ -875,17 +909,17 @@
                 let isExist = true;
                 let image = this.canvas.toDataURL("image/png");
                 let json = {
-                    "time": [this.currnt_time-.025,this.currnt_time+.025],
+                    "time": [this.currnt_time - .025, this.currnt_time + .025],
                     "image": image
                 };
 
                 /*修改*/
-             /*   this.linshishuju.map((item, index) => {
-                    if( this.currnt_time >= item.time[0] && this.currnt_time <= item.time[1] ){
-                        item.image = image;
-                        isExist = false;
-                    }
-                });*/
+                /*   this.linshishuju.map((item, index) => {
+                       if( this.currnt_time >= item.time[0] && this.currnt_time <= item.time[1] ){
+                           item.image = image;
+                           isExist = false;
+                       }
+                   });*/
 
                 /*添加*/
                 if (isExist) {
@@ -900,7 +934,7 @@
             /*清空画布*/
             clearCanvas() {
                 this.saveCanvasShow = false;
-                this.ctx.clearRect(0, 0, this.videoWidth, 480);
+                this.ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
             },
 
             /*鼠标移动画矩形*/
@@ -914,16 +948,16 @@
             },
             /*鼠标离开画矩形*/
             _drawRect(e) {
-                    let width = this.newX - this.x,
-                        height = this.newY - this.y;
-                    this.newX = e.offsetX;
-                    this.newY = e.offsetY;
-                    this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight);
-                    this.ctx.strokeRect(this.x, this.y, width, height);
+                let width = this.newX - this.x,
+                    height = this.newY - this.y;
+                this.newX = e.offsetX;
+                this.newY = e.offsetY;
+                this.ctxTans.clearRect(0, 0, this.canvasTans.clientWidth, this.canvasTans.clientHeight);
+                this.ctx.strokeRect(this.x, this.y, width, height);
 
 //                this.ctx.rect(5,5,290,140);
 //                this.ctx.stroke();
-                    this.canvas.removeEventListener("mousemove", this._drawRectTans);
+                this.canvas.removeEventListener("mousemove", this._drawRectTans);
             },
             /*画笔移动*/
             _move(e) {
@@ -968,7 +1002,18 @@
                 }, 50);
             },
         },
+        watch: {
+            video(value) {
+                const timeId = setInterval(() => {
+                    if (value.readyState > 0  ) {
+                        this.init();
+                        this.showVideoSign();
+                        clearInterval(timeId)
+                    }
+                }, 20)
 
+            }
+        }
     }
 </script>
 <style lang="less">
@@ -977,6 +1022,7 @@
     .canvasContainer {
         position: relative;
         .controls {
+
             position: absolute;
             bottom: 20px;
             left: 0;
@@ -1011,30 +1057,30 @@
                     width: 12px;
                     height: 4px;
                     background: #22d7bb;
-                    .progressSignText{
+                    .progressSignText {
                         width: 14px;
                         height: 14px;
                         margin-top: 4px;
                         line-height: 14px;
                         text-align: center;
                         font-size: 12px;
-                        color:red;
+                        color: red;
                         background: orange;
                         border-radius: 50%;
                     }
                 }
                 .highlight {
-                    top:-10px;
+                    top: -10px;
                     padding: 10px 0;
                     z-index: 149;
                 }
             }
-            .scaleUl{
+            .scaleUl {
                 display: flex;
                 padding-left: 2px;
                 margin-bottom: 5px;
                 justify-content: space-between;
-                .scale{
+                .scale {
                     width: 2px;
                     height: 6px;
                     background: #ccc;
@@ -1076,6 +1122,7 @@
         }
         .videoCanvas {
             position: absolute;
+
             top: 0;
             left: 0;
             z-index: 104;
@@ -1083,6 +1130,7 @@
         }
         .drawMain {
             position: absolute;
+
             top: 0;
             left: 0;
             z-index: 106;
@@ -1090,11 +1138,12 @@
         }
         .drawTrans {
             position: absolute;
+
             top: 0;
             left: 0;
             z-index: 105;
         }
-        .masking{
+        .masking {
             position: absolute;
             top: 0;
             left: 0;
@@ -1118,7 +1167,7 @@
     .canvasEdit {
         display: flex;
         align-items: center;
-        .edit{
+        .edit {
             padding: 6px;
             font-size: 18px;
         }
@@ -1127,8 +1176,8 @@
             font-weight: bold;
             font-size: 20px;
         }
-        .editHover,.textHover{
-           border: 1px solid #ccc;
+        .editHover, .textHover {
+            border: 1px solid #ccc;
         }
         .little, .middle, .big {
             display: block;
@@ -1149,16 +1198,16 @@
             width: 12px;
             height: 12px;
         }
-        .black, .red, .blue, .orange,.fff {
+        .black, .red, .blue, .orange, .fff {
             display: block;
             width: 14px;
             height: 14px;
             border: 1px solid #e6e6e6;
-            &:hover{
+            &:hover {
                 border: 1px solid #131313;
             }
         }
-        .fff{
+        .fff {
             background: #fff;
         }
         .black {

@@ -64,6 +64,7 @@
             </Button>
 
             <!--流程规范-->
+            <div>制作流程规范</div>
             <!--流程核心-->
             <div style="display: flex;padding: 10px 0 0 40px;">
                 <div style="flex: 14">
@@ -171,21 +172,22 @@
         <Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>
         <Modal
                 v-model="modal1"
-                title="增加标签"
+
                 @on-ok="addNorms"
         >
             <section>
                 <div style="margin-bottom: 5px">
-                    <span>规范标签&emsp;：&emsp;</span>
+                    <span>增加标签&emsp;：&emsp;</span>
                     <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
                 </div>
             </section>
         </Modal>
         <Modal
                 v-model="modal2"
-                title="删除标签"
+
                 @on-ok="delNorms"
         >
+            <div>删除</div>
             <Select v-model="delnormsValue" size="small" class="standard">
                 <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
                     {{ item.name }}
