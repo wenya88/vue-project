@@ -1,7 +1,119 @@
+<style lang="less" scoped>
+    @r_green:#3bceb6;
+    @r_textcolor:#bebebe;
+    .taskClassLibrary{
+        .taskClassLiHeader{
+            display: flex;justify-content: space-between;align-items: center;background: #c4f0e9;padding: 15px 40px;
+            span{font-size: 14px;color: @r_green};
+            button{background: @r_green;color: #fff;border: 0;font-size: 13px;padding: 8px 30px;border-radius: 3px}
+        };
+        .taskClassLiContener{
+            padding: 30px 40px;
+            .titleH2{font-weight: lighter;color: @r_textcolor;font-size: 15px}
+            .stepCentral{
+                margin-top: 30px;
+            }
+            .stepContainer{
+                .ivu-steps-main{
+                    width: 100%!important;
+                    .stepRight{
+                        margin-left: 65px !important;
+                        .title{left: -20px !important;z-index: 0!important;}
+                    }
+                }
+
+            }
+        }
+    }
+</style>
 <template>
     <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+        <div class="taskClassLiHeader"><span>规范名称</span><button>保存</button></div>
+        <Form class="taskClassLiContener">
+            <Row>
+                <Col span="16">
+                    <span class="titleH2">制作流程规范</span>
+                    <!--流程核心-->
+                    <div class="stepCentral">
+                        <Steps v-if="fstandard"  :current="current" direction="vertical" size="small">
+                            <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
+
+                                <div class="stepRight">
+                                    <!--步骤名称-->
+                                    <div>
+                                        <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
+                                        <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
+                                        <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
+                                    </div>
+                                    <!---->
+                                    <div>
+                                        <ul class="stepsUl">
+                                            <li class="stepsList" v-for="(list,i) in step.require" :key="i">
+                                                <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled"></Input>
+                                                <!--规范列表-->
+                                                <Select v-model="list.norm" size="small" class="standard" :disabled="disabled" style="color: red!important;">
+                                                    <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                                                        {{ item.name }}
+                                                    </Option>
+                                                </Select>
+                                                <div  class="priorityContainer" >
+                                                    <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
+                                                    <div v-if="!disabled" class="priorityList" >
+                                                        <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
+                                                        <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
+                                                        <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
+                                                    </div>
+                                                </div>
+                                                <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
+                                            </li>
+                                            <!--审核选项-->
+                                            <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
+                                                <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
+                                            </Select>
+                                        </ul>
+                                        <!--流程info增加-->
+                                        <div class="stepsUl">
+                                            {{step.show}}
+                                            <div v-show="step.show" class="stepsList">
+                                                <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求" :disabled="disabled"></Input>
+                                                <Select v-model="stepInfoList.norm" class="standard" size="small">
+                                                    <Option v-for="item in norms" :value="item.id" :key="item.id">
+                                                        {{ item.name }}
+                                                    </Option>
+                                                </Select>
+                                                <div class="priorityContainer">
+                                                    <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
+                                                    <div class="priorityList">
+                                                        <p class="priority priority3" @click="editPriority('3')">高</p>
+                                                        <p class="priority priority2" @click="editPriority('2')">中</p>
+                                                        <p class="priority priority1" @click="editPriority('1')">低</p>
+                                                    </div>
+                                                </div>
+                                                <Button @click="stepAdd(index)" type="text">确认</Button>
+                                                <Button @click="closeStepList(index)" type="text">取消</Button>
+                                            </div>
+                                            <Icon v-show="!step.show" v-if="!disabled" class="addguifan" @click.native="flowAddShow(index)" type="plus"
+                                                  style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </Step>
+                        </Steps>
+                        <div style="flex: 14" >
+                            <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
+                        </div>
+
+                    </div>
+
+                </Col>
+                <Col span="8">2222</Col>
+            </Row>
+        </Form>
 
         <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
+
+
             <!--内容规范-->
             <slot name="item"></slot>
             <!--任务类型名称-->
@@ -65,75 +177,7 @@
 
             <!--流程规范-->
             <div>制作流程规范</div>
-            <!--流程核心-->
-            <div style="display: flex;padding: 10px 0 0 40px;">
-                <div style="flex: 14">
-                    <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
-                        <Step v-for="(step,index) in fstandard" class="stepContainer"  style="padding-bottom: 70px;" :key="index">
-                            <!--步骤名称-->
-                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
-                            <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
-                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
-                            <!---->
-                            <ul class="stepsUl">
 
-                                <li class="stepsList" v-for="(list,i) in step.require" :key="i">
-                                    <Input v-model="list.text" placeholder="输入对该阶段要求"
-                                           style="width: 400px":disabled="disabled"></Input>
-                                    <!--规范列表-->
-                                    <Select v-model="list.norm" size="small" class="standard" :disabled="disabled">
-                                        <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
-                                            {{ item.name }}
-                                        </Option>
-                                    </Select>
-                                    <div  class="priorityContainer" >
-                                        <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
-                                        <div v-if="!disabled" class="priorityList" >
-                                            <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
-                                            <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
-                                            <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
-                                        </div>
-                                    </div>
-                                    <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
-                                </li>
-                                <!--审核选项-->
-                                <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
-                                    <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
-                                </Select>
-                            </ul>
-                            <!--流程info增加-->
-                            <div class="stepsUl">
-                                {{step.show}}
-                                <div v-show="step.show" class="stepsList">
-                                    <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
-                                           style="width: 400px":disabled="disabled"></Input>
-                                    <Select v-model="stepInfoList.norm" class="standard" size="small">
-                                        <Option v-for="item in norms" :value="item.id" :key="item.id">
-                                            {{ item.name }}
-                                        </Option>
-                                    </Select>
-                                    <div class="priorityContainer">
-                                        <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
-                                        <div class="priorityList">
-                                            <p class="priority priority3" @click="editPriority('3')">高</p>
-                                            <p class="priority priority2" @click="editPriority('2')">中</p>
-                                            <p class="priority priority1" @click="editPriority('1')">低</p>
-                                        </div>
-                                    </div>
-                                    <Button @click="stepAdd(index)" type="text">确认</Button>
-                                    <Button @click="closeStepList(index)" type="text">取消</Button>
-                                </div>
-                                    <Icon v-show="!step.show" v-if="!disabled" @click.native="flowAddShow(index)" type="plus"
-                                      style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
-                            </div>
-                        </Step>
-                    </Steps>
-                </div>
-                <div style="flex: 14" >
-                    <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
-                </div>
-
-            </div>
 
             <!--规范增加-->
             <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
@@ -194,7 +238,6 @@
                 </Option>
             </Select>
         </Modal>
-
     </Content>
 
 </template>
@@ -731,6 +774,12 @@
      @red :red;
      @red :red;
      @step:#ffcc00;
+     @r_green:#3bceb6;
+     @r_textcolor:#bebebe;
+     .stepContainer{
+         .ivu-steps-main{width: 100%!important;}
+         .addguifan{width: 20px;height: 20px;border: 1px solid orange;text-align: center;line-height: 18px;border-radius: 100%}
+     }
     .taskClassLibrary {
         .ivu-steps-vertical ,.ivu-steps-item{
             min-height: 102px !important;
@@ -780,7 +829,7 @@
         .ivu-input {
             border-radius: 0;
             border: none;
-            border-bottom: 1px solid @gray;
+            border-bottom: 1px solid @r_green;
             &:focus {
                 outline: none;
                 box-shadow: none;
@@ -832,10 +881,10 @@
             .ivu-steps.ivu-steps-small,.ivu-steps-head-inner{
                 width: 40px !important;
                 height: 40px !important;
-                line-height: 40px !important;
+                line-height: 30px !important;
                 font-size: 16px !important;
-                background: @step !important;
-                border: 1px solid transparent !important;
+                background: @r_green !important;
+                border: 5px solid #c5f0ea !important;
                 span{
                     color: #fff !important;
                 }
@@ -851,9 +900,9 @@
             /*步骤条title*/
             .title {
                 position: absolute;
-                top: 40px;
+                top: 30px;
                 left: -78px;
-                width: 100px;
+                width: 80px;
                 height: 23px;
                 text-align: center;
                 font-size: 14px;
@@ -862,6 +911,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 background: #fff;
+                z-index: 0;
                 .ivu-input-icon + .ivu-input {
                     height: 21px;
                     padding: 0;
@@ -875,7 +925,7 @@
             .acmSign {
                 position: absolute;
                 top: 63px;
-                left: -56px;
+                left: -5px;
                 width: 53px;
                 height: 18px;
                 padding: 0 2px;
@@ -886,7 +936,7 @@
                 border-radius: 6px;
             }
             .stepsUl {
-                padding-left: 35px;
+                /*padding-left: 35px;*/
                 margin-bottom: 10px;
                 .stepsList {
                     display: flex;
@@ -898,7 +948,7 @@
                         padding: 10px;
                         margin-left: 10px;
                         font-size: 16px;
-                        opacity: 0;
+                        opacity: 1;
                         cursor: pointer;
                     }
                     .standard {
@@ -906,6 +956,7 @@
                         height: 32px;
                         margin: 0 20px;
                         vertical-align: middle;
+                        .ivu-select-selection{border: 1px solid @r_green;text-align: center;color: @r_green}
                         .ivu-select-selection, .ivu-select-selected-value, .ivu-select-placeholder {
                             height: 32px;
                             line-height: 32px;
@@ -916,12 +967,12 @@
                         /*top:9px;*/
                         /*right: -52px;*/
                         .priority {
-                            width: 42px;
-                            height: 42px;
-                            margin-bottom: 4px;
+                            width: 35px;
+                            height: 35px;
+                            /*margin-bottom: 4px;*/
                             font-size: 12px;
                             text-align: center;
-                            line-height: 42px;
+                            line-height: 35px;
                             background-color: #fff;
                             border-radius: 50%;
                             vertical-align: middle;
