@@ -60,15 +60,18 @@
                  </div>
                  <!-- 展开box -->
                  <div class="open_box" v-if="item.isOpen">
-                  <div class="group_progress">
-                    <Tooltip  content="内部待审" class="group_color_block" :style="`width:${item.trialNum};background: rgb(0,204,0);`" v-if="item.tria">
-                    </Tooltip>
-                     <Tooltip content="内部已反馈" class="group_color_block" :style="`width:${item.fbackNum};background: rgb(255,153,0);`" v-if="item.fback">
-                    </Tooltip>
-                     <Tooltip content="客户等待" class="group_color_block" :style="`width:${item.cwaitNum};background: rgb(174,174,174);`" v-if="item.cwait">
-                    </Tooltip>
-                     <Tooltip content="客户已反馈" class="group_color_block" :style="`width:${item.cbackNum};background: rgb(255,0,0);`" v-if="item.cback">
-                    </Tooltip>
+                  <div class="group_progress_father">
+                    <div class="group_progress">
+                      <Tooltip  content="等待开始" class="group_color_block" :style="`width:${item.waitNum};background: #3bceb6;`" v-if="item.waiting">
+                      </Tooltip>
+                      <Tooltip content="进行中" class="group_color_block" :style="`width:${item.doNum};background: #7cbefc;`" v-if="item.doing">
+                      </Tooltip>
+                      <Tooltip content="暂停" class="group_color_block" :style="`width:${item.pauseNum};background: #fcc44a;`" v-if="item.pause">
+                      </Tooltip>
+                      <Tooltip content="完成" class="group_color_block" :style="`width:${item.completeNum};background: #ff898e;`" v-if="item.complete">
+                      </Tooltip>
+                    </div>
+                    <p class="group_progress_file"><span>{{item.complete}}</span>/<span class="group_file_all">{{item.allFile}}</span></p>
                   </div>
                    <div class="ul_father">
                       <ul class="ul_box">
@@ -259,6 +262,7 @@ export default {
       list.forEach((item,idx) => {
         if (index == idx) {
           item.isOpen = !item.isOpen
+          item.backGoup = 'backGoup'
           if (item.isOpen) {
            item.icon = 'icon-fangxiangshang'
           } else {
@@ -267,6 +271,7 @@ export default {
         } else {
           item.isOpen = false
           item.icon = 'icon-fangxiangxia'
+          item.backGoup = ''
         }
       })
     },
@@ -314,11 +319,11 @@ export default {
                 taskSun.push(items)
               }
             })
-            element.allFile = element.trial + element.fback + element.cwait + element.cback
-            element.trialNum =  Math.floor(element.trial / element.allFile * 100) + '%'
-            element.fbackNum =  Math.floor(element.fback / element.allFile * 100) + '%'
-            element.cwaitNum =  Math.floor(element.cwait / element.allFile * 100) + '%'
-            element.cbackNum =  Math.floor(element.cback / element.allFile * 100) + '%'
+            element.allFile = element.wait + element.doing + element.pause + element.complete
+            element.waitNum =  Math.floor(element.wait / element.allFile * 100) + '%'
+            element.doNum =  Math.floor(element.doing / element.allFile * 100) + '%'
+            element.pauseNum =  Math.floor(element.pause / element.allFile * 100) + '%'
+            element.completeNum =  Math.floor(element.complete / element.allFile * 100) + '%'
             element.work_now = work_now
             element.workDay = workDay
             element.end_time = endWork.day
@@ -352,13 +357,13 @@ export default {
     getTask (index) {
       const list = this.groupList
       this.getClose(index)
-      list.forEach((item, idx) => {
-        if (index === idx) {
-          item.backGoup = 'backGoup'
-        } else {
-          item.backGoup = ''
-        }
-      })
+      // list.forEach((item, idx) => {
+      //   if (index === idx) {
+      //     item.backGoup = 'backGoup'
+      //   } else {
+      //     item.backGoup = ''
+      //   }
+      // })
       // this.groupList = list
       const taskList = list[index].task_list
       taskList.forEach(elements => {

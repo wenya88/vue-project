@@ -209,16 +209,34 @@
       z-index: 999;
       cursor: pointer;
     }
-    .group_progress{
-     width: 100%;
-     height: 10px;
-     background: rgb(230,230,230);
-     border-radius: 5px;
-     .group_color_block{
-       height: 100%;
-       // width: 20%;
-      //  background: red;
-     }
+    .group_progress_father{
+      width: 100%;
+      height: 30px;
+      .group_progress_file{
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        color: #bdbdbd;
+        float: left;
+        .group_file_all{
+          color: #3bceb6;
+        }
+      }
+     .group_progress{
+       @widths: 130px;
+       width: calc(~"100% - @{widths}");
+       height: 10px;
+       float: left;
+       margin: 10px 10px 0 0;
+       background: rgb(230,230,230);
+       border-radius: 5px;
+       .group_color_block{
+         height: 100%;
+        // width: 20%;
+        //  background: red;
+       }
+      }
     }
     .close_box{
       width: 100%;
