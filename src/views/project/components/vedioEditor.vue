@@ -623,8 +623,6 @@
             /*进度条*/
             timeNum() {
                 if (this.video.readyState > 0) {
-                    console.log(33, this.video.offsetWidth)
-                    console.log(44, this.video.offsetHeight)
                     let zhen = parseFloat(this.video.duration);
                     this.percentage = this.video.currentTime / zhen;
                     document.querySelector('#circle').style.width = this.percentage * (this.videoWidth - 10) + 'px';
@@ -729,7 +727,9 @@
                     /*播放完停止*/
                     if (this.currnt_time >= this.video.duration) {
                         this.currnt_time = this.video.duration;
+
                         clearInterval(timeId)
+                        this.switchIcon = !this.switchIcon
                     }
 
                     /*进度条*/
