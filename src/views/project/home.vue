@@ -48,9 +48,9 @@
                                 <h4>{{proData.name}}&nbsp;</h4>
                                 <h5>{{proData.description!=null?proData.description:'项目描述和备注'}}</h5>
                             </div>
-                            <!--<div v-if="projectSet.self" class="companySet" @click="companySet">-->
-                            <!--<span>设置</span>-->
-                            <!--</div>-->
+                            <div v-if="projectSet.self" class="companySet" @click="companySet">
+                            <span>设置</span>
+                            </div>
                             <div class="clear"></div>
                         </div>
 
@@ -59,23 +59,22 @@
                             <div class="taskTitle">
                                 <b>资源管理</b> <span>浏览和审核资源</span>
                             </div>
-                            <div class="taskRow" ref="resouer">
-                                <v-flare :width="width"></v-flare>
-                                <!--<div class="taskLeft">-->
-                                    <!--<div class="taskLeftTop">-->
-                                        <!--原画&nbsp;8/26-->
-                                    <!--</div>-->
-                                    <!--<div class="taskLeftBottom">-->
-                                        <!--<div class="taskLeftBottomLeft">动作&nbsp;5/12</div>-->
-                                        <!--<div class="taskLeftBottomRight">任务&nbsp;6/32</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="taskCenter">模型&nbsp;7/15</div>-->
-                                <!--<div class="taskRight">-->
-                                    <!--<div class="taskRightTop">图标&nbsp;5/15</div>-->
-                                    <!--<div class="taskRightCenter">线稿&nbsp;9/12</div>-->
-                                    <!--<div class="taskRightBottom">次世&nbsp;5/60</div>-->
-                                <!--</div>-->
+                            <div class="taskRow">
+                                <div class="taskLeft">
+                                    <div class="taskLeftTop">
+                                        原画&nbsp;8/26
+                                    </div>
+                                    <div class="taskLeftBottom">
+                                        <div class="taskLeftBottomLeft">动作&nbsp;5/12</div>
+                                        <div class="taskLeftBottomRight">任务&nbsp;6/32</div>
+                                    </div>
+                                </div>
+                                <div class="taskCenter">模型&nbsp;7/15</div>
+                                <div class="taskRight">
+                                    <div class="taskRightTop">图标&nbsp;5/15</div>
+                                    <div class="taskRightCenter">线稿&nbsp;9/12</div>
+                                    <div class="taskRightBottom">次世&nbsp;5/60</div>
+                                </div>
                             </div>
                             <div class="MenuRows">
                                 <ul>
@@ -100,7 +99,7 @@
                                             <span>管理项目团队</span>
                                         </div>
                                     </li>
-                                    <li v-if="projectSet.projectStatistics"  @click="statistics(proData.id)">
+                                    <li v-if="projectSet.projectStatistics"  @click="statistics">
                                         <img src="./home/image/MenuIco4.png"/>
                                         <div>
                                             <p>统计</p>
@@ -119,7 +118,7 @@
                                     <!--<div style="margin-bottom: 10px;">-->
                                         <!--<span style="padding: 0 25px;font-size: 20px;">资源管理</span><span>浏览和审核资源</span>-->
                                     <!--</div>-->
-
+                                    <!--<v-flare :width="width"></v-flare>-->
 
                                     <!--<div class="title">-->
                                     <!--资源管理 <span>浏览和审核资源</span>-->
@@ -164,9 +163,9 @@
     </div>
 </template>
 <script>
-var qs=require('querystring');
-import vFlare from '../../components/d3flare';
-import {mapState} from 'vuex';
+var qs=require('querystring')
+import vFlare from '@/components/d3flare'
+import {mapState} from 'vuex'
 export default {
     data(){
         return{
@@ -177,6 +176,7 @@ export default {
     mounted(){
         this.get();
         this.flare();
+
     },
     methods:{
         companySet(){
@@ -188,8 +188,8 @@ export default {
         group(){
             this.$router.push('/project/projectMember');
         },
-        statistics(id){
-            this.$router.push({path:'/project/statistics',query:{'id':id}});
+        statistics(){
+            this.$router.push('/project/statistics');
         },
         get(){
             let _this=this;

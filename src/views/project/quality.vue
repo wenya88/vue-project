@@ -8,7 +8,7 @@
           :size="120"
           :trail-width="0"
           :stroke-width="15"
-          :percent="param.num"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#3bceb6">
           <div class="text">
@@ -19,10 +19,11 @@
       </div>
       <div  v-if="projectSet.qualitySecond" class="second" @click="resourcesData(1)">
         <i-circle
+
           :size="118"
           :trail-width="0"
           :stroke-width="15"
-          :percent="param.num1"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#fcc44a">
           <div class="text">
@@ -38,7 +39,7 @@
           :size="118"
           :trail-width="0"
           :stroke-width="15"
-          :percent="param.num2"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#8cc8ff">
           <div class="text">
@@ -52,7 +53,7 @@
           :size="118"
           :trail-width="0"
           :stroke-width="15"
-          :percent="param.num3"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#ff898e">
           <div class="text">
@@ -67,7 +68,7 @@
           :size="118"
           :trail-width="0"
           :stroke-width="15"
-          :percent="param.num4"
+          :percent="100"
           stroke-linecap="square"
           stroke-color="#78c97c">
           <div class="text">
@@ -84,7 +85,7 @@
       <li @click="resourcesData(3)">内审已反馈</li>
       <li @click="resourcesData(2)">客户待审</li>
       <li @click="resourcesData(4)">客户已反馈</li>
-    </ul>
+    </ul> 
     </Affix> -->
     <!-- <Tabs value="1" :animated="false" v-model="status" @on-click="changeTabs()">
       <TabPane label="归档文件" name="1"> -->
@@ -170,7 +171,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.$children[0],this.$children[1])
+    // console.log(this.$children[0],this.$children[1]) 
     this.fetchNum(1);
     this.fetchNum(2);
     this.fetchNum(3);
@@ -182,7 +183,7 @@ export default {
     //   this.fetchData();
     // } else {
     //   this.fetchData();
-    // }
+    // } 
   },
   methods: {
     finishData(status) {
