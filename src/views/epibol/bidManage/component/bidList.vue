@@ -1,4 +1,42 @@
 <template>
+    <div class="newBidList">
+        <dl>
+            <dd v-for="item in applicationData" :key="item.id">
+                <div class="bidTitle">
+                     {{item.test_name}}
+                </div>
+                <div class="bidMoney">
+                    <span>
+                        测试金额
+                        <p>￥<em>{{item.test_price}}</em></p>
+                    </span>
+                    <span>
+                        项目预计
+                        <p>￥<em>{{item.project_max_price}}</em></p>
+                    </span>
+                    <div class="clear"></div>
+                </div>
+                <div class="bidPerso">
+                    <div class="persoInfo">
+                        <div>
+                            <span class="span"><i class="iconfont icon-renyuanguanli"></i> 负责人：</span>
+                            <span class="span"><i class="iconfont icon-yonghuguanli"></i> 执行人：{{item.execute_users}}</span>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="progress">
+                            <Progress :percent="45" status="active" stroke-width="5">
+                                <span>剩余 3 天</span>
+                            </Progress>
+                        </div>
+                    </div>
+                </div>
+                <div :class="[item.status!=0?'bidStatus bidYes':'bidStatus']">
+                    {{item.status==0?'待公布':'中标'}}
+                </div>
+            </dd>
+        </dl>
+    </div>
+    <!-- 
     <div class="bidList">
                 <dl>
                     <dt>
@@ -42,17 +80,17 @@
                         <div class="clear"></div>
                     </dd>
                 </dl>
-                <!-- ModalComponent-->
+
                 <Modal
                     v-model="applModal"
                     :title="modalTitle"
                     :closable="false"
                     width="1100px">
-                    <!-- 招标详情Modal -->
                     <bid-Details :appData='appData' ref="getCont"></bid-Details>
                    <div slot="footer"></div>
                 </Modal>
-            </div>
+    </div>
+     -->
 </template>
 <script>
 import bidDetails from './bidDetails';

@@ -47,18 +47,10 @@
   </div>
 </template>
 <script>
-<<<<<<< HEAD
 import {mapState} from 'vuex';
 import bidInvite from './bidManage/component/bidInvite';
 import bidList from './bidManage/component/bidList';
 var qs = require('querystring');
-=======
-    import axios from 'axios'
-    import {mapState} from 'vuex'
-import bidInvite from './bidManage/component/bidInvite'
-import bidDetails from './bidManage/component/bidDetails'
-var qs = require('querystring')
->>>>>>> 074914efe13b894c954079333cededfb82e68042
 export default {
     data () {
         return {
@@ -77,7 +69,7 @@ export default {
                         h('span', '外包邀请'),
                         h('Badge', {
                             props: {
-                                count:'('+this.inviteData.length+')',
+                                count:'( '+this.inviteData.length+' )',
                             }
                         })
                     ])
@@ -118,12 +110,7 @@ export default {
         bidInvite:bidInvite
     },
     mounted(){
-<<<<<<< HEAD
         this.bidGet();
-=======
-         this.bidGet();
-        this.Refresh();
->>>>>>> 074914efe13b894c954079333cededfb82e68042
         this.inviteGet();
         this.$bus.on('updataSuccess',()=>{
             this.inviteGet();
@@ -163,7 +150,6 @@ export default {
                 has_file:condData,
                 bid_result:resultData,
                 search:searData
-<<<<<<< HEAD
             }
             _this.$axios.get(ContUrl).then(ContMsg=>{
                  _this.$Loading.finish();
@@ -171,11 +157,6 @@ export default {
             })
 
             _this.$axios.post(url,qs.stringify(urlParams)).then(msg=>{
-=======
-            }))
-
-            axios.all([url,ContUrl]).then(([msg,ContMsg])=>{
->>>>>>> 074914efe13b894c954079333cededfb82e68042
                 if(msg.data.err_code==0){
                     //招标
                     _this.applicationData=msg.data.data;
