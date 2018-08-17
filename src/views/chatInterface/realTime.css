@@ -1,111 +1,111 @@
-@import url('http://at.alicdn.com/t/font_713813_7czqnmatfn.css');
+@import url('http://at.alicdn.com/t/font_713813_pjeptxkoca.css');
 .realTime_message,.realTime_message_own{
-    box-sizing: border-box;
-    width: 100%;
-    height: 30px;
-  }
-  .realTime_message{
-    padding-left: 10px;
-  }
-  .realTime_message_own{
-    padding-right: 10px;
-  }
-  .realTime_message>img,
-  .realTime_message_own>img{
-    width: 20px;
-    height: 20px;
-    margin-top: 5px;
-    border-radius: 50%;
-    /* float: left; */
-  }
-  .realTime_message>img{
-    float: left;
-  }
-  .realTime_message_own>img{
-    float: right;
-  }
-  .realTime_message>p{
-    float: left;
-    line-height: 30px;
-  }
-  .realTime_message_own>p{
-    float: right;
-    line-height: 30px;
-  }
-  .realTime_time{
-    font-size: 12px;
-  }
-  .realTime_time_text{
-    font-size: 14px;
-    font-weight: bolder;
-    margin: 0 5px;
-  }
-  .triangle_type,
-  .triangle_type_own{
-    width: 0;
-    height: 0;
-    /* margin-left: 10px; */
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-  }
-  .triangle_type{
-   border-bottom: 10px solid rgba(231,231,231,1);
-   margin-left: 10px;
-  }
-  .triangle_type_own{
-    float: right;
-    border-bottom: 10px solid rgba(207,244,207,1);
-    margin-right: 10px;
-  }
-  .Send_content{
-   display: inline-block;
-   padding:10px;
-   border-radius: 2px;
-   font-size: 12px;
-   /* min-height: 50px; */
-  }
-  .is_own_float{
-    float: right;
-  }
-  .is_own_no{
-    background: rgba(231,231,231,1);
-  }
-  .is_own{
-    /* float: right; */
-    background: rgba(207,244,207,1);
-  }
-  .clearfix:after{
-    content:"";
-    height:0;
-    line-height:0;
-    display:block;
-    visibility:hidden;
-    clear:both;
-  }
-  .img_screenshot{
-    width: 200px;
-  }
-  .clearfix{
-    zoom:1;
-  }
-  .file_upload{
-    min-width: 120px;
-    max-width: 200px;
-    min-height: 60px;
-    background: rgb(215,215,215);
-    padding: 10px 0px 30px 0px;
-    position: relative;
-    text-indent: 2em;
-  }
-  .file_upload_ltext{
-    position: absolute;
-    top: 35px!important;
-    right: 5px;
-    height: 20px;
-    width: 60px;
-    color: rgba(24,191,164,.8);
-    cursor: pointer;
-  }
-  .file_upload_ltext:hover{
-    color: rgba(24,191,164,.5);
-  }
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
+}
+.realTime_message{
+  padding-left: 10px;
+}
+.realTime_message_own{
+  padding-right: 10px;
+}
+.realTime_message>img,
+.realTime_message_own>img{
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  border-radius: 50%;
+  /* float: left; */
+}
+.realTime_message>img{
+  float: left;
+}
+.realTime_message_own>img{
+  float: right;
+}
+.realTime_message>p{
+  float: left;
+  line-height: 30px;
+}
+.realTime_message_own>p{
+  float: right;
+  line-height: 30px;
+}
+.realTime_time{
+  font-size: 12px;
+}
+.realTime_time_text{
+  font-size: 14px;
+  font-weight: bolder;
+  margin: 0 5px;
+}
+.triangle_type,
+.triangle_type_own{
+  width: 0;
+  height: 0;
+  /* margin-left: 10px; */
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+}
+.triangle_type{
+  border-bottom: 10px solid rgba(231,231,231,1);
+  margin-left: 10px;
+}
+.triangle_type_own{
+  float: right;
+  border-bottom: 10px solid rgba(207,244,207,1);
+  margin-right: 10px;
+}
+.Send_content{
+  display: inline-block;
+  padding:10px;
+  border-radius: 2px;
+  font-size: 12px;
+  /* min-height: 50px; */
+}
+.is_own_float{
+  float: right;
+}
+.is_own_no{
+  background: rgba(231,231,231,1);
+}
+.is_own{
+  /* float: right; */
+  background: rgba(207,244,207,1);
+}
+.clearfix:after{
+  content:"";
+  height:0;
+  line-height:0;
+  display:block;
+  visibility:hidden;
+  clear:both;
+}
+.img_screenshot{
+  width: 200px;
+}
+.clearfix{
+  zoom:1;
+}
+.file_upload{
+  min-width: 120px;
+  max-width: 200px;
+  min-height: 60px;
+  background: rgb(215,215,215);
+  padding: 10px 0px 30px 0px;
+  position: relative;
+  text-indent: 2em;
+}
+.file_upload_ltext{
+  position: absolute;
+  top: 35px!important;
+  right: 5px;
+  height: 20px;
+  width: 60px;
+  color: rgba(24,191,164,.8);
+  cursor: pointer;
+}
+.file_upload_ltext:hover{
+  color: rgba(24,191,164,.5);
+}

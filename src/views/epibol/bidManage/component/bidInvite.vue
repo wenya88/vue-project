@@ -1,5 +1,27 @@
 <template>
-    <div class="bidList invite">
+    <div class="newBidList">
+            <dl>
+                <dd v-for="item in inviteData" :key="item.id">
+                    <div class="title">
+                        {{item.project_name}}
+                    </div>
+                    <div><i class="iconL"></i><i class="iconR"></i></div>
+                    <div class="content">
+                        <div class="projectStatis">
+                            <p>项目统计</p>
+                            ￥<span>{{item.project_min_price}} ~ {{item.project_max_price}}</span>
+                        </div>
+                        <div class="projectInfo">
+                            <p>项目时间</p>
+                            <p class="date">{{item.description}}</p>
+                            <p>项目时间</p>
+                            <p class="date">{{item.start_time}} ~ {{item.end_time}}</p>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    <!-- <div class="bidList invite">
         <dl>
             <dt>
                 <span>项目名称</span>
@@ -30,7 +52,7 @@
                 <div class="clear"></div>
             </dd>
         </dl>
-    </div>
+    </div> -->
 </template>
 <script>
 var qs=require('querystring')

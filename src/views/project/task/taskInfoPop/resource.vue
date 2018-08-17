@@ -41,7 +41,7 @@
             }
         },
         methods: {
-             init(data){
+            init(data){
                 if(data){
                     data.stage_list.map((item,index) => {
                         if(data.stage[index]){
@@ -58,7 +58,7 @@
 
             },
             showimg(data){
-               let url = null,task_id = null,type = null;
+                let url = null,task_id = null,type = null;
                 if(data && data.file){
                     data.file.map((item) => {
                         if(item.is_main === '1'){
@@ -111,8 +111,8 @@
                     case '4':
                         state='客户已反馈';
                         break;
-                        case '5':
-                            state='审核通过';
+                    case '5':
+                        state='审核通过';
                         break;
 
                 }
