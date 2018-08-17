@@ -108,18 +108,18 @@ export default {
                 "contract_id":this.contractID,
                 "status":0
             }
-            // this.$axios.post(url,qs.stringify(params)).then(msg=>{
-            //     this.$Loading.finish();
-            //     if(msg.data.err_code==0){
-            //         this.$Modal.success({
-            //             title: "合同确认成功",
-            //             content: "请立即支付首付款",
-            //             okText:'立即支付'
-            //         });
-            //     }else{
-            //         this.$Message.error(msg.data.err_message)
-            //     }
-            // })
+            this.$axios.post(url,qs.stringify(params)).then(msg=>{
+                this.$Loading.finish();
+                if(msg.data.err_code==0){
+                    this.$Modal.success({
+                        title: "合同确认成功",
+                        content: "请立即支付首付款",
+                        okText:'立即支付'
+                    });
+                }else{
+                    this.$Message.error(msg.data.err_message)
+                }
+            })
             
         },
         immPay(){
