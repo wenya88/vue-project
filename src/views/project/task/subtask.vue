@@ -56,7 +56,7 @@
     import {mapState} from 'vuex'
     import accretiontaskpop from "./accretionTaskPop";
     //    import tasklist from "./tasklist";
-    import tasklist from "./taskInfoPop/subtasksList";
+    import tasklist from "./taskInfoPop";
     import maintask from "./taskDetails";
 
     export default {

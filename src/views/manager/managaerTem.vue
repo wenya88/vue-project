@@ -49,7 +49,8 @@ export default {
        for (let i in list) {
          data.push(list[i].count)
          textList.push({
-           text: list[i].name
+           text: list[i].name,
+           color: list[i].color
          })
        }
        myCharts.setOption({
