@@ -201,6 +201,7 @@
 
 <script>
   var qs = require('querystring')
+  import axios from 'axios'
   import {mapMutations} from 'vuex'
   import Calend from '../main-components/calend/calend.vue';
   import UploadM from './imPlementer/UpLoadModal.vue';
@@ -388,7 +389,7 @@
         // let url=this.GLOBAL.baseRouter+'task/task/stage-page&is_my=1';
         let awaiaudit=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/need-review-task-file&people_type=1') //需要审核
         let fbackdisp=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/wait-action-task-file&people_type=1') //反馈待处理
-        _this.$axios.all([awaiaudit,fbackdisp]).then(([Auditmsg,Dispmsg])=>{
+        axios.all([awaiaudit,fbackdisp]).then(([Auditmsg,Dispmsg])=>{
             if(Auditmsg.data.err_code==0){
                 _this.AuditData=Auditmsg.data.data;
                 _this.DispData=Dispmsg.data.data;

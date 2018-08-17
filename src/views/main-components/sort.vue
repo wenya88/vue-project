@@ -1,15 +1,12 @@
 <template>
-  <dl>
-    <dd v-for="(item,index) in sortList" :key="index" @click="choseSort(index)" :class="{'byAsc':sortIndex == index}">
-      {{item.label}}
-    </dd>
-    <!--<ul>-->
-      <!--<li v-for="(item,index) in sortList" :key="index" :class="{'actived': sortIndex == index}" @click="choseSort(index)">-->
-        <!--<i class="descIcon"></i>-->
-        <!--&lt;!&ndash; <Icon :type='item.icon'></Icon> &ndash;&gt;-->
-        <!--{{item.label}}</li>-->
-    <!--</ul>-->
-  </dl>
+  <div class="sort">
+    <ul>
+      <li v-for="(item,index) in sortList" :key="index" :class="{'actived': sortIndex == index}" @click="choseSort(index)">
+        <i class="descIcon"></i>
+        <!-- <Icon :type='item.icon'></Icon> -->
+        {{item.label}}</li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -17,7 +14,7 @@ export default {
   name: 'sort',
   data() {
     return {
-       sortIndex: 0
+      sortIndex: 0
     }
   },
   props: {
@@ -32,8 +29,8 @@ export default {
   },
   methods: {
     choseSort(index) {
-        this.sortIndex = index;
-        this.$emit('choiced',index);
+      this.sortIndex = index
+      this.$emit('choiced',index)
     }
   }
 }
@@ -41,17 +38,17 @@ export default {
 
 <style scoped>
   /* .sort li:before{
-   content:url(/src/images/desc.png);
+   content:url(/src/images/desc.png); 
   width: 14px;
   height: 14px;
   background: url(/src/images/desc.png) no-repeat;
 }   */
-/*.descIcon{*/
-  /*width: 14px;*/
-  /*height: 14px;*/
-  /*background: url(/src/images/desc.png) no-repeat center center / 100% 100%;*/
-  /*display: block;*/
-  /*position: relative;*/
-  /*top: 12px;*/
-/*}*/
+.descIcon{
+  width: 14px;
+  height: 14px;
+  background: url(/src/images/desc.png) no-repeat center center / 100% 100%;
+  display: block;
+  position: relative;
+  top: 12px;
+}
 </style>

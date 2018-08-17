@@ -2,15 +2,15 @@
 <template>
     <div class="taskDetailsContainer">
         <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
-            <!--<FormItem   label="任务名称">-->
-                <!--<Input   v-model="editData.name"  :readonly="editDisabled">-->
-                <!--<span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>-->
-                <!--</Input>-->
-            <!--</FormItem>-->
+            <FormItem  v-if="!taskManagement"  label="任务名称">
+                <Input   v-model="editData.name"  :readonly="editDisabled">
+                <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
+                </Input>
+            </FormItem>
 
             <FormItem label="负责人" class="borBotm" >
                 <div class="head" >
-                    <img src="./QQ图片20180719133401.jpg" class="headImg" alt="">
+                    <img v-if="taskManagement" src="./QQ图片20180719133401.jpg" class="headImg" alt="">
                     <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
                         <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
                     </Select>
@@ -307,7 +307,7 @@ export default{
         formatLocalData()
         {
             this.referenceFileName = [];
-            if(this.editData.file)
+      if      (this.editData.file)
             {
                 this.editData.file.forEach(
                     (res)=>{

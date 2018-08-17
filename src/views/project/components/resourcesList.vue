@@ -1,64 +1,34 @@
 <template>
   <div>
-    <div class="menauBar">
-      <ul class="projectClassfly">
-        <li>原画<span>( 20 )</span></li>
-        <li class="currenSty">动作<span>( 60 )</span></li>
-        <li>特效<span>( 30 )</span></li>
-        <li>场景<span>( 5 )</span></li>
-      </ul>
-
-      <ul class="screenBar">
-        <li>
-          <my-sort :sortList="ndsSortList" @choiced="filterFTime" v-if="sortShow == 'frist'"></my-sort>
-          <my-sort :sortList="nsfkSortList" @choiced="filterSTime" v-if="sortShow == 'second'"></my-sort>
-          <my-sort :sortList="khdsSortList" @choiced="filterTTime" v-if="sortShow == 'third'"></my-sort>
-          <my-sort :sortList="khfkSortList" @choiced="filterFoTime" v-if="sortShow == 'fourth'"></my-sort>
-          <!--<dl>-->
-            <!--<dd class="byAsc">送审时间</dd>-->
-            <!--<dd class="byDesc">待审天数</dd>-->
-            <!--<dd>剩余时间</dd>-->
-          <!--</dl>-->
-        </li>
-        <li class="searchBar">
-          <div>
-            <input type="text" v-model="searchInput" placeholder="任务 / 负责人" @keyup.enter="fetchData"/>
-            <button @click="fetchData"></button>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-
     <div class="sortBg">
-      <!--<div class="screen">-->
-        <!--<Row type="flex" justify="space-between" class="code-row-bg">-->
-          <!--<Col span="4"> 状态:-->
-          <!--<Select v-model="model" style="width:80px">-->
-            <!--<Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-          <!--</Select>-->
-          <!--</Col>-->
-          <!--<Col span="4"> 类型:-->
-          <!--<Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">-->
-            <!--<OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">-->
-              <!--<Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>-->
-            <!--</OptionGroup>-->
-          <!--</Select>-->
-          <!--</Col>-->
-          <!--<Col span="4"> 关注:-->
-          <!--<Select v-model="model1" style="width:80px">-->
-            <!--<Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-          <!--</Select>-->
-          <!--</Col>-->
-          <!--<Col span="12">-->
-          <!--<Input v-model="searchInput" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;" @keyup.enter.native="fetchData()"></Input>-->
-          <!--</Col>-->
-        <!--</Row>-->
-      <!--</div>-->
-      <!--<my-sort :sortList="ndsSortList" @choiced="filterFTime" v-if="sortShow == 'frist'"></my-sort>-->
-      <!--<my-sort :sortList="nsfkSortList" @choiced="filterSTime" v-if="sortShow == 'second'"></my-sort>-->
-      <!--<my-sort :sortList="khdsSortList" @choiced="filterTTime" v-if="sortShow == 'third'"></my-sort>-->
-      <!--<my-sort :sortList="khfkSortList" @choiced="filterFoTime" v-if="sortShow == 'fourth'"></my-sort>-->
+      <div class="screen">
+        <Row type="flex" justify="space-between" class="code-row-bg">
+          <Col span="4"> 状态:
+          <Select v-model="model" style="width:80px">
+            <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+          </Col>
+          <Col span="4"> 类型:
+          <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
+            <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+              <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+            </OptionGroup>
+          </Select>
+          </Col>
+          <Col span="4"> 关注:
+          <Select v-model="model1" style="width:80px">
+            <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+          </Col>
+          <Col span="12">
+          <Input v-model="searchInput" icon="search" placeholder="任务 / 负责人" style="width: 300px;float: right;margin-right: 20px;margin-top: 3px;" @keyup.enter.native="fetchData()"></Input>
+          </Col>
+        </Row>
+      </div>
+      <my-sort :sortList="ndsSortList" @choiced="filterFTime" v-if="sortShow == 'frist'"></my-sort>
+      <my-sort :sortList="nsfkSortList" @choiced="filterSTime" v-if="sortShow == 'second'"></my-sort> 
+      <my-sort :sortList="khdsSortList" @choiced="filterTTime" v-if="sortShow == 'third'"></my-sort>
+      <my-sort :sortList="khfkSortList" @choiced="filterFoTime" v-if="sortShow == 'fourth'"></my-sort> 
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
@@ -68,75 +38,45 @@
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
             <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="width: 100%;height: 100%" />
             <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="width: 100%;height: 100%" />
+            <div class="tips">
 
-            <div class="RcardBlock">
-              <div class="left">
-                <img class="cardpic" :src="item.thumb" v-if="item.stage_file.type == 'image'"/>
-                <img class="cardpic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" />
-                <img class="cardpic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'"/>
-                <!--<img class="cardPic" />-->
-                <span>{{item.task_name}}</span>
-              </div>
-              <div class="right">
-                <ul>
-                  <li>
-                    <p>待审天数</p>
-                    <p><span>{{parseInt((date - item.create_time)/86400)}}</span> / 天</p>
-                  </li>
-                  <li>
-                    <p>完成阶段</p>
-                    <p style="text-align: left">
-                      <span v-if="item.tasktype_stage_now" >  {{item.tasktype_stage_now.stage_name}}  </span>
-                      <span v-else>暂无上传阶段</span>
-                    </p>
-                  </li>
-                  <li>
-                    <p>剩余时间</p>
-                    <p><span>{{parseInt((item.expect_end_time - date)/86400)}}</span> / 天</p>
-                  </li>
-                </ul>
+             <div>
+               <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
+               <span class="date">上传：{{item.create_date}}</span>
+             </div>
+
+              <div style="display: flex">
+                <div class="userImg">
+                  <img class="icon" src="../../../images/leader.png" /> {{item.run_uname}}
+                </div>
+                <i class="line"></i>
+                <table class="card-table">
+                  <tr>
+                    <td class="w25">待审天数</td>
+                    <td class="w25">完成阶段</td>
+                    <td class="w25">剩余时间</td>
+                  </tr>
+                  <tr class="fb">
+                    <td class="w25">
+                      <span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>
+                    <td class="w25">
+                      <!-- <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> -->
+                      <span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>
+                      <span class="orange-span" v-else>暂无上传阶段</span>
+                    </td>
+                    <td class="w25">
+                      <span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>
+                  </tr>
+                </table>
               </div>
             </div>
-
-            <!--<div class="tips">-->
-             <!--<div>-->
-               <!--<span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}-->
-               <!--<span class="date">上传：{{item.create_date}}</span>-->
-             <!--</div>-->
-
-              <!--<div style="display: flex">-->
-                <!--<div class="userImg">-->
-                  <!--<img class="icon" src="../../../images/leader.png" /> {{item.run_uname}}-->
-                <!--</div>-->
-                <!--<i class="line"></i>-->
-                <!--<table class="card-table">-->
-                  <!--<tr>-->
-                    <!--<td class="w25">待审天数</td>-->
-                    <!--<td class="w25">完成阶段</td>-->
-                    <!--<td class="w25">剩余时间</td>-->
-                  <!--</tr>-->
-                  <!--<tr class="fb">-->
-                    <!--<td class="w25">-->
-                      <!--<span class="orange-span">{{parseInt((date - item.create_time)/86400)}}</span>/天</td>-->
-                    <!--<td class="w25">-->
-                      <!--&lt;!&ndash; <span class="orange-span">{{item.stage}}</span>/{{item.stage_count}}</td> &ndash;&gt;-->
-                      <!--<span class="orange-span" v-if="item.tasktype_stage_now">{{item.tasktype_stage_now.stage_name}}</span>-->
-                      <!--<span class="orange-span" v-else>暂无上传阶段</span>-->
-                    <!--</td>-->
-                    <!--<td class="w25">-->
-                      <!--<span class="orange-span">{{parseInt((item.expect_end_time - date)/86400)}}</span>天</td>-->
-                  <!--</tr>-->
-                <!--</table>-->
-              <!--</div>-->
-            <!--</div>-->
-
           </div>
         </div>
         </Col>
       </Row>
       <span class="more" @click="changePageIndex()">{{moreText}}</span>
     </div>
-
+    
     <!-- 浏览任务弹窗 -->
     <!--<Modal -->
           <!--v-model="isTabModal" -->
@@ -378,35 +318,6 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-  .card{position: relative}
-  .RcardBlock{
-    display: flex;align-items: center;justify-content: space-between;
-    position: absolute;bottom: 0;left: 0;right: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.02), rgb(0, 0, 0,1));
-    width:100%;
-    padding: 10px 0;
-    color: #fff;
-    font-size: 14px;
-  i,span,p{white-space: nowrap;text-overflow:ellipsis;overflow:hidden;}
-  /*i{font-style: normal;display: inline-block;font-size: 12px;border: 1px solid #df9b36;color: #df9b36;padding: 0 1px;border-radius: 3px;line-height: 14px}*/
-  /*span{display: flex;align-items: center;padding: 0 10px;}*/
-  .left ,.right{display: flex;align-items: center;}
-  .left{
-    padding-left: 10px;
-    img{width: 40px;height: 40px;border-radius: 100%}
-    span{margin-left: 10px;width: 60px;max-width: 60px}
-  };
+<style>
 
-    .right{
-      border-left: 1px dashed rgba(188, 188, 188, 0.64);
-      ul{
-        display: flex;
-        li{
-          font-size: 12px;padding:0 5px;text-align: center;
-          span{color: #df9b36;}
-        }
-      }
-    }
-  }
 </style>

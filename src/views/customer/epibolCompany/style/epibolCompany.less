@@ -1,0 +1,286 @@
+@import '../../../../styles/common.less';
+@import '../../bidManage/style/bidManage.less';
+.fileCondition{
+    .newAdd{
+        margin-right:50px;
+    }
+}
+.bidManage{
+    .bidList{
+        min-height:300px;overflow-y:auto;
+        dt{
+            span{
+                &:nth-of-type(1){
+                    width:27.6%;
+                }
+                &:nth-of-type(7){
+                    text-align:right;padding-right:10px;
+                }
+            }
+            
+        }
+        dd{
+            span{
+                &:nth-of-type(1){
+                    width:27.6%;
+                }
+                &:nth-of-type(2){
+                    font-weight:normal;
+                    color:#657190;
+                }
+                &:nth-of-type(3){
+                    color:#888;
+                }
+                &:nth-of-type(7){
+                    p{
+                        line-height:22px;
+                        .pay{
+                            background:#ff9900;color:#fff;padding:2px 4px;border-radius:2px;margin-right:28px;line-height:14px;
+                            &:hover{
+                                background:#c97900;color:#fff;
+                            }
+                        }
+                    }
+                    i{
+                        font-style:normal;margin-left:8px;
+                        cursor: pointer;
+                        &:hover{
+                            color:#3399ff;
+                        }
+                    }
+                    text-align:right;
+                }
+            }
+        }
+    }
+}
+.ivu-modal-footer{
+    display:block;
+}
+.details{
+    min-height:300px;
+    .taskInfo{
+        float: left;width:430px;
+    }
+    .facilList{
+        margin-left:460px;
+        .facilTitle{
+            height:30px;line-height:30px;
+            span{
+                font-weight:bold;color:#3399ff;font-size:@fs14;float: left;
+            }
+            em{
+                float: right;padding:2px 3px;background:#e43;color:#fff;font-style:normal;border-radius:2px;line-height:14px;
+                cursor: pointer;
+            }
+        }
+        .bidList{
+            margin-top:5px;
+            dt{
+               border-bottom:1px solid #ddd;
+               span{
+                   &:nth-of-type(2){
+                       width:18%;
+                   }
+                   &:nth-of-type(4){
+                    width:16.4%
+                   }
+               }
+            }
+            dd{
+                height:30px;border-bottom:1px solid #ddd;background:none;
+                span{
+                    line-height:12px;height:30px;
+                    &:nth-of-type(2){
+                        width:18%;
+                    }
+                    &:nth-of-type(4){
+                     width:16.4%
+                    }
+                    i{
+                        font-style:normal;cursor: pointer;
+                        &:hover{
+                            color:#3399ff;
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+    }
+    .ivu-modal-footer{display:none;}
+}
+.lookOver{
+     min-height:350px;
+     img{
+         width:870px;
+     }
+     .fooder{
+         margin-top:10px;border-top:1px solid #ddd;padding-top:10px;
+         p{
+             min-width:33.33%;display:inline-block;float:left;
+             a{
+                 color:#888;
+             }
+         }
+    }
+    .lookImg{
+        min-height:300px;
+    }
+}
+.corpList{
+    .bidList{
+        dt{
+            span{
+                width:10%;
+                &:nth-of-type(1){
+                    width:20%;
+                }
+                &:nth-of-type(2){
+                    width:8%;
+                }
+                &:nth-of-type(3){
+                    width:8%;
+                }
+                &:nth-of-type(4){
+                    width:8%;
+                }
+                &:nth-of-type(5){
+                    width:11%;
+                }
+                &:nth-of-type(6){
+                    width:15%;
+                }
+                &:nth-of-type(7){
+                    text-align:center;
+                    width:23%;
+                }
+                &:nth-of-type(8){
+                    text-align:right;
+                    width:7%;
+                }
+            }
+        }
+        dd{
+            background:none;border-bottom:1px solid #ddd;
+            span{
+                line-height:30px;
+                &:extend(.corpList .bidList dt span);
+                &:nth-of-type(1){
+                    &:extend(.corpList .bidList dt span:nth-of-type(1));
+                }
+                &:nth-of-type(2){
+                    &:extend(.corpList .bidList dt span:nth-of-type(2));
+                }
+                &:nth-of-type(3){
+                    &:extend(.corpList .bidList dt span:nth-of-type(3));
+                }
+                &:nth-of-type(4){
+                    &:extend(.corpList .bidList dt span:nth-of-type(4));
+                }
+                &:nth-of-type(5){
+                    &:extend(.corpList .bidList dt span:nth-of-type(5));
+                }
+                &:nth-of-type(6){
+                    text-align:left;
+                    &:extend(.corpList .bidList dt span:nth-of-type(6));
+                }
+                &:nth-of-type(7){
+                    text-align:left;
+                    &:extend(.corpList .bidList dt span:nth-of-type(7));
+                }
+                &:nth-of-type(8){
+                    &:extend(.corpList .bidList dt span:nth-of-type(8));
+                    a{
+                        color:#444;
+                    }
+                }
+                em{
+                    background:#868686;color:#fff;border-radius:2px;padding:1px;line-height:12px;margin-left:5px;
+                }
+            }
+        }
+    }
+    
+}
+.demo-spin-col{
+    width:90%;
+    position: absolute;
+}
+.comInvite{
+    .bidList{
+        dt{
+            span{
+                width:10%;
+                &:nth-of-type(1){
+                    width:30%;
+                }
+                &:nth-of-type(2){
+                    width:15%;
+                }
+                &:nth-of-type(3){
+                    width:12%;
+                }
+                &:nth-of-type(4){
+                    width:9%;
+                }
+                &:nth-of-type(5){
+                    width:11%;
+                }
+                &:nth-of-type(6){
+                    width:15%;
+                }
+                &:nth-of-type(7){
+                    width:8%;
+                }
+            }
+        }
+        dd{
+            background:none;border-bottom:1px solid #ddd;
+            span{
+                line-height:30px;
+                &:extend(.comInvite .bidList dt span);
+                &:nth-of-type(1){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(1));
+                }
+                &:nth-of-type(2){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(2));
+                }
+                &:nth-of-type(3){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(3));
+                }
+                &:nth-of-type(4){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(4));
+                }
+                &:nth-of-type(5){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(5));
+                }
+                &:nth-of-type(6){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(6));
+                }
+                &:nth-of-type(7){
+                    &:extend(.comInvite .bidList dt span:nth-of-type(7));
+                }
+                s{
+                    color:#fd6600;text-decoration-line:none;
+                }
+            }
+        }
+    }
+}
+.emitInvite{
+    line-height:36px;
+    dl{
+        border:1px solid #ddd;
+        dt{
+            border-bottom:1px solid #ddd;padding:0px 10px;
+            em{
+                float: right;padding-top:5px;
+            }
+        }
+        dd{
+            padding:10px;
+        }
+    }
+}

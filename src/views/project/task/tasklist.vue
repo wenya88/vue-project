@@ -2,76 +2,55 @@
 <template>
     <div class=" taskListContainer">
         <section class="WaitingToStart">
-            <p class="title">
-                <Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon>
-                未进行（<span class="green">{{dataList_type.start.length}}</span>）
-            </p>
+            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon> 未进行（<span class="green">{{dataList_type.start.length}}</span>）</p>
             <template v-if="dataList_type.start.length>0">
-                <div style="padding: 20px;background:#fff;margin-bottom:100px;">
-                    <div class="list" @click.stop="changeTaskListItem(items)"
-                         v-for="(items,index) in dataList_type.start"
-                         :key="index">
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                <div class="list" @click.stop="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start"
+                              :key="index">
+                    <p class="title">{{items.name}}</p>
+                    <div class="BottomInfo">
+                        <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
 
-                            <span>
-                            <img class="headImg" src="./QQ图片20180719133401.jpg" alt=""><span
-                                    style="vertical-align: top">{{items.remark_name}}</span>
+                        <span>
+                            <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
                        </span>
-                        </div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                     </div>
-
+                    <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                 </div>
             </template>
         </section>
         <section class="perform">
-            <p class="title">
-                <Icon type="android-radio-button-off" style="vertical-align: middle" class="blue"></Icon>
-                进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）
-            </p>
+            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="blue"></Icon> 进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）</p>
             <template v-if="dataList_type.underWay.length>0">
-                <div style="padding: 20px;background:#fff;margin-bottom:100px;">
-                    <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
-                         :key="index">
-                        <template>
-                            <p class="pause">暂停中</p>
-                            <p class="sign"></p>
-                        </template>
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
-                            <span>
-                            <img class="headImg" src="./QQ图片20180719133401.jpg" alt=""><span
-                                    style="vertical-align: top">{{items.remark_name}}</span>
+                <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
+                     :key="index">
+                    <template>
+                        <p class="pause">暂停中</p>
+                        <p class="sign"></p>
+                    </template>
+                    <p class="title">{{items.name}}</p>
+                    <div class="BottomInfo">
+                        <span style="color: #777777" >{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                       <span>
+                            <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
                        </span>
-                        </div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                     </div>
+                    <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                 </div>
             </template>
         </section>
         <section class="complete">
-            <p class="title">
-                <Icon type="android-radio-button-off" style="vertical-align: middle" class="orange"></Icon>
-                已完成（<span class="orange">{{dataList_type.end.length}}</span>）
-            </p>
+            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="orange"></Icon> 已完成（<span class="orange">{{dataList_type.end.length}}</span>）</p>
             <template v-if="dataList_type.end.length>0">
-                <div style="padding: 20px;background:#fff;margin-bottom:100px;">
-                    <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end"
-                         :key="index">
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end"
+                     :key="index">
+                    <p class="title">{{items.name}}</p>
+                    <div class="BottomInfo">
+                        <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
 
-                            <span>
-                            <img class="headImg" src="./QQ图片20180719133401.jpg" alt=""><span
-                                    style="vertical-align: top">{{items.remark_name}}</span>
-                       </span></div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-                    </div>
-
+                        <span>
+                            <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                       </span>                    </div>
+                    <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                 </div>
             </template>
         </section>
@@ -518,38 +497,31 @@
 </script>
 <style lang="less">
     @import "../../../styles/task/task.css";
-
     .taskListContainer {
-        display: flex;
-        height: 100%;
+        height: 87%;
+
         overflow: auto;
-        .green {
+        .green{
             color: #6ce2d3;
         }
-        .orange {
+        .orange{
             color: #fdd772;
         }
-        .blue {
+        .blue{
             color: #9ed3fd;
         }
-        .perform, .WaitingToStart {
 
-            margin-right: 30px;
-        }
         .WaitingToStart, .perform, .complete, .suspended {
             float: left;
             width: 32%;
-
-            /*background: #fff;*/
+            margin-right: 5px;
+            background: #fff;
             /*height: 700px;*/
 
             .title {
-                margin: 5px 0 1px 0;
-                height: 45px;
-                line-height: 45px;
+                margin: 5px 0;
                 font-size: 16px;
                 text-align: center;
-                background: #fff;
             }
             .list {
                 position: relative;
@@ -565,7 +537,7 @@
                     display: flex;
                     padding: 20px;
                     justify-content: space-between;
-                    .headImg {
+                    .headImg{
                         width: 36px;
                         height: 36px;
                         border-radius: 50%;
@@ -607,9 +579,6 @@
                     padding-left: 35px;
                     text-align: left;
                     color: #818181;
-                    overflow: hidden;
-                    text-overflow:ellipsis;
-                    white-space: nowrap;
                 }
 
                 &:hover {
@@ -626,7 +595,9 @@
             }
         }
 
+
     }
+
 
     .main-header-con {
         z-index: 1 !important;
@@ -704,3 +675,4 @@
         display: block;
     }
 </style>
+
