@@ -13,7 +13,7 @@ export const menu = [
                 title: '我的工作',
             }, {
                 path: '/manager/setSchedule',
-                name: 'eHome',
+                name: 'setSchedule',
                 level: '1-1',
                 title: '日程安排',
             },

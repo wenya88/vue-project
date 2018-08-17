@@ -24,6 +24,7 @@
   }
 }
 .qualityContainer, .pigeonhole{
+  &:after{content: '';display: block;clear: both}
   // position: relative;
   // top: 0;
   // left: 0;
@@ -216,8 +217,8 @@
     background: #fff;
   }
   .sortBg{
-    height: 55px;
-    padding: 10px 0;
+    //height: 55px;
+    //padding: 10px 0;
     background: rgb(252, 252, 252);
   }
   .screen{
@@ -280,6 +281,65 @@
     cursor: pointer;
     margin-top: 10px;
   }
+
+  //资源管理 UI 改版  千万千万千千万不要冲突  南无阿弥陀佛  佛主保佑！！！
+  //Strat............
+  .menauBar{
+    background: #f7f7f7;
+    display: flex;align-items: center;justify-content:space-between;flex-wrap: wrap;
+    .projectClassfly{
+      overflow: hidden;height: 58px;display: flex;align-items: center;
+      li{float: left;display: flex;align-items: center;height:100%;font-size: 14px;color: #ccc;padding: 0 25px;cursor: pointer;
+        &.currenSty{background: rgba(206,242,236,.8);color: @green};
+        span{margin-left: 15px}
+      }
+    }
+    .screenBar{
+      overflow: hidden;height: 58px;display: flex;align-items: center;justify-content: space-between;padding: 12px 10px 12px 0;
+      li{
+        float: left;display: flex;align-items: center;height:100%;
+        dl{
+          height: 100%;
+          dd{
+            float: left;font-size: 13px;color: #ccc;height: 100%;display: flex;align-items: center;border-left: 1px dashed #e7e7e7;padding: 0 15px;cursor: pointer;
+            &:after{
+              content: '';display: inline-block;height: 12px;width: 9px;
+              background: url("../proStat/image/searchIcons.png") no-repeat;
+              background-position-y: -46px;margin-left: 5px;
+            };
+            &.byAsc{
+              &:after{background-position-y: 0 !important;}
+            };
+            &.byDesc{
+              &:after{background-position-y: -23px !important;}
+            }
+          }
+        }
+      }
+      .searchBar{
+         div{
+           position: relative;width: 200px;height: 100%;overflow: hidden;
+           input{height: 100%;width: 100%;border: none;border-radius: 3px;padding-left: 10px;outline: none;};
+           button{
+             position: absolute;top: 0;bottom:0;right: 0;width: 44px;height:100%;border: 0;outline: none;border-radius: 3px;
+             background: url("../proStat/image/searchIcons.png") no-repeat @green;
+             background-position: 13px -88px;cursor: pointer;
+           }
+         }
+      }
+      .allDownBtn{
+        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;
+        button{
+          border: 0;color: #fff;outline: none;cursor: pointer;
+          background: url("../proStat/image/searchIcons.png") no-repeat @green;
+          background-position-y: -70px;padding-left: 20px;
+        }
+      }
+    }
+  }
+
+  //End.............
+  // 结束 这部分千万不要冲  要冲冲其他部分都可以 哈哈
 }
 .qualityContainer{
   background: #eef1f2;
@@ -295,7 +355,11 @@
     }
   }
   .nav{
-    height: 206px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 80px;
+    overflow: hidden;
+    //height: 206px;
     background: #fff;
     //.frist,.second, .third, .fourth, .fifth{
     //  float: left;
