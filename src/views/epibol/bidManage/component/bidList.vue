@@ -24,7 +24,7 @@
                             <div class="clear"></div>
                         </div>
                         <div class="progress">
-                            <Progress :percent="45" status="active" stroke-width="5">
+                            <Progress :percent="45" status="active" :stroke-width="5">
                                 <span>剩余 3 天</span>
                             </Progress>
                         </div>
