@@ -492,7 +492,15 @@
                     return data.project.primaryMission
                 }
             })
-        }
+        },
+//        watch: {
+//            '$route'() {
+//                this.initTaskListFromId();
+//                this.$bus.on('clearExcleData', () => {
+//                    this.refreshTaskList();
+//                })
+//            }
+//        }
     };
 </script>
 <style lang="less">

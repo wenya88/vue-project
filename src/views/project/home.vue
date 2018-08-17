@@ -227,13 +227,7 @@ export default {
     components:{
         vFlare
     },
-    watch:{
-        '$route'(){
-            console.log(111)
-            this.get();
-            this.flare();
-        }
-    }
+
 }
 </script>
 <style lang="less">

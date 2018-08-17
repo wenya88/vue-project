@@ -3,7 +3,7 @@
     <div class="taskDetailsContainer">
         <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
             <FormItem  v-if="!taskManagement"  label="任务名称">
-                <Input   v-model="editData.name"  :readonly="editDisabled">
+                <Input   v-model="editData.name"  :disabled="editDisabled">
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
@@ -17,36 +17,36 @@
                 </div>
             </FormItem>
             <!--<FormItem  v-else label="负责人">-->
-                <!--<Select v-model="principalName"  placeholder="">-->
-                    <!--<Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>-->
-                <!--</Select>-->
+            <!--<Select v-model="principalName"  placeholder="">-->
+            <!--<Option v-for="item in principal" :value="item.id" :key="item.value">{{ item.remark_name }}</Option>-->
+            <!--</Select>-->
             <!--</FormItem>-->
             <FormItem label="计划时间" class="borBotm">
                 <DatePicker
-                :value="getTimeRange"
-                @on-change="setTimeRange"
-                format="yyyy-MM-dd"
-                type="daterange"
-                :options="startTime"
-                split-panels
+                        :value="getTimeRange"
+                        @on-change="setTimeRange"
+                        format="yyyy-MM-dd"
+                        type="daterange"
+                        :options="startTime"
+                        split-panels
 
-                :readonly="editDisabled"
+                        :readonly="editDisabled"
                 >
                 </DatePicker>
             </FormItem>
             <FormItem label="子项目" class="borBotm">
                 <Select
-                @on-change='setChildProject'
-                v-model="editData.project_child"
-                clearable
-                :disabled="editDisabled"
-                placeholder=""
+                        @on-change='setChildProject'
+                        v-model="editData.project_child"
+                        clearable
+                        :disabled="editDisabled"
+                        placeholder=""
                 >
                     <Option
-                        v-for="(item,index) in childProjectsList"
-                        :key="'children'+index"
-                        :value="item.id"
-                        >
+                            v-for="(item,index) in childProjectsList"
+                            :key="'children'+index"
+                            :value="item.id"
+                    >
                         {{item.name}}
                     </Option>
                 </Select>
@@ -67,11 +67,11 @@
                     </AutoComplete>
                     <Card :bordered="true" style="text-align: center">
                         <div v-for="(item,index) in taskTypeInfo" :key="'file'+index">
-                           <p>
-                               <span>尺寸</span><span>{{item.require[0].value?item.require[0].value:'无'}}</span>
-                           </p>
                             <p>
-                                 <span>格式</span><span>{{item.file_format}}</span>
+                                <span>尺寸</span><span>{{item.require[0].value?item.require[0].value:'无'}}</span>
+                            </p>
+                            <p>
+                                <span>格式</span><span>{{item.file_format}}</span>
                             </p>
                         </div>
                     </Card>
@@ -103,28 +103,28 @@
             </template>
             <FormItem label="参考附件" class="borBotm">
                 <div>
-                <Upload
-                multiple
-                type="drag"
-                :show-upload-list="true"
-                :on-success="referenceFileSuccess"
-                :on-remove ="referenceFileRemove"
-                :action="fileup"
-                :default-file-list="referenceFileName"
-                >
-                <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
-                <p>点击或拖入上传</p>
-                </Upload>
+                    <Upload
+                            multiple
+                            type="drag"
+                            :show-upload-list="true"
+                            :on-success="referenceFileSuccess"
+                            :on-remove ="referenceFileRemove"
+                            :action="fileup"
+                            :default-file-list="referenceFileName"
+                    >
+                        <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
+                        <p>点击或拖入上传</p>
+                    </Upload>
                 </div>
                 <!-- <div v-for="item in editData.file" :key="item.url">{{item.url}}</div> -->
             </FormItem>
             <FormItem label="备注" class="borBotm">
                 <Input
-                class="remark"
-                v-model="editData.description"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                :disabled="editDisabled"
+                        class="remark"
+                        v-model="editData.description"
+                        type="textarea"
+                        :autosize="{minRows: 2,maxRows: 5}"
+                        :disabled="editDisabled"
 
                 ></Input>
             </FormItem>
@@ -133,213 +133,214 @@
 </template>
 
 <script>
-var qs = require("querystring");
-import {mapState,mapMutations} from 'vuex';
-import api from 'api';
-export default{
-    props:{
-        taskManagement:{
-            type:String,
-            default:''
-        }
-    },
-    data() {
-        return {
-            projectId:sessionStorage.getItem('projectID'),
-            //*任务属性*//
-            taskID:0,
-            editData:{},
-            //*任务属性选项*//
-            editDisabled:false,//能否编辑
-            isNewTask:false,//是否为新任务
-            principal: [],//负责人列表
-            principalName: "",//搜索框负责人名字
-            principalNum: 1,
-            principalType: [],//供选择的负责人类型
-            referenceFileList: [],//附件文件列表
-            childProjectsList: [],//供选择的子项目列表
-            taskTypesList:[],//供选择的任务类型
-            taskTypeInfo:{},//任务类型信息
-            referenceFileName: [],//附件文件名称
-            referenceFileUrl:[],//附件文件地址
-            dateRange:"",
-            principalList: [],
-            //*时间属性选项*//
-            startTime: {
-            disabledDate(date) {
-                return date && date.valueOf() < Date.now() - 86400000;
-                }
-            },
-            endTime: {
-                disabledDate(date) {
-                return date && date.valueOf() < Date.now() - 86400000;
-                }
-            },
-        }
-    },
-    created(){
-        this.getTaskTypeList();
-    },
-    mounted(){
-        if(this.userStatus !== 'member'){
-            this.setEditDisabled(false)
-        }
-    },
-    computed:{
-        ...mapState({
-            userStatus(value){
-                return value.project.userStatus
+    var qs = require("querystring");
+    import {mapState,mapMutations} from 'vuex';
+    import api from 'api';
+    export default{
+        props:{
+            taskManagement:{
+                type:String,
+                default:''
             }
-        }),
-        getTimeRange(){
-            return [this.editData.expect_start_date,this.editData.expect_end_date]
         },
-        fileup(){
-            return this.$store.state.paySkip.fileUpload
-        },
-    },
-    methods:{
-        ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
-        //获取任务详情
-        initTaskDetailFromID(id,fatherFunctions) {
-            // console.log('详情',id,fatherFunctions)
-            if(id!=0)
-            {
-                this.getChildProject()
-                this.taskID = id;
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
-//                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
-                .then( res => res.data)
-                .then( res => {
-                        this.initTaskDetailFromData(res);
-                        this.getTaskTypeRequire(res.tasktype_id);
-                        this.clickMenberDropdown();
-                        this.callFatherFunction(fatherFunctions)  ;
-                        this.principalName = res.member_id;
-                        this.setTaskInfo(res);  // vux存储info
-
-                    this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
-                    this.changeComponentTaskID(res.id)
-                    this.changeComponentFileURl(res.stage_file)
-
+        data() {
+            return {
+                projectId:sessionStorage.getItem('projectID'),
+                //*任务属性*//
+                taskID:0,
+                editData:{},
+                //*任务属性选项*//
+                editDisabled:false,//能否编辑
+                isNewTask:false,//是否为新任务
+                principal: [],//负责人列表
+                principalName: "",//搜索框负责人名字
+                principalNum: 1,
+                principalType: [],//供选择的负责人类型
+                referenceFileList: [],//附件文件列表
+                childProjectsList: [],//供选择的子项目列表
+                taskTypesList:[],//供选择的任务类型
+                taskTypeInfo:{},//任务类型信息
+                referenceFileName: [],//附件文件名称
+                referenceFileUrl:[],//附件文件地址
+                dateRange:"",
+                principalList: [],
+                //*时间属性选项*//
+                startTime: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
                     }
-                )
-                .catch(error => {
-                    console.log(error);
-
-                    this.$Message.error("获取任务信息失败，请重试！");
-                });
-            }
-        },
-        //直接赋值任务属性-DONE
-        initTaskDetailFromData(data)
-        {
-            this.editData = data;
-            this.formatLocalData();
-
-        },
-        //设置能否编辑-DONE
-        setEditDisabled(forbidEdit)
-        {
-            this.editDisabled = forbidEdit;
-        },
-        //新增任务初始化-DONE
-        initTaskDetailFromNew(projectInfo)
-        {
-            this.isNewTask = true;
-            this.initProjectInfo(projectInfo);
-            this.clickMenberDropdown();
-            this.getChildProject()
-        },
-        //初始化项目相关信息-DONE
-        initProjectInfo(projectInfo)
-        {
-            if(projectInfo){
-                this.editData.project_id = projectInfo.id;
-            }
-//            this.childProjectsList = projectInfo.child;
-        },
-        //外部获得任务数据-DONE
-        getTaskDetail()
-        {
-            return this.editData;
-        },
-        //获得任务类型要求-DONE
-        getTaskTypeRequire(tasktype_id)
-        {
-            if(tasktype_id == 0 || tasktype_id == null)
-                return false;
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info',qs.stringify({id: tasktype_id}))
-                .then( res => res.data)
-                .then( res => {
-                        this.taskTypeInfo=[];
-                        this.taskTypeInfo = res.file;
-
-                        // res.file.forEach((res)=>
-                        // {
-                        //     console.log(res);
-                        //     this.taskTypeInfo.push({
-                        //         file_format:res.file_format,
-                        //         config_name:res.require.value,
-                        //         is_main:res.is_main,
-                        //         }
-                        //     );
-                        // })
+                },
+                endTime: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
                     }
-                )
-                .catch(error => {
-                    //this.$Message.error("获取任务信息失败，请重试！");
-                });
+                },
+            }
         },
-        //获得全部任务类型列表-DONE
-        getTaskTypeList()
-        {
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
-                .then( res => res.data)
-                .then( ({data}) => {
-                    this.taskTypesList = data
-                    })
-                .catch(error => {
-                    //this.$Message.error("获取任务信息失败，请重试！");
-                });
+        created(){
+            this.getTaskTypeList();
         },
-        //格式化本地数据
-        formatLocalData()
-        {
-            this.referenceFileName = [];
-      if      (this.editData.file)
-            {
-                this.editData.file.forEach(
-                    (res)=>{
-                        this.referenceFileName.push({
-                            name:"",
-                            url:res
+        mounted(){
+            if(this.userStatus !== 'member'){
+                this.setEditDisabled(false)
+            }
+        },
+        computed:{
+            ...mapState({
+                userStatus(value){
+                    return value.project.userStatus
+                }
+            }),
+            getTimeRange(){
+                return [this.editData.expect_start_date,this.editData.expect_end_date]
+            },
+            fileup(){
+                return this.$store.state.paySkip.fileUpload
+            },
+        },
+        methods:{
+            ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
+            //获取任务详情
+            initTaskDetailFromID(id,fatherFunctions) {
+                // console.log('详情',id,fatherFunctions)
+                if(id!=0)
+                {
+                    this.getChildProject()
+                    this.taskID = id;
+                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
+                    //                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
+                        .then( res => res.data)
+                        .then( res => {
+                                this.initTaskDetailFromData(res);
+                                this.getTaskTypeRequire(res.tasktype_id);
+                                this.clickMenberDropdown();
+                                this.callFatherFunction(fatherFunctions)  ;
+                                this.principalName = res.member_id;
+                                this.setTaskInfo(res);  // vux存储info
+
+                                this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
+                                this.changeComponentTaskID(res.id)
+                                this.changeComponentFileURl(res.stage_file)
+
+                            }
+                        )
+                        .catch(error => {
+                            console.log(error);
+
+                            this.$Message.error("获取任务信息失败，请重试！");
                         });
-                    }
-                );
-            }
-
-        },
-        //用于父组件通信-DONE
-        callFatherFunction(fatherfunctions)
-        {
-            if(this.editData.child)
-                this.$emit('sendSubTaskList', this.editData);//这里子任务需要父任务的一些属性
-            if(this.editData.log)
-                this.$emit('sendLogData', this.editData.log);
-            if(fatherfunctions)
+                }
+            },
+            //直接赋值任务属性-DONE
+            initTaskDetailFromData(data)
             {
-                fatherfunctions.forEach(
-                    (res)=>{
-                        this.$emit(res.functionName);
-                    }
-                );
-            }
-        },
-        //主任务保存编辑数据
-        saveTaskDetails(link,id) {
+                this.editData = data;
+                this.formatLocalData();
 
-            let dataForm = {};
+            },
+            //设置能否编辑-DONE
+            setEditDisabled(forbidEdit)
+            {
+                this.editDisabled = forbidEdit;
+            },
+            //新增任务初始化-DONE
+            initTaskDetailFromNew(projectInfo)
+            {
+                this.isNewTask = true;
+                this.initProjectInfo(projectInfo);
+                this.clickMenberDropdown();
+                this.getChildProject()
+            },
+            //初始化项目相关信息-DONE
+            initProjectInfo(projectInfo)
+            {
+                if(projectInfo){
+                    this.editData.project_id = projectInfo.id;
+                }
+//            this.childProjectsList = projectInfo.child;
+            },
+            //外部获得任务数据-DONE
+            getTaskDetail()
+            {
+                return this.editData;
+            },
+            //获得任务类型要求-DONE
+            getTaskTypeRequire(tasktype_id)
+            {
+                if(tasktype_id == 0 || tasktype_id == null)
+                    return false;
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info',qs.stringify({id: tasktype_id}))
+                    .then( res => res.data)
+                    .then( res => {
+                            this.taskTypeInfo=[];
+                            this.taskTypeInfo = res.file;
+
+                            // res.file.forEach((res)=>
+                            // {
+                            //     console.log(res);
+                            //     this.taskTypeInfo.push({
+                            //         file_format:res.file_format,
+                            //         config_name:res.require.value,
+                            //         is_main:res.is_main,
+                            //         }
+                            //     );
+                            // })
+                        }
+                    )
+                    .catch(error => {
+                        //this.$Message.error("获取任务信息失败，请重试！");
+                    });
+            },
+            //获得全部任务类型列表-DONE
+            getTaskTypeList()
+            {
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
+                    .then( res => res.data)
+                    .then( ({data}) => {
+                        console.log(11,data)
+                        this.taskTypesList = data
+                    })
+                    .catch(error => {
+                        //this.$Message.error("获取任务信息失败，请重试！");
+                    });
+            },
+            //格式化本地数据
+            formatLocalData()
+            {
+                this.referenceFileName = [];
+                if      (this.editData.file)
+                {
+                    this.editData.file.forEach(
+                        (res)=>{
+                            this.referenceFileName.push({
+                                name:"",
+                                url:res
+                            });
+                        }
+                    );
+                }
+
+            },
+            //用于父组件通信-DONE
+            callFatherFunction(fatherfunctions)
+            {
+                if(this.editData.child)
+                    this.$emit('sendSubTaskList', this.editData);//这里子任务需要父任务的一些属性
+                if(this.editData.log)
+                    this.$emit('sendLogData', this.editData.log);
+                if(fatherfunctions)
+                {
+                    fatherfunctions.forEach(
+                        (res)=>{
+                            this.$emit(res.functionName);
+                        }
+                    );
+                }
+            },
+            //主任务保存编辑数据
+            saveTaskDetails(link,id) {
+
+                let dataForm = {};
                 dataForm.id = this.editData.id;
                 dataForm.father = this.editData.father ? this.editData.father : 0;
                 dataForm.name = this.editData.name;
@@ -358,223 +359,223 @@ export default{
                 }
 
 
-            return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm,link);
-        },
-        //获得参与人ID
-        getUserId(namesData)
-        {
-            if(this.principal.length > 0)
+                return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm,link);
+            },
+            //获得参与人ID
+            getUserId(namesData)
             {
-                for(let i=0;i<this.principal.length;i++)
+                if(this.principal.length > 0)
                 {
-                    if(namesData == this.principal[i].remark_name)
-                     {
-                         console.log(this.principal[i].id);
-
-                        return this.principal[i].id;
-                    }
-                }
-            }
-            else
-                return null;
-        },
-        //获得参与人ID
-        getUserName(namesId)
-        {
-
-
-            if(this.principal.length > 0)
-            {
-                for(let i=0;i<this.principal.length;i++)
-                {
-                    if(namesId == this.principal[i].id)
-                     {
-                         console.log(this.principal[i].remark_name);
-
-                        return this.principal[i].remark_name;
-                    }
-                }
-            }
-            else
-                return "";
-        },
-        //新增任务
-        addTaskDetails(dataForm)
-        {
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dataForm))
-                        .then(res => {
-                            this.$bus.emit('refreshCurrentTaskList');
-                        })
-                        .catch(error => {
-                            this.$Message.error("新建任务失败，请重试！");
-                            return false;
-                        });
-            return true;
-        },
-        //更新任务
-        updateTaskDetail(dataForm,link)
-        {
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dataForm))
-                        .then(res => {
-                            this.$bus.emit('refreshCurrentTaskList');
-                            if(link){
-//                                this.$router.push({path:'/project/task'});
-                            }
-                        })
-                        .catch(error => {
-                            this.$Message.error("编辑任务失败，请重试！");
-                            return false;
-                        });
-            return true;
-        },
-        //删除任务
-        delTaskDetail()
-        {
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.editData.id}))
-                        .then(res => {
-                            this.$bus.emit('refreshCurrentTaskList');
-                        })
-                        .catch(error => {
-                            this.$Message.error("删除任务失败，请重试！");
-                            return false;
-                        });
-            return true;
-        },
-        //初始化编辑数据
-        initEditData()
-        {
-            this.editData={};
-        },
-        //开始时间
-        setTimeRange(date,date_now) {
-            this.editData.expect_start_date = date[0];
-            this.editData.expect_end_date = date[1];
-        },
-        // 获得子项目
-        getChildProject(){
-
-            this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
-                .then(({data})=>{
-                this.childProjectsList = data.data
-                })
-        },
-        //设置子项目
-        setChildProject(pId) {
-
-            this.editData.project_child = pId;
-
-        },
-        //选择任务类型自动改变类型要求-DONE
-        selectTaskType(id_name)
-        {
-
-            if(id_name!=null)
-            {
-                this.taskTypesList.forEach(
-                    (res)=>{
-                        if(res.tasktype_name == id_name)
+                    for(let i=0;i<this.principal.length;i++)
+                    {
+                        if(namesData == this.principal[i].remark_name)
                         {
-                            this.editData.tasktype_id = parseInt(res.id);
-                            this.getTaskTypeRequire(res.id);
+                            console.log(this.principal[i].id);
+
+                            return this.principal[i].id;
                         }
                     }
-                );
-            }
-        },
-        //----------参与人-------------//
-        //点击参与人下拉
-        clickMenberDropdown()
-        {
-            this.$axios.post(this.GLOBAL.baseRouter + 'task/company/joined-members',qs.stringify({project_id: this.projectId}))
-                .then( res => res.data)
-                .then( res => {
-                    this.principal = res.data;
-                    // console.log('负责人',res.data)
+                }
+                else
+                    return null;
+            },
+            //获得参与人ID
+            getUserName(namesId)
+            {
+
+
+                if(this.principal.length > 0)
+                {
+                    for(let i=0;i<this.principal.length;i++)
+                    {
+                        if(namesId == this.principal[i].id)
+                        {
+                            console.log(this.principal[i].remark_name);
+
+                            return this.principal[i].remark_name;
+                        }
+                    }
+                }
+                else
+                    return "";
+            },
+            //新增任务
+            addTaskDetails(dataForm)
+            {
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dataForm))
+                    .then(res => {
+                        this.$bus.emit('refreshCurrentTaskList');
+                    })
+                    .catch(error => {
+                        this.$Message.error("新建任务失败，请重试！");
+                        return false;
+                    });
+                return true;
+            },
+            //更新任务
+            updateTaskDetail(dataForm,link)
+            {
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dataForm))
+                    .then(res => {
+                        this.$bus.emit('refreshCurrentTaskList');
+                        if(link){
+//                                this.$router.push({path:'/project/task'});
+                        }
+                    })
+                    .catch(error => {
+                        this.$Message.error("编辑任务失败，请重试！");
+                        return false;
+                    });
+                return true;
+            },
+            //删除任务
+            delTaskDetail()
+            {
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.editData.id}))
+                    .then(res => {
+                        this.$bus.emit('refreshCurrentTaskList');
+                    })
+                    .catch(error => {
+                        this.$Message.error("删除任务失败，请重试！");
+                        return false;
+                    });
+                return true;
+            },
+            //初始化编辑数据
+            initEditData()
+            {
+                this.editData={};
+            },
+            //开始时间
+            setTimeRange(date,date_now) {
+                this.editData.expect_start_date = date[0];
+                this.editData.expect_end_date = date[1];
+            },
+            // 获得子项目
+            getChildProject(){
+
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
+                    .then(({data})=>{
+                        this.childProjectsList = data.data
+                    })
+            },
+            //设置子项目
+            setChildProject(pId) {
+
+                this.editData.project_child = pId;
+
+            },
+            //选择任务类型自动改变类型要求-DONE
+            selectTaskType(id_name)
+            {
+
+                if(id_name!=null)
+                {
+                    this.taskTypesList.forEach(
+                        (res)=>{
+                            if(res.tasktype_name == id_name)
+                            {
+                                this.editData.tasktype_id = parseInt(res.id);
+                                this.getTaskTypeRequire(res.id);
+                            }
+                        }
+                    );
+                }
+            },
+            //----------参与人-------------//
+            //点击参与人下拉
+            clickMenberDropdown()
+            {
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/company/joined-members',qs.stringify({project_id: this.projectId}))
+                    .then( res => res.data)
+                    .then( res => {
+                            this.principal = res.data;
+                            // console.log('负责人',res.data)
 //                        this.principal=[];
 //                        this.principalName="";
 //                        this.principal = res.data;
 //                        this.principalName = this.getUserName(this.editData.member_id)
-                    // console.log(1.1,this.principalName);
-                    //     console.log(1.2,this.principal);
-                    }
-                )
-                .catch(error => {
-                    // console.log(error);
+                            // console.log(1.1,this.principalName);
+                            //     console.log(1.2,this.principal);
+                        }
+                    )
+                    .catch(error => {
+                        // console.log(error);
 
-                    this.$Message.error("获取公司成员失败，请重试！");
+                        this.$Message.error("获取公司成员失败，请重试！");
+                    });
+            },
+            //参与人滚动条
+            principalHandleReachBottom() {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const last = this.list1[this.list1.length - 1];
+                        for (let i = 1; i < 11; i++) {
+                            this.list1.push(last + i);
+                        }
+                        resolve();
+                    }, 2000);
                 });
-        },
-        //参与人滚动条
-        principalHandleReachBottom() {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                const last = this.list1[this.list1.length - 1];
-                for (let i = 1; i < 11; i++) {
-                    this.list1.push(last + i);
-                }
-                resolve();
-                }, 2000);
-            });
-        },
-        //移除已选参与人
-        removePartici(event, name) {
-            this.principal.splice(this.principal.indexOf(name), 1);
-        },
-        //设置任务类型
-        setTaskClass(TypeName) {
-            this.editData.tasktype_name = TypeName;
-        },
-        //----------上传文件-------------//
-        // 上传附件成功后返回
-        referenceFileSuccess(response, file ,fileList) {
-            this.referenceFileUrl.push(response.file.url);
-        },
-        //移除附件
-        referenceFileRemove(file,fileList)
-        {
-            for(let i = 0;i<this.referenceFileUrl.length;i++)
+            },
+            //移除已选参与人
+            removePartici(event, name) {
+                this.principal.splice(this.principal.indexOf(name), 1);
+            },
+            //设置任务类型
+            setTaskClass(TypeName) {
+                this.editData.tasktype_name = TypeName;
+            },
+            //----------上传文件-------------//
+            // 上传附件成功后返回
+            referenceFileSuccess(response, file ,fileList) {
+                this.referenceFileUrl.push(response.file.url);
+            },
+            //移除附件
+            referenceFileRemove(file,fileList)
             {
-                if(this.referenceFileUrl[i] == file.response.affix.url)
+                for(let i = 0;i<this.referenceFileUrl.length;i++)
                 {
-                    this.referenceFileUrl.splice(i);
+                    if(this.referenceFileUrl[i] == file.response.affix.url)
+                    {
+                        this.referenceFileUrl.splice(i);
+                    }
                 }
-            }
-        },
-        //判断图片格式
-        handleFormatError(file) {
-            this.$Notice.warning({
-                title: "文件格式不正确",
-                desc: "文件格式 " + file.name + " 不正确，请选择jpg或png"
-            });
-        },
-        //判断图片大小
-        handleMaxSize(file) {
-            this.$Notice.warning({
-                title: "文件大小超过限制",
-                desc: "文件  " + file.name + " 太大了，不超过10M。"
-            });
-        },
-        //判断图片最多上传张数
-        handleBeforeUpload() {
-            const check = this.uploadList.length < 5;
-            if (!check) {
+            },
+            //判断图片格式
+            handleFormatError(file) {
                 this.$Notice.warning({
-                title: "最多可以上传5张图片。"
+                    title: "文件格式不正确",
+                    desc: "文件格式 " + file.name + " 不正确，请选择jpg或png"
                 });
+            },
+            //判断图片大小
+            handleMaxSize(file) {
+                this.$Notice.warning({
+                    title: "文件大小超过限制",
+                    desc: "文件  " + file.name + " 太大了，不超过10M。"
+                });
+            },
+            //判断图片最多上传张数
+            handleBeforeUpload() {
+                const check = this.uploadList.length < 5;
+                if (!check) {
+                    this.$Notice.warning({
+                        title: "最多可以上传5张图片。"
+                    });
+                }
+                return check;
+            },
+            clearAllData(){
+                this.editData = {};
+                this.principalName = '';
+                this.referenceFileName = [];
+                this.taskTypeInfo = [];
             }
-            return check;
-        },
-        clearAllData(){
-            this.editData = {};
-            this.principalName = '';
-            this.referenceFileName = [];
-            this.taskTypeInfo = [];
         }
-    }
-};
+    };
 </script>
 <style lang="less">
-@bor:#f2f9f9;
+    @bor:#f2f9f9;
     .taskDetailsContainer{
         .head{
             display: flex;
@@ -597,20 +598,20 @@ export default{
     }
 
 
-.taskdetail{
-  display:inline-block;
-  overflow:hidden;
-}
-.taskdetail-left{
-  width:400px;
-  float:left;
-  padding: 0 20px 0 0;
-}
-.taskdetail-right{
-  width:600px;
-  float:left;
-  padding: 0 0 0 20px;
-}
+    .taskdetail{
+        display:inline-block;
+        overflow:hidden;
+    }
+    .taskdetail-left{
+        width:400px;
+        float:left;
+        padding: 0 20px 0 0;
+    }
+    .taskdetail-right{
+        width:600px;
+        float:left;
+        padding: 0 0 0 20px;
+    }
 </style>
 // {
 //     "err_code": 0,
