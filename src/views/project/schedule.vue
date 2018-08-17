@@ -93,6 +93,7 @@
 </template>
 <script>
 import EchartLine from './proStat/echartsLine.vue';
+import axios from 'axios'
 export default {
     data(){
         return{
@@ -135,7 +136,7 @@ export default {
             let ProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/project-progress&project_id="+projectID);
             let ChlidProjectProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/child-project-progress&project_id="+projectID);
             let MemberProgess=_this.$axios.get(this.GLOBAL.baseRouter+"/task/total/member-progress&project_id="+projectID);
-            _this.$axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
+            axios.all([ProjectProgess,ChlidProjectProgess,MemberProgess]).then(([msg,childMsg,memberMsg])=>{
 
                     // 项目进度
                     let MsData=msg.data.data;

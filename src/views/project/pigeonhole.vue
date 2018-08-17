@@ -1,60 +1,32 @@
 <template>
   <div class="pigeonhole">
-    <div class="menauBar">
-          <ul class="projectClassfly">
-            <li>原画<span>( 20 )</span></li>
-            <li class="currenSty">动作<span>( 60 )</span></li>
-            <li>特效<span>( 30 )</span></li>
-            <li>场景<span>( 5 )</span></li>
-          </ul>
-
-          <ul class="screenBar">
-            <!--<li>-->
-              <!--<dl>-->
-                <!--<dd class="byAsc">送审时间</dd>-->
-                <!--<dd class="byDesc">待审天数</dd>-->
-                <!--<dd>剩余时间</dd>-->
-              <!--</dl>-->
-            <!--</li>-->
-            <li class="searchBar">
-               <div>
-                  <input type="text" v-model="searchInput" placeholder="任务 / 负责人" @keyup.enter="fetchData"/>
-                  <button @click="fetchData"></button>
-               </div>
-            </li>
-            <li class="allDownBtn">
-              <button @click="downloadFile('',projectID)">全部下载</button>
-            </li>
-          </ul>
-
-      <!--<Row type="flex" justify="space-between" class="code-row-bg">-->
-        <!--<Col span="16">-->
-        <!--<Button type="primary" @click="downloadFile('',projectID)">全部下载</Button>-->
-        <!--</Col>-->
-        <!--<Col span="2"> 类型:-->
-        <!--<Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">-->
-          <!--<OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">-->
-            <!--<Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>-->
-          <!--</OptionGroup>-->
-        <!--</Select>-->
-        <!--</Col>-->
-        <!--<Col span="2"> 关注:-->
-        <!--<Select v-model="model" style="width:80px">-->
-          <!--<Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-        <!--</Select>-->
-        <!--</Col>-->
-        <!--<Col span="4">-->
-          <!--<Input-->
-          <!--v-model="searchInput"-->
-          <!--icon="search"-->
-          <!--placeholder="任务 / 负责人"-->
-          <!--style="width: 200px;float: right;margin-right: 20px;"-->
-          <!--@keyup.enter.native="fetchData()"></Input>-->
-        <!--</Col>-->
-      <!--</Row>-->
-       <!--<my-input :placeholder="text" @enter="fetchData()"></my-input>-->
-
-
+    <div class="sortBg">
+      <Row type="flex" justify="space-between" class="code-row-bg">
+        <Col span="16">
+        <Button type="primary" @click="downloadFile('',projectID)">全部下载</Button>
+        </Col>
+        <Col span="2"> 类型:
+        <Select v-model="selTaskType" style="width:80px" @on-change="fetchData()">
+          <OptionGroup :label="item.name" v-for="(item,index) in taskList" :key="index">
+            <Option v-for="items in item.tasktype" :value="items.id" :key="items.id">{{ items.tasktype_name }}</Option>
+          </OptionGroup> 
+        </Select>
+        </Col>
+        <Col span="2"> 关注:
+        <Select v-model="model" style="width:80px">
+          <Option v-for="item in followList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+        </Col>
+        <Col span="4">
+          <Input 
+          v-model="searchInput" 
+          icon="search" 
+          placeholder="任务 / 负责人" 
+          style="width: 200px;float: right;margin-right: 20px;"
+          @keyup.enter.native="fetchData()"></Input>
+        </Col>
+      </Row>
+      <!-- <my-input :placeholder="text" @enter="fetchData()"></my-input> -->
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
@@ -65,26 +37,14 @@
             <Icon type="pause" v-else-if=""></Icon> -->
             <img class="card-box-pic" :src="item.image[0]"/>
           </div>
-
-          <div class="RcardBlock">
-             <div class="left">
-               <img class="cardPic" :src="item.image[0]"/>
-               <span>{{item.name}}</span>
-             </div>
-             <div class="right">
-               <span>{{item.tasktype_name}}</span><i>原画</i>
-               <span class="dowmloadFile" @click="downloadFile(item.id)">下载文件</span>
-             </div>
-          </div>
-
-          <!--<table class="card-table">-->
-            <!--<tr>-->
-              <!--<td class="w40"><span class="tag">{{item.tasktype_name}}</span></td>-->
-              <!--<td class="w40">{{item.name}}</td>-->
-              <!--<td class="w10"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}} 111</td>-->
-              <!--<td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>-->
-            <!--</tr>-->
-          <!--</table>-->
+          <table class="card-table">
+            <tr>
+              <td class="w40"><span class="tag">{{item.tasktype_name}}</span></td>
+              <td class="w40">{{item.name}}</td>
+              <td class="w10"><img class="icon" src="../../images/leader.png" /> {{item.run_uname}}</td>
+              <td class="w10 pointer" @click="downloadFile(item.id)"><Icon type="ios-download" size="16"></Icon></td>
+            </tr>
+          </table>
         </div>
         </Col>
       </Row>
@@ -94,16 +54,16 @@
         <VidEditor v-if="vidConponent"></VidEditor>
         <div v-if="NotType" class="notIMG">暂未上传任务文件</div>
       </div>  -->
-    <Modal
+    <Modal 
            v-model="isTabModal"
-           width="1200"
+           width="1200" 
            :styles="{top: '150px'}"
            :closable="false"
            okText= '保存'
            cancelText='取消'
            @on-cancle="closeTabmodal"
       >
-      <browsetask ref="pigeonholetask"
+      <browsetask ref="pigeonholetask" 
                     v-on:opentabmodal = 'openTabmodal'
                     >
       </browsetask>
@@ -240,7 +200,7 @@ export default {
       // .then(res => res.data)
       // .then(res => {
       //   console.log(res)
-      //
+      //   
       //   this.formLeft = res;
       //   // this.$Loading.finish();
       //   // this.getSubProject(res.project_id)
@@ -252,26 +212,6 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
 @import "./style/project.less";
-.card{position: relative}
-.RcardBlock{
-    display: flex;align-items: center;justify-content: space-between;position: absolute;bottom: 0;left: 0;right: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.02), rgb(0, 0, 0,1));
-  width:100%;padding: 10px 20px;color: #fff;font-size: 14px;
-  i,span{white-space: nowrap;text-overflow:ellipsis;overflow:hidden;}
-    i{font-style: normal;display: inline-block;font-size: 12px;border: 1px solid #df9b36;color: #df9b36;padding: 0 1px;border-radius: 3px;line-height: 14px}
-    span{display: flex;align-items: center;padding: 0 10px;}
-    .left ,.right{display: flex;align-items: center;}
-  .left{
-       img{width: 40px;height: 40px;border-radius: 100%}
-    };
-  .right{
-    border-left: 1px dashed rgba(188, 188, 188, 0.64);
-    .dowmloadFile{
-      cursor: pointer;
-      &:after{display: inline-block;content: '';width: 13px;height: 13px;background: url("./proStat/image/dowmIconr.png") no-repeat;margin-left: 5px}
-    }
-  }
-}
 </style>
