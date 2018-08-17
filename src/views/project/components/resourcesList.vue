@@ -38,7 +38,7 @@
             <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'" />
             <img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="width: 100%;height: 100%" />
             <img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="width: 100%;height: 100%" />
-            <div class="tips">
+            <div class="tips">  
 
              <div>
                <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
