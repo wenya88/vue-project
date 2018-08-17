@@ -206,7 +206,7 @@
                 if(id){
                     sessionStorage.projectID = id;
                 }
-                this.$router.push({path:children.path})
+                this.$router.push({path:children.path,query:{sign:this.key}})
             },
             bodySize() {
                 let body = document.body;
