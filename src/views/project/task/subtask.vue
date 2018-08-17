@@ -56,7 +56,7 @@
     import {mapState} from 'vuex'
     import accretiontaskpop from "./accretionTaskPop";
     //    import tasklist from "./tasklist";
-    import tasklist from "./taskInfoPop";
+    import tasklist from "./taskInfoPop/subtasksList";
     import maintask from "./taskDetails";
 
     export default {
@@ -82,7 +82,7 @@
 //          // 添加
             saveAccretionTaskPop(boole) {
                 let result = null;
-
+                console.log(33)
                 if (boole) {
                     result = this.$refs.add.saveTaskDetail(this.primaryMission.id);
                 } else {
@@ -98,7 +98,7 @@
 //                  this.$refs.add.clearAllData()
                 }
                 else {
-
+                    console.log(22)
                     setTimeout(() => {
                         this.isSaveLoading = false;
                         this.isAccretionTask = false;

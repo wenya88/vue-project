@@ -107,7 +107,7 @@
 
             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
-                    <router-view></router-view>
+                    <router-view :key="key"></router-view>
                 </div>
             </div>
         </div>
@@ -188,6 +188,9 @@
                 },
                 menuList(value){
                     return  value.app.menuList;
+                },
+                key() {
+                    return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
                 }
             }),
 
@@ -203,7 +206,7 @@
                 if(id){
                     sessionStorage.projectID = id;
                 }
-                this.$router.push({path:children.path,query:{sign:Math.random()}})
+                this.$router.push({path:children.path,query:{sign:this.key}})
             },
             bodySize() {
                 let body = document.body;

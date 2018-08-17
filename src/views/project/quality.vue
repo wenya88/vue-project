@@ -355,15 +355,7 @@ export default {
             }
         })
     },
-    watch:{
-        '$route'(){
-            this.fetchNum(1);
-            this.fetchNum(2);
-            this.fetchNum(3);
-            this.fetchNum(4);
-            this.fetchFinishNum();
-        }
-    }
+
 }
 </script>
 
