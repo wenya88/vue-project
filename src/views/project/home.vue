@@ -229,6 +229,7 @@ export default {
     },
     watch:{
         '$route'(){
+            console.log(111)
             this.get();
             this.flare();
         }

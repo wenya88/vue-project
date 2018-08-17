@@ -203,7 +203,7 @@
                 if(id){
                     sessionStorage.projectID = id;
                 }
-                this.$router.push({path:children.path})
+                this.$router.push({path:children.path,query:{sign:Math.random()}})
             },
             bodySize() {
                 let body = document.body;
