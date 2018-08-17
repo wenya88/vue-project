@@ -254,7 +254,6 @@ export default {
       //      item.setAttribute('style', 'display:none;')
       //   }
       // })
-      console.log('点击', index)
     },
     // 关闭按钮
     getClose (index) {
@@ -384,8 +383,10 @@ export default {
       lists.forEach((element, index) => {
         const expect_end = this.getTimes(element.expect_end_time)
         const expect_start = this.getTimes(element.expect_start_time)
-        element.expect_end_time = expect_end.days
-        element.expect_start_time = expect_start.days
+        element.expect_end_time = expect_end.day
+        element.expect_start_time = expect_start.day
+        element.expect_end_new = expect_end.days
+         element.expect_start_new = expect_start.days
         element.workDay = (expect_end.times - expect_start.times) / (24 * 60 * 60 * 1000) + 1
         let endTime = 0
         if (element.end_time == '') {

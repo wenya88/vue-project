@@ -18,6 +18,14 @@
                             <p class="date">{{item.start_time}} ~ {{item.end_time}}</p>
                         </div>
                     </div>
+                    <div class="bidStatus bidYes" v-if="item.status==0 && item.join_end_time>Math.round(new Date().getTime()/1000)">
+                        <Button type="primary" @click.native="updateInvite(item.id,1)">确认</Button>
+                        <Button type="error" @click.native="updateInvite(item.id,2)">拒绝</Button>
+                    </div>
+                    <div class="bidStatus" v-if="item.status==0 && item.join_end_time<Math.round(new Date().getTime()/1000)">
+                        已过期
+                    </div>
+                    <div :class="[item.status==1?'bidStatus bidYes':'bidStatus']" v-if="item.status==1 || item.status==2">{{item.status==1?'已接受':'已拒绝'}}</div>
                 </dd>
             </dl>
         </div>

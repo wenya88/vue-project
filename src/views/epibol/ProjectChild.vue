@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="task_man_day">
-                    <p class="task_work_msg">{{item.workDay}}个工作日({{item.expect_start_time}} ~ {{item.expect_end_time}})</p>
+                    <p class="task_work_msg">{{item.workDay}}个工作日({{item.expect_start_new}} ~ {{item.expect_end_new}})</p>
                     <!-- <p class="task_work_time">{{item.expect_start_time}} ~ {{item.expect_end_time}}</p> -->
                     <p class="task_work_img"><img :src="item.headimage"/><span>{{item.task_person}}</span></p>
                 </div>
