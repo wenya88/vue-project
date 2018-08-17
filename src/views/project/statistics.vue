@@ -11,20 +11,20 @@
                         <div class="charSty charsLeft">
                             <p>任务</p>
                             <!--<p>任务<i></i></p>-->
-                            <i-circle :percent="80" size="102" stroke-color="#3bceb6" trail-color="#d0f3ee">
-                                <b>80</b><i>%</i>
+                            <i-circle :percent="countData.schedule.tasks_complete_rate || 0" size="102" stroke-color="#3bceb6" trail-color="#d0f3ee">
+                                <b>{{countData.schedule.tasks_complete_rate || 0}}</b><i>%</i>
                             </i-circle>
                             <div class="numbers numbersSty">
-                                <span style="color: #3bceb6">40</span><i>/60</i>
+                                <span style="color: #3bceb6">{{countData.schedule.tasks_complete || 0}}</span><i>/{{countData.schedule.tasks_count || 0}}</i>
                             </div>
                         </div>
                         <div class="charSty charsRight">
                             <p>时间</p>
-                            <i-circle :percent="80" size="102" stroke-color="#fcc44a" trail-color="#fef1d4">
-                                <b>80</b><i>%</i>
+                            <i-circle :percent="countData.schedule.sy_rate || 0" size="102" stroke-color="#fcc44a" trail-color="#fef1d4">
+                                <b>{{countData.schedule.sy_rate || 0}}</b><i>%</i>
                             </i-circle>
                             <div class="numbersSty">
-                                剩余<span style="color: #fcc44a">5</span>个工作日
+                                剩余<span style="color: #fcc44a">{{countData.schedule.sy_time || 0 | timeSet}}</span>个工作日
                             </div>
                         </div>
                     </div>
@@ -35,26 +35,27 @@
                         <img src="../../views/project/proStat/image/moreIcon.png"/>
                     </div>
                     <div class="charsCenter">
+                        <!--{{countData}}-->
                         <i-circle
                                 :size="135"
                                 :trail-width="13"
                                 :stroke-width="15"
-                                :percent="75"
+                                :percent="countData.delay.tasks_delay_rate || 0"
                                 stroke-linecap="square"
                                 trail-color="#ffe1e3"
                                 stroke-color="#ff898e">
                             <div class="demo-Circle-custom">
-                                <span>78</span><i>%</i>
+                                <span>{{countData.delay.tasks_delay_rate || 0}}</span><i>%</i>
                                 <p>任务延期率</p>
                             </div>
                         </i-circle>
                         <div class="charsBottom">
                             <div class="left charSty">
-                                <p><span>6</span>个</p>
+                                <p><span>{{countData.delay.tasks_delay || 0}}</span>个</p>
                                 <p><i>已延期</i></p>
                             </div>
                             <div class="right charSty">
-                                <p><span>6</span>个</p>
+                                <p><span>{{countData.delay.tasks_expect_delay || 0}}</span>个</p>
                                 <p><i>预估延期</i></p>
                             </div>
                         </div>
@@ -69,20 +70,20 @@
                         <div class="charSty charsLeft">
                             <div class="adopat">内部通过率</div>
                             <!--<p>任务<i></i></p>-->
-                            <i-circle :percent="80" size="102" stroke-color="#3bceb6" trail-color="#d0f3ee">
-                                <b>80</b><i>%</i>
+                            <i-circle :percent="countData.quality.inside_pass || 0" size="102" stroke-color="#3bceb6" trail-color="#d0f3ee">
+                                <b>{{countData.quality.inside_pass || 0}}</b><i>%</i>
                             </i-circle>
                             <div class="numbersSty">
-                                内部等待<span style="color: #4fdcc5">5</span>个
+                                内部等待<span style="color: #4fdcc5">{{countData.quality.inside_wait || 0}}</span>个
                             </div>
                         </div>
                         <div class="charSty charsRight">
                             <div class="adopat">客户通过率</div>
-                            <i-circle :percent="80" size="102" stroke-color="#fcc44a" trail-color="#fef1d4">
-                                <b>80</b><i>%</i>
+                            <i-circle :percent="countData.quality.outside_pass || 0" size="102" stroke-color="#fcc44a" trail-color="#fef1d4">
+                                <b>{{countData.quality.outside_pass || 0}}</b><i>%</i>
                             </i-circle>
                             <div class="numbersSty">
-                                客户待审<span style="color: #4fdcc5">5</span>个
+                                客户待审<span style="color: #4fdcc5">{{countData.quality.outside_wait || 0}}</span>个
                             </div>
                         </div>
                     </div>
@@ -123,10 +124,34 @@
     </div>
 </template>
 <script>
+    var qs = require('querystring');
 export default{
+    data(){
+        return{
+            countData:{
+                delay:{},
+                quality:{},
+                schedule:{}
+            }
+        }
+    },
     methods:{
-           actionTask(status){
-               this.$router.push('/project/statisticsDetails/'+status)
+        actionTask(status){
+           this.$router.push('/project/statisticsDetails/'+status);
+        }
+    },
+    created(){
+        let id = parseInt(this.$route.query.id);
+        this.$axios.post(this.GLOBAL.baseRouter+'task/count/project-count',qs.stringify({project_id:id})).then((res)=>{
+            console.log(res.data.data);
+            this.countData.delay = res.data.data.delay||{};
+            this.countData.quality = res.data.data.quality||{};
+            this.countData.schedule = res.data.data.schedule||{};
+        });
+    },
+    filters: {
+        timeSet: function (time) {
+            return parseInt(time / (1000 * 60 * 60 * 24));
         }
     }
 }

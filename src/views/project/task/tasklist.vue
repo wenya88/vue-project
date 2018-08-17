@@ -32,24 +32,24 @@
                 进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）
             </p>
             <template v-if="dataList_type.underWay.length>0">
-             <div style="padding: 20px;background:#fff;margin-bottom:100px;">
-                 <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
-                      :key="index">
-                     <template>
-                         <p class="pause">暂停中</p>
-                         <p class="sign"></p>
-                     </template>
-                     <p class="title">{{items.name}}</p>
-                     <div class="BottomInfo">
-                         <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
-                         <span>
+                <div style="padding: 20px;background:#fff;margin-bottom:100px;">
+                    <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
+                         :key="index">
+                        <template>
+                            <p class="pause">暂停中</p>
+                            <p class="sign"></p>
+                        </template>
+                        <p class="title">{{items.name}}</p>
+                        <div class="BottomInfo">
+                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                            <span>
                             <img class="headImg" src="./QQ图片20180719133401.jpg" alt=""><span
-                                 style="vertical-align: top">{{items.remark_name}}</span>
+                                    style="vertical-align: top">{{items.remark_name}}</span>
                        </span>
-                     </div>
-                     <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-                 </div>
-             </div>
+                        </div>
+                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+                    </div>
+                </div>
             </template>
         </section>
         <section class="complete">
@@ -704,4 +704,3 @@
         display: block;
     }
 </style>
-

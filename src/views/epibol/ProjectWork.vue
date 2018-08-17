@@ -188,7 +188,6 @@
     </div>
 </template>
 <script>
-    import axios from 'axios';
 import CalendInfo from '../main-components/calend/calendrinfo.vue';
 import browsetask from '../project/task/browseTaskPop.vue'
 import {mapMutations} from 'vuex'
@@ -296,7 +295,7 @@ export default {
             let emphKeep=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/total-by-important&user_id='+_this.UserID) //重点关注
             let awaiaudit=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/need-review-task-file&user_id='+_this.UserID) //需要审核
             let fbackdisp=_this.$axios.get(_this.GLOBAL.baseRouter+'task/total/wait-action-task-file&user_id='+_this.UserID) //反馈待处理
-            axios.all([myProject,emphKeep,awaiaudit,fbackdisp]).then(([Mymsg,Keepmsg,Auditmsg,Dispmsg])=>{
+            _this.$axios.all([myProject,emphKeep,awaiaudit,fbackdisp]).then(([Mymsg,Keepmsg,Auditmsg,Dispmsg])=>{
                 
                 // 我负责的项目
                 let MsgData=Mymsg.data;

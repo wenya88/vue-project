@@ -65,7 +65,7 @@ export const otherRouter =
         //     name: 'login',
         //     component: resolve => { require(['@/views/home/login.vue'], resolve); }
     }
-    ;
+;
 // 作为Main组件的子页面展示并且在右侧顶部菜单显示的路由写在appRouter里
 export const appRouter = [
     {
@@ -331,22 +331,22 @@ export const appRouter = [
 
         ]
     }, {
-    //     path: '/depot',
-    //     icon: 'ios-folder',
-    //     name: 'depot',
-    //     title: '项目库',
-    //     component: Main,
-    //     // redirect: '/depot/project',
-    //     children: [
-    //         {
-    //             path: '/depot/project',
-    //             icon: 'ios-paper-outline',
-    //             name: 'dProject',
-    //             title: '项目库',
-    //             component: resolve => { require(['@/views/depot/project.vue'], resolve); }
-    //         }
-    //     ]
-    // }, {
+        //     path: '/depot',
+        //     icon: 'ios-folder',
+        //     name: 'depot',
+        //     title: '项目库',
+        //     component: Main,
+        //     // redirect: '/depot/project',
+        //     children: [
+        //         {
+        //             path: '/depot/project',
+        //             icon: 'ios-paper-outline',
+        //             name: 'dProject',
+        //             title: '项目库',
+        //             component: resolve => { require(['@/views/depot/project.vue'], resolve); }
+        //         }
+        //     ]
+        // }, {
         path: '/outsourced',
         icon: 'ios-folder',
         name: 'outsourced',

@@ -77,10 +77,10 @@
                                 </div>
                             </section>
 
-                        <!--<template  >-->
-                        <!--<p class=" memberTitle"  >{{member.user}}</p>-->
-                        <!--<p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>-->
-                        <!--</template>-->
+                            <!--<template  >-->
+                            <!--<p class=" memberTitle"  >{{member.user}}</p>-->
+                            <!--<p class="memberRatio" style="">{{member.complete}}/{{member.total}}</p>-->
+                            <!--</template>-->
                         </section>
 
                     </div>
@@ -140,7 +140,7 @@
                 </Tab-pane>
                 <Tab-pane label="甘特图">
                     <iframe style="padding-left: 450px;" id="show-iframe" frameborder=0   name="showHere" scrolling=auto
-                    src="../../../src/views/project/gantt/gantt.html"></iframe>
+                            src="../../../src/views/project/gantt/gantt.html"></iframe>
                 </Tab-pane>
                 <Tab-pane label="进度管理">
                     <v-schedule-plan style="padding-left: 450px;"></v-schedule-plan>
@@ -391,19 +391,19 @@
             },
             // 添加项目
             addButton(type) {
-               if(type){
-                   this._ajax('task/project/child-add', {
-                       project_id: this.projectId,
-                       name: this.subProjectName,
-                       leader: this.subProjectManager
-                   })
-                       .then(({data}) => {
-                           if (data.err_code === 0) {
-                               this.$Message.success('添加成功');
-                               this.projectPlan()
-                           }
-                       })
-               }
+                if(type){
+                    this._ajax('task/project/child-add', {
+                        project_id: this.projectId,
+                        name: this.subProjectName,
+                        leader: this.subProjectManager
+                    })
+                        .then(({data}) => {
+                            if (data.err_code === 0) {
+                                this.$Message.success('添加成功');
+                                this.projectPlan()
+                            }
+                        })
+                }
                 this.subProjectManager = '';
                 this.subProjectName = '';
                 this.addInput = false;
@@ -661,4 +661,3 @@
         z-index: 2;
     }
 </style>
-
