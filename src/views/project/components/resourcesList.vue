@@ -67,46 +67,10 @@
                      @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id,item)">
                     <div class="card-box">
                         <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'"/>
-                        <template v-else-if="item.stage_file.type == 'video'">
-                            <video style="width: 100%;height: 100%;object-fit: fill" :src="item.stage_file.file"></video>
 
-
-                            <!--<span style="color: blue"> https://yhc-1.oss-cn-shanghai.aliyuncs.com/file-upload/2018/08/09/test_mp4_filestest_mp4_files.mp4</span>-->
-                            <!--<span style="color: red">{{item.stage_file.file}}</span>-->
-
-                        </template>
-                        <!--<img class="card-box-pic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" style="width: 100%;height: 100%" />-->
-                        <!--<img class="card-box-pic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'" style="width: 100%;height: 100%" />-->
-                        <!--<div class="showHiden">-->
-                        <!--<div class="RcardBlock">-->
-                        <!--<div class="left">-->
-                        <!--<img class="cardpic" :src="item.thumb" v-if="item.stage_file.type == 'image'"/>-->
-                        <!--&lt;!&ndash;<img class="cardpic" src="../../../images/icon/3D.png" v-else-if="item.stage_file.type == '3d'" />&ndash;&gt;-->
-                        <!--&lt;!&ndash;<img class="cardpic" src="../../../images/icon/video.png" v-else-if="item.stage_file.type == 'video'"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<img class="cardPic" />&ndash;&gt;-->
-                        <!--<span>{{item.task_name}}</span>-->
-                        <!--</div>-->
-                        <!--&lt;!&ndash;<div class="right">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<ul>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p>待审天数</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p><span>{{parseInt((date - item.create_time)/86400)}}</span> / 天</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p>完成阶段</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p style="text-align: left">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<span v-if="item.tasktype_stage_now" >  {{item.tasktype_stage_now.stage_name}}  </span>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<span v-else>暂无上传阶段</span>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p>剩余时间</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<p><span>{{parseInt((item.expect_end_time - date)/86400)}}</span> / 天</p>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--</div>-->
-                        <!--</div>-->
+                        <!--?x-oss-process=video/snapshot,t_2000,f_jpg oss获取视频的缩略图 添加在视频路径后面-->
+                        <img  v-else-if="item.stage_file.type == 'video'" class="card-box-pic" :src="item.stage_file.file+'?x-oss-process=video/snapshot,t_2000,f_jpg'" />
+                        
                         <div class="tips">
                             <!--<div style="display: flex">-->
                                <!--<p > <span class="tag" >{{item.tasktype_name}}</span><span>{{item.task_name}}</span></p>-->
