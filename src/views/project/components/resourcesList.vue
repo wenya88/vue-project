@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="menauBarContainer">
         <div class="menauBar">
             <ul class="projectClassfly">
                 <li>原画<span>( 20 )</span></li>
@@ -70,6 +70,7 @@
                         <template v-else-if="item.stage_file.type == 'video'">
                             <video style="width: 100%;height: 100%;object-fit: fill" :src="item.stage_file.file"></video>
 
+
                             <!--<span style="color: blue"> https://yhc-1.oss-cn-shanghai.aliyuncs.com/file-upload/2018/08/09/test_mp4_filestest_mp4_files.mp4</span>-->
                             <!--<span style="color: red">{{item.stage_file.file}}</span>-->
 
@@ -107,11 +108,14 @@
                         <!--</div>-->
                         <!--</div>-->
                         <div class="tips">
-                            <div>
-                                <span class="tag">{{item.tasktype_name}}</span>{{item.task_name}}
-                                <span class="date">上传：{{item.create_date}}</span>
+                            <!--<div style="display: flex">-->
+                               <!--<p > <span class="tag" >{{item.tasktype_name}}</span><span>{{item.task_name}}</span></p>-->
+                                <!--<p class="date" style="width: 200px;">上传：{{item.create_date}}</p>-->
+                            <!--</div>-->
+                            <div style="display: flex">
+                                <p class="omit" >{{item.tasktype_name}}&emsp;{{item.task_name}}</p>
+                                <p class="omit" >{{item.create_date}} </p>
                             </div>
-
                             <div style="display: flex">
                                 <div class="userImg">
                                     <img class="icon" src="../../../images/leader.png"/> {{item.run_uname}}
@@ -392,72 +396,80 @@
 </script>
 
 <style lang="less" scoped>
-    .card {
-        position: relative;
-        .showHiden {
-            display: none
+    .menauBarContainer{
+        .omit{
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
         }
-
-        &:hover {
-            cursor: pointer;
+        .card {
+            position: relative;
             .showHiden {
-                display: block
+                display: none
+            }
+
+            &:hover {
+                cursor: pointer;
+                .showHiden {
+                    display: block
+                }
             }
         }
-    }
 
-    .RcardBlock {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(rgba(0, 0, 0, 0.02), rgb(0, 0, 0, 1));
-        width: 100%;
-        padding: 10px 0;
-        color: #fff;
-        font-size: 14px;
-        i, span, p {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-        /*i{font-style: normal;display: inline-block;font-size: 12px;border: 1px solid #df9b36;color: #df9b36;padding: 0 1px;border-radius: 3px;line-height: 14px}*/
-        /*span{display: flex;align-items: center;padding: 0 10px;}*/
-        .left, .right {
+        .RcardBlock {
             display: flex;
             align-items: center;
-        }
-        .left {
-            padding-left: 10px;
-            img {
-                width: 40px;
-                height: 40px;
-                border-radius: 100%
+            justify-content: space-between;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.02), rgb(0, 0, 0, 1));
+            width: 100%;
+            padding: 10px 0;
+            color: #fff;
+            font-size: 14px;
+            i, span, p {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
-            span {
-                margin-left: 10px;
-                width: 60px;
-                max-width: 60px
-            }
-        }
-
-
-        .right {
-            border-left: 1px dashed rgba(188, 188, 188, 0.64);
-            ul {
+            /*i{font-style: normal;display: inline-block;font-size: 12px;border: 1px solid #df9b36;color: #df9b36;padding: 0 1px;border-radius: 3px;line-height: 14px}*/
+            /*span{display: flex;align-items: center;padding: 0 10px;}*/
+            .left, .right {
                 display: flex;
-                li {
-                    font-size: 12px;
-                    padding: 0 5px;
-                    text-align: center;
-                    span {
-                        color: #df9b36;
+                align-items: center;
+            }
+            .left {
+                padding-left: 10px;
+                img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 100%
+                }
+                span {
+                    margin-left: 10px;
+                    width: 60px;
+                    max-width: 60px
+                }
+            }
+
+
+            .right {
+                border-left: 1px dashed rgba(188, 188, 188, 0.64);
+                ul {
+                    display: flex;
+                    li {
+                        font-size: 12px;
+                        padding: 0 5px;
+                        text-align: center;
+                        span {
+                            color: #df9b36;
+                        }
                     }
                 }
             }
         }
     }
+
 </style>

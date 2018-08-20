@@ -2,10 +2,16 @@
 <template>
     <div class="taskinfopop">
         <div class="title">
-            <span style="margin-left: 50px;"><Icon type="ios-person"  size="30" style="vertical-align: middle;color: #3bceb6;" ></Icon>任务/详情</span>
+            <span><Icon type="ios-person"  size="30" style="vertical-align: middle;color: #3bceb6;" ></Icon>任务/详情</span>
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
+
         <div class="taskinfopopContainer">
+          <span>
+                <div class="taskinfopopTitle" v-if="projectDetail">
+                <span class="detailTitle"> {{projectDetail.name}}</span>
+                <span class="tag" :class="'tag'+projectDetail.status"> <Icon type="ios-minus-outline"  ></Icon>{{projectDetail.status|status}}</span>
+            </div>
             <Tabs   type="card" class="filebrowse taskManagement">
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
@@ -15,8 +21,8 @@
                                   taskManagement="true"
                         >
                         </maintask>
-                        <div style="text-align: right">
-                            <Button @click="saveTaskDetail">保存</Button>
+                        <div class="save" >
+                            <Button @click="saveTaskDetail" type="success">保存</Button>
                         </div>
                     </div>
                 </TabPane>
@@ -29,10 +35,11 @@
                 <TabPane :label="userStatus === 'member'?'关联任务':'子任务'" style="height: 800px;overflow-y: auto">
                     <subtasklist></subtasklist>
                 </TabPane>
-                <TabPane label="日志" style="height: 800px;overflow-y: auto">
+                <TabPane label="日志" style="height: 800px;overflow-y: auto;padding-left: 20px;">
                     <tasklog ref="log"></tasklog>
                 </TabPane>
             </Tabs>
+          </span>
             <section class="videoRight">
                 <filebrowse ref="filebrowse"
                             class="filebrowseContainer"
@@ -94,7 +101,7 @@
             initTaskDetail() {
                 /*没有数据 返回之前页*/
                 if (!this.$store.state.project.detail.setDetailAll) {
-//                    this.$router.go(-1);
+                    this.$router.go(-1);
                 }
                 let taskData = this.$store.state.project.detail.setDetailAll;
                 this.isInitTask = true;
@@ -258,8 +265,25 @@
             ...mapState({
                 userStatus(value){
                     return value.project.userStatus
+                } ,
+                projectDetail(value){
+                    return value.project.detail.setDetailAll
                 }
             })
+        },
+        filters:{
+            status(value) {
+                console.log(113,value)
+                if (value === '1') {
+                    return '未开始'
+                } else if (value === '2') {
+                    return '制作中'
+                } else if (value === '3') {
+                    return '暂停中'
+                }else if (value === '4') {
+                    return '已完成'
+                }
+            }
         }
     };
 </script>
@@ -274,13 +298,48 @@
         .title {
             display: flex;
             margin-top: 5px;
-            padding: 0 52px 0 10px;
+            padding: 0 52px 0 0;
             line-height: 40px;
             font-size: 18px;
             justify-content: space-between;
         }
+        .taskinfopopTitle{
+            width: 415px;
+            height: 40px;
+            padding: 20px 0 0 20px;
+            line-height: 20px;
+            font-size: 14px;
+            color: black;
+            background: #fff;
+            .tag{
+                display: inline-block;
+                padding: 0 10px;
+                border-radius: 16px;
+                height: 20px;
+                line-height: 20px;
+                color: #fff;
+                font-size: 12px;
+            }
+            .tag1{
+                background: #fcc44a;
+            }.tag2{
+                background: #7cbefc;
+            }.tag3{
+                background: #fc7173;
+            }.tag4{
+                background: #78c97c;
+            }
+        }
         .taskinfopopContainer{
             display: flex;
+            .save{
+                text-align: right;margin-right: 10px;
+            }
+            .detailTitle{
+                margin-right: 10px;
+                font-size: 16px;
+                letter-spacing:2px;
+            }
             .videoRight{
                 flex: 1;
                 max-height: 100%;
@@ -294,7 +353,6 @@
         }
         .taskManagement {
             width: 415px;
-            margin: 0 90px 0 0;
             background: #fcfdfd;
 
         }
@@ -469,7 +527,7 @@
     .filebrowseContainer {
         height: 100%;
         flex: 1;
-        margin: 10px 30px 0 60px;
+        margin: 0 30px 0 30px;
 
 
 

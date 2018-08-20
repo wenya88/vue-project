@@ -98,46 +98,46 @@
             </section>
             <!--操作按钮-->
             <div class="canvasEdit">
-                <Icon @click.native="updateFrame('before')" type="skip-backward" size="18" style="padding:0 5px;"
+                <i class="project_instrument tagimage"></i>
+                <p class="canvasEditText">审核工具</p>
+                <Icon @click.native="updateFrame('before')" type="skip-backward" class="videoicon"
                       title="上一帧"></Icon>
-                <Icon @click.native="updateFrame('after')" type="skip-forward" size="18"
-                      style="padding:0 5px;margin-right: 90px;" title="下一帧"></Icon>
+                <Icon @click.native="updateFrame('after')" type="skip-forward"
+                      class="videoicon" title="下一帧"></Icon>
 
-                <Icon v-show="!isCanvas" @click.native="startCanvas" type="paintbrush" size="18"
-                      style="padding: 0 5px 0 15px" title="修改标记"></Icon>
+                <Icon v-show="!isCanvas" @click.native="startCanvas" type="paintbrush" class="videoicon"
+                      title="修改标记"></Icon>
                 <template v-if="isCanvas">
-                    <!--<Icon @click.native.prevent="changeRect" size="18" type="android-checkbox-outline-blank"></Icon>-->
-                    <!--<Icon @click.native.prevent="changeText" size="18" type="paintbrush"></Icon>  -->
+
                     <Icon @click.native=" isRect = false;isLine = true;isText = false" type="edit"
-                          :class="[{'editHover':isLine},'edit']" title="画笔"></Icon>
-                    <!--<Button  type="text">画笔</Button>-->
+                          :class="[{'editHover':isLine},'edit','videoicon']" title="画笔"></Icon>
 
-                    <!--<Button @click="changeRect" type="text">矩形</Button>-->
+                    <i @click="changeText" :class="[{'textHover':isText},'text','videoicon']">A</i>
+                    <span class="canvasicon"> <i class="little " @click="changelineWidth(1)"></i></span>
+                    <span class="middleBox"> <i class="middle " @click="changelineWidth(5)"></i></span>
+                    <span class="bigBox"> <i class="big " @click="changelineWidth(8)"></i></span>
 
-                    <i @click="changeText" :class="[{'textHover':isText},'text']">T</i>
-
-                    <i class="little" @click="changelineWidth(1)"></i>
-                    <i class="middle" @click="changelineWidth(5)"></i>
-                    <i class="big" @click="changelineWidth(8)"></i>
-
-                    <i class="fff " @click="changeColor('#fff')"></i>
-                    <i class="black " @click="changeColor('black')"></i>
-                    <i class="red" @click="changeColor('#ff512e')"></i>
-                    <i class="blue" @click="changeColor('#66DAFF')"></i>
-                    <i class="orange" @click="changeColor('#FFB14D')"></i>
+                    <span class="canvasicon" @click="changeColor('#fff')"> <i class="fff" ></i></span>
+                    <span class="canvasicon" @click="changeColor('black')">  <i class="black " ></i></span>
+                    <span class="canvasicon" @click="changeColor('#ff512e')"> <i class="red " ></i></span>
+                    <span class="canvasicon" @click="changeColor('#66DAFF')">  <i class="blue " ></i></span>
+                    <span class="canvasicon" @click="changeColor('#FFB14D')"><i class="orange " ></i></span>
                 </template>
                 <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;"
                       title="显示标记"></Icon>
-                <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" size="18"
-                      style="padding:0 5px;" title="隐藏标记"></Icon>
-                <Button v-show="isCanvas" @click="saveCanvas" type="text">保存</Button>
+                <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" class="videoicon"
+                      title="隐藏标记"></Icon>
+                <span  class="saveButton" v-show="isCanvas" @click="saveCanvas" >保存</span>
                 <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
 
             </div>
             <!-- 标注提交 -->
             <div v-if="AllowEditRow" class="VideoAllowEdit">
-            <span class="EditInput">
-                <input type="text" placeholder="请输入你要反馈的内容" id="EditInput" v-model="FeedbackValue">
+                <i class="project_opinion tagimage"></i>
+                <span style="color: #868788;margin-left: 20px;line-height: 30px;">审核意见</span>
+            <span class="text">
+                <textarea name="" id="EditInput"  placeholder="请输入你要反馈的内容" v-model="FeedbackValue"></textarea>
+                <!--<input type="text"  id="EditInput" v-model="FeedbackValue">-->
             </span>
                 <span class="EditSub">
                 <button class="actionPost" @click="commitEidt('edit')">需修改</button>
@@ -1005,7 +1005,7 @@
         watch: {
             video(value) {
                 const timeId = setInterval(() => {
-                    if (value.readyState > 0  ) {
+                    if (value.readyState > 0) {
                         this.init();
                         this.showVideoSign();
                         clearInterval(timeId)
@@ -1163,21 +1163,69 @@
         }
 
     }
-
+    .project_instrument{
+        background: url("../../../images/project_instrument.png") no-repeat;
+    }.project_opinion{
+         background: url("../../../images/project_opinion.png") no-repeat;
+     }
+    .tagimage{
+        display: block;
+        width: 28px;
+        height: 28px;
+        background-size: 28px;
+    }
     .canvasEdit {
         display: flex;
+        margin: 20px 0 0 20px;
         align-items: center;
+        .canvasEditText {
+            height: 34px;
+            line-height: 34px;
+            margin: 0 20px;
+            color: #868788;
+        }
+
+        .videoicon {
+            padding: 5px 10px;
+            font-size: 18px;
+            color: #27b39c;
+            background: #fff;
+
+        }
+        .videoicon,.canvasicon, .middleBox,.bigBox{
+            &:hover {
+                border: 1px solid #ccc;
+            }
+        }
+        .canvasicon {
+            padding: 7px 8px;
+            font-size: 18px;
+            color: #27b39c;
+            background: #fff;
+
+        }
         .edit {
-            padding: 6px;
+            padding: 5px;
             font-size: 18px;
         }
         .text {
             padding: 0 10px;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
+            cursor:default;
         }
         .editHover, .textHover {
             border: 1px solid #ccc;
+        }
+        .middleBox{
+            padding: 5px 6px;background: #fff
+        }.bigBox{
+             padding: 3px 4px;background: #fff
+        }
+        .saveButton{
+            padding: 5px 6px;
+            background: #fff;
+            cursor: default	;
         }
         .little, .middle, .big {
             display: block;
@@ -1203,9 +1251,7 @@
             width: 14px;
             height: 14px;
             border: 1px solid #e6e6e6;
-            &:hover {
-                border: 1px solid #131313;
-            }
+
         }
         .fff {
             background: #fff;

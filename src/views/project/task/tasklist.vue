@@ -506,7 +506,7 @@
 <style lang="less">
     @import "../../../styles/task/task.css";
     .taskListContainer {
-        height: 87%;
+        height: 100%;
 
         overflow: auto;
         .green{

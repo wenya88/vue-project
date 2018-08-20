@@ -585,9 +585,8 @@
                 border-radius: 50%;
             }
         }
-        .borBotm{
-            padding-bottom: 14px;
-            padding-left: 20px;
+        .borBotm{padding:  0 10px 14px 20px;
+
             border-bottom: 1px solid @bor;
         }
 

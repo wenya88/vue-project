@@ -496,10 +496,10 @@
                 .titleList {
                     display: flex;
                     padding: 17px 0 17px 5px;
-
                     background: #fff;
                     /*border: 1px solid red;*/
                     justify-content: space-between;
+                    align-items: center;
                     cursor: pointer;
                     .showPlan {
                         flex: 1;

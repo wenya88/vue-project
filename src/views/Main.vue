@@ -83,9 +83,8 @@
             <!--</li>-->
             <!--</ul>-->
 
-
             <Menu style="min-width: 200px;max-width: 200px;" class="leftMenuList">
-                <Submenu v-for="(item,index) in menuList" :title="item.title||item.name" :name="index" :key="index">
+                <Submenu v-if="menuList" v-for="(item,index) in menuList" :title="item.title||item.name" :name="index" :key="index">
                     <template slot="title">
 
                         <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi" style="vertical-align: text-bottom;font-size: 16px;"></i>
@@ -148,23 +147,7 @@
                 avatorPath: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg'
             };
         },
-        watch: {
-            menuList(data) {
-                if (data.length > 0) {
-                    this.updateMenu();
-                }
-            },
-            // '$route': {
-            //     handler(newVal) {
-            //         console.log(newVal.name)
-            //     }
-            // }
-            '$route': 'updateMenu',
-            mainWidth() {
-                let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
-                this.mainWidth = bodyWidth - 121
-            }
-        },
+
         created() {
             let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
             let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
@@ -315,22 +298,41 @@
                 }
             },
             updateMenu() {
-                this.menuList.forEach((item) => {
-                    // let routeName = this.$route.name
-                    // console.log(item.name)
-                    // if(this.$route.name === item.name) {
-                    //     this.subMenu = item.children
-                    //     let menuArr = item.children
-                    //     console.log(this.$route.name,this.subMenu)
-                    //     this.$router.push(menuArr[0].path)
-                    // } else {
-                    this.refresh();
-                    // }
-                })
-                this.activePath = this.$route.path
-                // console.log(this.activePath)
+                if(this.menuList){
+                    this.menuList.forEach((item) => {
+                        // let routeName = this.$route.name
+                        // console.log(item.name)
+                        // if(this.$route.name === item.name) {
+                        //     this.subMenu = item.children
+                        //     let menuArr = item.children
+                        //     console.log(this.$route.name,this.subMenu)
+                        //     this.$router.push(menuArr[0].path)
+                        // } else {
+                        this.refresh();
+                        // }
+                    });
+                    this.activePath = this.$route.path
+                }
             }
-        }
+        },
+        watch: {
+            menuList(data) {
+                if (data.length > 0) {
+                    this.updateMenu();
+                }
+            },
+            // '$route': {
+            //     handler(newVal) {
+            //         console.log(newVal.name)
+            //     }
+            // }
+            '$route': 'updateMenu',
+            mainWidth() {
+                let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+                this.mainWidth = bodyWidth - 121
+            },
+        },
+
     }
 </script>
 <style lang="less">
@@ -421,7 +423,7 @@
     .logo {
         width: 199px;
         height: 64px;
-        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background: #19322e url("../images/navLogo.png") no-repeat 67px 9px;
         background-size: 48px;
         border-bottom: 1px solid #42514f;
     }
