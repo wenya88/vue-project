@@ -1,10 +1,14 @@
 <template>
     <div class="echartContainer" style="height:100%;">
+        <!--list栏-->
         <div class="taskTip"><span>任务数量：<b>{{data.all_task_num}}</b> </span><span>已完成：<b>{{data.complete_task_num}}</b> </span><span>剩作：<b>{{data.surplus_task_num}}</b> </span><span>待审文件：<b>{{data.wait_review}}</b></span></div>
+       <!--图-->
         <div id="echartLine"></div>
+        <!--日期-->
         <span v-show="flag">{{EcherDate}}</span>
     </div>
 </template>
+
 <style>
     .taskTip{position:absolute;margin-top:5px;margin-left:40px;}
     .taskTip span{margin-right:20px;}
@@ -44,15 +48,19 @@
                       type:'line',
                       data:val.data,
                       itemStyle : {normal:{
-                                lineStyle:{
-                                  type:'dotted'
-                                },
+//                                lineStyle:{
+//                                  type:'dotted'
+//                                },
                                 borderWidth:4
                               }
-                      }
+                      },
+                      areaStyle: {normal: {
+                          opacity:.2
+                      }}
                   }
             })
            _this.EchartData=EchartData;
+
 
           MsgData.series.forEach(val => {
               _this.EcherName.push({"name":val.name})
@@ -76,11 +84,13 @@
             borderWidth: 1,
             padding:12,
             textStyle: {
-              color: '#000'
+              color: '#000',
+//              color: '#18bfa4',
+
             },
             formatter: '时间 ：{b0}<br />{a} : {c}'
           },
-          color:['#828282','#18bfa4','#ff9900'],
+          color:['#3dcfb7','#fff','#fcc44a'],
           legend: {
             x:'right',
             data:this.EcherName,
@@ -93,7 +103,7 @@
             top:'30px',
             containLabel: true
           },
-
+            /*X轴*/
           xAxis: {
             type: 'category',
             boundaryGap: false,
@@ -118,6 +128,7 @@
             },
             data: this.EcherDate
           },
+            /*Y轴*/
           yAxis: {
             type: 'value',
             splitLine:{
@@ -141,7 +152,8 @@
             realtime: true,
             start: 0,
             end:100,
-            fillerColor:"rgba(190,221,216,0.8)",
+
+              fillerColor:"rgba(190,221,216,0.8)",
 
           }],
           series:this.EchartData

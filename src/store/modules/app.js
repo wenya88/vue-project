@@ -315,25 +315,30 @@ const app = {
 
             this.dispatch('updateMenulistRole')
         },
+        haha(state,data){
+            console.log(state.menuList)
+        }
     },
     actions: {
         /*
             菜单权限管理
         */
-        async getMenulistRole({commit, dispatch}) {
+            async getMenulistRole({commit, dispatch}) {
+            console.log(2222)
             const {data} = await api.getInfoRole();
+            console.log(2.3333333,data)
             const project = await api.taskProjectPage();
+
             commit('setRole', {id:data.limit.auth_id,project:project.data.project});
         },
-
         updateMenulistRole({commit}) {
+            console.log(3333333)
             let accessCode = parseInt(Cookies.get('post_id'));
             accessCode = 1;
             // accessCode = 1;
             // let userType = Cookies.get('user_type')
             // let userType = sessionStorage.user_type;
             let menuList = [], childrenList = [];
-
 
             menu.forEach((item, index) => {
                 if (item.access) {
@@ -344,18 +349,16 @@ const app = {
                 } else {
                     menuList.push(item);
                 }
-
                 commit('projectMenuList')
-
-                if (item.name === "epibol") {
-                    commit('epibolMenuList', {menuList: menuList, item: item})
-                }else if(index === menu.length-1) {
+                if(index === menu.length-1) {
                     commit('concatProject', {menuList: menuList, item: item})
+                }else  if (item.name === "epibol") {
+                    commit('epibolMenuList', {menuList: menuList, item: item})
                 }
-                //  if (item.name === "project") {
-                //
-                // }
+
+
             });
+            commit('haha')
         }
     }
 

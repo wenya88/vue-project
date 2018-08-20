@@ -171,7 +171,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.$children[0],this.$children[1]) 
+
     this.fetchNum(1);
     this.fetchNum(2);
     this.fetchNum(3);
@@ -220,9 +220,9 @@ export default {
         let scrollT = scr.scrollTop;
         let scrollH = scr.scrollHeight;
         let clientH = scr.clientHeight;
-        console.log(scrollT,scrollH,clientH)
+
         if(scrollT == scrollH - clientH){
-            console.log('111')
+
         }
       }
     },
@@ -261,13 +261,8 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
       .then(res => res.data)
       .then(res => {
-        // console.log(res)
-
         if(res.err_code == 0) {
-
-            // console.log(res.data);
           this.param.num = res.page.count
-          // console.log(this.fileData)
         }
       })
     },

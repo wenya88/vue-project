@@ -36,7 +36,8 @@
                                     <span class="iconfont icon-xiangmuxiaoxi" style="margin-left: 5px;color: #97c9f9;"></span>&nbsp;&nbsp;
                                     <span class="titleText" style="color: #97c9f9;"
                                           :title="item.child_project_name">{{item.child_project_name }}</span>
-                                    <Icon style="color: #3bceb6" type="person-add" size="16"></Icon>
+                                    <i class="iconfont icon-rencai" style="color: #3bceb6" ></i>
+                                    <!--<Icon style="color: #3bceb6" type="person-add" size="16"></Icon>-->
                                     <!--<span class="iconfont icon-xiangmufuzeren"></span>-->
                                     <span class="titleText" style="color: #3bceb6"
                                           :title="item.leader_name">{{item.leader_name}}</span></template>
@@ -495,10 +496,10 @@
                 .titleList {
                     display: flex;
                     padding: 17px 0 17px 5px;
-
                     background: #fff;
                     /*border: 1px solid red;*/
                     justify-content: space-between;
+                    align-items: center;
                     cursor: pointer;
                     .showPlan {
                         flex: 1;
