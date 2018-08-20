@@ -23,7 +23,7 @@
           </div>
         </li>
         <li class="allDownBtn">
-          <button @click="downloadFile('',projectID)">全部下载</button>
+          <button @click="downloadFile('project',null)">全部下载</button>
         </li>
       </ul>
 
@@ -58,7 +58,7 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="6" v-for="(item,index) in fileData" :key="index">
+          <Col span="6" v-for="(item,index) in fileData" :key="index">
         <div class="card">
           <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
             <!-- <Icon type="heart" color="red" v-if=""></Icon>
@@ -73,7 +73,7 @@
               </div>
               <div class="right">
                 <span>{{item.tasktype_name}}</span><i>原画</i>
-                <span class="dowmloadFile" @click="downloadFile(item.id)">下载文件</span>
+                <span class="dowmloadFile" @click="downloadFile('task',item.id)">下载文件</span>
               </div>
             </div>
           </div>
@@ -181,25 +181,32 @@
                 }
                 this.$store.dispatch('fetchTaskList', qs.stringify(data));
             },
-            downloadFile(tid, pid) {
+            downloadFile(type, id) {
                 let data = {
-                    task_id : tid,
-                    project_id: pid
-                }
-                this.$axios.post(this.GLOBAL.baseRouter+'task/task/download', qs.stringify(data))
+                    type:type,
+                    id:id || sessionStorage.projectID
+                };
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/pack', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
                             // let key = {
                             //   url_key: res.url_key
                             // }
-                            window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank')
+
+
+                            // window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank');
+
+
+
                             // this.$axios.post(this.GLOBAL.baseRouter+'file/file/download', qs.stringify(key))
                             // .then(res => res.data)
                             // .then(res => {
                             //   window.open(urls, '_blank')
                             //   console.log(res)
                             // })
+                        }else {
+                            this.$Message.warning(res.err_message);
                         }
                     })
             },
