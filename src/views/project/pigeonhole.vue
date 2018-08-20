@@ -137,7 +137,8 @@
                 imgConponent: false,
                 vidConponent: false,
                 NotType: false,
-                formLeft: {}
+                formLeft: {},
+                TwoMenuList:{},
             }
         },
         computed: {
@@ -149,6 +150,7 @@
         created() {
             this.fetchData();
             this.getTaskList();
+            this.getTwoMenuList();
         },
         methods: {
             ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
@@ -184,7 +186,8 @@
             downloadFile(type, id) {
                 let data = {
                     type:type,
-                    id:id || sessionStorage.projectID
+                    id:150
+                    // id:id || sessionStorage.projectID
                 };
                 this.$axios.post(this.GLOBAL.baseRouter+'task/task/pack', qs.stringify(data))
                     .then(res => res.data)
@@ -223,7 +226,6 @@
 //      sessionStorage.AllowEdit=undefined;
 //      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
 //      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
-                console.log(113,item)
                 this.$store.commit('changeComponentTaskID',taskId);
                 this.$store.commit('changeComponentFileURl',file);
                 this.setPrimaryMission(item);
@@ -243,6 +245,18 @@
                 //   this.subpId = res.project_child
                 // })
             },
+            /*归档二级分类*/
+            getTwoMenuList(status){
+                let data ={
+                    project_id:sessionStorage.projectID,
+                    status:status||5
+                }
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/task-tasktype-count', qs.stringify(data)).then(res=>res.data).then(res =>{
+                    if(res.err_code == 0){
+                        this.TwoMenuList = res.data;
+                    }
+                })
+            }
         }
     }
 </script>
