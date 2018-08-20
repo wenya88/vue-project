@@ -273,7 +273,6 @@
         },
         filters:{
             status(value) {
-                console.log(113,value)
                 if (value === '1') {
                     return '未开始'
                 } else if (value === '2') {
