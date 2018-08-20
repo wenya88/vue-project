@@ -2,12 +2,12 @@
     <Content    :style="{minHeight: '280px', background: '#fff'}">
         <Row>
             <Col span="6">
-            <type-list ref="tree" :listData="formLeft" ></type-list>
+                <type-list ref="tree" :listData="formLeft" ></type-list>
             </Col>
             <Col span="16">
-            <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
-                <standard-info></standard-info>
-            </Content>
+                <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+                    <standard-info></standard-info>
+                </Content>
             </Col>
         </Row>
     </Content>
