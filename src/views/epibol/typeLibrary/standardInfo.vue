@@ -623,8 +623,8 @@
             async newtaskTypesDetail(dataDetail) {
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
-                    this.isSubmit = dataDetail.status === 0 || dataDetail === 'default'? false :true;
-                    this.disabled = dataDetail.status === 0 || dataDetail === 'default'? true :false;
+                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
+                    this.disabled = dataDetail.status === 0 || dataDetail === 'default';
                     let obj = {id:dataDetail.id};
                     this.clearInfo();
                     // 获取更新id
@@ -671,7 +671,6 @@
                 }
             },
             delFlowNorm(index,i){
-//                console.log(131,this.fstandard[index])
                 this.fstandard[index].require.splice(i,1);
             },
             flowAddShow(index){
