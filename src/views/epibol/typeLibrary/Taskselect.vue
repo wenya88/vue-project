@@ -1,7 +1,7 @@
 <template>
-    <div class="taskselect">
+    <div class="taskselect" @click.stop>
         <div style="overflow: hidden">
-            <input type="text" :value="currenVal" :disabled="disabled" class="currenVal" re @click="isShowFun = !isShowFun"/>
+            <input type="text" :value="currenVal" :disabled="disabled" class="currenVal" readonly @click.stop="isShowFun = !isShowFun"/>
             <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>
         </div>
 
@@ -9,7 +9,7 @@
             <ul class="dataList" v-if="dataList">
                 <li v-for="item in dataList" :label="item.name" :value="item.id" :key="item.id"  @click="getVal(item.name)">{{ item.name }}</li>
             </ul>
-            <p><input type="text" v-model="values" placeholder="输入新标签" @keyup.enter="$emit('addNormsFun',values)"/></p>
+            <p><input type="text" v-model="values" placeholder="输入新标签" @keyup="ups($event)"/></p>
         </div>
     </div>
 </template>
@@ -41,12 +41,23 @@
             getVal(val){
                 this.currenVal = val;
                 this.isShowFun = false;
+            },
+            ups(val){
+               console.log(val)
             }
         },
         mounted () {
-            let that = this;
-            document.addEventListener('click', function() {
-                that.showOptions = false;
+           var _this = this;
+            document.body.addEventListener('click', function(e) {
+                // alert(1411)
+
+                var ev = e || event;
+                ev.stopPropagation();
+                _this.isShowFun = false;
+                // ev.preventDefault();
+
+                // return false
+
             })
         },
     }

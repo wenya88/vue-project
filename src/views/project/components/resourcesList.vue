@@ -152,7 +152,7 @@
         props: {
             sortShow: {
                 type: String,
-                defaule: ''
+                defaule: '',
             }
         },
         data() {
@@ -177,7 +177,8 @@
                         value: 1,
                         label: '是'
                     }
-                ]
+                ],
+                TwoMenuList:{}
             }
         },
         mounted() {
@@ -358,6 +359,19 @@
             closeTabmodal() {
                 this.isTabModal = false;
             },
+            /*获取各阶段二级菜单*/
+            getTaskTwoMenuList(status){
+                alert(status);
+                let data ={
+                    project_id:sessionStorage.projectID,
+                    status:status
+                }
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/stage-tasktype-count', qs.stringify(data)).then(res=>res.data).then(res =>{
+                    if(res.err_code == 0){
+                        this.TwoMenuList = res.data;
+                    }
+                })
+            }
         }
     }
 </script>
