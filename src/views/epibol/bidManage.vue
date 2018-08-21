@@ -23,7 +23,9 @@
                 </em>
                 <div class="clear"></div>
             </div> -->
-            <bid-list :applicationData="applicationData"></bid-list>
+            <div class="newBid">
+                 <bid-list :applicationData="applicationData"></bid-list>
+            </div>
         </TabPane>
         <!-- 外包邀请 -->
         <TabPane v-if="callForBidsdts.invitation" :label="inviteName" name="invite">
@@ -41,7 +43,9 @@
                 </em>
                 <div class="clear"></div>
             </div> -->
-            <bid-invite :inviteData="inviteData"></bid-invite>
+            <div class="newBid">
+                <bid-invite :inviteData="inviteData"></bid-invite>
+            </div>
         </TabPane>
       </Tabs>
   </div>
@@ -102,7 +106,7 @@ export default {
                 {value:'邀请过期',key:4}
             ],
             personnel:[],
-            inviteData:[]
+            inviteData:[],
         }
     },
     components:{
@@ -114,10 +118,11 @@ export default {
         this.inviteGet();
         this.$bus.on('updataSuccess',()=>{
             this.inviteGet();
-        })
+        });
         this.$bus.on('setExecuteUser',()=>{
             this.bidGet(); 
-        })
+        });
+        this.autoH();
     },
     watch:{
         condtionData(val){
@@ -131,7 +136,10 @@ export default {
         }
     },
     methods:{
-        
+        // 设置行高
+        autoH(){
+            $('.bidManage .newBid').height($(window).height()-165)
+        },
         // 招标搜索
         search(){
             this.bidGet(this.condtionData,this.resultData,this.searchData)
@@ -178,7 +186,7 @@ export default {
             _this.$axios.post(url,qs.stringify(params)).then(msg=>{
                 if(msg.data.err_code==0){
                     _this.$Loading.finish();
-                    _this.inviteData=msg.data.data
+                    _this.inviteData=msg.data.data;
                 }
             },()=>{
                 _this.$Loading.error();
