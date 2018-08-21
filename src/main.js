@@ -83,7 +83,9 @@ new Vue({
   created() {
   },
   mounted() {
-    this.$store.dispatch('getMenulistRole');
+      if(localStorage.token){
+          this.$store.dispatch('getMenulistRole');
+      }
 
   },
 

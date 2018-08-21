@@ -315,24 +315,19 @@ const app = {
 
             this.dispatch('updateMenulistRole')
         },
-        haha(state,data){
-            console.log(state.menuList)
-        }
+
     },
     actions: {
         /*
             菜单权限管理
         */
             async getMenulistRole({commit, dispatch}) {
-            console.log(2222)
             const {data} = await api.getInfoRole();
-            console.log(2.3333333,data)
             const project = await api.taskProjectPage();
 
             commit('setRole', {id:data.limit.auth_id,project:project.data.project});
         },
         updateMenulistRole({commit}) {
-            console.log(3333333)
             let accessCode = parseInt(Cookies.get('post_id'));
             accessCode = 1;
             // accessCode = 1;
@@ -358,7 +353,6 @@ const app = {
 
 
             });
-            commit('haha')
         }
     }
 

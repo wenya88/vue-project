@@ -70,19 +70,21 @@
 
                         <!--?x-oss-process=video/snapshot,t_2000,f_jpg oss获取视频的缩略图 添加在视频路径后面-->
                         <img  v-else-if="item.stage_file.type == 'video'" class="card-box-pic" :src="item.stage_file.file+'?x-oss-process=video/snapshot,t_2000,f_jpg'" />
-                        
+
                         <div class="tips">
                             <!--<div style="display: flex">-->
                                <!--<p > <span class="tag" >{{item.tasktype_name}}</span><span>{{item.task_name}}</span></p>-->
                                 <!--<p class="date" style="width: 200px;">上传：{{item.create_date}}</p>-->
-                            <!--</div>-->
-                            <div style="display: flex">
+
+
+                            <div style="display: flex;justify-content: space-between">
                                 <p class="omit" >{{item.tasktype_name}}&emsp;{{item.task_name}}</p>
                                 <p class="omit" >{{item.create_date}} </p>
                             </div>
                             <div style="display: flex">
                                 <div class="userImg">
-                                    <img class="icon" src="../../../images/leader.png"/> {{item.run_uname}}
+                                    <img class="icon" src="../../../images/icon/3D.png"/>
+                                    <span style="text-align: center">{{item.run_uname}}</span>
                                 </div>
                                 <i class="line"></i>
                                 <table class="card-table">
@@ -107,6 +109,7 @@
                                     </tr>
                                 </table>
                             </div>
+
                         </div>
 
                     </div>

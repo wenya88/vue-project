@@ -237,7 +237,6 @@ export default {
           color: #00CC00;
           .tips{
             font-size: 14px;
-            display: block;
             color: #89929d;
           }
         }

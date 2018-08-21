@@ -123,11 +123,12 @@
                     <span class="canvasicon" @click="changeColor('#66DAFF')">  <i class="blue " ></i></span>
                     <span class="canvasicon" @click="changeColor('#FFB14D')"><i class="orange " ></i></span>
                 </template>
-                <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" size="18" style="padding:0 5px;"
+                <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" class="videoicon"
                       title="显示标记"></Icon>
                 <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" class="videoicon"
                       title="隐藏标记"></Icon>
                 <span  class="saveButton" v-show="isCanvas" @click="saveCanvas" >保存</span>
+                <span  class="saveButton" v-show="isCanvas" @click="clearCanvas" >取消</span>
                 <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
 
             </div>
@@ -933,7 +934,7 @@
             },
             /*清空画布*/
             clearCanvas() {
-                this.saveCanvasShow = false;
+                this.isCanvas = !this.isCanvas;
                 this.ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
             },
 
