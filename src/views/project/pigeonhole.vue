@@ -23,7 +23,7 @@
           </div>
         </li>
         <li class="allDownBtn">
-          <button @click="downloadFile('',projectID)">全部下载</button>
+          <button @click="downloadFile('project',null)">全部下载</button>
         </li>
       </ul>
 
@@ -58,7 +58,7 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="6" v-for="(item,index) in fileData" :key="index">
+          <Col span="6" v-for="(item,index) in fileData" :key="index">
         <div class="card">
           <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
             <!-- <Icon type="heart" color="red" v-if=""></Icon>
@@ -73,7 +73,7 @@
               </div>
               <div class="right">
                 <span>{{item.tasktype_name}}</span><i>原画</i>
-                <span class="dowmloadFile" @click="downloadFile(item.id)">下载文件</span>
+                <span class="dowmloadFile" @click="downloadFile('task',item.id)">下载文件</span>
               </div>
             </div>
           </div>
@@ -137,7 +137,8 @@
                 imgConponent: false,
                 vidConponent: false,
                 NotType: false,
-                formLeft: {}
+                formLeft: {},
+                TwoMenuList:{},
             }
         },
         computed: {
@@ -149,6 +150,7 @@
         created() {
             this.fetchData();
             this.getTaskList();
+            this.getTwoMenuList();
         },
         methods: {
             ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
@@ -181,25 +183,33 @@
                 }
                 this.$store.dispatch('fetchTaskList', qs.stringify(data));
             },
-            downloadFile(tid, pid) {
+            downloadFile(type, id) {
                 let data = {
-                    task_id : tid,
-                    project_id: pid
-                }
-                this.$axios.post(this.GLOBAL.baseRouter+'task/task/download', qs.stringify(data))
+                    type:type,
+                    id:150
+                    // id:id || sessionStorage.projectID
+                };
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/pack', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
                             // let key = {
                             //   url_key: res.url_key
                             // }
-                            window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank')
+
+
+                            // window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank');
+
+
+
                             // this.$axios.post(this.GLOBAL.baseRouter+'file/file/download', qs.stringify(key))
                             // .then(res => res.data)
                             // .then(res => {
                             //   window.open(urls, '_blank')
                             //   console.log(res)
                             // })
+                        }else {
+                            this.$Message.warning(res.err_message);
                         }
                     })
             },
@@ -216,7 +226,6 @@
 //      sessionStorage.AllowEdit=undefined;
 //      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
 //      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
-                console.log(113,item)
                 this.$store.commit('changeComponentTaskID',taskId);
                 this.$store.commit('changeComponentFileURl',file);
                 this.setPrimaryMission(item);
@@ -236,6 +245,18 @@
                 //   this.subpId = res.project_child
                 // })
             },
+            /*归档二级分类*/
+            getTwoMenuList(status){
+                let data ={
+                    project_id:sessionStorage.projectID,
+                    status:status||5
+                }
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/task-tasktype-count', qs.stringify(data)).then(res=>res.data).then(res =>{
+                    if(res.err_code == 0){
+                        this.TwoMenuList = res.data;
+                    }
+                })
+            }
         }
     }
 </script>

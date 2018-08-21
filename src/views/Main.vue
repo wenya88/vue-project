@@ -5,8 +5,8 @@
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
                     <!--<div class="layout-logo stem-logo" @click="collapsedSider()">-->
-                        <div class="logo"></div>
-                        <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
+                    <div class="logo"></div>
+                    <!--<img v-show="!shrink" src="../images/icon/menu.png" key="max-logo"/>-->
                     <!--</div>-->
                     <!-- <div class="layout-nav stem-l">
                        <Menu mode="horizontal" :active-name="activePath">
@@ -57,23 +57,23 @@
            </div>  -->
             <div class="menuBlock" v-if="!showMenu">
                 <!--<ul>-->
-                    <!--<li v-for="(item,index) in menuList" :key="index">-->
-                        <!--<router-link :to="item.path" :class="[item.name]"-->
-                                     <!--@click.native="collapsedSider()"></router-link>-->
-                        <!--<span class="name">{{item.title}}</span>-->
-                    <!--</li>-->
-                    <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
-                        <!--个人工作台-->
-                    <!--</li>-->
-                    <!--<li class="comp" @click="linkTo('/epibol')">-->
-                        <!--公司-->
-                    <!--</li>-->
-                    <!--<li class="project" @click="linkTo('/epibol')">-->
-                        <!--项目大厅-->
-                    <!--</li>-->
-                    <!--<li class="art" @click="linkTo('/epibol')">-->
-                        <!--艺术广场-->
-                    <!--</li>   &ndash;&gt;-->
+                <!--<li v-for="(item,index) in menuList" :key="index">-->
+                <!--<router-link :to="item.path" :class="[item.name]"-->
+                <!--@click.native="collapsedSider()"></router-link>-->
+                <!--<span class="name">{{item.title}}</span>-->
+                <!--</li>-->
+                <!--&lt;!&ndash; <li class="work" @click="linkTo('/epibol/ProjectWork')">-->
+                <!--个人工作台-->
+                <!--</li>-->
+                <!--<li class="comp" @click="linkTo('/epibol')">-->
+                <!--公司-->
+                <!--</li>-->
+                <!--<li class="project" @click="linkTo('/epibol')">-->
+                <!--项目大厅-->
+                <!--</li>-->
+                <!--<li class="art" @click="linkTo('/epibol')">-->
+                <!--艺术广场-->
+                <!--</li>   &ndash;&gt;-->
                 <!--</ul>-->
             </div>
             <!--<ul class="menu" v-if="!menuListShow">-->
@@ -82,28 +82,35 @@
             <!--<span class="name">{{item.title}}</span>-->
             <!--</li>-->
             <!--</ul>-->
-            
 
-
-            <Menu  style="min-width: 200px;max-width: 200px;" class="leftMenuList">
-                <Submenu v-for="(item,index) in menuList"  :name="index" :key="index">
+            <Menu style="min-width: 200px;max-width: 200px;" class="leftMenuList">
+                <Submenu v-if="menuList" v-for="(item,index) in menuList" :title="item.title||item.name" :name="index" :key="index">
                     <template slot="title">
-                        {{item.title||item.name}}
+
+                        <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi" style="vertical-align: text-bottom;font-size: 16px;"></i>
+                        <i v-else-if="item.title === '我的工作台'" class="iconfont icon-xiangmuxiaoxi"  style="vertical-align: text-bottom;font-size: 18px;"></i>
+                        <span v-else>&emsp;&nbsp;&nbsp;</span>
+                        <span class="navText">
+                        {{item.title || item.name}}
+                        </span>
                     </template>
                     <template v-if="item.children">
-                        <MenuItem v-for="(children,i) in item.children" @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
-                            {{children.title}}
+                        <MenuItem v-for="(children,i) in item.children"  :title="children.title"
+                                  @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+                            &emsp;&nbsp;&nbsp;{{children.title}}
                             <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
                         </MenuItem>
                     </template>
                     <template v-else>
-                        <MenuItem v-for="(children,i) in children" @click.native="projectDetails(children,item.id)" :name="index+'-'+i" :key="i">
-                            {{children.title}}
+                        <MenuItem v-for="(children,i) in children" :title="children.title" @click.native="projectDetails(children,item.id)"
+                                  :name="index+'-'+i" :key="i">
+                            &emsp;&nbsp;&nbsp;{{children.title}}
                             <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
                         </MenuItem>
                     </template>
                 </Submenu>
             </Menu>
+
 
             <div class="single-page-con" :style="`width:${mainWidth}px;height: 100%;`">
                 <div class="single-page">
@@ -140,23 +147,7 @@
                 avatorPath: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg'
             };
         },
-        watch: {
-            menuList(data) {
-                if (data.length > 0) {
-                    this.updateMenu();
-                }
-            },
-            // '$route': {
-            //     handler(newVal) {
-            //         console.log(newVal.name)
-            //     }
-            // }
-            '$route': 'updateMenu',
-            mainWidth() {
-                let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
-                this.mainWidth = bodyWidth - 121
-            }
-        },
+
         created() {
             let bodyHight = document.documentElement.clientHeight;   //浏览器body的高度
             let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
@@ -183,14 +174,14 @@
                 menuListShow(value) {
                     return value.project.detail.setDetailAll
                 },
-                children(value){
+                children(value) {
                     return value.app.children
                 },
-                menuList(value){
-                    return  value.app.menuList;
+                menuList(value) {
+                    return value.app.menuList;
                 },
                 key() {
-                    return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
+                    return this.$route.name !== undefined ? this.$route.name + new Date() : this.$route + new Date()
                 }
             }),
 
@@ -202,11 +193,11 @@
             }
         },
         methods: {
-            projectDetails(children,id){
-                if(id){
+            projectDetails(children, id) {
+                if (id) {
                     sessionStorage.projectID = id;
                 }
-                this.$router.push({path:children.path,query:{sign:this.key}})
+                this.$router.push({path: children.path, query: {sign: this.key}})
             },
             bodySize() {
                 let body = document.body;
@@ -307,57 +298,83 @@
                 }
             },
             updateMenu() {
-                this.menuList.forEach((item) => {
-                    // let routeName = this.$route.name
-                    // console.log(item.name)
-                    // if(this.$route.name === item.name) {
-                    //     this.subMenu = item.children
-                    //     let menuArr = item.children
-                    //     console.log(this.$route.name,this.subMenu)
-                    //     this.$router.push(menuArr[0].path)
-                    // } else {
-                    this.refresh();
-                    // }
-                })
-                this.activePath = this.$route.path
-                // console.log(this.activePath)
+                if(this.menuList){
+                    this.menuList.forEach((item) => {
+                        // let routeName = this.$route.name
+                        // console.log(item.name)
+                        // if(this.$route.name === item.name) {
+                        //     this.subMenu = item.children
+                        //     let menuArr = item.children
+                        //     console.log(this.$route.name,this.subMenu)
+                        //     this.$router.push(menuArr[0].path)
+                        // } else {
+                        this.refresh();
+                        // }
+                    });
+                    this.activePath = this.$route.path
+                }
             }
-        }
+        },
+        watch: {
+            menuList(data) {
+                if (data.length > 0) {
+                    this.updateMenu();
+                }
+            },
+            // '$route': {
+            //     handler(newVal) {
+            //         console.log(newVal.name)
+            //     }
+            // }
+            '$route': 'updateMenu',
+            mainWidth() {
+                let bodyWidth = document.documentElement.clientWidth;   //浏览器body的宽度
+                this.mainWidth = bodyWidth - 121
+            },
+        },
+
     }
 </script>
 <style lang="less">
     @import "./main.less";
 
+    .main-content {
 
-   .main-content{
-       ::-webkit-scrollbar {/*滚动条整体样式*/
-           width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
-           height: 4px;
-       }
-       ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-           border-radius: 5px;
-           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-           background: rgba(0,0,0,0.2);
-       }
-       ::-webkit-scrollbar-track {/*滚动条里面轨道*/
-           -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-           border-radius: 0;
-           background: rgba(0,0,0,0.1);
-       }
-       .ivu-menu{
-           overflow-y: auto !important;
-       }
-
-   }
-    .leftMenuList {
-background: #19322e !important;
-        /*background: #19322e !important;*/
-
-        img{
-            background: #fff ;
+        ::-webkit-scrollbar { /*滚动条整体样式*/
+            width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
         }
-        
-        .active1{
+        ::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-track { /*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .ivu-menu {
+            overflow-y: auto !important;
+        }
+
+    }
+
+    .leftMenuList {
+        background: #19322e !important;
+        /*background: #19322e !important;*/
+        .navText {
+            display: inline-block;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        img {
+            background: #fff;
+        }
+
+        .active1 {
             width: 50px;
             height: 50px;
             background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAUpklEQ…ACPSaAAHo8+ew6BBAAOQCBHhNAAD2efHYdAgiAHIBAjwn8DzH4MQCeA8k3AAAAAElFTkSuQmCC) no-repeat 50%/37px 34px;
@@ -366,13 +383,16 @@ background: #19322e !important;
         }
         .ivu-menu, .ivu-menu-submenu-title {
             color: #fff;
+
         }
         .ivu-menu-submenu {
-            background: #19322e !important;
+            background: #19322e !important
+
             /*background: linear-gradient('left',#24655b, #1d433d) !important;*/
         }
         .ivu-menu-vertical, .ivu-menu-submenu-title:hover {
             background: -webkit-linear-gradient(left, #24655b, #1d433d) !important;
+
         }
         .ivu-menu-vertical, .ivu-menu-item:hover {
             background: -webkit-linear-gradient(left, #24655b, #1d433d) !important;
@@ -399,13 +419,15 @@ background: #19322e !important;
         top: 15px;
         left: 20px;
     }
-    .logo{
+
+    .logo {
         width: 199px;
         height: 64px;
-        background: #19322e url("../images/navLogo.png") no-repeat 59px 9px;
+        background: #19322e url("../images/navLogo.png") no-repeat 67px 9px;
         background-size: 48px;
         border-bottom: 1px solid #42514f;
     }
+
     .layout-nav {
         /*width: 500px;*/
         margin: 0 auto;

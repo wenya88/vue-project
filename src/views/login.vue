@@ -160,6 +160,7 @@ export default {
                             }
                             axios.defaults.headers.common['token'] = res.token;
                             this.$router.push('/home/home')
+                            this.$store.dispatch('getMenulistRole');
                         } else {
                             this.$Message.warning(res.err_message);
                         }
