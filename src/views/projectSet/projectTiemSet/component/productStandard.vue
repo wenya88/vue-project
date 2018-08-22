@@ -43,7 +43,8 @@
             </div>
         </section>
         <!--规范表单-->
-        <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true" :attrContent="attrContent" :ruleList="ruleList">
+        <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true"
+                       :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
                 <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">内容规范</h4>
                 <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
@@ -53,7 +54,8 @@
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px" :disabled="disabled">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                  :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
@@ -77,7 +79,7 @@
                 <Button v-if="!attrContentW.show && !disabled" icon="plus-round" type="text" long
                         style="width:140px;color: #31bb9f"
                         @click.native="attrContentW.show=!attrContentW.show"
-                      >
+                >
                     增加内容规范
                 </Button>
 
@@ -89,7 +91,8 @@
                     </AutoComplete>
                     </Col>
                     <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px" :disabled="disabled">
+                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                  :disabled="disabled">
                         <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                     </AutoComplete>
                     </Col>
@@ -110,7 +113,7 @@
                     <Button type="text" @click="closeruleList()">取消</Button>
                 </template>
 
-                <Button  v-if="!ruleListW.show && !disabled" icon="plus-round" type="text" long
+                <Button v-if="!ruleListW.show && !disabled" icon="plus-round" type="text" long
                         @click="ruleListW.show=!ruleListW.show" style="width:140px;color: #31bb9f">
                     增加制作规范
                 </Button>
@@ -134,9 +137,9 @@
         },
         data() {
             return {
-                disabled:false,
-                menuColor:0,
-                infoUpdate:null,
+                disabled: false,
+                menuColor: 0,
+                infoUpdate: null,
                 tabsTypeId: null,
                 project_id: sessionStorage.getItem('projectID'),
                 btnSign: [0, 0],
@@ -161,7 +164,7 @@
             }
         },
         methods: {
-            async infoinit(){
+            async infoinit() {
                 await this.listInit();
                 await this.projectTasktype('init')
             },
@@ -172,9 +175,9 @@
                         if (res.data.err_code === 0) {
                             this.forTreeData(res.data.data);
                             this.specification = res.data.data;
-                            if( res.data.data){
-                                res.data.data.map( (item) => {
-                                    this.typeList .push(item.children)
+                            if (res.data.data) {
+                                res.data.data.map((item) => {
+                                    this.typeList.push(item.children)
                                 })
                             }
                             this.StandardizeSec = res.data.data[0].children
@@ -190,8 +193,8 @@
                     let arrData = (data) => {
                         data.map((item) => {
                             item.btnShow = false;
-                            this.typeTabs.map((tab,i) => {
-                                if(item.id == tab.tasktype_id){
+                            this.typeTabs.map((tab, i) => {
+                                if (item.id == tab.tasktype_id) {
                                     item.border = true;
                                 }
                             });
@@ -207,45 +210,49 @@
                         return data
                     };
                     return arrData(tree)
-                },500)
+                }, 500)
 
             },
             /*查询列表*/
-           async listInit() {
+            async listInit() {
                 /*接口要修改*/
                 const {data} = await api.projectTaskList({project_id: this.project_id});
-                        if (data.err_code === 0) {
-                            this.typeTabs = data.data
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
+                if (data.err_code === 0) {
+                    this.typeTabs = data.data
+                } else {
+                    this.$Message.error(data.err_message);
+                }
             },
             /*查询详情*/
-            async projectTasktype(item,index) {
-                this.infoUpdate = {item:item,index:index};
+            async projectTasktype(item, index) {
+                this.infoUpdate = {item: item, index: index};
                 let obj = null;
                 this.clearData();
-                this.$refs.tree.clearInfo();
-                if(item !== 'init'){
-                     obj = {id: item.id};
+                if (this.$refs.tree) {
+                    this.$refs.tree.clearInfo();
+                }
+                if (item !== 'init') {
+                    obj = {id: item.id};
                     this.tabsColor = index;
-                }else if(item === 'init' && this.typeTabs.length>0) {
-                     obj = {id: this.typeTabs[0].id};
+                } else if (item === 'init' && this.typeTabs.length > 0) {
+                    obj = {id: this.typeTabs[0].id};
+                } else {
+                    return false
                 }
 
                 let {data} = await api.projectTaskInfo(obj);
-                        if (data.err_code === 0) {
-                            this.tabsTypeId = data.data.id;
-                            this.attrContent = data.data.standard.filter((item) => {
-                                return item.type === 'connect'
-                            });
-                            this.ruleList = data.data.standard.filter((item) => {
-                                return item.type === 'hand'
-                            });
-                            this.$bus.emit('projectInfo', data.data);
-                        } else {
-                            this.$Message.error(data.err_message);
-                        }
+                if (data.err_code === 0) {
+                    this.tabsTypeId = data.data.id;
+                    this.attrContent = data.data.standard.filter((item) => {
+                        return item.type === 'connect'
+                    });
+                    this.ruleList = data.data.standard.filter((item) => {
+                        return item.type === 'hand'
+                    });
+                    this.$bus.emit('projectInfo', data.data);
+                } else {
+                    this.$Message.error(data.err_message);
+                }
             },
 
             /*删除*/
@@ -260,7 +267,7 @@
                         }
                     });
             },
-            selecSpecification(data,index) {
+            selecSpecification(data, index) {
                 this.StandardizeSec = data;
                 this.menuColor = index
             },
@@ -334,6 +341,7 @@
                 }))
                     .then(({data}) => {
                         if (data.err_code === 0) {
+                            this.projectTasktype({id:data.id},this.typeTabs.length)
                             this.listInit()
                             this.menuInit()
                         } else {
@@ -422,8 +430,8 @@
                     margin-bottom: 25px;
                     font-size: 16px;
                     color: #6b6b6b;
-                    .fonsW{
-                      font-weight: bold;
+                    .fonsW {
+                        font-weight: bold;
                         color: black;
                     }
                     p {

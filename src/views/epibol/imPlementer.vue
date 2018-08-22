@@ -466,7 +466,6 @@ export default {
       this.startTime = lists[0]
       this.endTime = lists[index]
       this.tastList = objList
-      console.log('视图', objList)
       this.getTimeSlot()
       this.getTast()
       this.getFeedback(list)

@@ -39,7 +39,9 @@
     }
 
     //---------------------骚气的分割线---------------------
-
+    .newBid{
+        overflow:auto;
+    }
     .newBidList{
         dl{
             margin-top:@p25;
@@ -90,6 +92,15 @@
                 }
                 .bidStatus{
                     height:50px;line-height:50px;text-align:center;color:@white;font-size:@f16;background-color:@yellow;border-radius:0px 0px @r5 @r5;
+                    .ivu-btn{
+                        float:left;width:50%;border-radius:0px;line-height:50px;padding:0px;font-size:@f16;
+                    }
+                    .ivu-btn-primary{
+                        border-radius:0px 0px 0px @r5;background:@green;border:0px;border-right:1px solid #7ae5ca;
+                    }
+                    .ivu-btn-error{
+                        border-radius:0px 0px @r5 0px;background:@green;border:0px;border-left:1px solid #44b195;
+                    }
                 }
                 .bidYes{
                     background-color:@green;
@@ -115,7 +126,12 @@
                     .projectInfo{
                         margin-top:@p20;color:@seven;font-weight:lighter;
                         .date{
-                            color:@desc;margin-top:@p5;
+                            color:@desc;margin-top:@p5;line-height:20px;height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+                        }
+                        p{
+                            &:nth-of-type(3){
+                                margin-top:@p10;
+                            }
                         }
                     }
                 }

@@ -2,20 +2,10 @@
   <div class="pigeonhole">
     <div class="menauBar">
       <ul class="projectClassfly">
-        <li>原画<span>( 20 )</span></li>
-        <li class="currenSty">动作<span>( 60 )</span></li>
-        <li>特效<span>( 30 )</span></li>
-        <li>场景<span>( 5 )</span></li>
+        <li v-for="(item,index) in TwoMenuList" :class="{'currenSty':index== typeIndex}" @click="selectTaskType(index,item.id)">{{ item.tasktype_name }}<span>( {{item.cnt}} )</span></li>
       </ul>
 
       <ul class="screenBar">
-        <!--<li>-->
-        <!--<dl>-->
-        <!--<dd class="byAsc">送审时间</dd>-->
-        <!--<dd class="byDesc">待审天数</dd>-->
-        <!--<dd>剩余时间</dd>-->
-        <!--</dl>-->
-        <!--</li>-->
         <li class="searchBar">
           <div>
             <input type="text" v-model="searchInput" placeholder="任务 / 负责人" @keyup.enter="fetchData"/>
@@ -23,7 +13,8 @@
           </div>
         </li>
         <li class="allDownBtn">
-          <button @click="downloadFile('',projectID)">全部下载</button>
+            <button v-if="isALLAutoDownFlag" class="downloading" title="打包完成后将自动下载">打包中<i class="ivu-icon animationB"></i></button>
+            <button v-else class="downbtn" @click="downloadFile('project','')" title="打包完成后将自动下载">全部下载</button>
         </li>
       </ul>
 
@@ -58,26 +49,31 @@
     </div>
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
-        <Col span="6" v-for="(item,index) in fileData" :key="index">
-        <div class="card">
-          <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
-            <!-- <Icon type="heart" color="red" v-if=""></Icon>
-            <Icon type="pause" v-else-if=""></Icon> -->
-            <img class="card-box-pic" :src="item.image[0]"/>
-          </div>
-          <div class="showHiden">
-            <div class="RcardBlock">
-              <div class="left">
-                <img class="cardPic" :src="item.image[0]"/>
-                <span>{{item.name}}</span>
+          <Col span="6" v-for="(item,index) in fileData" :key="index">
+            <div class="card">
+              <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
+                <!-- <Icon type="heart" color="red" v-if=""></Icon>
+                <Icon type="pause" v-else-if=""></Icon> -->
+                <img class="card-box-pic" :src="item.image[0]"/>
               </div>
-              <div class="right">
-                <span>{{item.tasktype_name}}</span><i>原画</i>
-                <span class="dowmloadFile" @click="downloadFile(item.id)">下载文件</span>
+              <div class="showHiden">
+                <div class="RcardBlock">
+                  <div class="left">
+                    <img class="cardPic" :src="item.image[0]"/>
+                    <span>{{item.remark_name}}</span>
+                  </div>
+                  <div class="right">
+                    <span>{{item.name}}</span><i>原画</i>
+
+                    <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
+                        <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
+                        <span v-else class="dowmloadFile" title="打包完成后将自动下载" @click="downloadFile('task',item.id)">下载文件</span>
+                    </span>
+
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
         </Col>
       </Row>
     </div>
@@ -137,23 +133,57 @@
                 imgConponent: false,
                 vidConponent: false,
                 NotType: false,
-                formLeft: {}
+                formLeft: {},
+                TwoMenuList:{},
+                typeIndex:null,
+                isALLAutoDownFlag:false,
+                clickItem:[]
+            }
+        },
+        watch:{
+            downComplateArr(val){
+                let clickItemArr = this.clickItem;
+                let complateArr = this.downComplateArr;
+                if(complateArr.length > 0){
+                    // console.log(clickItemArr.length);
+                    // console.log(complateArr.length);
+                    for(let i=0;i<clickItemArr.length;i++){
+                        if(clickItemArr[i].id == complateArr[0].id && clickItemArr[i].type == complateArr[0].type){
+                            clickItemArr[i].id = complateArr[0].id;
+                            clickItemArr[i].type = complateArr[0].type;
+                            clickItemArr[i].status = complateArr[0].status;
+                            this.$store.commit('resetArr',true);
+                        }
+                    }
+                }
+            },
+            downloadStatus(val){
+                if(val) {
+                    this.isALLAutoDownFlag = false;
+                    this.$store.state.downloadStatus = false;
+                }
             }
         },
         computed: {
             ...mapGetters({
                 taskList: 'getTaskType',
                 subProjectList: 'getSubProjectList'
-            })
+            }),
+            downloadStatus(){
+                return this.$store.state.downloadStatus;
+            },
+            downComplateArr(){
+                return this.$store.state.downComplateArr;
+            }
         },
         created() {
             this.fetchData();
             this.getTaskList();
+            this.getTwoMenuList();
         },
         methods: {
             ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
             fetchData() {
-                // console.log(this.tasktype)
                 let data = {
                     status: this.status,
                     tasktype: this.selTaskType,
@@ -164,11 +194,13 @@
                 this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
-                        // console.log(res)
                         if(res.err_code == 0) {
-                            // console.log(res.data);
-                            this.fileData = res.data
-                            // console.log(this.fileData)
+                            this.fileData = res.data;
+                            this.clickItem = [];
+                            for(var item in res.data){
+                                this.clickItem.push({id:res.data[item].id,status:false,type:'task'})
+                            }
+                            console.log(this.clickItem);
                         }
                     })
             },
@@ -181,27 +213,51 @@
                 }
                 this.$store.dispatch('fetchTaskList', qs.stringify(data));
             },
-            downloadFile(tid, pid) {
+            downloadFile(type,id) {
                 let data = {
-                    task_id : tid,
-                    project_id: pid
-                }
-                this.$axios.post(this.GLOBAL.baseRouter+'task/task/download', qs.stringify(data))
+                    type:type,
+                    id:id || sessionStorage.projectID
+                };
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/pack', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
-                            // let key = {
-                            //   url_key: res.url_key
-                            // }
-                            window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank')
-                            // this.$axios.post(this.GLOBAL.baseRouter+'file/file/download', qs.stringify(key))
-                            // .then(res => res.data)
-                            // .then(res => {
-                            //   window.open(urls, '_blank')
-                            //   console.log(res)
-                            // })
+                            //如果没有url发起webSocket
+                            if(!res.download_url){
+                                this.sendWebsocket(type,id);
+                            }else {
+                                let hostUrl = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/'+res.download_url;
+                                var a = document.createElement('a');
+                                a.href = hostUrl;
+                                // a.download = "proposed_file_name";
+                                a.click();
+                            }
+                        }else if(res.err_code == 10030){
+                            this.$Message.warning(res.err_message);
+                            this.sendWebsocket(type,id);
+                        }else {
+                            this.$Message.warning(res.err_message);
                         }
                     })
+            },
+            sendWebsocket(type,id){
+                if(type=='task'){
+                    let len = this.clickItem.length;
+                    for(let i=0;i<len;i++){
+                        if(this.clickItem[i].id == id){
+                            this.clickItem[i].status = true;
+                        }
+                    }
+                }else {
+                    this.isALLAutoDownFlag = true;    //是否展示全部下载加载按钮
+                }
+                const data = JSON.stringify({
+                    action:'download_url',
+                    type:type,
+                    id:id || sessionStorage.projectID
+                });
+                // console.log(data);
+                webSocket.send(data);
             },
             closeTabmodal() {
                 this.isTabModal = false;
@@ -216,7 +272,6 @@
 //      sessionStorage.AllowEdit=undefined;
 //      this.$refs.pigeonholetask.initBrowseTaskPop(taskId,type);//根据ID和类型初始化弹窗
 //      this.$refs.pigeonholetask.setEditDisabled(true);//设置弹窗能否编辑
-                console.log(113,item)
                 this.$store.commit('changeComponentTaskID',taskId);
                 this.$store.commit('changeComponentFileURl',file);
                 this.setPrimaryMission(item);
@@ -236,12 +291,40 @@
                 //   this.subpId = res.project_child
                 // })
             },
+            /*归档二级分类*/
+            getTwoMenuList(status){
+                let data ={
+                    project_id:sessionStorage.projectID,
+                    status:status||4
+                }
+                this.$axios.post(this.GLOBAL.baseRouter+'task/task/task-tasktype-count', qs.stringify(data)).then(res=>res.data).then(res =>{
+                    if(res.err_code == 0){
+                        this.TwoMenuList = res.data;
+                    }
+                })
+            },
+            /*根据选择的二级标签查询数据*/
+            selectTaskType(index,type){
+                this.typeIndex = index;
+                this.selTaskType = type;
+                this.fetchData();
+            }
         }
     }
 </script>
 
 <style lang='less' scoped>
   @import "./style/project.less";
+  .demo-spin-icon-load,.animationB{
+      animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+      from { transform: rotate(0deg);}
+      50%  { transform: rotate(180deg);}
+      to   { transform: rotate(360deg);}
+  }
+  .ivu-spin-fix{background: #3bceb6!important;}
+  .ivu-icon-load-c:before{color: #fff!important;}
   .card{
     position: relative;
     .showHiden{display: none};
@@ -267,6 +350,10 @@
         cursor: pointer;
         &:after{display: inline-block;content: '';width: 13px;height: 13px;background: url("./proStat/image/dowmIconr.png") no-repeat;margin-left: 5px}
       }
+        .dowmloadFilefalse{}
+        b{
+            &:after{content: "\F29C";color: #fff;font-size: 15px;padding: 0 5px}
+        }
     }
   }
 </style>

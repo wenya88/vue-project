@@ -19,19 +19,19 @@
                 <div class="bidPerso">
                     <div class="persoInfo">
                         <div>
-                            <span class="span"><i class="iconfont icon-renyuanguanli"></i> 负责人：</span>
+                            <span class="span"><i class="iconfont icon-renyuanguanli"></i> 负责人：{{item.apply_users}}</span>
                             <span class="span"><i class="iconfont icon-yonghuguanli"></i> 执行人：{{item.execute_users}}</span>
                             <div class="clear"></div>
                         </div>
                         <div class="progress">
-                            <Progress :percent="45" status="active" :stroke-width="5">
-                                <span>剩余 3 天</span>
+                            <Progress :percent="item.finish_percent>100?99.99:item.finish_percent" status="active" :stroke-width="5">
+                                <span>{{item.end_days<0?'延期 '+Math.abs(item.end_days)+' 天':'剩余 '+item.end_days+' 天'}}</span>
                             </Progress>
                         </div>
                     </div>
                 </div>
                 <div :class="[item.status!=0?'bidStatus bidYes':'bidStatus']">
-                    {{item.status==0?'待公布':'中标'}}
+                    {{item.status_t}}
                 </div>
             </dd>
         </dl>

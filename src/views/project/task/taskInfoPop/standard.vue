@@ -38,10 +38,11 @@
                     <!--<li>立绘<i></i></li>-->
                     <!--<li>精修<i></i></li>-->
                     <template v-if="infoDetails">
-                        <li v-for="(item,index) in infoDetails.stage" class="flowChart"
-                            @click="getFlowInfo(item)"
+                        <li v-for="(item,index) in infoDetails.stage" :class="{'highlight':highlight === index}" class="flowChart"
+                            @click="getFlowInfo(item,index)"
                         >
                             <span v-if="index !== 0"></span>{{item.stage_name}}
+                            <Icon v-if="index !== infoDetails.stage.length-1" type="arrow-right-a"  class="icon"></Icon>
                         </li>
                     </template>
                 </ul>
@@ -89,11 +90,13 @@
                     connect: [],
                     hand: [],
                 },
-                flowChartText: []
+                flowChartText: [],
+                highlight:null,
             }
         },
         methods: {
-            getFlowInfo(item) {
+            getFlowInfo(item,index) {
+                this.highlight = index;
                 if (item.require) {
                     this.flowChartText = item.require
                 }
@@ -126,6 +129,7 @@
 </script>
 
 <style lang="less" scoped>
+    @green:#3bceb6;
     .taskInfoPopStandardContainer {
         /*padding: 20px;*/
         .standardList {
@@ -135,6 +139,19 @@
                 font-size: 14px;
                 color: #9f9f9f;
                 margin: 15px 0
+            }
+            .level {
+
+                color: #fff;
+            }
+            .level3 {
+                background: red;
+            }
+            .level2 {
+                background: orange;
+            }
+            .level1 {
+                background: #8c8c8c;
             }
 
             .standardInfo {
@@ -150,7 +167,13 @@
             .flowChartUl {
                 display: flex;
                 margin-bottom: 20px;
-                li {
+                .highlight{
+                    border: 1px solid @green !important;
+                    .icon{
+                        color: @green;
+                    }
+                }
+                .flowChart {
                     list-style: none;
                     position: relative;
                     border: 1px dashed #ccc;
@@ -161,19 +184,10 @@
                     &:nth-child(1) {
                         margin-left: 0 !important;
                     }
-                    &:last-child {
-                        i {
-                            display: none
-                        }
-                    }
-                    i {
+                    .icon{
                         position: absolute;
                         top: 25%;
                         right: -25px;
-                        display: inline-block;
-                        width: 12px;
-                        height: 12px;
-                        background: url("../../proStat/image/JT2.png") no-repeat
                     }
                 }
                 .current {
@@ -202,40 +216,4 @@
         }
     }
 
-    .taskInfoPopStandardContainer {
-        /*padding: 0 10px;*/
-        /*margin-bottom: 40px;*/
-        .standardList {
-            /*.flowChartUl {*/
-                /*display: flex;*/
-            /*}*/
-            /*.standardTitle {*/
-                /*font-size: 16px;*/
-                /*color: #ccc;*/
-            /*}*/
-            /*.standardInfo {*/
-                /*display: flex;*/
-                /*justify-content: space-between;*/
-            /*}*/
-            .level {
-
-                color: #fff;
-            }
-            .level3 {
-                background: red;
-            }
-            .level2 {
-                background: orange;
-            }
-            .level1 {
-                background: #8c8c8c;
-            }
-        }
-        /*dl {*/
-            /*margin-bottom: 65px;*/
-        /*}*/
-        /*dd {*/
-            /*padding: 10px 0;*/
-        /*}*/
-    }
 </style>

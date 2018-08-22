@@ -12,15 +12,23 @@
                             ￥<span>{{item.project_min_price}} ~ {{item.project_max_price}}</span>
                         </div>
                         <div class="projectInfo">
-                            <p>项目时间</p>
+                            <p>项目描述</p>
                             <p class="date">{{item.description}}</p>
                             <p>项目时间</p>
                             <p class="date">{{item.start_time}} ~ {{item.end_time}}</p>
                         </div>
                     </div>
+                    <div class="bidStatus bidYes" v-if="item.status==0 && item.join_end_time>Math.round(new Date().getTime()/1000)">
+                        <Button type="primary" @click.native="updateInvite(item.id,1)">确认</Button>
+                        <Button type="error" @click.native="updateInvite(item.id,2)">拒绝</Button>
+                    </div>
+                    <div class="bidStatus" v-if="item.status==0 && item.join_end_time<Math.round(new Date().getTime()/1000)">
+                        已过期
+                    </div>
+                    <div :class="[item.status==1?'bidStatus bidYes':'bidStatus']" v-if="item.status==1 || item.status==2">{{item.status==1?'已接受':'已拒绝'}}</div>
                 </dd>
             </dl>
-        </div>
+    </div>
     <!-- <div class="bidList invite">
         <dl>
             <dt>
@@ -63,6 +71,7 @@ export default {
         }
     },
     methods:{
+       
         // 更新状态
         updateInvite(id,status){
             this.$Loading.start();

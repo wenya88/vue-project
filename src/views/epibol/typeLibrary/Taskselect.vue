@@ -1,0 +1,138 @@
+<template>
+    <div class="taskselect" @click.stop>
+        <div style="overflow: hidden">
+            <input type="text" :value="currenVal" :disabled="disabled" class="currenVal" readonly @click.stop="isShowFun = !isShowFun"/>
+            <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>
+        </div>
+
+        <div class="selectContent" v-if="isShowFun">
+            <ul class="dataList" v-if="dataList">
+                <li v-for="item in dataList" :label="item.name" :value="item.id" :key="item.id"  @click="getVal(item.name)">{{ item.name }}</li>
+            </ul>
+            <p><input type="text" v-model="values" placeholder="输入新标签" @keyup.enter="$emit('addNormsFun',values)"/></p>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "taskselect",
+        props: {
+            dataList:{
+                type:Array,
+                default:{},
+            },
+            disabled:Boolean,
+            callbackStatus:Boolean
+        },
+        watch:{
+            callbackStatus(val){
+               if(val) this.values = null;
+            }
+        },
+        data(){
+            return{
+                isShowFun:false,
+                currenVal:'请选择',
+                values:null
+            }
+        },
+        methods:{
+            getVal(val){
+                this.currenVal = val;
+                this.isShowFun = false;
+            }
+        },
+        mounted () {
+           var _this = this;
+            document.body.addEventListener('click', function(e) {
+                // alert(1411)
+
+                var ev = e || event;
+                ev.stopPropagation();
+                _this.isShowFun = false;
+                // ev.preventDefault();
+
+                // return false
+
+            })
+        },
+    }
+</script>
+
+<style lang="less" scoped>
+    @green: #3bceb6;
+    .taskselect{
+        border: 1px solid @green;
+        width: 150px;
+        height: 30px;
+        /*text-align: center;*/
+        position: relative;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 15px;
+        .currenVal{
+            display: inline-block;width: 100%;
+            height: 28px;
+            line-height: 30px;
+            border: none;
+            outline: none;
+            padding: 0 8px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            border-radius: 5px;
+            &:disabled{
+                background: #f3f3f3;
+                color: #ccc;
+                &:hover{cursor: no-drop}
+            }
+            &:hover{
+                cursor: pointer;
+            }
+        };
+        .selectContent{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 32px;
+            box-shadow: 0px 1px 3px 1px #d2d2d2;
+            border-radius: 6px;
+            z-index: 999;
+            background: #fff;
+            .dataList{
+                width: 100%;
+                height: 100%;
+                max-height: 120px;
+                overflow: auto;
+                z-index: 999;
+                background: #fff;
+                border-bottom: 1px solid #e4e4e4;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                li{
+                    height: 30px;
+                    line-height: 30px;
+                    padding: 0 8px;
+                    &:hover{
+                        background: #f1f1f1;
+                        cursor: pointer;
+                    }
+                }
+            }
+            p{
+                z-index: 999;
+                height: 30px;
+                line-height: 30px;
+                input{
+                    width: 100%;
+                    border: none;
+                    outline: none;
+                    border-radius: 8px;
+                    padding: 0 8px;
+                }
+            }
+        }
+
+    }
+</style>

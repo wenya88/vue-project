@@ -6,11 +6,13 @@
       <div v-if="true" class="frist" @click="finishData(4)">
         <i-circle
           :size="120"
-          :trail-width="0"
-          :stroke-width="15"
-          :percent="100"
+          :trail-width="8"
+          :stroke-width="13"
+          :percent="param.num"
           stroke-linecap="square"
-          stroke-color="#3bceb6">
+          stroke-color="#3bceb6"
+          trail-color="#d5f0eb"
+        >
           <div class="text">
             <p class="big"  style="color:#3bceb6;">{{param.num}}</p>
           </div>
@@ -22,7 +24,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#fcc44a">
@@ -38,7 +40,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#8cc8ff">
@@ -52,7 +54,7 @@
         <i-circle
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#ff898e">
@@ -67,7 +69,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#78c97c">
@@ -85,7 +87,7 @@
       <li @click="resourcesData(3)">内审已反馈</li>
       <li @click="resourcesData(2)">客户待审</li>
       <li @click="resourcesData(4)">客户已反馈</li>
-    </ul> 
+    </ul>
     </Affix> -->
     <!-- <Tabs value="1" :animated="false" v-model="status" @on-click="changeTabs()">
       <TabPane label="归档文件" name="1"> -->
@@ -171,7 +173,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.$children[0],this.$children[1]) 
+
     this.fetchNum(1);
     this.fetchNum(2);
     this.fetchNum(3);
@@ -183,46 +185,63 @@ export default {
     //   this.fetchData();
     // } else {
     //   this.fetchData();
-    // } 
+    // }
   },
   methods: {
     finishData(status) {
       this.finish = true
       setTimeout(() => {
-        this.$refs.finish.fetchData()
+          this.$refs.finish.fetchData();
+          this.$refs.finish.getTwoMenuList(4);
       },0)
     },
     resourcesData(status) {
-
-      this.finish = false
-      sessionStorage.resourcesStatus = status
+      this.finish = false;
+      sessionStorage.resourcesStatus = status;
       switch (status){
-        case 1:
+          case 1:
           this.sortNumber = 'frist';
+          this.taskStatus = 1;
+          this.setTimeOutFun(1);   //内部待审
+
         break;
         case 2:
           this.sortNumber = 'second';
+            this.taskStatus = 2;
+            // alert(2222)
+            this.setTimeOutFun(2);    //客户待审
         break;
         case 3:
           this.sortNumber = 'third';
+            this.taskStatus = 3;
+            // alert(333)
+            this.setTimeOutFun(3);    //内部审核 已反馈
         break;
         case 4:
           this.sortNumber = 'fourth';
+            // alert(444)
+            this.taskStatus = 4;
+            this.setTimeOutFun(4);    //客户审核 已反馈
         break;
       }
       setTimeout(() => {
         this.$refs.list.fetchData()
       },0)
     },
+      setTimeOutFun(status){
+          setTimeout(() => {
+              this.$refs.list.getTaskTwoMenuList(status);
+          },0)
+      },
     ScrollLoad(){
       let scr=document.getElementById("completed");
       scr.onscroll=function(){
         let scrollT = scr.scrollTop;
         let scrollH = scr.scrollHeight;
         let clientH = scr.clientHeight;
-        console.log(scrollT,scrollH,clientH)
+
         if(scrollT == scrollH - clientH){
-            console.log('111')
+
         }
       }
     },
@@ -261,13 +280,8 @@ export default {
       this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
       .then(res => res.data)
       .then(res => {
-        // console.log(res)
-
         if(res.err_code == 0) {
-
-            // console.log(res.data);
           this.param.num = res.page.count
-          // console.log(this.fileData)
         }
       })
     },

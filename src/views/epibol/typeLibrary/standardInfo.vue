@@ -1,180 +1,210 @@
+<style lang="less" scoped>
+
+</style>
 <template>
     <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+        <div class="taskClassLiHeader"><span>规范名称</span><button>保存</button></div>
+        <Form class="taskClassLiContener" :model="formLeft" label-position="left" :label-width="100">
+            <Row>
+                <Col span="16">
+                    <span class="titleH2">制作流程规范</span>
+                    <!--流程核心-->
+                    <div class="stepCentral">
+                        <Steps v-if="fstandard"  :current="current" direction="vertical" size="small">
+                            <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
 
-        <Form class="spaceTb" :model="formLeft" label-position="left" :label-width="100">
-            <!--内容规范-->
-            <slot name="item"></slot>
-            <!--任务类型名称-->
-            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规范名称</h4>
-            <section v-if="!project" class="taskTypeName">
-                <div v-if="!disabled" v-show="boxShow" class="taskTypeNameBox">
-                    <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
-                        <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
-                        <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
-                              <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon":disabled="disabled"></Icon>-->
-                        <div @click="secMarkers(item)" class="identification"
-                             :class="{'iconColor':identification.iconColor === item.color}">
-                            <p class="signColor" :style="{background:item.color}"></p>
-                        </div>
-                    </div>
-                    <Button @click="addMarkers(true)" type="text">确认</Button>
-                    <Button @click="addMarkers(false)" type="text">取消</Button>
-                </div>
-                  <Input   :style="{width:'306px',paddingBottom:'20px',marginRight:'20px'}" placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
-                  <button @click="showMarkers" class="btn">
-                      <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
-                           style="height:36px;margin-top:30px;">
-                      <template v-else>识别图标</template>
-                  </button>
-            </section>
-            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">制作规范</h4>
-          <template v-if="pstandard.length>0" >
-              <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
-                  <Col span="5">
-                  <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
-                      <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                  </AutoComplete>
-                  </Col>
-                  <Col span="10">
-                  <AutoComplete v-model="item.values" placeholder="描述" clearable style="margin-left:20px" :disabled="disabled">
-                      <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                  </AutoComplete>
-                  </Col>
-                  <Icon v-if="!disabled" @click.native="removeFileat(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
-              </Row>
-          </template>
-            <!--文件添加-->
-            <template v-if="fileShow" :style='{margin:"10px 0"}'>
-                <Col span="5">
-                <AutoComplete v-model="fileAddName" placeholder="规范名称" clearable :disabled="disabled">
-                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                </AutoComplete>
-                </Col>
-                <Col span="10">
-                <AutoComplete v-model="fileAddMain" placeholder="描述" clearable style="margin-left:20px" :disabled="disabled">
-                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                </AutoComplete>
-                </Col>
-                <Button type="text" @click="addFileat()">确认</Button>
-                <Button type="text" @click="closeFileat()">取消</Button>
-            </template>
+                                <div class="stepRight">
+                                    <!--步骤名称-->
+                                    <div>
+                                        <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
+                                        <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
+                                        <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
+                                    </div>
+                                    <!---->
+                                    <div>
+                                        <ul class="stepsUl">
+                                            <li class="stepsList" v-for="(list,i) in step.require" :key="i">
+                                                <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled" class="borderBottomSty"></Input>
+                                                <!--规范列表-->
 
-            <Button v-if="!fileShow&& !disabled" icon="plus-round"  long @click="fileListAdd" type="text" style="width:140px;color: #31bb9f">
-                增加制作规范
-            </Button>
 
-            <!--流程规范-->
-            <div>制作流程规范</div>
-            <!--流程核心-->
-            <div style="display: flex;padding: 10px 0 0 40px;">
-                <div style="flex: 14">
-                    <Steps v-if="fstandard" :style="{width:'800px'}" :current="current" direction="vertical" size="small">
-                        <Step v-for="(step,index) in fstandard" class="stepContainer"  style="padding-bottom: 70px;" :key="index">
-                            <!--步骤名称-->
-                            <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
-                            <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
-                            <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
-                            <!---->
-                            <ul class="stepsUl">
 
-                                <li class="stepsList" v-for="(list,i) in step.require" :key="i">
-                                    <Input v-model="list.text" placeholder="输入对该阶段要求"
-                                           style="width: 400px":disabled="disabled"></Input>
-                                    <!--规范列表-->
-                                    <Select v-model="list.norm" size="small" class="standard" :disabled="disabled">
-                                        <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
-                                            {{ item.name }}
-                                        </Option>
-                                    </Select>
-                                    <div  class="priorityContainer" >
-                                        <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
-                                        <div v-if="!disabled" class="priorityList" >
-                                            <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
-                                            <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
-                                            <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
+                                                <Taskselect :dataList="norms" :disabled="disabled" v-on:addNormsFun ="addNorms" :callbackStatus="callbackStatus"></Taskselect>
+
+
+
+
+                                                <!--<Select v-model="list.norm" size="small" class="standard" :disabled="disabled">-->
+                                                    <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
+                                                        <!--{{ item.name }}-->
+                                                    <!--</Option>-->
+                                                <!--</Select>-->
+
+
+
+
+                                                <div  class="priorityContainer" >
+                                                    <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
+                                                    <div v-if="!disabled" class="priorityList" >
+                                                        <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
+                                                        <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
+                                                        <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
+                                                    </div>
+                                                </div>
+                                                <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
+                                            </li>
+                                            <!--审核选项-->
+                                            <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;right:20px;width:212px;">
+                                                <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
+                                            </Select>
+                                        </ul>
+                                        <!--流程info增加-->
+                                        <div class="stepsUl">
+                                            {{step.show}}
+                                            <div v-show="step.show" class="stepsList">
+                                                <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求" :disabled="disabled"></Input>
+                                                <Select v-model="stepInfoList.norm" class="standard" size="small">
+                                                    <Option v-for="item in norms" :value="item.id" :key="item.id">
+                                                        {{ item.name }}
+                                                    </Option>
+                                                </Select>
+                                                <div class="priorityContainer">
+                                                    <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
+                                                    <div class="priorityList">
+                                                        <p class="priority priority3" @click="editPriority('3')">高</p>
+                                                        <p class="priority priority2" @click="editPriority('2')">中</p>
+                                                        <p class="priority priority1" @click="editPriority('1')">低</p>
+                                                    </div>
+                                                </div>
+                                                <Button @click="stepAdd(index)" type="text">确认</Button>
+                                                <Button @click="closeStepList(index)" type="text">取消</Button>
+                                            </div>
+                                            <Icon v-show="!step.show" v-if="!disabled" class="addguifan" @click.native="flowAddShow(index)" type="plus"
+                                                  style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
                                         </div>
                                     </div>
-                                    <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
-                                </li>
-                                <!--审核选项-->
-                                <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
-                                    <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
-                                </Select>
-                            </ul>
-                            <!--流程info增加-->
-                            <div class="stepsUl">
-                                {{step.show}}
-                                <div v-show="step.show" class="stepsList">
-                                    <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
-                                           style="width: 400px":disabled="disabled"></Input>
-                                    <Select v-model="stepInfoList.norm" class="standard" size="small">
-                                        <Option v-for="item in norms" :value="item.id" :key="item.id">
-                                            {{ item.name }}
-                                        </Option>
-                                    </Select>
-                                    <div class="priorityContainer">
-                                        <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
-                                        <div class="priorityList">
-                                            <p class="priority priority3" @click="editPriority('3')">高</p>
-                                            <p class="priority priority2" @click="editPriority('2')">中</p>
-                                            <p class="priority priority1" @click="editPriority('1')">低</p>
-                                        </div>
-                                    </div>
-                                    <Button @click="stepAdd(index)" type="text">确认</Button>
-                                    <Button @click="closeStepList(index)" type="text">取消</Button>
                                 </div>
-                                    <Icon v-show="!step.show" v-if="!disabled" @click.native="flowAddShow(index)" type="plus"
-                                      style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
-                            </div>
-                        </Step>
-                    </Steps>
-                </div>
-                <div style="flex: 14" >
-                    <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
-                </div>
 
-            </div>
+                            </Step>
+                        </Steps>
+                        <div>
+                            <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
+                        </div>
 
-            <!--规范增加-->
-            <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
-            <Button type="primary" @click="modal1 = true">增加规范</Button>
-            <Button type="primary" @click="modal2 = true">删除规范</Button>
-            <h3 :style="{padding:'20px 0 0px'}">文稿文件规范</h3>
-            <template v-if="tstandard.length>0">
-                <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" :style='{margin:"20px 0"}'>
-                    <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
-                    </Col>
-                    <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"
-                                  style="margin-left:20px"></AutoComplete>
-                    </Col>
-                    <Icon v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
-                </div>
-            </template>
-
-            <template v-if="OtherfileShow">
-                <Col span="5">
-                <AutoComplete v-model="OtherfileName" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
+                    </div>
                 </Col>
-                <Col span="10">
-                <AutoComplete v-model="OtherfileMain" placeholder="描述" clearable :disabled="disabled"
-                              style="margin-left:20px"></AutoComplete>
+
+                <Col span="8">
+                    <div class="contenerRight">
+                        <ul>
+                            <li>
+                                <!--内容规范-->
+                                <slot name="item"></slot>
+                                <!--任务类型名称-->
+                                <span class="titleH2">规范名称</span>
+                                <section v-if="!project" class="taskTypeName">
+                                    <div v-if="!disabled" v-show="boxShow" class="taskTypeNameBox">
+                                        <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
+                                            <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
+                                            <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
+                                            <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon":disabled="disabled"></Icon>-->
+                                            <div @click="secMarkers(item)" class="identification"
+                                                 :class="{'iconColor':identification.iconColor === item.color}">
+                                                <p class="signColor" :style="{background:item.color}"></p>
+                                            </div>
+                                        </div>
+                                        <Button @click="addMarkers(true)" type="text">确认</Button>
+                                        <Button @click="addMarkers(false)" type="text">取消</Button>
+                                    </div>
+                                    <Input placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
+                                    <span @click="showMarkers" class="btn">
+                                        <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
+                                             style="height:36px;margin-top:30px;">
+                                        <template v-else>识别图标</template>
+                                    </span>
+                                </section>
+                            </li>
+                            <li>
+                                <!--制作规范-->
+                                <p class="titleFloat">
+                                    <span class="titleH2">制作规范</span>
+                                    <Icon v-if="!fileShow&& !disabled" class="addguifan"  @click="fileListAdd" type="plus"></Icon>
+                                </p>
+                                <template v-if="pstandard.length>0" >
+                                    <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
+                                        <Col span="12">
+                                        <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
+                                            <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                        </AutoComplete>
+                                        </Col>
+                                        <Col span="12">
+                                        <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled">
+                                            <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                        </AutoComplete>
+                                        </Col>
+                                        <Icon v-if="!disabled" @click.native="removeFileat(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
+                                    </Row>
+                                </template>
+                                <!--文件添加-->
+                                <template v-if="fileShow">
+                                    <Col span="12">
+                                        <AutoComplete v-model="fileAddName" placeholder="规范名称" clearable :disabled="disabled">
+                                            <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                        </AutoComplete>
+                                    </Col>
+                                    <Col span="12">
+                                        <AutoComplete v-model="fileAddMain" placeholder="描述" clearable :disabled="disabled">
+                                            <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                        </AutoComplete>
+                                    </Col>
+                                    <Button type="text" @click="addFileat()">确认</Button><Button type="text" @click="closeFileat()">取消</Button>
+                                </template>
+                            </li>
+                            <li>
+                                <!--文稿文件规范-->
+                                <p class="titleFloat">
+                                    <span class="titleH2">文稿文件规范</span>
+                                    <Icon v-if="!OtherfileShow&&!disabled" class="addguifan"  @click="OtherfileAdd" type="plus"></Icon>
+                                </p>
+                                <template v-if="tstandard.length>0">
+                                    <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask">
+                                        <Col span="12">
+                                        <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
+                                        </Col>
+                                        <Col span="12">
+                                        <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
+                                        </Col>
+                                        <Icon   v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
+                                    </div>
+                                </template>
+
+                                <template v-if="OtherfileShow">
+                                    <Col span="12">
+                                    <AutoComplete v-model="OtherfileName" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
+                                    </Col>
+                                    <Col span="12">
+                                    <AutoComplete v-model="OtherfileMain" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
+                                    </Col>
+                                    <Button type="text" @click="addJunctShow">确认</Button>
+                                    <Button type="text" @click="closeOtherfile">取消</Button>
+                                </template>
+                            </li>
+                        </ul>
+                    </div>
                 </Col>
-                <Button type="text" @click="addJunctShow">确认</Button>
-                <Button type="text" @click="closeOtherfile">取消</Button>
-            </template>
-            <Button v-if="!OtherfileShow&&!disabled" style="width:140px;color:#31bb9f;" icon="plus-round" type="text" @click="OtherfileAdd">
-                增加文稿规范
-            </Button>
+            </Row>
         </Form>
+
+
+
+
+        <!--规范增加-->
+        <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
+        <Button type="primary" @click="modal1 = true">增加规范</Button>
+        <Button type="primary" @click="modal2 = true">删除规范</Button>
         <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>
         <Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>
-        <Modal
-                v-model="modal1"
-
-                @on-ok="addNorms"
-        >
+        <Modal v-model="modal1" @on-ok="addNorms">
             <section>
                 <div style="margin-bottom: 5px">
                     <span>增加标签&emsp;：&emsp;</span>
@@ -194,7 +224,6 @@
                 </Option>
             </Select>
         </Modal>
-
     </Content>
 
 </template>
@@ -206,12 +235,14 @@
     import Icon from "iview/src/components/icon/icon";
     import Caspanel from "iview/src/components/cascader/caspanel";
     import typeList from "./typeList";
+    import Taskselect from "./Taskselect";
 
     export default {
         components: {
             typeList,
             Caspanel,
-            Icon
+            Icon,
+            Taskselect
         },
         props: {
             project: {
@@ -277,6 +308,9 @@
                 reqData: [],
                 attrFile: [{config_name: "", value: ""}],
                 otherfile: [{config_name: '', value: ''}],
+
+                //添加新标签完成后的回调状态
+                callbackStatus:false
             };
         },
         mounted() {
@@ -580,8 +614,8 @@
             async newtaskTypesDetail(dataDetail) {
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
-                    this.isSubmit = dataDetail.status === 0 || dataDetail === 'default'? false :true;
-                    this.disabled = dataDetail.status === 0 || dataDetail === 'default'? true :false;
+                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
+                    this.disabled = dataDetail.status === 0 || dataDetail === 'default';
                     let obj = {id:dataDetail.id};
                     this.clearInfo();
                     // 获取更新id
@@ -628,7 +662,6 @@
                 }
             },
             delFlowNorm(index,i){
-//                console.log(131,this.fstandard[index])
                 this.fstandard[index].require.splice(i,1);
             },
             flowAddShow(index){
@@ -662,13 +695,18 @@
                 this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
             },
             /*添加规范*/
-            async addNorms() {
-                let {data} = await api.addNorm({name: this.normValue});
+            async addNorms(val) {
+                this.callbackStatus = false;
+                let {data} = await api.addNorm({name: val});
                 if (data.err_code === 0) {
+                    this.callbackStatus = true;
+                    this.$Message.success('添加成功！');
                     this.modal1 = false;
                     this.normValue = '';
-                    this.getNormslist()
+                    this.getNormslist();
+
                 } else {
+                    this.callbackStatus = false;
                     this.$Message.error(data.err_message);
                 }
             },
@@ -731,6 +769,51 @@
      @red :red;
      @red :red;
      @step:#ffcc00;
+     @r_green:#3bceb6;
+     @r_textcolor:#bebebe;
+     @r_green:#3bceb6;
+     @r_textcolor:#bebebe;
+     /*UI改版样式开始*/
+     .taskClassLibrary{
+         .taskClassLiHeader{
+             display: flex;justify-content: space-between;align-items: center;background: #c4f0e9;padding: 15px 40px;
+             span{font-size: 14px;color: @r_green};
+             button{background: @r_green;color: #fff;border: 0;font-size: 13px;padding: 8px 30px;border-radius: 3px}
+         };
+         .taskClassLiContener{
+             padding: 30px 40px;
+             .titleH2{font-weight: lighter;color: @r_textcolor;font-size: 15px}
+             .stepCentral{
+                 margin-top: 30px;padding-right: 30px;
+             }
+             .stepContainer{
+                 .ivu-steps-main{
+                     width: 100%!important;
+                     .stepRight{
+                         margin-left: 65px !important;margin-top: 10px;
+                         .title{left: -20px !important;z-index: 0!important;}
+                     }
+                 }
+             }
+             .addguifan{width: 20px;height: 20px;border: 1px solid orange;text-align: center;line-height: 18px;border-radius: 100%;color: orange}
+             .contenerRight{
+                 padding-left: 30px;border-left: 1px dashed #e1e1e1;
+                 ul li{
+                     margin-bottom: 30px;
+                     .titleFloat{display: flex;justify-content: space-between};
+                     .ivu-input{border-bottom: 1px solid #e2e3e4;}
+                 }
+
+             }
+         }
+     }
+     /*UI改版样式结束*/
+
+
+     .stepContainer{
+         .ivu-steps-main{width: 100%!important;}
+
+     }
     .taskClassLibrary {
         .ivu-steps-vertical ,.ivu-steps-item{
             min-height: 102px !important;
@@ -765,27 +848,29 @@
         .btn {
             width: 221px;
             height: 32px;
+            line-height: 32px;
+            text-align: center;
             color: #657180;
             background: #fff;
             border: none;
-            border-bottom: 1px solid @gray;
+            border-bottom: 1px solid #e2e3e4;
             cursor: pointer;
             overflow: hidden;
             &:focus {
                 box-shadow: none;
-
                 outline: none;
             }
         }
         .ivu-input {
             border-radius: 0;
             border: none;
-            border-bottom: 1px solid @gray;
+            /*<!--border-bottom: 1px solid @r_green;-->*/
             &:focus {
                 outline: none;
                 box-shadow: none;
             }
         }
+        .borderBottomSty{border-bottom: 1px solid #e2e3e4;}
         .ivu-steps-main {
             overflow: visible !important;
         }
@@ -795,7 +880,8 @@
             .taskTypeNameBox {
                 position: absolute;
                 top: 31px;
-                left: 300px;
+                right: -35px;
+                /*left: 300px;*/
                 width: 221px;
                 text-align: center;
                 border: 1px solid #ccc;
@@ -832,10 +918,10 @@
             .ivu-steps.ivu-steps-small,.ivu-steps-head-inner{
                 width: 40px !important;
                 height: 40px !important;
-                line-height: 40px !important;
+                line-height: 30px !important;
                 font-size: 16px !important;
-                background: @step !important;
-                border: 1px solid transparent !important;
+                background: @r_green !important;
+                border: 5px solid #c5f0ea !important;
                 span{
                     color: #fff !important;
                 }
@@ -851,9 +937,9 @@
             /*步骤条title*/
             .title {
                 position: absolute;
-                top: 40px;
+                top: 30px;
                 left: -78px;
-                width: 100px;
+                width: 80px;
                 height: 23px;
                 text-align: center;
                 font-size: 14px;
@@ -862,6 +948,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 background: #fff;
+                z-index: 0;
                 .ivu-input-icon + .ivu-input {
                     height: 21px;
                     padding: 0;
@@ -875,7 +962,7 @@
             .acmSign {
                 position: absolute;
                 top: 63px;
-                left: -56px;
+                left: -5px;
                 width: 53px;
                 height: 18px;
                 padding: 0 2px;
@@ -886,7 +973,7 @@
                 border-radius: 6px;
             }
             .stepsUl {
-                padding-left: 35px;
+                /*padding-left: 35px;*/
                 margin-bottom: 10px;
                 .stepsList {
                     display: flex;
@@ -898,7 +985,7 @@
                         padding: 10px;
                         margin-left: 10px;
                         font-size: 16px;
-                        opacity: 0;
+                        opacity: 1;
                         cursor: pointer;
                     }
                     .standard {
@@ -906,6 +993,7 @@
                         height: 32px;
                         margin: 0 20px;
                         vertical-align: middle;
+                        .ivu-select-selection{border: 1px solid @r_green;text-align: center;color: @r_green}
                         .ivu-select-selection, .ivu-select-selected-value, .ivu-select-placeholder {
                             height: 32px;
                             line-height: 32px;
@@ -916,12 +1004,12 @@
                         /*top:9px;*/
                         /*right: -52px;*/
                         .priority {
-                            width: 42px;
-                            height: 42px;
-                            margin-bottom: 4px;
+                            width: 36px;
+                            height: 36px;
+                            /*margin-bottom: 4px;*/
                             font-size: 12px;
                             text-align: center;
-                            line-height: 42px;
+                            line-height: 36px;
                             background-color: #fff;
                             border-radius: 50%;
                             vertical-align: middle;
@@ -943,7 +1031,7 @@
                         .priorityList {
                             display: none;
                             position: absolute;
-                            top: 46px;
+                            top: 36px;
                             left: 0;
                             z-index: 2;
                             background: #fff;
@@ -966,7 +1054,7 @@
     }
 
     .spaceTb {
-        padding: 21px 21px;
+        /*padding: 21px 21px;*/
     }
 
     .layout-logo {

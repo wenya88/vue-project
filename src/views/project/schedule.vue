@@ -30,58 +30,58 @@
 
       <!-- 项目进度左侧 -->
       <div class="projectPlanLeft" style="height: 882px;overflow: auto;" >
-        <div class="projectPlanList">
-            <Row>
-                <Col span="16">
-                  <Row>
-                    <Col span="6" class="listTitle">
-                      <i-circle :percent="proPanData" :trail-width="12" :stroke-width="11" stroke-color="#44aa00">
-                          <span class="demo-Circle-inner" style="font-size:24px">{{proPanData}}%</span>
-                      </i-circle><br/>
-                      <span>项目进度</span>
-                    </Col>
-                    <Col span="18" class="listLine">
-                        <div class="line">
-                            <div class="title">时间进度</div>
-                            <div class="lineRow"><Progress :percent="ProTiemDate|filtePressTiem" :stroke-width="16">{{ProTiemDate|filteTime}}</Progress></div>
-                            <div class="clear"></div>
-                        </div>
-                        <div class="line">
-                            <div class="title">即将完成</div>
-                            <div class="lineRow"><Progress :percent="ProFinhData" :stroke-width="16"></Progress></div>
-                            <div class="clear"></div>
-                        </div>
-                        <div class="line">
-                            <div class="title">剩余时间</div>
-                            <div class="lineRow"><Progress :percent="ProSytsData" :stroke-width="16"><span>{{ProSytsData}}天</span></Progress></div>
-                            <div class="clear"></div>
-                        </div>
-                    </Col>
-                  </Row>
-                    
-                </Col>
-                <Col span="8">
-                      <Row>
-                          <Col span="12" class="statis">
-                                <div class="statisTip statisTip3">
-                                     <span>{{ProPauseNum}}</span><em>个</em>
-                                </div>
-                                <div class="statisTitle">
-                                  暂停中任务
-                                </div>
-                          </Col>
-                          <Col span="12" class="statis">
-                                <div class="statisTip statisTip2">
-                                     <span>{{ProTaskData}}</span><em>个</em>
-                                </div>
-                                <div class="statisTitle">
-                                  实施中任务
-                                </div>
-                          </Col>
-                      </Row>
-                </Col>
-            </Row>
-        </div>
+        <!--<div class="projectPlanList">-->
+            <!--<Row>-->
+                <!--<Col span="16">-->
+                  <!--<Row>-->
+                    <!--<Col span="6" class="listTitle">-->
+                      <!--<i-circle :percent="proPanData" :trail-width="12" :stroke-width="11" stroke-color="#44aa00">-->
+                          <!--<span class="demo-Circle-inner" style="font-size:24px">{{proPanData}}%</span>-->
+                      <!--</i-circle><br/>-->
+                      <!--<span>项目进度</span>-->
+                    <!--</Col>-->
+                    <!--<Col span="18" class="listLine">-->
+                        <!--<div class="line">-->
+                            <!--<div class="title">时间进度</div>-->
+                            <!--<div class="lineRow"><Progress :percent="ProTiemDate|filtePressTiem" :stroke-width="16">{{ProTiemDate|filteTime}}</Progress></div>-->
+                            <!--<div class="clear"></div>-->
+                        <!--</div>-->
+                        <!--<div class="line">-->
+                            <!--<div class="title">即将完成</div>-->
+                            <!--<div class="lineRow"><Progress :percent="ProFinhData" :stroke-width="16"></Progress></div>-->
+                            <!--<div class="clear"></div>-->
+                        <!--</div>-->
+                        <!--<div class="line">-->
+                            <!--<div class="title">剩余时间</div>-->
+                            <!--<div class="lineRow"><Progress :percent="ProSytsData" :stroke-width="16"><span>{{ProSytsData}}天</span></Progress></div>-->
+                            <!--<div class="clear"></div>-->
+                        <!--</div>-->
+                    <!--</Col>-->
+                  <!--</Row>-->
+                    <!---->
+                <!--</Col>-->
+                <!--<Col span="8">-->
+                      <!--<Row>-->
+                          <!--<Col span="12" class="statis">-->
+                                <!--<div class="statisTip statisTip3">-->
+                                     <!--<span>{{ProPauseNum}}</span><em>个</em>-->
+                                <!--</div>-->
+                                <!--<div class="statisTitle">-->
+                                  <!--暂停中任务-->
+                                <!--</div>-->
+                          <!--</Col>-->
+                          <!--<Col span="12" class="statis">-->
+                                <!--<div class="statisTip statisTip2">-->
+                                     <!--<span>{{ProTaskData}}</span><em>个</em>-->
+                                <!--</div>-->
+                                <!--<div class="statisTitle">-->
+                                  <!--实施中任务-->
+                                <!--</div>-->
+                          <!--</Col>-->
+                      <!--</Row>-->
+                <!--</Col>-->
+            <!--</Row>-->
+        <!--</div>-->
         
         <!-- Echart -->
         <div class="projectEchart">

@@ -24,7 +24,7 @@
       }
       if (data.action === 'login') {
         localStorage.userMsg = JSON.stringify(data)
-      } 
+      }
       if (data.action === 'notice') {
         var list = store.state.noticeList
         if (localStorage.noticeList) {
@@ -65,6 +65,22 @@
         // console.log('数据1', JSON.stringify(list))
         store.state.useList = list
         localStorage.useList = JSON.stringify(list)
+      }
+      if(data.action === 'download_url'){
+        if(data.download_url){
+            if(data.busi_type == 'task'){
+                store.state.downComplateArr.push({
+                    id:data.busi_id,
+                    type:data.busi_type,
+                    status:false
+                })
+            }else {
+                store.state.downloadStatus = true;
+            }
+            var a = document.createElement('a');
+            a.href = data.download_url;
+            a.click();
+        }
       }
     }
     /*连接发生错误时*/

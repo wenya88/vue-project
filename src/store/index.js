@@ -23,9 +23,13 @@ const store = new Vuex.Store({
        blob: false,
        file: {},
        msgNum: !localStorage.msgNum ? "0" : localStorage.msgNum,
+        downloadStatus:false,
+        downComplateArr:[]
     },
     mutations: {
-        //
+        resetArr(state,falg){
+            state.downComplateArr.splice(0,1);
+        }
     },
     actions: {
 

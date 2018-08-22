@@ -51,9 +51,9 @@
           </div>
           <!-- 反馈信息 -->
           <div v-if="SataeInfo" class="feedbackInfo">
-            <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
-            <span><p>时间</p><br/>{{insTime>cliTiem?insDate:cliDate}}</span>
-            <span><p>审核人</p><br/></span>
+            <span><p>状态</p><br/>{{StateFeedBack | filtStat}}</span>
+            <span><p>等待时间</p><br/><Icon type="android-time"></Icon><span style="color: #3bceb6">{{insTime > cliTiem ? insDate : cliDate}}</span></span>
+            <span><p>审核人</p><br/><i  class="iconfont icon-hezuobaoxiangongsi"  style="vertical-align: text-bottom;font-size: 18px;"></i></span>
             <div class="clear"></div>
           </div>
       </div>

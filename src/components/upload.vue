@@ -70,6 +70,8 @@
             return {
                 uploadKey: null,
                 imgsrc: '',
+                files:null,
+                num:0,
             }
         },
         methods: {
@@ -99,7 +101,7 @@
                     filters: {
                         mime_types: this.fileType,
                         max_file_size: this.maxFileSize, //最大只能上传10mb的文件
-                        prevent_duplicates: this.preventDuplicates //不允许选取重复文件
+//                        prevent_duplicates: this.preventDuplicates //不允许选取重复文件
                     },
                 });
                 // 初始化
@@ -108,32 +110,32 @@
                 uploader.bind('UploadProgress',  (uploader, file) => {
 
                 });
-                var fs;
-                var xh = 1;
+
                 /*上传*/
                 uploader.bind('FilesAdded', (uploader, files) => {
-                    fs = files;
-//                    this.setFilenum(files.length);
+                    this.files = files;
+                    this.num = 0;
+                    this.setFilenum(files.length);
                     this.clearfileUrl();
-                    if(!this.uploadKey){
-                        this.getImgkey()
-                            .then(() => {
-                                var configure = {
-                                    'url': this.uploadKey.host,
-                                    'multipart_params': {
-                                        'key': this.uploadKey.dir + files[0].name+'pp',
-                                        'policy': this.uploadKey.policy,
-                                        'OSSAccessKeyId': this.uploadKey.accessid,
-                                        'success_action_status': '200', //让服务端返回200,不然，默认会返回204
-                                        'callback': this.uploadKey.callback,
-                                        'signature': this.uploadKey.signature,
-                                    }
-                                };
-                                uploader.setOption(configure);  //传入签名
-                                uploader.start(); // 实例化上传
 
-                            })
-                    }
+                    this.getImgkey()
+                        .then(() => {
+                            var configure = {
+                                'url': this.uploadKey.host,
+                                'multipart_params': {
+                                    'key': this.uploadKey.dir + files[0].name,
+                                    'policy': this.uploadKey.policy,
+                                    'OSSAccessKeyId': this.uploadKey.accessid,
+                                    'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                                    'callback': this.uploadKey.callback,
+                                    'signature': this.uploadKey.signature,
+                                }
+                            };
+                            uploader.setOption(configure);  //传入签名
+                            uploader.start(); // 实例化上传
+
+                        })
+
 
                 });
                 // 图片上传完触发
@@ -143,20 +145,37 @@
                 });
                 // 图片上传成功回调
                 uploader.bind('FileUploaded', (uploader, files, data) => {
-                    console.log(fs)
-                    var configure = {
-                        'url': this.uploadKey.host,
-                        'multipart_params': {
-                            'key': this.uploadKey.dir + fs[xh].name,
-                            'policy': this.uploadKey.policy,
-                            'OSSAccessKeyId': this.uploadKey.accessid,
-                            'success_action_status': '200', //让服务端返回200,不然，默认会返回204
-                            'callback': this.uploadKey.callback,
-                            'signature': this.uploadKey.signature,
-                        }
-                    };
+                    let configure = null;
+                    if(this.files.length>1){
+                        this.num+=1;
+                        let name = this.files[this.num]?this.files[this.num].name:this.files[this.num-1]
+                        configure = {
+                            'url': this.uploadKey.host,
+                            'multipart_params': {
+                                'key': this.uploadKey.dir +name,
+                                'policy': this.uploadKey.policy,
+                                'OSSAccessKeyId': this.uploadKey.accessid,
+                                'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                                'callback': this.uploadKey.callback,
+                                'signature': this.uploadKey.signature,
+                            }
+                        };
+                    }else{
+                        configure = {
+                            'url': this.uploadKey.host,
+                            'multipart_params': {
+                                'key': this.uploadKey.dir +files.name,
+                                'policy': this.uploadKey.policy,
+                                'OSSAccessKeyId': this.uploadKey.accessid,
+                                'success_action_status': '200', //让服务端返回200,不然，默认会返回204
+                                'callback': this.uploadKey.callback,
+                                'signature': this.uploadKey.signature,
+                            }
+                        };
+                    }
+
                     uploader.setOption(configure);  //传入签名
-                    xh++;
+
 
                     let obj = {uploader: uploader, files: files, data: data};
                     this.imgsrc = JSON.parse(data.response);

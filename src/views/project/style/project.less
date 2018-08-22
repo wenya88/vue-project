@@ -34,11 +34,11 @@
   //   position: absolute;
   // }
   .ivu-col-span-6{
-    padding: 10px 0;
+    //padding: 10px 0;
     //width: calc(100% / 6);
     min-width: 318px;
     .card{
-      border: 1px solid @gray;
+      border: 1px solid transparent;
       // border-radius: 5px;
       border-bottom-right-radius: 5px;
       border-bottom-left-radius: 5px;
@@ -67,11 +67,11 @@
           // height: 36px;
           line-height: 36px;
           bottom: 0;
-          background: rgba(0, 0, 0, .8);
+          background: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .8));
           color: @white;
           padding: 0 10px 10px 10px;
-          box-shadow: 0px -6px 6px 0px rgba(0, 0, 0, .8);
-          //display: none;
+          box-shadow: 0px -2px 3px 0px rgba(0, 0, 0, .3);
+          display: none;
           .tag{
             background: @orange;
             padding: 2px 5px;
@@ -82,7 +82,7 @@
           }
           .userImg{
             flex: 1;
-            min-width: 100px;
+            //min-width: 100px;
             text-align: center;
             img{
               width: 40px;
@@ -103,7 +103,7 @@
         display: block;
       }
       &-table{
-        flex:1.7;
+        flex:2.5;
         //width: 95%;
         margin: 0 auto;
         line-height: 18px;
@@ -235,6 +235,7 @@
     float: left;
     width: 100%;
     background: #fff;
+    padding-bottom: 50px;
   }
   .message{
     width: 554px;
@@ -328,11 +329,16 @@
         }
       }
       .allDownBtn{
-        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;
+        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;width: 100px;
         button{
-          border: 0;color: #fff;outline: none;cursor: pointer;
-          background: url("../proStat/image/searchIcons.png") no-repeat @green;
-          background-position-y: -70px;padding-left: 20px;
+          border: 0;color: #fff;outline: none;cursor: pointer;background: @green;width: 100%;
+          .downbtn{
+            background: url("../proStat/image/searchIcons.png") no-repeat @green;
+            background-position-y: -70px;padding-left: 20px;
+          }
+          i{font-style: normal;
+            &:after{content: "\F29C";color: #fff;font-size: 15px;padding: 0 5px}
+          }
         }
       }
     }
@@ -386,8 +392,9 @@
       width: 120px;
       height: 120px;
       margin: 36px;
+      cursor: pointer;
       .text{
-        background: #deeeee;
+        //background: #deeeee;
         width: 87px;
         height: 87px;
         border-radius: 50%;
