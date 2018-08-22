@@ -1,62 +1,36 @@
 <style lang="less">
 @import './login.less';
-.loginFooder{
-    position:fixed;z-index:1111;width:100%;color:#fff;bottom:10px;text-align:center;
-}
 </style>
 
 <template>
     <div class="login">
-        <div class="login-purple" :style="`border-top:${bodyHight}px solid #544c93`"></div>
+        <div class="login-purple" :style="`border-top:${bodyHight}px solid #3bceb6`"></div>
         <div class="bg" :style="`height:${bodyHight}px`"></div>
-        <div class="login-yellow" :style="`border-bottom:${bodyHight}px solid #ffbe36`"></div>
-        <div class="login-con"  >
-            <div class="title" v-if="isRegister">注册
-                <span @click="changeMode('register')">登录</span>
-            </div>
-            <div class="title" v-else>登录
-                <span @click="changeMode('login')">
-                    <Icon type="person-add"></Icon> 注册</span>
-            </div>
+        <div class="login-yellow" :style="`border-bottom:${bodyHight}px solid #fff`"></div>
+        <div class="login-con">
+            <div class="loginFooder">蜀ICP备18023414号</div>
+            <div class="form-bannger"></div>
+            <!-- 注册 -->
             <div class="form-con" v-if="isRegister" @keydown.enter="onRegister()">
-                <Form ref="register" :model="register" :rules="ruleCustom">
-                    <FormItem prop="userName">
-                        <div class="itemname">邮箱账号</div>
-                        <Input v-model="register.userName" placeholder="请输入邮箱账号"></Input>
-                    </FormItem>
-                    <FormItem prop="passwd">
-                        <div class="itemname">密码</div>
-                        <Input v-model="register.passwd" :type="pwpic.pwdType" placeholder="请输入密码"></Input>
-                        <img :src="pwpic.src" @click="changeType()" />
-                    </FormItem>
-                    <FormItem prop="passwdCheck">
-                        <div class="itemname">再次输入密码</div>
-                        <Input v-model="register.passwdCheck" :type="pwpic2.pwdType2" placeholder="请再次输入密码"></Input>
-                        <img :src="pwpic2.src" @click="changeType2()" />
-                    </FormItem>
-                    <FormItem>
-                        <Button @click="onRegister()" type="primary" long>注 册</Button>
-                    </FormItem>
-                </Form>
+                <div class="form-con-logoImg">欢迎加入斑驳</div>
+                <reg-ister></reg-ister>
+                <div>
+                    <Button @click="onRegister()" type="primary" long>注 册</Button>
+                    <p class="loginText">已有帐号，去<span @click="changeMode('register')">登录</span></p>
+                </div>
             </div>
+
+            <!-- 登录 -->
             <div class="form-con" v-else @keydown.enter="onSubmit()">
-                <Form ref="login" :model="loginform" :rules="rules">
-                    <FormItem prop="email">
-                        <div class="itemname">邮箱账号</div>
-                        <Input v-model="loginform.email" placeholder="请输入邮箱账号"></Input>
-                    </FormItem>
-                    <FormItem prop="password">
-                        <div class="itemname">密码</div>
-                        <Input v-model="loginform.password" :type="pwpic3.pwdType3" placeholder="请输入密码"></Input>
-                        <img :src="pwpic3.src" @click="changeType3()" />
-                    </FormItem>
-                    <FormItem>
-                        <Button @click="onSubmit()" type="primary" long>登 录</Button>
-                    </FormItem>
-                </Form>
+                <div class="form-con-logoImg">欢迎登录斑驳</div>
+                <login-com></login-com>
+                <div>
+                    <Button @click="onSubmit()" type="primary" long>登 录</Button>
+                    <p class="loginText">没有帐号，去<span @click="changeMode('login')">注册</span></p>
+                </div>
             </div>
         </div>
-        <div class="loginFooder">蜀ICP备18023414号</div>
+       
     </div>
 </template>
 
@@ -66,85 +40,22 @@ var jsencrypt = require('jsencrypt');
 var md5 = require('md5');
 import axios from 'axios'
 import Cookies from 'js-cookie';
-
-import src from '../images/close_eyes.png'
-import src2 from '../images/open_eyes.png'
-// import { getPublicKey } from '../server/index'
+// import { getPublicKey } from '../server/index';
+import regIster from './login/register';
+import loginCom from './login/loginCom';
 export default {
     data() {
-        var validateUserName = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('账号不能为空'));
-            }
-        }
-        var validatePass = (rule, value, callback) => {
-            // console.log(rule,value)
-            if (value === '') {
-                callback(new Error('请输入密码'));
-            } else {
-                if (this.register.passwd !== '') {
-                    // 对第二个密码框单独验证
-                    this.$refs.register.validateField('passwdCheck');
-                }
-                callback();
-            }
-        };
-        var validatePassCheck = (rule, value, callback) => {
-            // console.log(rule,value)
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.register.passwd) {
-                callback(new Error('两次密码不一致!'));
-            } else {
-                callback();
-            }
-        };
         return {
             isRegister: false,
             bodyHight: 500,
             publicKey: '',
-            pwpic: {
-                pwdType: "password",
-                src
-            },
-            pwpic2: {
-                pwdType2: "password",
-                src
-            },
-            pwpic3: {
-                pwdType3: "password",
-                src
-            },
-            loginform: {
-                email: '',
-                password: ''
-            },
-            register: {
-                userName: '',
-                passwd: '',
-                passwdCheck: ''
-            },
-            rules: {
-                email: [
-                    { required: true, message: '账号不能为空', trigger: 'blur' }
-                ],
-                password: [
-                    { required: true, message: '密码不能为空', trigger: 'blur' }
-                ]
-            },
-            ruleCustom: {
-                userName: [
-                    // { required: true, message: '账号不能为空', trigger: 'blur' }
-                    { validator: validateUserName, trigger: 'blur' }
-                ],
-                passwd: [
-                    { validator: validatePass, trigger: 'blur' }
-                ],
-                passwdCheck: [
-                    { validator: validatePassCheck, trigger: 'blur' }
-                ]
-            }
+            register:{},
+            loginform:{}
         };
+    },
+    components:{
+        regIster:regIster,
+        loginCom:loginCom
     },
     /**
      * 页面加载前
@@ -162,7 +73,13 @@ export default {
     mounted() {
         this.fetchKey();
         localStorage.removeItem('msgShow')
-        this.$store.state.msgShow = false
+        this.$store.state.msgShow = false;
+        this.$bus.on('registerData',val=>{
+            this.register=val;
+        });
+        this.$bus.on('loginData',val=>{
+            this.loginform=val;
+        })
     },
     methods: {
         // 链接websoket
@@ -194,27 +111,32 @@ export default {
             let encrypt = new JSEncrypt();
             encrypt.setPublicKey(this.publicKey);
             let password = encrypt.encrypt(md5(md5(this.register.passwd)));
+            let pattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
             let data = {
                 account: this.register.userName,
                 password: password
             };
-            this.$refs.register.validate((valid) => {
-                if (valid) {
-                    this.$axios.post(this.GLOBAL.baseRouter + 'system/login/register', qs.stringify(data))
-                        .then(res => res.data)
-                        .then(res => {
-                            if (res.err_code == 0) {
-                                this.loginform.userName = this.register.userName;
-                                this.loginform.password = this.register.passwd;
-                                this.onSubmit();
-                            } else {
-                                this.$Message.warning(res.err_message);
-                            }
-                        })
-                } else {
-                    this.$Message.error('Fail!');
-                }
-            });
+            if(this.register.passwd==''||this.register.passwdCheck==''){
+                this.$Message.error('密码不能为空!');
+                return 
+            }else if(this.register.passwd!=this.register.passwdCheck){
+                this.$Message.error('两次密码不一致!');
+                return 
+            }else if(!pattern.test(this.register.userName)){
+                this.$Message.error('用户名须为邮箱帐号！');
+                return 
+            }
+            this.$axios.post(this.GLOBAL.baseRouter + 'system/login/register', qs.stringify(data))
+                .then(res => res.data)
+                .then(res => {
+                    if (res.err_code == 0) {
+                            this.loginform.email = this.register.userName;
+                            this.loginform.password = this.register.passwd;
+                            this.onSubmit();
+                    } else {
+                        this.$Message.warning(res.err_message);
+                    }
+            })
         },
         onSubmit() {
             let encrypt = new JSEncrypt();
@@ -224,10 +146,8 @@ export default {
                 account: this.loginform.email,
                 password: password
             };
-            this.$refs.login.validate((valid) => {
-                if (valid) {
-                    // Cookies.set('password', this.form.password);
-                    this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))
+            // Cookies.set('password', this.form.password);
+            this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
@@ -244,30 +164,13 @@ export default {
                         } else {
                             this.$Message.warning(res.err_message);
                         }
-                    })
+            })
                     // Cookies.set('user', this.form.userName);
                     // this.$router.push({
                     //     name: 'home_index'
                     // });
-                }
-            });
-        },
-        changeType() {
-            this.pwpic.pwdType = this.pwpic.pwdType === 'password' ? 'text' : 'password';
-            this.pwpic.src = this.pwpic.src == src ? src2 : src;
-        },
-        changeType2() {
-            this.pwpic2.pwdType2 = this.pwpic2.pwdType2 === 'password' ? 'text' : 'password';
-            this.pwpic2.src = this.pwpic2.src == src ? src2 : src;
-        },
-        changeType3() {
-            this.pwpic3.pwdType3 = this.pwpic3.pwdType3 === 'password' ? 'text' : 'password';
-            this.pwpic3.src = this.pwpic3.src == src ? src2 : src;
         }
     }
 };
 </script>
 
-<style>
-
-</style>

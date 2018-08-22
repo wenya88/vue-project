@@ -1,6 +1,5 @@
 <template>
         <div class="contractRow">
-            <GeminiScrollbar>
                 <dl>
                     <dd v-for="(item,index) in contData" :key="index">
                         <div class="statusRow">
@@ -38,7 +37,6 @@
                         </div>
                     </dd>
                 </dl>
-            </GeminiScrollbar>
         </div>
 </template>
 <script>
