@@ -12,6 +12,7 @@
                 @click="changeType3()">
             </span>
         </FormItem>
+        <div class="errorHint" v-if="errorHint.hintFlag"><span class="iconfont icon-cuowu1"></span>{{errorHint.hintData}}</div>
     </Form>
 </template>
 <script>
@@ -25,6 +26,10 @@ export default {
                 email: '',
                 password: ''
             },
+            errorHint:{
+                hintFlag:false,
+                hintData:''
+            }
         }
     },
     mounted(){
@@ -34,6 +39,10 @@ export default {
        this.upDate(); 
     },
     methods:{
+        errorInfo(data){
+            this.errorHint.hintData=data;
+            this.errorHint.hintFlag=true;
+        },
         upDate(){
             this.$bus.emit('loginData',this.loginform)
         },

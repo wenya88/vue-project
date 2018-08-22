@@ -13,7 +13,7 @@
             <!-- 注册 -->
             <div class="form-con" v-if="isRegister" @keydown.enter="onRegister()">
                 <div class="form-con-logoImg">欢迎加入斑驳</div>
-                <reg-ister></reg-ister>
+                <reg-ister ref="regError"></reg-ister>
                 <div>
                     <Button @click="onRegister()" type="primary" long>注 册</Button>
                     <p class="loginText">已有帐号，去<span @click="changeMode('register')">登录</span></p>
@@ -23,7 +23,7 @@
             <!-- 登录 -->
             <div class="form-con" v-else @keydown.enter="onSubmit()">
                 <div class="form-con-logoImg">欢迎登录斑驳</div>
-                <login-com></login-com>
+                <login-com ref="loginError"></login-com>
                 <div>
                     <Button @click="onSubmit()" type="primary" long>登 录</Button>
                     <p class="loginText">没有帐号，去<span @click="changeMode('login')">注册</span></p>
@@ -117,13 +117,13 @@ export default {
                 password: password
             };
             if(this.register.passwd==''||this.register.passwdCheck==''){
-                this.$Message.error('密码不能为空!');
+                this.$refs.regError.errorInfo('密码不能为空');
                 return 
             }else if(this.register.passwd!=this.register.passwdCheck){
-                this.$Message.error('两次密码不一致!');
+                this.$refs.regError.errorInfo('两次密码不一致');
                 return 
             }else if(!pattern.test(this.register.userName)){
-                this.$Message.error('用户名须为邮箱帐号！');
+                this.$refs.regError.errorInfo('用户名须为邮箱帐号！');
                 return 
             }
             this.$axios.post(this.GLOBAL.baseRouter + 'system/login/register', qs.stringify(data))
@@ -134,7 +134,7 @@ export default {
                             this.loginform.password = this.register.passwd;
                             this.onSubmit();
                     } else {
-                        this.$Message.warning(res.err_message);
+                        this.$refs.regError.errorInfo(res.err_message);
                     }
             })
         },
@@ -162,7 +162,7 @@ export default {
                             this.$router.push('/home/home')
                             this.$store.dispatch('getMenulistRole');
                         } else {
-                            this.$Message.warning(res.err_message);
+                            this.$refs.loginError.errorInfo(res.err_message);
                         }
             })
                     // Cookies.set('user', this.form.userName);
