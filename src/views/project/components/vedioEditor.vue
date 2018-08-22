@@ -157,10 +157,10 @@
                                          <!--style="vertical-align: text-bottom;font-size: 18px;"></i>{{insTime > cliTiem ? insUid : cliUid}}</span>-->
                 <!--<div class="clear"></div>-->
             <!--</div>-->
-        <!--</div>-->
+        </div>
 
 
-            <feedback-Info v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
+            <!--<feedback-Info v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>-->
         <img id="img" :src="img" style="opacity:0" alt="">
         <Modal
                 v-model="saveCanvasShow"
