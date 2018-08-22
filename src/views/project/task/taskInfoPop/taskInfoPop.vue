@@ -16,12 +16,13 @@
                 <TabPane label="基本管理" style="height: 800px;overflow-y: auto">
                     <div v-show="isInitTask">
                         <maintask ref="main"
+                                  v-on:buttonShow="saveShow"
                                   v-on:sendSubTaskList="sendSubTaskList"
                                   v-on:sendLogData="sendLogData"
                                   taskManagement="true"
                         >
                         </maintask>
-                        <div class="save" >
+                        <div v-if="saveButtonShow" class="save" >
                             <Button @click="saveTaskDetail" type="success">保存</Button>
                         </div>
                     </div>
@@ -74,13 +75,16 @@
         mounted() {
             this.initTaskDetail();
             this.initTaskDetailProjecInfo();
+
         },
         beforeDestroy(){
             /*清空 让左侧菜单显示*/
-            this.setDetailAll(null)
+            this.setDetailAll(null);
+            this.setUserStatus(null);
         },
         data() {
             return {
+                saveButtonShow:false, // 保存按钮
                 editDataName:null,
                 subtaskInfo: null,
                 taskId: 0,
@@ -259,6 +263,9 @@
                 this.setPrimaryMission(null);
                 this.setUserStatus(null);
                 this.$router.back(-1)
+            },
+            saveShow(){
+                this.saveButtonShow = true;
             }
         },
         computed:{

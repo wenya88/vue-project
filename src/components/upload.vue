@@ -115,7 +115,7 @@
                 uploader.bind('FilesAdded', (uploader, files) => {
                     this.files = files;
                     this.num = 0;
-//                    this.setFilenum(files.length);
+                    this.setFilenum(files.length);
                     this.clearfileUrl();
 
                     this.getImgkey()

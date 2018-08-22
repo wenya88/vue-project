@@ -160,6 +160,7 @@ import {mapMutations} from 'vuex'
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
 import threeModule from '../project/components/threeModule.vue'
+
 // import {mapState} from 'vuex'
 export default {
   data () {
@@ -223,13 +224,14 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setDetailAll']),
+    ...mapMutations(['setDetailAll','setUserStatus']),
     //跳转业务详情
     goTask(id) {
       const item = {
         id: id
       }
       this.setDetailAll(item)
+        this.setUserStatus('member');
       this.$router.push('/project/details')
     },
     // 确定开始

@@ -117,46 +117,51 @@
                     <span class="middleBox"> <i class="middle " @click="changelineWidth(5)"></i></span>
                     <span class="bigBox"> <i class="big " @click="changelineWidth(8)"></i></span>
 
-                    <span class="canvasicon" @click="changeColor('#fff')"> <i class="fff" ></i></span>
-                    <span class="canvasicon" @click="changeColor('black')">  <i class="black " ></i></span>
-                    <span class="canvasicon" @click="changeColor('#ff512e')"> <i class="red " ></i></span>
-                    <span class="canvasicon" @click="changeColor('#66DAFF')">  <i class="blue " ></i></span>
-                    <span class="canvasicon" @click="changeColor('#FFB14D')"><i class="orange " ></i></span>
+                    <span class="canvasicon" @click="changeColor('#fff')"> <i class="fff"></i></span>
+                    <span class="canvasicon" @click="changeColor('black')">  <i class="black "></i></span>
+                    <span class="canvasicon" @click="changeColor('#ff512e')"> <i class="red "></i></span>
+                    <span class="canvasicon" @click="changeColor('#66DAFF')">  <i class="blue "></i></span>
+                    <span class="canvasicon" @click="changeColor('#FFB14D')"><i class="orange "></i></span>
                 </template>
                 <Icon v-show="hideSign" @click.native="hideSign = !hideSign" type="eye" class="videoicon"
                       title="显示标记"></Icon>
                 <Icon v-show="!hideSign" @click.native="hideSign = !hideSign" type="eye-disabled" class="videoicon"
                       title="隐藏标记"></Icon>
-                <span  class="saveButton" v-show="isCanvas" @click="saveCanvas" >保存</span>
-                <span  class="saveButton" v-show="isCanvas" @click="clearCanvas" >取消</span>
+                <span class="saveButton" v-show="isCanvas" @click="saveCanvas">保存</span>
+                <span class="saveButton" v-show="isCanvas" @click="clearCanvas">取消</span>
                 <!--<Button  type="text">{{hideSign ? '显示标记' : '隐藏标记'}}</Button>-->
 
             </div>
             <!-- 标注提交 -->
-            <div v-if="AllowEditRow" class="VideoAllowEdit">
-                <i class="project_opinion tagimage"></i>
-                <span style="color: #868788;margin-left: 20px;line-height: 30px;">审核意见</span>
-            <span class="text">
-                <textarea name="" id="EditInput"  placeholder="请输入你要反馈的内容" v-model="FeedbackValue"></textarea>
-                <!--<input type="text"  id="EditInput" v-model="FeedbackValue">-->
-            </span>
-                <span class="EditSub">
-                <button class="actionPost" @click="commitEidt('edit')">需修改</button>
-            </span>
-                <span class="EditSub" v-if="data==null?true:false">
-                <button class="subPass" @click="commitEidt('ok')">通过</button>
-                <em @click="InfoRefresh" id="InfoRefresh"></em>
-            </span>
-            </div>
+            <!--<div v-if="AllowEditRow" class="VideoAllowEdit">-->
+                <!--<i class="project_opinion tagimage"></i>-->
+                <!--<span style="color: #868788;margin-left: 20px;line-height: 30px;">审核意见</span>-->
+                <!--<span class="text">-->
+                <!--<textarea name="" id="EditInput" placeholder="请输入你要反馈的内容" v-model="FeedbackValue"></textarea>-->
+                    <!--&lt;!&ndash;<input type="text"  id="EditInput" v-model="FeedbackValue">&ndash;&gt;-->
+            <!--</span>-->
+                <!--<span class="EditSub">-->
+                <!--<button class="actionPost" @click="commitEidt('edit')">需修改</button>-->
+            <!--</span>-->
+                <!--<span class="EditSub" v-if="data==null?true:false">-->
+                <!--<button class="subPass" @click="commitEidt('ok')">通过</button>-->
+                <!--<em @click="InfoRefresh" id="InfoRefresh"></em>-->
+            <!--</span>-->
+            <!--</div>-->
             <!-- 反馈信息 -->
-            <div v-if="SataeInfo" class="VideofeedbackInfo">
-                <span><p>反馈状态</p><br/>{{StateFeedBack | filtStat}}</span>
-                <span><p>时间</p><br/>{{insTime > cliTiem ? insDate : cliDate}}</span>
-                <span><p>审核人</p><br/>{{insTime > cliTiem ? insUid : cliUid}}</span>
-                <div class="clear"></div>
-            </div>
-            <img id="img" :src="img" style="opacity:0" alt="">
-        </div>
+            <!--<div v-if="SataeInfo" class="VideofeedbackInfo">-->
+                <!--<span><p>状态</p><br/>{{StateFeedBack | filtStat}}</span>-->
+                <!--<span><p>等待时间</p><br/><Icon type="android-time"></Icon><span-->
+                        <!--style="color: #3bceb6">{{insTime > cliTiem ? insDate : cliDate}}</span></span>-->
+                <!--<span><p>审核人</p><br/> <i class="iconfont icon-hezuobaoxiangongsi"-->
+                                         <!--style="vertical-align: text-bottom;font-size: 18px;"></i>{{insTime > cliTiem ? insUid : cliUid}}</span>-->
+                <!--<div class="clear"></div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+
+            <feedback-Info v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
+        <img id="img" :src="img" style="opacity:0" alt="">
         <Modal
                 v-model="saveCanvasShow"
                 title="画布保存"
@@ -174,9 +179,12 @@
     import api from 'api'
     //import {baseUrl, deletetaskData} from '../../../config/env.js';
     var qs = require('querystring');
+    import feedbackInfo from './feedbackInfo.vue'
+
     export default {
         data() {
             return {
+                fileId:null,
                 highlightSign: null,
                 hideSign: false,
                 labelHighlight: null,
@@ -587,6 +595,7 @@
                                 _this.liIndex = index;
                                 _this.fileID = val.file.id;
                                 _this.stageID = val.file.stage_id;
+                                this.fileId = val.file.stage_id
                             }
                         })
                         _this.changeState(_this.StateFeedBack)
@@ -1014,6 +1023,9 @@
                 }, 20)
 
             }
+        },
+        components:{
+            feedbackInfo
         }
     }
 </script>
@@ -1164,17 +1176,22 @@
         }
 
     }
-    .project_instrument{
+
+    .project_instrument {
         background: url("../../../images/project_instrument.png") no-repeat;
-    }.project_opinion{
-         background: url("../../../images/project_opinion.png") no-repeat;
-     }
-    .tagimage{
+    }
+
+    .project_opinion {
+        background: url("../../../images/project_opinion.png") no-repeat;
+    }
+
+    .tagimage {
         display: block;
         width: 28px;
         height: 28px;
         background-size: 28px;
     }
+
     .canvasEdit {
         display: flex;
         margin: 20px 0 0 20px;
@@ -1193,7 +1210,7 @@
             background: #fff;
 
         }
-        .videoicon,.canvasicon, .middleBox,.bigBox{
+        .videoicon, .canvasicon, .middleBox, .bigBox {
             &:hover {
                 border: 1px solid #ccc;
             }
@@ -1213,20 +1230,23 @@
             padding: 0 10px;
             font-weight: bold;
             font-size: 18px;
-            cursor:default;
+            cursor: default;
         }
         .editHover, .textHover {
             border: 1px solid #ccc;
         }
-        .middleBox{
-            padding: 5px 6px;background: #fff
-        }.bigBox{
-             padding: 3px 4px;background: #fff
+        .middleBox {
+            padding: 5px 6px;
+            background: #fff
         }
-        .saveButton{
+        .bigBox {
+            padding: 3px 4px;
+            background: #fff
+        }
+        .saveButton {
             padding: 5px 6px;
             background: #fff;
-            cursor: default	;
+            cursor: default;
         }
         .little, .middle, .big {
             display: block;
