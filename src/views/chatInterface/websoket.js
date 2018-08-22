@@ -2,7 +2,6 @@
    import store  from '@/store/index'
    import Cookies from 'js-cookie';
    const wsurl = 'ws:' + Cookies.get('hostName').split(':')[1] + ':8282'
-   console.log('数据', wsurl)
   function connectSocket(msgData) {
     // const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)

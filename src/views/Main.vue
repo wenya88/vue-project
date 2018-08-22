@@ -328,7 +328,9 @@
 <style lang="less">
     @import "./main.less";
 
-
+   .main-header-avator{
+     z-index: 999!important;
+   }
    .main-content{
        ::-webkit-scrollbar {/*滚动条整体样式*/
            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/

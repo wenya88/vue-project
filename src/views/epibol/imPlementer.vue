@@ -1,120 +1,126 @@
 ﻿<template>
    <div class="page_week_all">
-     <div class="clearfix myTaskAll">
-        <div class="my_task_top">
-           <p>我的任务</p>
-        </div>
-        <div class="my_strip"></div>
+     <!-- 左侧 -->
+     <div class="left_tips">
+        <img class='left_img_first' src='../../images/right.png'/>
+        <img class='left_img_last' src='../../images/right.png'/>
      </div>
-     <!-- 显示延期任务 -->
-      <div class="no_left_msgs">
-        <p class="no_msg_lefts"></p>
-        <p class="no_msg_titles">5</p>
-      </div>
-     <!-- 显示未读任务 -->
-      <div class="no_msg">
-        <p class="no_msg_sj"></p>
-        <p class="no_msg_title">5</p>
-      </div>
+     <!-- 右侧 -->
+     <div class="right_tips">
+        <img class='right_img_first' src='../../images/left.png'/>
+        <img class='right_img_last' src='../../images/left.png'/>
+     </div>
+    <p class="myTaskAll"><span class="iconfont icon-ymy-ren-copy"></span>我的任务</p>
      <!-- 未读任务end -->
      <div class="tiemSolt" :style="`height: ${boxHight}`" @mousedown="down">
       <div :style="`width: ${widthAll}`" class="clearfix timeSoltFather">
+         <!-- 时间 -->
+         <div v-for="(item, indexed) in dateList"  :style="`width: ${widths}`" class="times_box" :key="indexed">
+          <span v-show='item.weeks'>{{item.weeks}}</span>
+          <span>{{item.dateStr}}</span>
+        </div>
+         <!-- 时间结束 -->
         <div class="task_ka" :style="`height:${boxHg}`">
          <div class="task_top_box" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
            <div class="task_describe">
              <div class="clearfix task_describe_title">
-               <div class="task_icon">
-                 <p v-show="elems.isDelay">延期</p>
-                 <span class="iconfont icon-bofang" v-show="elems.status == '1'" @click="getAgin(elems)"></span>
-                 <span class="iconfont icon-shangchuandengdai" v-show="elems.status == '2'"></span>
-               </div>
-               <div>
+               <p class="state-introd">{{elems.isComplete}}</p>
+               <div class="task_describe_father">
                  <p class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</p>
-                 <p class="task_describe_sub">{{elems.project_name}}</p>
                </div>
              </div>
-             <p class="task_describe_time">
-               <span>{{elems.workDay}}个工作日</span>
-               <span>{{elems.startDay}}~{{elems.endDay}}</span>
-             </p>
            </div>
            <div class="upload_preview_box"  v-show="elems.status !== '1'"  @click="getUpload(elems)">
-             <p class="iconfont icon-jiahao"></p>
+             <p class="iconfont icon-ymy-upload-copy"></p>
            </div>
          </div>
         </div>
-        <div v-for="(item, indexed) in dateList"  :style="`width: ${widths}`" class="times_box" :key="indexed">
-          <span>{{item.dateStr}}</span>
-          <span v-show='item.weeks'>{{item.weeks}}</span>
-        </div>
         <!-- 审核任务box -->
-     <div class="examine_task">
-        <div class="examin_msg_task" v-for="(item, indexed) in examinList" :key="indexed" :style="`width:${item.centWidths};top:${item.top};left:${item.left}`">
-           <p class="examin_sanjiao" :style="`margin-left:${item.chilrenLeft}`"></p>
-           <div class="eaxmin_msg" :style="`${item.status == 1 ? '150' : '300'}px`">
-             <div class="eaxmin_title_all">
-               <p>{{item.name}}</p>
-               <p>{{item.project_name}}</p>
-             </div>
-             <p class="msg_stauts" v-if="item.status == '1'">等待反馈中...</p>
-             <div v-if="item.status !== '1'">
-               <p class="clearfix msg_couple"><span></span><span>反馈</span><span>已反馈</span></p>
-               <p class="msg_couple_p">{{item.feedback}}</p>
-             </div>
-           </div>
-        </div>
-     </div>
       </div>
      </div>
      <!-- 审核任务未读 -->
-      <!-- 显示未读任务 -->
-      <div class="no_left_msg">
-        <p class="no_msg_left"></p>
-        <p class="no_msg_title">5</p>
-      </div>
      <!-- 审核任务 -->
-     <div class="clearfix myTaskAll">
-        <div class="my_task_bottom">
-           <p>审核任务</p>
+        <p class="myTaskAll"><span class="iconfont icon-ymy-wenjian-copy"></span>任务反馈</p>
+        <div class="task_feedback" @mousedown="getdown">
+           <div class="task_feedback_box" :style="`width:${allListWidth}`">
+              <div class="clearfix task_feedback_msg" v-for="(item, index) in examinList" :key="index">
+                <div class="feedback_iamge_father">
+                 <img :src="item.image" class="task_feedback_image"/>
+                </div>
+                 <div class="task_feedback_details">
+                    <div class="clearfix feedback_words_box">
+                      <div class="feedback_words">
+                        <p class="feedback_words_task">{{item.name}}</p>
+                        <p class="feedback_words_project">{{item.project_name}}</p>
+                      </div>
+                       <p class="feedback_explain">内部评审3天</p>
+                    </div>
+                    <!-- 进度条 -->
+                    <div class="feedback_task_progress">
+                      <div class="progress_feedback_style isStage"></div>
+                      <div class="progress_feedback_style"></div>
+                      <div class="progress_feedback_style"></div>
+                    </div>
+                    <div class="feedback_stage">
+                       <p>上传文件</p>
+                       <p>内部审核</p>
+                       <p>客户审核</p>
+                    </div>
+                    <div class="feedback_stage_state">
+                      <p v-if="item.create_time">{{item.create_time_title}}</p>
+                      <p v-if="item.inside_audit_time">{{item.inside_audit_title}}</p>
+                      <p v-if="item.client_audit_time">{{item.client_audit_title}}</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
-        <div class="my_strips"></div>
-     </div>
      <!-- 上传界面 -->
-      <div class="upload_page" v-if="isclose">
+     <div class="upload_outer" v-if="isclose">
+      <div class="upload_page">
         <p class="upload_page_close" @click="getclose">x</p>
         <div class="upload_page_header">
-           <span class="upload_header_ce">测试</span>
+           <!-- <span class="upload_header_ce">测试</span> -->
            <span class="upload_header_title">{{task_name}}</span>
+           <span class="upload_header_ce">测试</span>
         </div>
         <div class="upload_page_main">
            <p class="Choice_page_title">选者上传阶段</p>
            <ul class="choice_page_ul">
-             <li v-for="(items,indexs) in stageList" :class="items.elementClass" @click="getClick(index)" :key="indexs" >
-               <p>{{items.stage_name}}</p>
-                <span class="iconfont icon-tongyong-quan upload_gou"></span>
-                <span class="upload_jiao" v-if="indexs == stageList.length-1">交稿阶段</span>
+              <li  v-for="(items,indexs) in stageList" @click="getClick(indexs)" :key="indexs">
+                <span :class="`iconfont icon-ymy-right-copy ${items.Instructions}`" v-if="indexs"></span>
+                <div :class="items.elementClass">
+                  <p>{{items.stage_name}}</p>
+                  <span class="iconfont icon-ymy-xuanzhong-copy upload_gou" v-if="items.iconShow"></span>
+                  <span class="upload_jiao" v-if="indexs == stageList.length-1">交稿阶段</span>
+                </div>
              </li>
            </ul>
            <p class="Choice_page_title">文件交稿规范</p>
            <div class="Choice_page_box">
-             <GeminiScrollbar class="crollbar">
+             <!-- <GeminiScrollbar class="crollbar"> -->
               <p class="clearfix choice_title_Stand" v-for="(itd, indexs) in standardList" :key="indexs">
                 <span>{{itd.name}}</span>
                 <span>{{itd.values}}</span>
               </p>
-             </GeminiScrollbar>
+             <!-- </GeminiScrollbar> -->
            </div>
            <!-- 上传文件 -->
            <div class="upload_box">
                <upload-box v-if="!nameLists.length">
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
-                   <p class="title_all"><span class='iconfont icon-shangchuan3 font_class'></span><span class="prompt_title">拖入/点击上传任务文件</span></p>
+                   <div class="title_all">
+                     <p class='iconfont icon-ymy-upload-copy font_class'></p>
+                     <p class="prompt_title">拖入/点击上传任务文件</p>
+                     <p class="prompt_title_last">支持jpg、gf、png</p>
+                     </div>
                  </template>
                </upload-box>
                <div class='all_upload_page' v-else>
                 <GeminiScrollbar class="crollbar">
                  <div class="again_upload_father">
+                   <p class="again_upload_title">上传文件</p>
                    <p class="again_upload" @click="againFun">重新上传</p>
                  </div>
                  <div class="yu_lan">
@@ -142,7 +148,7 @@
                  </GeminiScrollbar>
                </div>
            </div>
-           <p class="sure_title" @click="uploadImg">确认</p>
+           <p class="sure_title" @click="uploadImg">完成上传</p>
         </div>
       </div>
       <div class="is_angin" v-if="isAngin">
@@ -151,6 +157,7 @@
           <p @click="sureAngin">是</p>
           <p @click="noAngin">否</p>
         </div>
+      </div>
       </div>
      <!-- 上传界面end -->
    </div>
@@ -169,6 +176,8 @@ export default {
       widths: '',
       widthAll: '',
       left: 0,
+      taskleft: 0,
+      momentTime: 0,
       isclose: false,
       isAngin: false,
       tastList: [],
@@ -177,6 +186,7 @@ export default {
       nameList: [],
       index: 0,
       boxHg: '',
+      allListWidth: '',
       task_name: '',
       isToday: true,
       boxHgs: '',
@@ -207,18 +217,12 @@ export default {
     this.getMsgLists()
   },
   computed: {
-    // ...mapState({
-    //   uploadList(data){
-    //     return data.app.uploadFile
-    //   }
-    // }),
     uploadList () {
       return this.$store.state.app.uploadFile
     }
   },
   watch: {
     uploadList(data) {
-      // console.log('上传变化', data)
       this.getList(data)
     }
   },
@@ -247,7 +251,6 @@ export default {
          } else {
            this.$Message.error(data.data.err_message)
          }
-        //  console.log('开始任务', data)
        })
     },
     // 取消开始
@@ -337,7 +340,6 @@ export default {
     // 上传
     getUpload (data) {
       this.task_id = data.id
-      // console.log(data)
       this.task_name = data.name
       this.isclose = true
       this.getStageList()
@@ -351,14 +353,20 @@ export default {
       let that = this
       this.stage = index + 1
       const list = this.stageList
-       $('.choice_page_ul>li').click(function() {
-        $('.choice_page_ul>li').each(function() {
-          $(this).removeClass("choice_page_active")
-          $(this).find('.upload_gou').attr('style', 'display: none;')
-        })
-        $(this).addClass("choice_page_active");
-        $(this).find('.upload_gou').attr('style', 'display: block;')
+      const obj = list.map((item, idx) => {
+        if (index == idx) {
+          item.elementClass = 'choice_page_active'
+          item.iconShow = true
+          item.Instructions = 'Instruc'
+        } else {
+          item.elementClass = ''
+          item.iconShow = false
+          item.Instructions = ''
+        }
+        return item
       })
+      // this.$set(this, 'stageList', list)
+      this.stageList = obj
     },
     // 获取数据
     getMsgList () {
@@ -388,10 +396,8 @@ export default {
          xdays: number
         }
         this.$axios.post(url, qs.stringify(items)).then(data => {
-        //  console.log('数据', data.data.data)
          const list = data.data.data.dates
          const beforeData = this.beforeData
-        //  console.log('数据', data)
          let lists = Object.assign(beforeData, list);
          this.beforeData = lists
           resove(number/8)
@@ -423,9 +429,9 @@ export default {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const nowList = data.data.data.dates
+         this.momentTime = data.data.current_time
+        //  console.log('获取时间', data.data.current_time)
          let list = Object.assign(afterLists, nowList, beforeLists);
-        //  this.listAll = list
-        // console.log('获取时间', list)
          this.getView(list)
        }, error => {
          console.log('错误', error)
@@ -433,13 +439,10 @@ export default {
     },
     // 获取视图
     getView (list) {
-      // console.log('获取view', list)
       let lists = []
       let tastList = []
       for (let i in list) {
-        // console.log('时间列表1', i)
         lists.push(i)
-        // console.log('时间列表1', i, lists)
         tastList = tastList.concat(list[i])
       }
       let objList = []
@@ -451,6 +454,11 @@ export default {
           }
         })
         if (flag) {
+          if (items.status != 4) {
+            items.isComplete = '未完成'
+          } else {
+            items.isComplete = '已完成'
+          }
           objList.push(items);
         }
       })
@@ -458,6 +466,7 @@ export default {
       this.startTime = lists[0]
       this.endTime = lists[index]
       this.tastList = objList
+      console.log('视图', objList)
       this.getTimeSlot()
       this.getTast()
       this.getFeedback(list)
@@ -530,8 +539,11 @@ export default {
              index = inds
            }
          })
-         const centWidth = clentWidth*diffDaye + (diffDaye - 1)*10
-         const clienLeft = index*clentWidth + index*10
+         const centWidth = clentWidth*diffDaye - 20
+         const clienLeft = index*clentWidth + 10
+         const startIndex = index
+         items.startIndex = startIndex // 任务开始的数据
+         items.endIndex = startIndex+diffDaye - 1 // 最后结束位置
          items.centWidth = centWidth + 'px'
          items.clienLeft = clienLeft + 'px'
          items.workDay = diffDayes
@@ -539,6 +551,7 @@ export default {
          items.starts = diffStart
       })
       this.getTop()
+      this.getBackground()
     },
     // 获取今天的日期
     getToDay () {
@@ -551,7 +564,7 @@ export default {
       dateList.forEach((items, index) => {
         if (todayStr == items.dateStr) {
           items.weeks = '今天'
-          const lefts = -((index - 1) * width + (index - 1) * 10)
+          const lefts = -((index - 1) * width - 1)
           const moves = lefts + 'px'
           this.left = lefts
           element.setAttribute('style', `width: ${widthAll}; left: ${moves}`)
@@ -595,7 +608,7 @@ export default {
             })
             if (!isPush) {
               solt[element].push(items)
-              items.top = element * 110 + 'px'
+              items.top = element * 80 + 'px'
               isPing = true
               isPush = true
               isXun = true
@@ -611,7 +624,7 @@ export default {
           const num = Number(object[objLt]) + 1
           solt[num] = []
           solt[num].push(items)
-          items.top = num* 110 + 'px'
+          items.top = num* 80 + 'px'
           this.solt = solt
          }
          this.index = index
@@ -624,6 +637,51 @@ export default {
           this.getHieght()
        }
     },
+    // 获取背景
+    getBackground () {
+       const list = this.solt
+       const object = []
+       for(let i in list) {
+         object.push(i)
+       }
+       const num = object.length
+       const numbers = this.dateList.length
+       const widths = this.widths
+       let element = document.getElementsByClassName('timeSoltFather')[0]
+       let div = document.createElement('div')
+       div.setAttribute('id', 'lattice')
+       let htmlDate = ''
+         for (let i = 0; i< num; i++){
+            let HierList = list[i]
+             let childrenString = '' // 多少子元素
+             for (let k = 0; k < numbers; k++) {
+              let index = 0
+              let isremove = false
+              for (let y = 0; y < HierList.length; y++) {
+                 index++
+                 const hierLength = HierList.length
+                 const start = HierList[y].startIndex
+                 const end = HierList[y].endIndex
+                 let appendStr = ''
+                 if (k >= start && k < end) {
+                   isremove = true
+                 }
+                 if (index == hierLength) {
+                   if (isremove) {
+                     appendStr = `<div class='latt-child latt-border' style='width: ${widths};'></div>`
+                   } else {
+                     appendStr = `<div class='latt-child' style='width: ${widths}'></div>`
+                   }
+                  childrenString+=appendStr
+                 }
+               }
+             }
+              // console.log('i', i)
+              htmlDate+= `<div class='latt-father'>${childrenString}</div>`
+         }
+       div.innerHTML= htmlDate
+       element.appendChild(div)
+    },
     getHieght() {
       const list = this.solt
       let ObjList = []
@@ -631,8 +689,8 @@ export default {
         ObjList.push(i)
       }
       const length = ObjList.length
-      this.boxHg = length * 110 + 'px'
-      this.boxHgs = length* 110 + 100 + 'px'
+      this.boxHg = length * 80 + 'px'
+      this.boxHgs = length* 80 + 50 + 'px'
     },
     // 转换时间
     getTimes (str) {
@@ -665,7 +723,7 @@ export default {
          list.push(dateList)
        }
        const width = this.widths.split('px')[0]
-       this.widthAll = width *(timeNum + 1) + 10*(timeNum + 1)+ 'px'
+       this.widthAll = width *(timeNum + 1) + 'px'
        this.dateList = list
        if (isToday) {
         this.getToDay()
@@ -679,7 +737,7 @@ export default {
       const ownWidth = ownDiv.clientWidth // 获取元素宽度
       const startDisX = e.clientX// 获取鼠标开始位置
       let isClick = false
-      let width = Number(this.widths.split('px')[0]) + 10
+      // let width = Number(this.widths.split('px')[0]) + 10
       const element = document.getElementsByClassName('timeSoltFather')[0]
       const widthAll = this.widthAll
       const lefts = this.left
@@ -702,6 +760,35 @@ export default {
       document.addEventListener('mousemove', fun, false)
       document.addEventListener('mouseup', unFun, false)
     },
+    getdown (e) {
+      const ownDiv = e.target // 获取元素
+      const isSx = false // 是否刷新
+      const ownWidth = ownDiv.clientWidth // 获取元素宽度
+      const startDisX = e.clientX// 获取鼠标开始位置
+      let isClick = false
+      // let width = Number(this.widths.split('px')[0]) + 10
+      const element = document.getElementsByClassName('task_feedback_box')[0]
+      const widthAll = this.allListWidth
+      const lefts = this.taskleft
+      var endDisX = 0
+      var that = this
+      const fun = function (e) {
+         isClick = true
+         endDisX = e.clientX - startDisX + lefts
+         that.taskleft = endDisX
+         const movePx = endDisX + 'px'
+         element.setAttribute('style', `width: ${widthAll}; left: ${movePx}`)
+      }
+      let unFun = function (e) {
+        document.removeEventListener('mousemove', fun, false)
+        document.removeEventListener('mouseup', unFun, false)
+        if (!isClick) {
+          return
+        }
+      }
+      document.addEventListener('mousemove', fun, false)
+      document.addEventListener('mouseup', unFun, false)
+    },
     // 获取时间
     getTime (str, Num) {
       const now = new Date(str + Num*24*60*60*1000)
@@ -709,13 +796,10 @@ export default {
       var date = now.getDate()
       const week = now.getDay()
       var weekday=["周日","星期一","星期二","星期三","星期四","星期五","周六"]
-      var weekString = ''
-      if (week === 0 || week === 6) {
-        weekString = weekday[week]
-      }
+      var weekString = weekday[week]
       date = date < 10 ? ('0' + date) : date
       const tims = {
-        dateStr: month + '-' + date,
+        dateStr: month + '/' + date,
         weeks: weekString
       }
       return tims
@@ -731,8 +815,8 @@ export default {
     },
     // 获取屏幕宽度
     getScreenWidth () {
-      const width =  $('.tiemSolt').width() - 17
-      this.widths = Math.floor((width - 80) / 8 * 100) / 100 + 'px'
+      const width =  $('.tiemSolt').width()
+      this.widths = Math.floor((width - 1) / 8 * 100) / 100 + 'px'
     },
     // 获取反馈信息
     getFeedback (obj) {
@@ -774,22 +858,25 @@ export default {
           }
           items.top = topNum + 'px'
           heightList.push(index * 210)
-          allList.push(items)
+          if (items.create_time) {
+             items.create_time_title = !items.create_time ? null : this.getTimeTitle(items.create_time)
+             items.client_audit_title = !items.client_audit_time ? null : this.getTimeTitle(items.create_time)
+             items.inside_audit_title = !items.inside_audit_time ? null : this.getTimeTitle(items.create_time)
+             allList.push(items)
+          }
         })
       }
       heightList.sort()
-      const height_min =  $(window).height() - 310 // 300是除去他元素的总高度
-      // console.log('窗口大小', heightsss)
+      const height_min =  $(window).height() - 390 // 300是除去他元素的总高度
       const length = heightList.length - 1
       const boxHgs = Number(this.boxHgs.split('px')[0])
       if (length >= 0) {
-        const lengths = boxHgs + heightList[length] + 150
+        const lengths = boxHgs
         if (lengths > height_min) {
-           this.boxHight = boxHgs + heightList[length] + 300 + 'px'
+           this.boxHight = boxHgs+ 'px'
         } else {
           this.boxHight = height_min + 'px'
         }
-        // console.log('下方数据', boxHgs, heightList[length])
       } else {
         if (boxHgs > height_min) {
            this.boxHight = boxHgs + 'px'
@@ -797,8 +884,9 @@ export default {
            this.boxHight = height_min + 'px'
         }
       }
+      const listLt = allList.length;
+      this.allListWidth = listLt * 520 - 20 + 'px'
       this.examinList = allList
-      // console.log('反馈信息', allList)
     },
     // 查找阶段
     getStageList () {
@@ -811,9 +899,27 @@ export default {
          this.standardList = data.data.standard
        })
     },
+    // 获取时间字段
+    getTimeTitle (time) {
+      const timeNum = time*1000
+      const momentTime = this.momentTime*1000
+      let tageTitle = ''
+      const times = momentTime - timeNum
+      const remainder = Math.floor(times / (24*60*60*1000)) // 下舍入判断上传多少天
+      if (!remainder) {
+         const remainders = Math.floor(times / (60*60*1000))
+         if (!remainders) {
+           tageTitle = '刚刚'
+         } else {
+           tageTitle = remainder + '小时前'
+         }
+      } else {
+        tageTitle = remainder + '天前'
+      }
+      return tageTitle
+    },
     // 上传
     uploadImg () {
-      //  console.log(this.nameLists)
       //  return
        const url = this.GLOBAL.baseRouter+"/task/task/stage-upload"
        const list = this.feilsList
@@ -849,7 +955,6 @@ export default {
     // 是否加载完成
     gets () {
       this.ispin = false
-      console.log(1)
     },
     // 回到初始状态
     getOriginal () {
@@ -869,16 +974,7 @@ export default {
   }
 }
 </script>
-<style scoped>
-.my_task_top,
-.my_task_bottom{
-  width: 200px;
-  height: 60px;
-  color: #ffffff;
-  line-height: 60px;
-  text-align: center;
-  font-size: 18px;
-}
+ <style lang="less">
 .my_task_top{
  background: rgb(72,197,183);
 }
@@ -889,21 +985,66 @@ export default {
   width: 100%;
   min-height: 100%;
   position: relative;
-  padding: 10px 50px;
+  padding: 10px;
+  .left_tips,.right_tips{
+   position: absolute;
+   width: 80px;
+   height: 100%;
+   top: 0;
+   z-index: 99;
+  }
+  .left_tips{
+   left: -40px;
+   background: -webkit-linear-gradient(left, #eef1f2, rgba(298,241,242,.4));
+   background: -o-linear-gradient(right, #eef1f2, rgba(298,241,242,.4));
+   background: -moz-linear-gradient(right, #eef1f2, rgba(298,241,242,.4));
+   background: linear-gradient(to right, #eef1f2, rgba(298,241,242,.4));
+   .left_img_first{
+     position: absolute;
+     top: 200px;
+     left: 20px;
+   }
+   .left_img_last{
+     position: absolute;
+     bottom: 80px;
+     left: 20px;
+   }
+  }
+  .right_tips{
+   right: -40px;
+   background: -webkit-linear-gradient(left,rgba(298,241,242,.4), #eef1f2);
+   background: -o-linear-gradient(right, rgba(298,241,242,.4), #eef1f2);
+   background: -moz-linear-gradient(right, rgba(298,241,242,.4), #eef1f2);
+   background: linear-gradient(to right, rgba(298,241,242,.4), #eef1f2);
+   .right_img_first{
+     position: absolute;
+     top: 200px;
+     right: 20px;
+   }
+   .right_img_last{
+     position: absolute;
+     bottom: 80px;
+     right: 20px;
+   }
+  }
 }
 .times_box{
-  height: 60px;
-  line-height: 60px;
+  height: 50px;
+  line-height: 50px;
   text-align: center;
   font-size: 16px;
-  border: 1px solid rgb(72,197,183);
-  margin: 10px 10px 0px 0px;
+  border: 1px solid #eef1f2;
+  border-left: none;
+  margin-top: -1px;
   float: left;
+}
+.times_box:first-child{
+  border-left: 1px solid #eef1f2;
 }
 .tiemSolt{
  width: 100%;
  /* min-height: 643px; */
- margin: 50px 0px;
+ /* margin: 50px 0px; */
  overflow: hidden;
  position: relative;
 }
@@ -912,44 +1053,55 @@ export default {
 }
 .task_top_box{
   position: absolute;
-  height: 100px;
-  padding: 10px;
+  height: 60px;
+  /* padding: 10px; */
+  border-radius: 4px;
   overflow: hidden;
+  z-index: 1;
   background: rgb(72,197,183);
 }
 .timeSoltFather{
+  background: #fdfdfd;
   position: absolute;
   top: 0;
 }
 .task_ka{
  width: 100%;
  /* height: 50px; */
+ margin-top: 60px;
  position: relative;
-}
-.my_strip{
- width: calc(100% - 200px);
- height: 10px;
- background: rgb(72,197,183);
 }
 .my_strips{
   width: calc(100% - 200px);
   height: 60px;
   border-bottom: 10px solid  rgb(26,153,170);
 }
-.myTaskAll>div{
-  float: left;
+.myTaskAll{
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  font-size: 20px;
+  padding-left: 30px;
+  color: #777777;
+}
+.myTaskAll>span{
+  color: #3bceb6;
+  font-size: 20px;
+  margin-right: 5px;
 }
 .upload_preview_box{
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   position: absolute;
   top: 10px;
   right: 20px;
   cursor: pointer;
   text-align: center;
-  line-height: 80px;
+  line-height: 40px;
   color: #ffffff;
-  border: 1px dashed #ffffff;
+  & p{
+   font-size: 40px;
+  }
 }
 .task_describe{
   width: calc(100% - 100px);
@@ -957,10 +1109,30 @@ export default {
 }
 .task_describe_title{
   width: 100%;
-  height: 60px;
+  height: 100%;
+  padding-right: 50px;
+  position: relative;
 }
-.task_describe_title>div{
+/* .task_describe_title>div{
   float: left;
+} */
+.state-introd{
+ width: 100px;
+ height: 30px;
+ line-height: 30px;
+ color: #ffffff;
+ background: #fcc44a;
+ text-align: center;
+ position: absolute;
+ top: 3px;
+ left: -33px;
+ transform: rotate(-45deg);
+}
+.task_describe_father{
+  /* padding-right: 60px; */
+  margin-left: 50px;
+  height: 100%;
+  line-height: 60px;
 }
 .task_describe_msg{
   font-size: 20px;
@@ -987,17 +1159,6 @@ export default {
   line-height: 1;
   float: left;
   color: rgb(25,250,40);
-}
-.task_icon>P{
- width: 50px;
- height: 30px;
- float: left;
- margin-right: 10px;
- text-align: center;
- line-height: 30px;
- font-size: 18px;
- color: #ffffff;
- background: rgb(255,92,51);
 }
 .examine_task{
  width: 100%;
@@ -1043,14 +1204,6 @@ export default {
  font-size: 20px;
  color: rgb(72,197,183);
 }
-.no_msg{
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  right: 10px;
-  top: 80px;
-  cursor: pointer;
-}
 .no_msgs{
   position: absolute;
   width: 50px;
@@ -1058,25 +1211,6 @@ export default {
   left: 10px;
   top: 80px;
   cursor: pointer;
-}
-.no_left_msg{
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  left: 10px;
-  bottom: 80px;
-  cursor: pointer;
-}
-.no_left_msgs{
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  left: 10px;
-  top: 80px;
-  cursor: pointer;
-}
-.no_left_msg>p:nth-child(2){
-  margin-left: 10px;
 }
 .no_msg_left{
   position: absolute;
@@ -1160,31 +1294,43 @@ export default {
  border: 2px solid #ffffff;
  border-radius: 4px;
 }
+.upload_outer{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,.3);
+  z-index: 9999;
+}
 .upload_page{
   width: 556px;
-  height: 800px;
-  position: fixed;
+  height: 770px;
+  position: absolute;
   top: 70px;
   left: 50%;
   margin-left: -250px;
   background: #ffffff;
-  border: 1px solid rgb(25,250,40);
+  z-index: 99999;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .upload_page_header {
   width: 100%;
   height: 60px;
   /* line-height: 60px; */
+  background: url('../../images/upload.png');
+  background-size: 100% 100%;
   border-bottom: 1px solid rgb(228,228,228);
 }
 .upload_header_ce{
   display: block;
   float: left;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
   text-align: center;
-  margin: 15px 0px 0px 10px;
-  background: rgb(250,51,0);
+  padding: 2px 5px;
+  margin: 22px 0px 0px 10px;
+  background: #fcc44a;
+  border-radius: 4px;
   color: #ffffff;
 }
 .upload_header_title{
@@ -1192,19 +1338,20 @@ export default {
   float: left;
   font-size: 18px;
   font-weight: bold;
-  color: rgb(24,191,164);
-  margin: 20px 0px 0px 10px;
+  color: #ffffff;
+  margin: 20px 10px 0 20px;
 }
 .upload_page_close{
   position: absolute;
-  right: 10px;
-  top: 20px;
+  right: 0;
+  top: 0;
   width: 20px;
   height: 20px;
+  border-top-right-radius: 4px;
   text-align: center;
   line-height: 20px;
   cursor: pointer;
-  background: rgb(250,51,0);
+  background: rgb(102,215,201);
   color: #ffffff;
 }
 .upload_page_main{
@@ -1218,64 +1365,94 @@ export default {
 }
 .Choice_page_box{
  width: 100%;
- height: 120px;
+ height: 70px;
+ overflow-y: auto;
 }
 .choice_page_ul {
   width: 100%;
-  height: 40px;
+  height: 35px;
   margin: 20px 0px;
 }
 .choice_page_ul li{
+  height: 100%;
+  float: left;
+}
+.choice_page_ul li>span{
+  float: left;
+  font-size: 18px;
+  margin-top: 4px;
+}
+.choice_page_ul li>div{
   position: relative;
-  width: 100px;
+  width: 80px;
   height: 100%;
   float: left;
   cursor: pointer;
+  border-radius: 4px;
   border: 1px solid rgb(215,215,215);
 }
-.choice_page_ul li>p{
+.choice_page_ul li>div>p{
   width: 100%;
   height: 100%;
   text-align: center;
-  line-height: 40px;
+  line-height: 35px;
 }
 .choice_page_active{
-  border: 1px solid rgb(250,51,0)!important;
-  color: rgb(250,51,0);
+  border: 1px solid #3bceb6!important;
+  background: #66d7c9;
+}
+.Instruc{
+  color: #3bceb6;
 }
 .upload_gou{
-  display: none;
  font-size: 15px;
  position: absolute;
  right: 5px;
- top: 0;
+ top: 5px;
  color: rgb(24,191,164);
 }
 .upload_jiao{
   position: absolute;
   right: 10px;
-  top: -15px;
+  top: -37px;
   width: 70px;
   height: 25px;
   line-height: 25px;
   text-align: center;
-  border-radius: 10px;
-  background: rgb(0,204,0);
+  border-radius: 4px;
+  background: #3bceb6;
   color: #ffffff;
-  transform: rotate(10deg);
+}
+.upload_jiao:before{
+  width: 0;
+  height: 0;
+  content:'';
+  display: block;
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  margin-left: -5px;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  border-top: 5px solid #3bceb6;
 }
 .choice_title_Stand{
   margin-top: 10px;
+  margin-top: 10px;
+  width: 100%;
+  background: #eef1f2;
+  border-radius: 4px;
+  padding: 0 10px;
 }
 .choice_title_Stand>span:first-child{
   float: left;
   font-size: 16px;
-  color: rgb(24,191,164);
+  color: #777777;
 }
 .choice_title_Stand>span:last-child{
   float: right;
-  font-size: 14px;
-  color: rgb(215,215,215);
+  font-size: 16px;
+  color: #777777;
 }
 .upload_box{
   width: 100%;
@@ -1305,17 +1482,22 @@ export default {
 }
 .prompt_title{
   font-size: 18px;
-  color: rgb(215,215,215);
-  margin-left: 10px;
+  // color: rgb(215,215,215);
   cursor: pointer;
 }
+.prompt_title_last{
+  font-size: 16px;
+  color: rgb(215,215,215);
+}
 .font_class{
- font-size: 30px;
+ font-size: 40px!important;
  cursor: pointer;
- color: rgb(215,215,215);
+ color: #3bceb6;
 }
 .uploadContainer{
   top: 50%;
+  height: 120px;
+  margin-top: -60px;
   text-align: center;
 }
 .title_all{
@@ -1323,11 +1505,11 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 45px;
+  height: 120px;
 }
 .browse{
- width: 100%;
- height: 45px;
+ width: 100%!important;
+ height: 100%!important;
  opacity: 0;
 }
 .yu_lan{
@@ -1356,17 +1538,23 @@ export default {
   height: 100%;
 }
 .again_upload{
- width: 80px;
- height: 20px;
+ padding: 3px 10px;
  text-align: center;
  line-height: 20px;
- margin: 5px 10px;
+ margin-top: 5px;
  font-size: 16px;
  cursor: pointer;
  border-radius: 4px;
  float: right;
- background: rgb(255,153,0);
- color: #ffffff;
+ color: #3bceb6;
+ border: 1px solid #3bceb6;
+}
+.again_upload_title{
+  float: left;
+  margin: 5px 0 0 10px;
+  line-height: 20px;
+  font-size: 16px;
+  color: #3bceb6;
 }
 .all_upload_page{
  width: 100%;
@@ -1375,6 +1563,7 @@ export default {
 .again_upload_father{
  width: 100%;
  height: 30px;
+ padding-right: 20px;
 }
 .is_angin{
  width: 200px;
@@ -1476,5 +1665,145 @@ export default {
 .demo-spin-col>div{
   width: 50px;
   margin: 100px auto 0;
+}
+ #lattice{
+  width: 100%;
+  position: absolute;
+  top: 50px;
+  left: 0;
+}
+.latt-father{
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #eef1f2;
+}
+.latt-child{
+  float: left;
+  height: 100%;
+  border-right: 1px solid #eef1f2;
+}
+.latt-child:first-child{
+  border-left: 1px solid #eef1f2;
+}
+.latt-border{
+  border-right: 1px solid rgba(255,255,255,0);
+}
+.task_feedback{
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  position: relative;
+  .task_feedback_box{
+    // width: 100%;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    .task_feedback_msg{
+      width: 500px;
+      height: 140px;
+      padding: 20px;
+      border-radius: 4px;
+      background: #fdfdfd;
+      margin-right: 20px;
+      float: left;
+      .feedback_iamge_father{
+        width: 100px;
+        height: 100px;
+        border-radius: 4px;
+        float: left;
+       .task_feedback_image{
+        width: 100%;
+        height: 100%;
+       }
+      }
+      .task_feedback_details{
+        width: 350px;
+        height: 100px;
+        margin-left: 10px;
+        float: left;
+        .feedback_words_box{
+          width: 100%;
+          height: 45px;
+          .feedback_words{
+           width: 240px;
+           height: 45px;
+           float: left;
+           .feedback_words_task{
+             font-size: 16px;
+             font-weight: bold;
+           }
+           .feedback_words_project{
+             font-size: 14px;
+             color: #bdbdbd;
+           }
+          }
+          .feedback_explain{
+            padding: 5px 10px;
+            margin-left: 10px;
+            border: 1px solid #eef1f2;
+            color: #3bceb6;
+            float: left;
+          }
+        }
+        .feedback_task_progress{
+          width: 100%;
+          height: 5px;
+          border-radius: 4px;
+          background: #bdbdbd;
+          .progress_feedback_style{
+            width: 33.3333%;
+            height: 100%;
+            float: left;
+            border-radius: 4px;
+            background: #bababa;
+            &:before{
+              display:block;
+              content:'';
+              width: 0;
+              height: 0;
+              border-left: 5px solid transparent;
+              border-right: 5px solid transparent;
+              border-top: 5px solid #bababa;
+              // position: absolute;
+              // top: 40px;
+              // left: 50%;
+              margin:5px 0 0 55px;
+            }
+          }
+          .isStage{
+            background: #3bceb6;
+            &::before{
+              border-top: 5px solid #3bceb6;
+            }
+          }
+        }
+        .feedback_stage{
+          width: 100%;
+          height: 20px;
+          margin-top: 5px;
+          & p{
+           width: 33.333%;
+           height: 100%;
+           text-align: center;
+           font-size: 14px;
+           color: #bdbdbd;
+           float: left;
+          }
+        }
+        .feedback_stage_state{
+          width: 100%;
+          height: 20px;
+          & p{
+           width: 33.333%;
+           height: 100%;
+           text-align: center;
+           font-size: 14px;
+           color: #bdbdbd;
+           float: left;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

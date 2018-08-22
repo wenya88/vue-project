@@ -208,6 +208,7 @@ export default {
   bottom: 200px;
   right: 20px;
   margin-bottom: -25px;
+  z-index: 999;
   box-shadow: 0px 2px 19px rgb(231,231,231);
 }
 .msg_button_fix:hover {
@@ -238,7 +239,7 @@ export default {
  right: 0;
  height: 100%;
  width: 600px;
- z-index: 99;
+ z-index: 999;
  background: #ffffff;
  border-right: 2px solid rgba(49,187,159);
  border-left: 2px solid rgba(49,187,159);
