@@ -2,10 +2,10 @@
     <div class="menauBarContainer">
         <div class="menauBar">
             <ul class="projectClassfly">
-                <li>原画<span>( 20 )</span></li>
-                <li class="currenSty">动作<span>( 60 )</span></li>
-                <li>特效<span>( 30 )</span></li>
-                <li>场景<span>( 5 )</span></li>
+                <li v-for="(item,index) in TwoMenuList" :class="{'currenSty':index == selectIndex}" @click="selectTaskType(index,item.id)">{{ item.tasktype_name || null }}<span>( {{item.cnt}} )</span></li>
+                <!--<li class="currenSty">动作<span>( 60 )</span></li>-->
+                <!--<li>特效<span>( 30 )</span></li>-->
+                <!--<li>场景<span>( 5 )</span></li>-->
             </ul>
 
             <ul class="screenBar">
@@ -178,7 +178,8 @@
                         label: '是'
                     }
                 ],
-                TwoMenuList:{}
+                TwoMenuList:{},
+                selectIndex:null
             }
         },
         mounted() {
@@ -309,8 +310,7 @@
                     .then(res => {
                         if (res.err_code == 0) {
                             if (this.page == 1) {
-                                this.listData = res.data
-                                console.log(112, res.data)
+                                this.listData = res.data;
                             } else {
                                 this.listData.push.apply(this.listData, res.data);
                             }
@@ -361,7 +361,6 @@
             },
             /*获取各阶段二级菜单*/
             getTaskTwoMenuList(status){
-                alert(status);
                 let data ={
                     project_id:sessionStorage.projectID,
                     status:status
@@ -371,6 +370,12 @@
                         this.TwoMenuList = res.data;
                     }
                 })
+            },
+            /*根据选择的二级菜单获取对应的数据*/
+            selectTaskType(index,type){
+                this.selectIndex = index;
+                this.selTaskType = type;
+                this.fetchData();
             }
         }
     }

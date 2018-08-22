@@ -117,11 +117,11 @@
                                         <Button @click="addMarkers(false)" type="text">取消</Button>
                                     </div>
                                     <Input placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
-                                    <button @click="showMarkers" class="btn">
+                                    <span @click="showMarkers" class="btn">
                                         <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
                                              style="height:36px;margin-top:30px;">
                                         <template v-else>识别图标</template>
-                                    </button>
+                                    </span>
                                 </section>
                             </li>
                             <li>
@@ -848,6 +848,8 @@
         .btn {
             width: 221px;
             height: 32px;
+            line-height: 32px;
+            text-align: center;
             color: #657180;
             background: #fff;
             border: none;

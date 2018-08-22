@@ -1,4 +1,5 @@
 @import './common.less';
+@import './newBase.less';
 .SuvCont{
     .headerTitle{
         border-bottom:1px solid #d7dde4;padding-bottom:5px;
@@ -85,26 +86,65 @@
 
 // 项目管理
 .projectManage{
-    padding:20px 20px 0px 20px;display:block;background:#fff;
+    padding-top:@p30;display:block;
 }
 .projectMenu{
     display:block;
     dt{
         float:left;
         em{
-            background:#f7fbf9;border:1px solid #737694;color:#343634;font-size:12px;padding:0px 4px;display:inline-block;cursor:pointer;
-            &:hover{
-                color:#1ebca4;border-color:#1ebca4;
+            background:#fff;color:#343634;display:inline-block;cursor:pointer;width:40px;height:40px;line-height:40px;text-align:center;float:left;
+            border-radius:@r5 0px 0px @r5;
+            &:nth-of-type(2){
+                border-radius:0px @r5 @r5 0px;
+                .iconfont{
+                    font-size:@f18;
+                }
             }
         }
         .showEm{
-            color:#1ebca4;border-color:#1ebca4;
+            color:#fff;background:@green;
         }
+    }
+    .conditionFilert{
+        background:@white;margin-left:@p10;border-radius:@r5;
+        .ivu-input-group{
+            top:0px;height:40px;line-height:40px;
+            .ivu-input{
+                height:40px;border-width:0px;
+            }
+            .ivu-input-group-append{
+                background:@green;color:@white;border-width:0px;
+            }
+            .ivu-btn-icon-only{
+                font-size:@f18;padding-top:6px;padding-bottom:0px;
+            }
+        }
+        .ivu-input-group-append:not(:first-child):not(:last-child), .ivu-input-group-prepend:not(:first-child):not(:last-child), .ivu-input-group>.ivu-input:not(:first-child):not(:last-child){
+            border-radius:@r5;
+        }
+    }
+    .condtition{
+        border:@r4;padding:4px @p10;
     }
     dd{
         float:right;
+        .ivu-select-selection {
+            .ivu-select-arrow:first-of-type{
+                display:inherit
+            }
+            .ivu-select-selected-value{
+                line-height:32px;
+            }
+        }
         span{
-            float:left;line-height:32px;height:32px;display:inline-block;
+            float:left;line-height:30px;display:inline-block;
+        }
+        .spanLine{
+            border-left:1px dashed @line;padding:0px @p15;
+            &:nth-of-type(1){
+                border-width:0px;padding:0px;padding-right:@p15;
+            }
         }
         .MLeft{
             margin-left:40px;
@@ -125,25 +165,26 @@
             background:url('../images/icon-sort-down.png') 6px 11px no-repeat;width:20px;height:32px;display:inline-block;float:left;
         }
         a{
-            float:left;margin-right:10px;font-style:normal;color:#657180;height:32px;line-height:32px;
-            &:hover{color:#3399ff;}
+            float:left;margin-right:10px;font-style:normal;color:@seven;height:32px;line-height:32px;
+            &:hover{color:@green;}
         }
         .show{
-            color:#3399ff;
+            color:@green;
         }
         .ivu-btn-primary{
-            padding:0px 15px;margin-left:40px;line-height:30px;
+            padding:0px 15px;margin-left:40px;line-height:40px;height:40px;color:@green;border:0px;border-radius:@r5;background:@white;
         }
     }
 }
 .projectManageContent{
-    overflow:auto;margin-top:20px;
+    overflow:auto;margin-top:20px;margin-left:-1%;
+    i{font-style:normal;}
     .ContentRow{
-        width:49%;float:left;margin-bottom:30px;border:1px solid #ddd;background:@rowBG;
-        &:nth-child(even){margin-left:2%;}
+        width:32.3%;float:left;margin-bottom:1%;background:@white;margin-left:1%;border-radius:@r6;
     }
     .RowTitle{
-        background:#eefaf8;border-radius:5px 5px 0px 0px;padding:10px;
+        padding:10px;height:120px;overflow:hidden;
+        
         .MLeft20{
             margin-left:20px;margin-right:10px;
         }
@@ -153,34 +194,46 @@
                position:relative;left:-60px;top:-30px;
             }
             img{
-                width:100px;height:70px;border:0px;
+                width:90px;height:90px;border:0px;border-radius:@r4;
                 &:hover{cursor:pointer;}
             }
             .font16{
-                font-size:@fs14;font-weight:normal;color:#23a590;
-                &:hover{cursor: pointer;text-decoration:underline;}
+                font-size:@f16;font-weight:lighter;color:@seven;margin-right:@p5;
+                &:hover{cursor:pointer;text-decoration:underline;}
             }
-            i{
-                background:#e4e4e4;border-radius:4px;padding:2px 4px;color:#aeaeae;font-style:normal;margin-right:5px;
+            .i{
+                background:@yellow;border-radius:4px;padding:2px 4px;color:@white;margin-right:5px;
             }
             p{
-                display:block;line-height:35px;
+                display:block;line-height:26px;color:@desc;
                 img{
                     width:20px;height:20px;border-radius:100%;margin-left:5px;margin-right:5px;
                 }
             }
         }
         .edit{
-                position:fixed;margin-left:46%;
+                float:right;
+                .iconfont{
+                    cursor:pointer;margin-left:@p5;color:@desc;font-size:@f18;
+                    &:hover{
+                        color:@green;
+                    }
+                }
+        }
+        .title{
+            display:block;height:45px;
+        }
+        .realname{
+            float:right;
         }
     }
     .content{
-        border-top:1px solid #ddd;padding:20px;
+        border-top:1px dashed @line;padding:20px;
         .listTitle{
             display:block;text-align: center;
             &:hover{cursor:pointer;}
             span{
-                padding-top:10px;display:inline-block;font-size:@fs118;
+                padding-top:10px;display:inline-block;font-size:@f16;color:@seven;
             }
         }
         .listLine{
@@ -190,11 +243,31 @@
                     float:left;width:100px;display:inline-block;text-align:right;padding-right:15px;font-size:@fs14;
                 }
                 .lineRow{
-                    margin-left:100px;display:block;margin-right:10px;
+                    margin-left:100px;display:block;
                 }
             }
         }
-        .ivu-progress-show-info .ivu-progress-outer{padding-right:80px;margin-right:-80px;}
+        .lineTime{
+            .ivu-progress-bg{
+                background:@green;
+            }
+        }
+        .linePost{
+            .ivu-progress-bg{
+                background:#7cbefc;
+            }
+        }
+        .lineFile{
+            .ivu-progress-bg{
+                background:@yellow;
+            }
+            .ivu-progress-success{
+                .ivu-progress-text{
+                    color:@yellow;
+                }
+            }
+        }
+        .ivu-progress-show-info .ivu-progress-outer{padding-right:65px;margin-right:-65px;}
     }
 }
 

@@ -12,7 +12,7 @@
                             ￥<span>{{item.project_min_price}} ~ {{item.project_max_price}}</span>
                         </div>
                         <div class="projectInfo">
-                            <p>项目时间</p>
+                            <p>项目描述</p>
                             <p class="date">{{item.description}}</p>
                             <p>项目时间</p>
                             <p class="date">{{item.start_time}} ~ {{item.end_time}}</p>
@@ -28,7 +28,7 @@
                     <div :class="[item.status==1?'bidStatus bidYes':'bidStatus']" v-if="item.status==1 || item.status==2">{{item.status==1?'已接受':'已拒绝'}}</div>
                 </dd>
             </dl>
-        </div>
+    </div>
     <!-- <div class="bidList invite">
         <dl>
             <dt>
@@ -71,6 +71,7 @@ export default {
         }
     },
     methods:{
+       
         // 更新状态
         updateInvite(id,status){
             this.$Loading.start();

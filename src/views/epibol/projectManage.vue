@@ -5,17 +5,22 @@
             <dl>
                 <dt>
                     <em @click="cutProjectList" :class="{showEm:comFlag}" >
-                        <i class="iconfont icon-kuaizhuang"></i>
+                        <i class="iconfont icon-mokuai"></i>
                     </em>
                     <em @click="cutProjectChart" :class="{showEm:!comFlag}">
-                        <i class="iconfont icon-kongzhi"></i>
+                        <i class="iconfont icon-list"></i>
                     </em>
                 </dt>
-                <dd>
-                    <Button type="primary" @click="addProject"><Icon type="plus"></Icon> 新建项目</Button>
+                <dd style="margin-right:0.37%;">
+                    <Button type="primary" @click="addProject"><i class="iconfont icon-xinjian"></i>&nbsp;&nbsp;新建项目</Button>
                 </dd>
-                <dd v-show="comFlag">
-                    <span  v-for="(item,index) in sortList" :key="index">
+                <dd class="conditionFilert">
+                    <Input v-model="search" placeholder="项目 / 负责人" @on-enter="ProSearch">
+                            <Button slot="append" icon="ios-search"  @click.native="ProSearch"></Button>
+                    </Input>
+                </dd>
+                <dd v-show="comFlag" class="conditionFilert condtition">
+                    <span  v-for="(item,index) in sortList" :key="index" class="spanLine">
                         <a @click="sortAction(index,item.action)" :class="{show:index==SLindex}">
                             <i :class="[
                                 index==0?'descIcon':'remIcon',
@@ -25,20 +30,15 @@
                             {{item.label}}
                         </a>
                     </span>
-                    <span class="MLeft">状态：
+                    <span class="MLeft10">
                         <Select v-model="MSelect" style="width:80px">
                             <Option v-for="item in stateList" :value="item.value" :key="item.value" @click.native="DataFilte(item.value)">{{ item.label }}</Option>
                         </Select>
                     </span>
-                    <span class="MLeft10">合同：
+                    <span class="MLeft10">
                         <Select v-model="PSelect" style="width:80px">
                             <Option v-for="item in pactList" :value="item.value" :key="item.value" @click.native="HDataFilte(item.value)">{{ item.label }}</Option>
                         </Select>
-                    </span>
-                    <span class="MLeft10">
-                        <Input v-model="search" placeholder="项目名称/项目经理/公司" @on-enter="ProSearch">
-                            <Button slot="append" icon="ios-search"  @click.native="ProSearch"></Button>
-                        </Input>
                     </span>
                 </dd>
                 <div class="clear"></div>

@@ -9,7 +9,7 @@
             <ul class="dataList" v-if="dataList">
                 <li v-for="item in dataList" :label="item.name" :value="item.id" :key="item.id"  @click="getVal(item.name)">{{ item.name }}</li>
             </ul>
-            <p><input type="text" v-model="values" placeholder="输入新标签" @keyup="ups($event)"/></p>
+            <p><input type="text" v-model="values" placeholder="输入新标签" @keyup.enter="$emit('addNormsFun',values)"/></p>
         </div>
     </div>
 </template>
@@ -41,9 +41,6 @@
             getVal(val){
                 this.currenVal = val;
                 this.isShowFun = false;
-            },
-            ups(val){
-               console.log(val)
             }
         },
         mounted () {
