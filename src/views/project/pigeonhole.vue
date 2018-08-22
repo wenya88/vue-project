@@ -12,13 +12,9 @@
             <button @click="fetchData"></button>
           </div>
         </li>
-        <li class="allDownBtn" style="position: relative;width: 90px;background: #3bceb6">
-            <template v-if="isALLAutoDownFlag">
-                <Spin fix>
-                    <Icon type="load-c" size=30 class="demo-spin-icon-load"></Icon>
-                </Spin>
-            </template>
-           <button v-else @click="downloadFile('project',150)" title="打包完成后将自动下载">全部下载</button>
+        <li class="allDownBtn">
+            <button v-if="isALLAutoDownFlag" class="downloading" title="打包完成后将自动下载">进行中<i class="ivu-icon animationB"></i></button>
+            <button v-else class="downbtn" @click="downloadFile('project','')" title="打包完成后将自动下载">全部下载</button>
         </li>
       </ul>
 
@@ -68,9 +64,12 @@
               </div>
               <div class="right">
                 <span>{{item.tasktype_name}}</span><i>原画</i>
-                <span class="dowmloadFilefalse" v-if="isaDownFlag && itemIndex==index" title="打包完成后将自动下载">下载文件</span><b v-if="isaDownFlag  && itemIndex==index" class="ivu-icon animationB"></b>
-                <span class="dowmloadFile" v-else title="打包完成后将自动下载" @click="downloadFile('task',item.id,index)">下载文件</span>
-                  <!--item.id-->
+
+                <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
+                    <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
+                    <span v-else class="dowmloadFile" title="打包完成后将自动下载" @click="downloadFile('task',item.id)">下载文件</span>
+                </span>
+
               </div>
             </div>
           </div>
@@ -138,24 +137,30 @@
                 TwoMenuList:{},
                 typeIndex:null,
                 isALLAutoDownFlag:false,
-                isaDownFlag:false,
-                itemIndex:null,
-                clickItem:{
-
-                }
+                clickItem:[]
             }
         },
         watch:{
+            downComplateArr(val){
+                let clickItemArr = this.clickItem;
+                let complateArr = this.downComplateArr;
+                if(complateArr.length > 0){
+                    // console.log(clickItemArr.length);
+                    // console.log(complateArr.length);
+                    for(let i=0;i<clickItemArr.length;i++){
+                        if(clickItemArr[i].id == complateArr[0].id && clickItemArr[i].type == complateArr[0].type){
+                            clickItemArr[i].id = complateArr[0].id;
+                            clickItemArr[i].type = complateArr[0].type;
+                            clickItemArr[i].status = complateArr[0].status;
+                            this.$store.commit('resetArr',true);
+                        }
+                    }
+                }
+            },
             downloadStatus(val){
                 if(val) {
                     this.isALLAutoDownFlag = false;
                     this.$store.state.downloadStatus = false;
-                }
-            },
-            isaDownStatus(val){
-                if(val) {
-                    this.isaDownFlag = false;
-                    this.$store.state.isaDownStatus = false;
                 }
             }
         },
@@ -167,8 +172,8 @@
             downloadStatus(){
                 return this.$store.state.downloadStatus;
             },
-            isaDownStatus(){
-                return this.$store.state.isaDownStatus;
+            downComplateArr(){
+                return this.$store.state.downComplateArr;
             }
         },
         created() {
@@ -189,11 +194,11 @@
                 this.$axios.post(this.GLOBAL.baseRouter+'task/task/page',qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
-                        // console.log(res)
                         if(res.err_code == 0) {
-                            // console.log(res.data);
-                            this.fileData = res.data
-                            // console.log(this.fileData)
+                            this.fileData = res.data;
+                            for(var item in res.data){
+                                this.clickItem.push({id:res.data[item].id,status:false,type:'task'})
+                            }
                         }
                     })
             },
@@ -206,8 +211,7 @@
                 }
                 this.$store.dispatch('fetchTaskList', qs.stringify(data));
             },
-            downloadFile(type,id,index) {
-                this.itemIndex = index||null;
+            downloadFile(type,id) {
                 let data = {
                     type:type,
                     id:id || sessionStorage.projectID
@@ -216,26 +220,9 @@
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
-
-
+                            //如果没有url发起webSocket
                             if(!res.download_url){
-
-                                if(type=='task'){
-                                    // this.$set(this.clickItem,'itemIndex'+index,{index:index,status:false})
-
-                                    this.isaDownFlag = true;//是否展示单个下载加载按钮
-                                }else {
-                                    this.isALLAutoDownFlag = true;    //是否展示全部下载加载按钮
-                                }
-                                const data = JSON.stringify({
-                                    action:'download_url',
-                                    type:type,
-                                    id:id || sessionStorage.projectID
-                                });
-                                webSocket.send(data);
-
-
-
+                                this.sendWebsocket(type,id);
                             }else {
                                 let hostUrl = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/'+res.download_url;
                                 var a = document.createElement('a');
@@ -243,10 +230,32 @@
                                 // a.download = "proposed_file_name";
                                 a.click();
                             }
+                        }else if(res.err_code == 10030){
+                            this.$Message.warning(res.err_message);
+                            this.sendWebsocket(type,id);
                         }else {
                             this.$Message.warning(res.err_message);
                         }
                     })
+            },
+            sendWebsocket(type,id){
+                if(type=='task'){
+                    let len = this.clickItem.length;
+                    for(let i=0;i<len;i++){
+                        if(this.clickItem[i].id == id){
+                            this.clickItem[i].status = true;
+                        }
+                    }
+                }else {
+                    this.isALLAutoDownFlag = true;    //是否展示全部下载加载按钮
+                }
+                const data = JSON.stringify({
+                    action:'download_url',
+                    type:type,
+                    id:id || sessionStorage.projectID
+                });
+                // console.log(data);
+                webSocket.send(data);
             },
             closeTabmodal() {
                 this.isTabModal = false;
@@ -316,7 +325,7 @@
   .ivu-icon-load-c:before{color: #fff!important;}
   .card{
     position: relative;
-    .showHiden{display: none};
+    /*.showHiden{display: none};*/
     &:hover{
       cursor: pointer;
       .showHiden{display: block}

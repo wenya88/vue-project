@@ -328,11 +328,16 @@
         }
       }
       .allDownBtn{
-        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;
+        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;width: 100px;
         button{
-          border: 0;color: #fff;outline: none;cursor: pointer;
-          background: url("../proStat/image/searchIcons.png") no-repeat @green;
-          background-position-y: -70px;padding-left: 20px;
+          border: 0;color: #fff;outline: none;cursor: pointer;background: @green;width: 100%;
+          .downbtn{
+            background: url("../proStat/image/searchIcons.png") no-repeat @green;
+            background-position-y: -70px;padding-left: 20px;
+          }
+          i{font-style: normal;
+            &:after{content: "\F29C";color: #fff;font-size: 15px;padding: 0 5px}
+          }
         }
       }
     }

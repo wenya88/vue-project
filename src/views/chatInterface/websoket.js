@@ -69,8 +69,15 @@
       }
       if(data.action === 'download_url'){
         if(data.download_url){
-            store.state.downloadStatus = true;
-            store.state.isaDownStatus = true;
+            if(data.busi_type == 'task'){
+                store.state.downComplateArr.push({
+                    id:data.busi_id,
+                    type:data.busi_type,
+                    status:false
+                })
+            }else {
+                store.state.downloadStatus = true;
+            }
             var a = document.createElement('a');
             a.href = data.download_url;
             a.click();
