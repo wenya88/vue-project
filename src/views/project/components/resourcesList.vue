@@ -2,10 +2,10 @@
     <div class="menauBarContainer">
         <div class="menauBar">
             <ul class="projectClassfly">
-                <li>原画<span>( 20 )</span></li>
-                <li class="currenSty">动作<span>( 60 )</span></li>
-                <li>特效<span>( 30 )</span></li>
-                <li>场景<span>( 5 )</span></li>
+                <li v-for="(item,index) in TwoMenuList" :class="{'currenSty':index == selectIndex}" @click="selectTaskType(index,item.id)">{{ item.tasktype_name || null }}<span>( {{item.cnt}} )</span></li>
+                <!--<li class="currenSty">动作<span>( 60 )</span></li>-->
+                <!--<li>特效<span>( 30 )</span></li>-->
+                <!--<li>场景<span>( 5 )</span></li>-->
             </ul>
 
             <ul class="screenBar">
@@ -70,7 +70,7 @@
 
                         <!--?x-oss-process=video/snapshot,t_2000,f_jpg oss获取视频的缩略图 添加在视频路径后面-->
                         <img  v-else-if="item.stage_file.type == 'video'" class="card-box-pic" :src="item.stage_file.file+'?x-oss-process=video/snapshot,t_2000,f_jpg'" />
-                        
+
                         <div class="tips">
                             <!--<div style="display: flex">-->
                                <!--<p > <span class="tag" >{{item.tasktype_name}}</span><span>{{item.task_name}}</span></p>-->
@@ -175,7 +175,8 @@
                         label: '是'
                     }
                 ],
-                TwoMenuList:{}
+                TwoMenuList:{},
+                selectIndex:null
             }
         },
         mounted() {
@@ -306,8 +307,7 @@
                     .then(res => {
                         if (res.err_code == 0) {
                             if (this.page == 1) {
-                                this.listData = res.data
-                                console.log(112, res.data)
+                                this.listData = res.data;
                             } else {
                                 this.listData.push.apply(this.listData, res.data);
                             }
@@ -358,7 +358,6 @@
             },
             /*获取各阶段二级菜单*/
             getTaskTwoMenuList(status){
-                alert(status);
                 let data ={
                     project_id:sessionStorage.projectID,
                     status:status
@@ -368,6 +367,12 @@
                         this.TwoMenuList = res.data;
                     }
                 })
+            },
+            /*根据选择的二级菜单获取对应的数据*/
+            selectTaskType(index,type){
+                this.selectIndex = index;
+                this.selTaskType = type;
+                this.fetchData();
             }
         }
     }

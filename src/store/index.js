@@ -23,9 +23,11 @@ const store = new Vuex.Store({
        blob: false,
        file: {},
        msgNum: !localStorage.msgNum ? "0" : localStorage.msgNum,
+        downloadStatus:false,
+        isaDownStatus:false
     },
     mutations: {
-        //
+
     },
     actions: {
 

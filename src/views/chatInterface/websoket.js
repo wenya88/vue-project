@@ -1,10 +1,10 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
    import Cookies from 'js-cookie';
-   const wsurl = 'ws:' + Cookies.get('hostName').split(':')[1] + ':8282'
-   console.log('数据', wsurl)
+   // const wsurl = 'ws:' + Cookies.get('hostName').split(':')[1] + ':8282'
+   // console.log('数据', wsurl)
   function connectSocket(msgData) {
-    // const wsurl = 'ws://59.111.95.148:8282'
+    const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {
@@ -25,7 +25,7 @@
       }
       if (data.action === 'login') {
         localStorage.userMsg = JSON.stringify(data)
-      } 
+      }
       if (data.action === 'notice') {
         var list = store.state.noticeList
         if (localStorage.noticeList) {
@@ -66,6 +66,15 @@
         // console.log('数据1', JSON.stringify(list))
         store.state.useList = list
         localStorage.useList = JSON.stringify(list)
+      }
+      if(data.action === 'download_url'){
+        if(data.download_url){
+            store.state.downloadStatus = true;
+            store.state.isaDownStatus = true;
+            var a = document.createElement('a');
+            a.href = data.download_url;
+            a.click();
+        }
       }
     }
     /*连接发生错误时*/

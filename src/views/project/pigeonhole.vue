@@ -2,28 +2,23 @@
   <div class="pigeonhole">
     <div class="menauBar">
       <ul class="projectClassfly">
-        <li>原画<span>( 20 )</span></li>
-        <li class="currenSty">动作<span>( 60 )</span></li>
-        <li>特效<span>( 30 )</span></li>
-        <li>场景<span>( 5 )</span></li>
+        <li v-for="(item,index) in TwoMenuList" :class="{'currenSty':index== typeIndex}" @click="selectTaskType(index,item.id)">{{ item.tasktype_name }}<span>( {{item.cnt}} )</span></li>
       </ul>
 
       <ul class="screenBar">
-        <!--<li>-->
-        <!--<dl>-->
-        <!--<dd class="byAsc">送审时间</dd>-->
-        <!--<dd class="byDesc">待审天数</dd>-->
-        <!--<dd>剩余时间</dd>-->
-        <!--</dl>-->
-        <!--</li>-->
         <li class="searchBar">
           <div>
             <input type="text" v-model="searchInput" placeholder="任务 / 负责人" @keyup.enter="fetchData"/>
             <button @click="fetchData"></button>
           </div>
         </li>
-        <li class="allDownBtn">
-          <button @click="downloadFile('project',null)">全部下载</button>
+        <li class="allDownBtn" style="position: relative;width: 90px;background: #3bceb6">
+            <template v-if="isALLAutoDownFlag">
+                <Spin fix>
+                    <Icon type="load-c" size=30 class="demo-spin-icon-load"></Icon>
+                </Spin>
+            </template>
+           <button v-else @click="downloadFile('project',150)" title="打包完成后将自动下载">全部下载</button>
         </li>
       </ul>
 
@@ -73,7 +68,9 @@
               </div>
               <div class="right">
                 <span>{{item.tasktype_name}}</span><i>原画</i>
-                <span class="dowmloadFile" @click="downloadFile('task',item.id)">下载文件</span>
+                <span class="dowmloadFilefalse" v-if="isaDownFlag && itemIndex==index" title="打包完成后将自动下载">下载文件</span><b v-if="isaDownFlag  && itemIndex==index" class="ivu-icon animationB"></b>
+                <span class="dowmloadFile" v-else title="打包完成后将自动下载" @click="downloadFile('task',item.id,index)">下载文件</span>
+                  <!--item.id-->
               </div>
             </div>
           </div>
@@ -139,13 +136,40 @@
                 NotType: false,
                 formLeft: {},
                 TwoMenuList:{},
+                typeIndex:null,
+                isALLAutoDownFlag:false,
+                isaDownFlag:false,
+                itemIndex:null,
+                clickItem:{
+
+                }
+            }
+        },
+        watch:{
+            downloadStatus(val){
+                if(val) {
+                    this.isALLAutoDownFlag = false;
+                    this.$store.state.downloadStatus = false;
+                }
+            },
+            isaDownStatus(val){
+                if(val) {
+                    this.isaDownFlag = false;
+                    this.$store.state.isaDownStatus = false;
+                }
             }
         },
         computed: {
             ...mapGetters({
                 taskList: 'getTaskType',
                 subProjectList: 'getSubProjectList'
-            })
+            }),
+            downloadStatus(){
+                return this.$store.state.downloadStatus;
+            },
+            isaDownStatus(){
+                return this.$store.state.isaDownStatus;
+            }
         },
         created() {
             this.fetchData();
@@ -155,7 +179,6 @@
         methods: {
             ...mapMutations(['setPrimaryMission','setDetailAll','setUserStatus']),
             fetchData() {
-                // console.log(this.tasktype)
                 let data = {
                     status: this.status,
                     tasktype: this.selTaskType,
@@ -183,31 +206,43 @@
                 }
                 this.$store.dispatch('fetchTaskList', qs.stringify(data));
             },
-            downloadFile(type, id) {
+            downloadFile(type,id,index) {
+                this.itemIndex = index||null;
                 let data = {
                     type:type,
-                    id:150
-                    // id:id || sessionStorage.projectID
+                    id:id || sessionStorage.projectID
                 };
                 this.$axios.post(this.GLOBAL.baseRouter+'task/task/pack', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
-                            // let key = {
-                            //   url_key: res.url_key
-                            // }
 
 
-                            // window.open('http://192.168.2.19/index.php?r=file/file/download&url_key='+ res.url_key, '_blank');
+                            if(!res.download_url){
+
+                                if(type=='task'){
+                                    // this.$set(this.clickItem,'itemIndex'+index,{index:index,status:false})
+
+                                    this.isaDownFlag = true;//是否展示单个下载加载按钮
+                                }else {
+                                    this.isALLAutoDownFlag = true;    //是否展示全部下载加载按钮
+                                }
+                                const data = JSON.stringify({
+                                    action:'download_url',
+                                    type:type,
+                                    id:id || sessionStorage.projectID
+                                });
+                                webSocket.send(data);
 
 
 
-                            // this.$axios.post(this.GLOBAL.baseRouter+'file/file/download', qs.stringify(key))
-                            // .then(res => res.data)
-                            // .then(res => {
-                            //   window.open(urls, '_blank')
-                            //   console.log(res)
-                            // })
+                            }else {
+                                let hostUrl = 'https://yhc-1.oss-cn-shanghai.aliyuncs.com/'+res.download_url;
+                                var a = document.createElement('a');
+                                a.href = hostUrl;
+                                // a.download = "proposed_file_name";
+                                a.click();
+                            }
                         }else {
                             this.$Message.warning(res.err_message);
                         }
@@ -249,13 +284,19 @@
             getTwoMenuList(status){
                 let data ={
                     project_id:sessionStorage.projectID,
-                    status:status||5
+                    status:status||4
                 }
                 this.$axios.post(this.GLOBAL.baseRouter+'task/task/task-tasktype-count', qs.stringify(data)).then(res=>res.data).then(res =>{
                     if(res.err_code == 0){
                         this.TwoMenuList = res.data;
                     }
                 })
+            },
+            /*根据选择的二级标签查询数据*/
+            selectTaskType(index,type){
+                this.typeIndex = index;
+                this.selTaskType = type;
+                this.fetchData();
             }
         }
     }
@@ -263,6 +304,16 @@
 
 <style lang='less' scoped>
   @import "./style/project.less";
+  .demo-spin-icon-load,.animationB{
+      animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+      from { transform: rotate(0deg);}
+      50%  { transform: rotate(180deg);}
+      to   { transform: rotate(360deg);}
+  }
+  .ivu-spin-fix{background: #3bceb6!important;}
+  .ivu-icon-load-c:before{color: #fff!important;}
   .card{
     position: relative;
     .showHiden{display: none};
@@ -288,6 +339,10 @@
         cursor: pointer;
         &:after{display: inline-block;content: '';width: 13px;height: 13px;background: url("./proStat/image/dowmIconr.png") no-repeat;margin-left: 5px}
       }
+        .dowmloadFilefalse{}
+        b{
+            &:after{content: "\F29C";color: #fff;font-size: 15px;padding: 0 5px}
+        }
     }
   }
 </style>

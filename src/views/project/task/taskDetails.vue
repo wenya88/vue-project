@@ -297,7 +297,6 @@
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
                     .then( res => res.data)
                     .then( ({data}) => {
-                        console.log(11,data)
                         this.taskTypesList = data
                     })
                     .catch(error => {
