@@ -20,6 +20,7 @@
                 @click="changeType2()">
             </span>
         </FormItem>
+         <div class="errorHint" v-if="errorHint.hintFlag"><span class="iconfont icon-cuowu1"></span>{{errorHint.hintData}}</div>
     </Form>
 </template>
 <script>
@@ -37,12 +38,20 @@ export default {
                 passwd: '',
                 passwdCheck: ''
             },
+            errorHint:{
+                hintFlag:false,
+                hintData:''
+            }
        }
    },
    updated(){
        this.upDate();
    },
    methods:{
+       errorInfo(data){
+            this.errorHint.hintData=data;
+            this.errorHint.hintFlag=true;
+        },
         upDate(){
             this.$bus.emit('registerData',this.register)
         },
