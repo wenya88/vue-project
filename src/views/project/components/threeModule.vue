@@ -145,7 +145,8 @@ import feedbackInfo from './feedbackInfo.vue'
                         .script("./src/views/project/components/threeFile/js/OrbitControls.js").wait(() => {
                         console.log('THREE is ready2');
                         this.newFBXMedel();
-                    })
+                    }
+                    )
                 }
             },
             newFBXMedel() {

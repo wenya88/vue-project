@@ -88,6 +88,7 @@
         created() {
         },
         mounted() {
+
             if (this.fileId) {
                 this.init()
             }
@@ -102,6 +103,7 @@
         },
         methods: {
             async init() {
+
                 let {data} = await api.getStageInfo({id: this.fileId});
                 if (data.err_code === 0) {
                     let timestamp = new Date().getTime();

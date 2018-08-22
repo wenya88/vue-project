@@ -58,7 +58,8 @@
                                         <!--style="vertical-align: text-bottom;font-size: 18px;"></i></span>-->
                 <!--<div class="clear"></div>-->
             <!--</div>-->
-            <feedback-Info v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
+            <h1>12  </h1>
+            <feedbackInfo  v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
         </div>
     </div>
 </template>
@@ -73,7 +74,7 @@
     export default {
         components: {
             OnLoad: OnLoad,
-            feedbackInfo
+            feedbackInfo:feedbackInfo
         },
         data() {
             return {
@@ -365,7 +366,7 @@
                                 _this.liIndex = index;
                                 _this.fileID = val.file.id;
                                 _this.stageID = val.file.stage_id;
-                                this.fileId = val.file.stage_id
+                                _this.fileId = val.file.stage_id
                             }
                         })
                         _this.changeState(_this.StateFeedBack);

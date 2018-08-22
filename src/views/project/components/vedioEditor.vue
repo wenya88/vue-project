@@ -160,7 +160,7 @@
         </div>
 
 
-            <!--<feedback-Info v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>-->
+            <feedback-Info v-if="fileId" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
         <img id="img" :src="img" style="opacity:0" alt="">
         <Modal
                 v-model="saveCanvasShow"
@@ -595,7 +595,7 @@
                                 _this.liIndex = index;
                                 _this.fileID = val.file.id;
                                 _this.stageID = val.file.stage_id;
-                                this.fileId = val.file.stage_id
+                                _this.fileId = val.file.stage_id
                             }
                         })
                         _this.changeState(_this.StateFeedBack)
