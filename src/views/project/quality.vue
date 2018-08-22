@@ -6,11 +6,13 @@
       <div v-if="true" class="frist" @click="finishData(4)">
         <i-circle
           :size="120"
-          :trail-width="0"
-          :stroke-width="15"
-          :percent="100"
+          :trail-width="8"
+          :stroke-width="13"
+          :percent="param.num"
           stroke-linecap="square"
-          stroke-color="#3bceb6">
+          stroke-color="#3bceb6"
+          trail-color="#d5f0eb"
+        >
           <div class="text">
             <p class="big"  style="color:#3bceb6;">{{param.num}}</p>
           </div>
@@ -22,7 +24,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#fcc44a">
@@ -38,7 +40,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#8cc8ff">
@@ -52,7 +54,7 @@
         <i-circle
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#ff898e">
@@ -67,7 +69,7 @@
 
           :size="118"
           :trail-width="0"
-          :stroke-width="15"
+          :stroke-width="13"
           :percent="100"
           stroke-linecap="square"
           stroke-color="#78c97c">

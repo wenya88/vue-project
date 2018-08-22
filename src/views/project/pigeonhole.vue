@@ -13,7 +13,7 @@
           </div>
         </li>
         <li class="allDownBtn">
-            <button v-if="isALLAutoDownFlag" class="downloading" title="打包完成后将自动下载">进行中<i class="ivu-icon animationB"></i></button>
+            <button v-if="isALLAutoDownFlag" class="downloading" title="打包完成后将自动下载">打包中<i class="ivu-icon animationB"></i></button>
             <button v-else class="downbtn" @click="downloadFile('project','')" title="打包完成后将自动下载">全部下载</button>
         </li>
       </ul>
@@ -50,30 +50,30 @@
     <div class="tab-main" :style="`min-height: ${boxHeight}px;`">
       <Row type="flex" justify="start" class="code-row-bg">
           <Col span="6" v-for="(item,index) in fileData" :key="index">
-        <div class="card">
-          <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
-            <!-- <Icon type="heart" color="red" v-if=""></Icon>
-            <Icon type="pause" v-else-if=""></Icon> -->
-            <img class="card-box-pic" :src="item.image[0]"/>
-          </div>
-          <div class="showHiden">
-            <div class="RcardBlock">
-              <div class="left">
-                <img class="cardPic" :src="item.image[0]"/>
-                <span>{{item.name}}</span>
+            <div class="card">
+              <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
+                <!-- <Icon type="heart" color="red" v-if=""></Icon>
+                <Icon type="pause" v-else-if=""></Icon> -->
+                <img class="card-box-pic" :src="item.image[0]"/>
               </div>
-              <div class="right">
-                <span>{{item.tasktype_name}}</span><i>原画</i>
+              <div class="showHiden">
+                <div class="RcardBlock">
+                  <div class="left">
+                    <img class="cardPic" :src="item.image[0]"/>
+                    <span>{{item.remark_name}}</span>
+                  </div>
+                  <div class="right">
+                    <span>{{item.name}}</span><i>原画</i>
 
-                <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
-                    <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
-                    <span v-else class="dowmloadFile" title="打包完成后将自动下载" @click="downloadFile('task',item.id)">下载文件</span>
-                </span>
+                    <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
+                        <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
+                        <span v-else class="dowmloadFile" title="打包完成后将自动下载" @click="downloadFile('task',item.id)">下载文件</span>
+                    </span>
 
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
         </Col>
       </Row>
     </div>
@@ -196,9 +196,11 @@
                     .then(res => {
                         if(res.err_code == 0) {
                             this.fileData = res.data;
+                            this.clickItem = [];
                             for(var item in res.data){
                                 this.clickItem.push({id:res.data[item].id,status:false,type:'task'})
                             }
+                            console.log(this.clickItem);
                         }
                     })
             },
@@ -325,7 +327,7 @@
   .ivu-icon-load-c:before{color: #fff!important;}
   .card{
     position: relative;
-    /*.showHiden{display: none};*/
+    .showHiden{display: none};
     &:hover{
       cursor: pointer;
       .showHiden{display: block}
