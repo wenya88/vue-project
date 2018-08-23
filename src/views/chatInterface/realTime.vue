@@ -583,8 +583,6 @@ export default {
       }
     },
   },
-  beforeDestroy () {
-  }
 }
 </script>
 <style scoped>
