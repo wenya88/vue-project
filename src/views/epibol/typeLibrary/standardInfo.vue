@@ -28,12 +28,23 @@
                                     <div>
                                         <ul class="stepsUl">
                                             <li class="stepsList" v-for="(list,i) in step.require" :key="i">
-                                                <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled" class="borderBottomSty"></Input>
+        ·                                        <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled" class="borderBottomSty"></Input>
                                                 <!--规范列表-->
 
 
 
-                                                <Taskselect :dataList="norms" :disabled="disabled" v-on:addNormsFun ="addNorms" :callbackStatus="callbackStatus"></Taskselect>
+                                                <Taskselect
+                                                        :parentIndex="index"
+                                                        :chilenIndex="i"
+                                                        :module="fstandard"
+                                                        :normName="list.norm_name"
+                                                        :dataList="norms"
+                                                        :disabled="disabled"
+                                                        v-on:Selectdata = "updataSelect"
+                                                        v-on:addNormsFun ="addNorms"
+                                                        :callbackStatus="callbackStatus">
+
+                                                </Taskselect>
 
 
 
@@ -67,11 +78,23 @@
                                             {{step.show}}
                                             <div v-show="step.show" class="stepsList">
                                                 <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求" :disabled="disabled"></Input>
-                                                <Select v-model="stepInfoList.norm" class="standard" size="small">
-                                                    <Option v-for="item in norms" :value="item.id" :key="item.id">
-                                                        {{ item.name }}
-                                                    </Option>
-                                                </Select>
+
+                                                <Taskselect
+                                                        :module="fstandard"
+                                                        :dataList="norms"
+                                                        :disabled="disabled"
+                                                        v-on:Selectdata = "updataSelect"
+                                                        v-on:addNormsFun ="addNorms"
+                                                        :callbackStatus="callbackStatus">
+                                                </Taskselect>
+
+
+                                                <!--<Select v-model="stepInfoList.norm" class="standard" size="small">-->
+                                                    <!--<Option v-for="item in norms" :value="item.id" :key="item.id">-->
+                                                        <!--{{ item.name }}-->
+                                                    <!--</Option>-->
+                                                <!--</Select>-->
+
                                                 <div class="priorityContainer">
                                                     <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
                                                     <div class="priorityList">
@@ -203,30 +226,30 @@
 
 
         <!--规范增加-->
-        <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
-        <Button type="primary" @click="modal1 = true">增加规范</Button>
-        <Button type="primary" @click="modal2 = true">删除规范</Button>
-        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">保存</Button>
-        <Modal v-model="modal1" @on-ok="addNorms">
-            <section>
-                <div style="margin-bottom: 5px">
-                    <span>增加标签&emsp;：&emsp;</span>
-                    <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
-                </div>
-            </section>
-        </Modal>
-        <Modal
-                v-model="modal2"
+        <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
+        <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
+        <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
+        <!--<Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">保存</Button>-->
+        <!--<Modal v-model="modal1" @on-ok="addNorms">-->
+            <!--<section>-->
+                <!--<div style="margin-bottom: 5px">-->
+                    <!--<span>增加标签&emsp;：&emsp;</span>-->
+                    <!--<Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>-->
+                <!--</div>-->
+            <!--</section>-->
+        <!--</Modal>-->
+        <!--<Modal-->
+                <!--v-model="modal2"-->
 
-                @on-ok="delNorms"
-        >
-            <div>删除</div>
-            <Select v-model="delnormsValue" size="small" class="standard">
-                <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
-                    {{ item.name }}
-                </Option>
-            </Select>
-        </Modal>
+                <!--@on-ok="delNorms"-->
+        <!--&gt;-->
+            <!--<div>删除</div>-->
+            <!--<Select v-model="delnormsValue" size="small" class="standard">-->
+                <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
+                    <!--{{ item.name }}-->
+                <!--</Option>-->
+            <!--</Select>-->
+        <!--</Modal>-->
     </Content>
 
 </template>
@@ -313,7 +336,12 @@
                 otherfile: [{config_name: '', value: ''}],
 
                 //添加新标签完成后的回调状态
-                callbackStatus:false
+                callbackStatus:false,
+
+                curreSelect:{
+                    id:null,
+                    val:null
+                }
             };
         },
         mounted() {
@@ -356,6 +384,14 @@
 
         },
         methods: {
+            updataSelect(data){
+                if(data.falg){
+                    this.fstandard = data.data;
+                }else {
+                    this.curreSelect.id = data.id;
+                    this.curreSelect.val = data.val;
+                }
+            },
             projectdisabled(){
                 if(this.project){
                     this.disabled = false;
@@ -403,7 +439,7 @@
                 }
             },
             /*提交*/
-             submitTaskClas(){
+                 submitTaskClas(){
                 /*项目级*/
                 if(this.project){
                      this.submitProject()
@@ -449,6 +485,7 @@
             async submitCompany(){
                 let url = 'task/task-type/add';
                 let obj = null;
+                console.log(JSON.stringify(this.fstandard));
                 /*更新*/
                  if(this.updateId !== null || this.createInfo){
                     url = 'task/task-type/update';
@@ -472,6 +509,8 @@
                      };
 
                  }
+
+                 // console.log(obj)
                 let res = await api.taskTypeAdd(obj, url);
                 if (res.data.err_code === 0) {
                     this.createInfo = true ;
@@ -564,12 +603,14 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                console.log(this.fstandard)
+
                 this.fstandard[index].require.push({
-                    norm: this.stepInfoList.norm,
+                    norm: this.curreSelect.id,
                     text: this.stepInfoList.text,
-                    level: this.stepInfoList.level
+                    level: this.stepInfoList.level,
+                    norm_name:this.curreSelect.val
                 });
+                // console.log(this.fstandard[index])
                 this.$set(this.fstandard[index],'show',false);
                 this.stepInfoList = {
                     text: '',
@@ -651,7 +692,9 @@
                         item.flowTIlteShow = false;
                     })
                 }
+
                 this.fstandard = data.stage;
+
 
                 this.identification.icon = data.icon_url;
                 this.identification.iconColor = data.color;

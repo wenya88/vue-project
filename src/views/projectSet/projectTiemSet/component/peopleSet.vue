@@ -10,7 +10,7 @@
                             <p>{{item.remark_name}}</p>
                         </div>
                         <div class="job">
-                            <!--<span>{{item.department_name}}</span>-->
+                            <!--<span>{{item.department_name || 'Null'}}</span>-->
                             <span>{{item.job || 'Null'}}</span>
                         </div>
                         <i class="deleteI" @click="removeShow(item.id)"></i>
@@ -25,8 +25,7 @@
                     v-model="removeModal"
                     title="该成员移除项目？"
                     width="380"
-                    @on-ok="removeCard"
-                    @on-cancel="cancel">
+                    @on-ok="removeCard">
                 <p style="color: #FF6600" >说明：如果该成员负责相关任务，移除后任务将暂停，任务执行人将空缺。</p>
             </Modal>
         </div>
@@ -40,12 +39,12 @@
                     </p>
                     <div class="persionList">
                         <ul>
-                            <li v-for="(member,i) in item.members" :key="i" :class="{'activeSty':member.is_join}">
+                            <li v-for="(member,i) in item.members" :key="i" :class="{'activeSty':member.is_join}" @click="onCard(member.member_id)">
                                 <div>
                                     <img :src="member.headimage ? member.headimage : imgHead"/>
-                                    <span>{{member.remark_name}}</span>
+                                    <span> {{ member.remark_name }} </span>
                                 </div>
-                                <i class="ivu-icon" @click="onCard(member.member_id)"></i>
+                                <i class="ivu-icon"></i>
                             </li>
                         </ul>
                     </div>
@@ -54,8 +53,7 @@
                         v-model="addModal"
                         title="移入项目"
                         width="380"
-                        @on-ok="addGroup"
-                        @on-cancel="cancel">
+                        @on-ok="addGroup">
                     <p style="color: #FF6600" >说明：部门成员全部加入项目？</p>
                 </Modal>
             </template>
@@ -189,7 +187,8 @@
     @black: #d9d9d9;
     @gray: #999;
     @green:#c4f0e9;
-    @ddd:#ddd;
+    @ddd: #eeeeee;
+    @green2:#44ccc0;
 
     .projectMemberContainer {
         display: flex;
@@ -237,6 +236,7 @@
                             width: 50px;
                             height: 50px;
                             border-radius: 100%;
+                            background: #ccc;
                         }
 
 
@@ -302,95 +302,41 @@
                     padding: 4px 25px;
                     font-size: 16px;
                     background: @green;
-                    color: #44ccc0;
+                    color: @green2;
                     padding: 18px 20px;
                     border-radius: 5px;
                     min-width: 140px;
                     i{
                         display: inline-block;font-style: normal;text-align: center;cursor: pointer;
-                        width: 20px;height: 20px;line-height: 18px;border-radius: 100%;border: 1px solid #44ccc0;
-                        &:after{content: "\F217";color: #44ccc0;font-size: 15px;}
+                        width: 20px;height: 20px;line-height: 18px;border-radius: 100%;border: 1px solid @green2;
+                        &:after{content: "\F217";color: @green2;font-size: 15px;}
                     }
                 }
                 .persionList{
                     ul{
                         display: flex;flex-wrap: wrap;padding: 0 6px;
                         li{
-                            display: flex;justify-content: space-between;align-items: center;border: 1px solid #ddd;padding: 10px;min-width: 143px;margin: 30px 20px 0 20px;border-radius: 5px;cursor: pointer;
+                            display: flex;justify-content: space-between;align-items: center;border: 1px solid @ddd;padding: 10px;min-width: 143px;margin: 30px 20px 0 20px;border-radius: 5px;cursor: pointer;
                             div{
                                 display: flex;justify-content: center;align-items: center;margin-right: 20px;
                                 img{
-                                    width: 28px;height: 28px;border-radius: 100%;
+                                    display: inline-block;width: 28px;height: 28px;border-radius: 100%;background: #ccc;
                                 }
+                                span{margin-left:5px}
                             }
 
                             i{
                                 display: inline-block;font-style: normal;text-align: center;cursor: pointer;
-                                width: 20px;height: 20px;line-height: 18px;border-radius: 100%;border: 1px solid #44ccc0;
-                                &:after{content: "\F217";color: #44ccc0;font-size: 15px;}
+                                width: 20px;height: 20px;line-height: 18px;border-radius: 100%;border: 1px solid @green2;
+                                &:after{content: "\F217";color: @green2;font-size: 15px;}
                             }
                             &.activeSty{
-                                border: 1px solid #44ccc0;
+                                border: 1px solid @green2;background: #bff7ee;
                                 i{
                                     border: none;
-                                    &:after{content: "\F3FF";color: #44ccc0;font-size: 22px;}
+                                    &:after{content: "\F3FF";color: @green2;font-size: 22px;}
                                 }
                             }
-                        }
-                    }
-                    /*margin-top: 30px;*/
-                }
-            }
-
-
-            .wholeList {
-                display: flex;
-                padding: 0 35px 35px 35px;
-                flex-wrap: wrap;
-                p {
-                    width: 25%;
-                    margin: 15px 0;
-                    text-align: center;
-                    align-items: center;
-                    img {
-                        position: absolute;
-                        top: 50%;
-                        left: 4px;
-                        width: 28px;
-                        height: 28px;
-                        border-radius: 100%;
-                        transform: translateY(-50%);
-                    }
-                    .pitchOn {
-                        /*background-color: #18d96c;*/
-                        /*box-shadow: 2px 2px 4px 0 #434343;*/
-                        color: #fff;
-                        .icon {
-                            color: #60ff11;
-                        }
-                    }
-                    span {
-                        position: relative;
-                        display: block;
-                        width: 66%;
-                        min-width: 100px;
-                        height: 40px;
-                        line-height: 40px;
-                        color: #999;
-                        border: 1px solid #ddd;
-                        /*border-radius: 20px;*/
-                        /*box-shadow: 0 0 2px 0 #999;*/
-                        cursor: pointer;
-                        .icon {
-                            position: absolute;
-                            top: 50%;
-                            right: 14px;
-                            font-size: 14px;
-                            transform: translateY(-50%);
-                        }
-                        &:active {
-                            transform: translate3d(1px, 1px, 0);
-                            opacity: .9;
                         }
                     }
                 }
