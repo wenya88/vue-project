@@ -44,6 +44,7 @@ const app = {
         menuTheme: 'dark', // 主题
         themeColor: '',
         messageCount: 0,
+        isSetShow: false, // 显示设置
         uploadFile: [],  // 上传文件路径
         filenum:null, // 上传文件数量
         /* 以下 8月9日 权限 */
@@ -112,6 +113,9 @@ const app = {
         },
         setFilenum(state,data) {
             state.filenum = data;
+        },
+        setIsSetShow(state) {
+          state.isSetShow = !state.isSetShow
         },
         /*
             epibol级权限

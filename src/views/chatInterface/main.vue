@@ -3,9 +3,16 @@
    <div class="msg_button_fix" id='drag_msg' @mousedown="downs">消息<span class="showNumbers" v-if="allNum">{{allNum}}</span></div>
    <div class="real_all" v-if="isShow">
      <div class="clearfix real_header_box">
-        <p class="header_project project_is_actice" @click="getReal(0)">项目沟通<span v-if="nums">({{nums}})</span></p>
-        <p class="header_project" @click="getReal(1)">消息提醒<span v-show="MsgIdx">({{MsgIdx}})</span></p>
-        <p class="close_all" @click="closeMsg">x</p>
+        <div class="header_project project_is_actice" @click="getReal(0)">
+          <!-- <p class='header_project_image'><img src='../../images/chat-icon.png'></p> -->
+          <p>项目沟通</p>
+          <!-- <span v-if="nums">({{nums}})</span> -->
+        </div>
+        <div class="header_project" @click="getReal(1)">消息提醒<span v-show="MsgIdx">({{MsgIdx}})</span></div>
+        <div class="left-option">
+            <p class="option-she iconfont icon-ymy-setup-copy" @click="setIsSetShow" v-if='isMsg'></p>
+            <p class="close_all" @click="closeMsg">x</p>
+        </div>
      </div>
      <real-message v-if="!isMsg"></real-message>
      <remind v-else></remind>
@@ -15,6 +22,7 @@
 <script>
 import realMessage from './realMessage.vue'
 import remind from './remindMsg.vue'
+import {mapMutations} from 'vuex'
 var qs = require('querystring')
 export default {
   // props:['visidy'],
@@ -68,6 +76,7 @@ export default {
     this.unreadMsg()
   },
   methods: {
+    ...mapMutations(['setIsSetShow']),
     // 获取总数
     getAllMsg () {
       const list = this.$store.state.useList
@@ -247,7 +256,8 @@ export default {
 .real_header_box{
   width: 100%;
   height: 50px;
-  background:rgba(215,247,239,1);
+  background:url('../../images/chat.png');
+  background-size: 100% 100%;
 }
 .header_project{
   float: left;
@@ -258,12 +268,21 @@ export default {
   line-height: 48px;
   margin-left: 20px;
   cursor: pointer;
-  color: #000000;
+  color: #ffffff;
   font-weight: bolder;
+}
+.header_project_image{
+  width: 30px;
+  height:20px;
 }
 .project_is_actice{
   border-bottom: 2px solid  rgba(49,187,159,1)!important;
   color: rgba(49,187,159,1)!important;
+}
+.left-option{
+  float: right;
+  width: 80px;
+  height: 100%;
 }
 .close_all{
   width: 20px;
@@ -275,6 +294,12 @@ export default {
   line-height: 20px;
   cursor: pointer;
   background: rgba(255,0,0);
+}
+.option-she{
+  font-size: 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  float: left;
 }
 .showNumbers{
   display: block;

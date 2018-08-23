@@ -8,21 +8,22 @@
         <li @click="getClick(3)">任务<span v-show="froms.task">({{froms.task}})</span></li>
         <li @click="getClick(4)">系统<span v-show="froms.system">({{froms.system}})</span></li>
       </ul>
-      <span @click="setMsg">设置</span>
+      <!-- <span @click="setMsg">设置</span> -->
    </div>
    <div class="remind_children">
-     <remind-children v-show="!isSet" @listform = 'getlist'></remind-children>
-     <set-rmind v-show="isSet"></set-rmind>
+     <remind-children v-show="!setshow" @listform = 'getlist'></remind-children>
+     <set-rmind v-show="setshow"></set-rmind>
    </div>
   </div>
 </template>
 <script>
 import remindChildren from './remindChildren.vue'
 import setRmind from './setramind.vue'
+import {mapState} from 'vuex'
 export default {
   data () {
     return {
-      isSet: false,
+      // isSet: false,
       tabNum: 2,
       froms: {}
     }
@@ -33,6 +34,13 @@ export default {
   },
   mounted () {
    this.getClick(2)
+  },
+  computed: {
+    ...mapState({
+      setshow(data) {
+         return data.app.isSetShow
+      }
+    })
   },
   methods: {
     // 点击事件
@@ -47,9 +55,9 @@ export default {
       })
       children[index].classList.add('remind_active')
     },
-    setMsg () {
-      this.isSet = !this.isSet
-    },
+    // setMsg () {
+    //   this.isSet = !this.isSet
+    // },
     // 获取消息
     getlist(e) {
       const froms = e
@@ -98,18 +106,24 @@ export default {
 .remind_message_ul{
  width: 100%;
  height: 100%;
- background: rgb(215,247,239);
+ background: rgb(212,244,239);
 }
 .remind_message_ul>li{
   float: left;
+  width: 80px;
   height: 30px;
   font-size: 14px;
+  line-height: 30px;
+  text-align: center;
   margin: 10px 0 0 20px;
   list-style: none;
   cursor: pointer;
+  border-radius: 4px;
 }
 .remind_active{
  font-weight: bolder;
+ background: #fdfdfd;
+ color: #3bceb6;
 }
 .remind_children{
  width: 100%;

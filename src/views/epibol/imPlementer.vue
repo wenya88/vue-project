@@ -26,7 +26,8 @@
              <div class="clearfix task_describe_title">
                <p class="state-introd" :style="`background:${elems.leftTopColor}`">{{elems.isComplete}}</p>
                <div class="task_describe_father">
-                 <p class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</p>
+                 <span class='task_describe-sign iconfont icon-bofang' @click='getAgin(elems)' v-if='elems.status == 1'></span>
+                 <span class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</span>
                </div>
              </div>
            </div>
@@ -151,15 +152,15 @@
            <p class="sure_title" @click="uploadImg">完成上传</p>
         </div>
       </div>
-      <div class="is_angin" v-if="isAngin">
+      </div>
+     <!-- 上传界面end -->
+     <div class="is_angin" v-if="isAngin">
         <p>是否开始任务</p>
         <div class="is_angin_box">
           <p @click="sureAngin">是</p>
           <p @click="noAngin">否</p>
         </div>
       </div>
-      </div>
-     <!-- 上传界面end -->
    </div>
 </template>
 <script>
@@ -266,6 +267,7 @@ export default {
     },
     // 是否开始
     getAgin (data) {
+      // console.log('ssssss')
       this.task_id = data.id
       this.isAngin = true
     },
@@ -1119,7 +1121,8 @@ export default {
   }
 }
 .task_describe{
-  width: calc(100% - 100px);
+  @widthed: 100px;
+  width: calc(~"100% - @{widthed}");
   height: 100%;
 }
 .task_describe_title{
@@ -1353,6 +1356,10 @@ export default {
   z-index: 99999;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+}
+.task_describe-sign{
+  color: #7cbefc;
+  cursor: pointer;
 }
 .upload_page_header {
   width: 100%;
@@ -1626,6 +1633,7 @@ export default {
  margin-left: -100px;
  background: rgb(240,240,240);
  border-radius: 4px;
+ z-index: 99999;
 }
 .is_angin>p{
   width: 100%;
