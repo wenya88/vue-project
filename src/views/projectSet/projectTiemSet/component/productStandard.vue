@@ -10,10 +10,10 @@
             </ul>
             <div class="addType">
                 <div class="addButton">
-                    <Dropdown trigger="click" style="margin-left: 20px">
+                    <Dropdown trigger="click" style="padding: 9px 14px 9px 14px;border-radius: 4px">
                         <span class="typeMenu">
-                            <Icon type="plus-round"></Icon>
-                            <span>添加规范</span>
+                            <Icon type="ios-plus-outline" size="18"></Icon>
+                            <span style="vertical-align: top">添加规范</span>
                         </span>
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
@@ -26,14 +26,14 @@
                                 <dt>{{item.name}}</dt>
                                 <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
-                                    <li class="type" :class="children.border?'sign':''"
-                                        @click="greenSign(index,i,children)" v-for="(children,index) in item.children">
-                                        <img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"
-                                             alt=""
-                                             :style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">
+                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children" >
+                                    <div class="type" :class="children.border?'sign':''" >
+                                        <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
+                                        <!--alt=""-->
+                                        <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
                                         <span>{{children.tasktype_name}}</span>
-                                        <Icon v-if="children.border" type="checkmark-circled"
-                                              style="padding-left: 5px;color: #00d900;line-height: 30px;"></Icon>
+                                        <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
+                                    </div>
                                     </li>
                                 </ul>
                             </dl>
@@ -46,77 +46,79 @@
         <standard-info v-if="typeTabs.length>0" v-on:update="infoUpdate" ref="tree" :project="true"
                        :attrContent="attrContent" :ruleList="ruleList">
             <div slot="item">
-                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">内容规范</h4>
-                <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
-                    <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
-                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
-                                  :disabled="disabled">
-                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Icon @click.native="removeAttrContent(index)" type="trash-b" class="delIcon"></Icon>
-                </Row>
-                <template v-if="attrContentW.show" :style='{margin:"10px 0"}'>
-                    <Col span="5">
-                    <AutoComplete v-model="attrContentW.name" placeholder="额外属性名称" clearable>
-                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Col span="10">
-                    <AutoComplete v-model="attrContentW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
-                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Button type="text" @click="addAttrContent()">确认</Button>
-                    <Button type="text" @click="closeattrContent()">取消</Button>
-                </template>
 
-                <Button v-if="!attrContentW.show && !disabled" icon="plus-round" type="text" long
-                        style="width:140px;color: #31bb9f"
-                        @click.native="attrContentW.show=!attrContentW.show"
-                >
-                    增加内容规范
-                </Button>
+                    <ul>
+                        <li>
+                            <p class="titleFloat">
+                                <span class="titleH2">内容规范</span>
+                                <Icon v-if="!attrContentW.show && !disabled"  class="addguifan" type="plus"    @click.native="attrContentW.show=!attrContentW.show" ></Icon>
+                            </p>
+                            <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
+                                <Col span="5">
+                                <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
+                                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Col span="12">
+                                <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                              :disabled="disabled">
+                                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Icon @click.native="removeAttrContent(index)" type="trash-b" class="delIcon"></Icon>
+                            </Row>
+                            <template v-if="attrContentW.show" :style='{margin:"10px 0"}'>
+                                <Col span="5">
+                                <AutoComplete v-model="attrContentW.name" placeholder="额外属性名称" clearable>
+                                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Col span="12">
+                                <AutoComplete v-model="attrContentW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Button type="text" @click="addAttrContent()">确认</Button>
+                                <Button type="text" @click="closeattrContent()">取消</Button>
+                            </template>
+                        </li>
+                        <li>
+                            <p class="titleFloat">
+                                <span class="titleH2">规格规范</span>
+                                <Icon v-if="!ruleListW.show && !disabled"   class="addguifan"
+                                      @click="ruleListW.show=!ruleListW.show"  type="plus"></Icon>
+                            </p>
+                            <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
+                                <Col span="5">
+                                <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
+                                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Col span="10">
+                                <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                              :disabled="disabled">
+                                    <!-- <Option v-for="item in re  qData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Icon @click.native="removeRuleList(index)" type="trash-b" class="delIcon"></Icon>
+                            </Row>
+                            <template v-if="ruleListW.show" :style='{margin:"10px 0"}'>
+                                <Col span="5">
+                                <AutoComplete v-model="ruleListW.name" placeholder="额外属性名称" clearable>
+                                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Col span="10">
+                                <AutoComplete v-model="ruleListW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Button type="text" @click="addruleList()">确认</Button>
+                                <Button type="text" @click="closeruleList()">取消</Button>
+                            </template>
 
-                <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">规格规范</h4>
-                <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
-                    <Col span="5">
-                    <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
-                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Col span="10">
-                    <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
-                                  :disabled="disabled">
-                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Icon @click.native="removeRuleList(index)" type="trash-b" class="delIcon"></Icon>
-                </Row>
-                <template v-if="ruleListW.show" :style='{margin:"10px 0"}'>
-                    <Col span="5">
-                    <AutoComplete v-model="ruleListW.name" placeholder="额外属性名称" clearable>
-                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Col span="10">
-                    <AutoComplete v-model="ruleListW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
-                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                    </AutoComplete>
-                    </Col>
-                    <Button type="text" @click="addruleList()">确认</Button>
-                    <Button type="text" @click="closeruleList()">取消</Button>
-                </template>
-
-                <Button v-if="!ruleListW.show && !disabled" icon="plus-round" type="text" long
-                        @click="ruleListW.show=!ruleListW.show" style="width:140px;color: #31bb9f">
-                    增加制作规范
-                </Button>
+                        </li>
+                    </ul>
             </div>
         </standard-info>
         <div v-else style="text-align: center;height: 100%;margin-top: 120px;font-size: 20px">请从右上角添加规范哦</div>
@@ -363,22 +365,27 @@
 </script>
 
 <style lang="less">
-    @green: #31bb9f;
+    @green: #3bceb6;
     @btn: #b8f1c6;
     @bor: #009900;
+    @gray:#eef1f2;
     .projectSpeContainer {
         .tabHead {
             display: flex;
+            padding-bottom: 30px;
+            background: @gray;
 
             .typeTabsContainer {
                 display: flex;
-                padding: 21px 0 0 21px;
-                background: #fff;
+                padding: 21px 0 0 0;
+                background: @gray;
+                border-bottom: 1px solid @green;
+
                 .typeTab {
                     position: relative;
-                    padding: 10px;
+                    padding: 10px 22px;
                     font-size: 16px;
-                    border-bottom: 1px solid @green;
+                    color: #777777;
                     cursor: pointer;
 
                     &:hover {
@@ -389,41 +396,51 @@
                     .closeSign {
                         display: block;
                         position: absolute;
-                        top: 0;
-                        right: 0;
+                        top: 3px;
+                        right: 3px;
                         width: 16px;
                         height: 16px;
                         text-align: center;
                         line-height: 16px;
                         font-size: 12px;
                         color: #fff;
-                        background: red;
+                        background: #f0816b;
                         border-radius: 50%;
                         opacity: 0;
                     }
                 }
                 .tabGreen {
-                    border: 1px solid @green !important;
-                    border-bottom: none !important;
+                    color: #fff;
+                    background: @green;
+                    border-radius: 6px 6px 0 0;
                 }
             }
             .addType {
                 position: relative;
                 flex: 1;
-                min-height: 80px;
+                min-height: 40px;
+                background: @gray;
                 border-bottom: 1px solid @green;
-                background: #fff;
+
                 .addButton {
                     position: absolute;
-                    top: 18px;
+                    top: 26px;
                     right: 30px;
+                    /*padding: 10px 14px;*/
+                    text-align: center;
+                    background: #fff;
                     .ivu-dropdown, .ivu-select-dropdown {
                         top: 50px !important;
+                    }
+                    .ivu-dropdown, .ivu-select-dropdown{
+                        border: 1px solid @green;
+
                     }
                 }
                 .typeMenu {
                     color: @green;
                     cursor: pointer;
+
                 }
                 .header {
                     display: flex;
@@ -431,15 +448,15 @@
                     font-size: 16px;
                     color: #6b6b6b;
                     .fonsW {
-                        font-weight: bold;
-                        color: black;
+                        color: @green;
                     }
                     p {
                         min-width: 100px;
+                        margin: 0 6px;
                         text-align: center;
+                        color: #777;
                         word-break: keep-all;
                         white-space: nowrap;
-                        margin: 0 6px;
                         cursor: pointer;
                     }
                 }
@@ -448,8 +465,7 @@
                     padding-left: 20px;
                     line-height: 30px;
                     font-size: 14px;
-                    color: black;
-                    font-weight: 600;
+                    color: #777;
                 }
                 .typeList {
                     display: flex;
@@ -457,25 +473,36 @@
                     margin: 14px 0 25px 0;
                     font-size: 14px;
                     cursor: pointer;
+                    .typeBox{
+                        position: relative;
+                        padding: 0 20px;
+                        margin-left: 15px;
+                    }
                     .type {
                         display: flex;
-                        min-width: 120px;
+                        min-width: 75px;
                         height: 30px;
-                        padding: 0 4px 0 16px;
-                        margin-left: 15px;
+                        padding: 0 4px 0 7px;
                         text-align: center;
                         line-height: 30px;
-                        color: #6b6b6b;
+                        color: #bdbdbd;
                         overflow: hidden;
                         img {
                             margin: 29px 4px 0 0;
                         }
+                        .icon{
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            padding-left: 5px;color: #3bceb6;line-height: 30px;
+                        }
 
                     }
                     .sign {
-                        background: @btn;
-                        border: 1px solid @bor;
-                        border-radius: 8px;
+                        color:@green ;
+                        background: #c4f0e9;
+                        border: 1px solid @green;
+                        border-radius: 4px;
                         img {
                             margin: 27px 4px 0 0;
                         }

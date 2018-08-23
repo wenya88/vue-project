@@ -202,8 +202,7 @@
         <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
         <Button type="primary" @click="modal1 = true">增加规范</Button>
         <Button type="primary" @click="modal2 = true">删除规范</Button>
-        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>
-        <Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>
+        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">保存</Button>
         <Modal v-model="modal1" @on-ok="addNorms">
             <section>
                 <div style="margin-bottom: 5px">
