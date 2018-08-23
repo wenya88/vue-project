@@ -2,7 +2,7 @@
     <div class="newBidList">
         <dl>
             <dd v-for="item in applicationData" :key="item.id">
-                <div class="bidTitle">
+                <div class="bidTitle" @click="applicationInfo(item.test_name,item.id)">
                      {{item.test_name}}
                 </div>
                 <div class="bidMoney">
@@ -35,6 +35,14 @@
                 </div>
             </dd>
         </dl>
+        <Modal
+                    v-model="applModal"
+                    :title="modalTitle"
+                    :closable="false"
+                    width="1100px">
+                    <bid-Details :appData='appData' ref="getCont"></bid-Details>
+                   <div slot="footer"></div>
+        </Modal>
     </div>
     <!-- 
     <div class="bidList">
