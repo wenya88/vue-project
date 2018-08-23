@@ -92,7 +92,36 @@
                         rank: 0,
                         expand: true,
                         render: (h, {root, node, data}) => {
-                            return
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    width: '100%'
+                                }
+                            }, [
+                                h('span', ),
+                                h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        float: 'right',
+                                        marginRight: '32px'
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: Object.assign({}, this.buttonProps, {
+                                            icon: 'ios-plus-empty',
+                                            type: 'primary'
+                                        }),
+                                        style: {
+                                            width: '52px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.append(data, 'all')
+                                            }
+                                        }
+                                    })
+                                ])
+                            ]);
                         },
                         children: []
                     }
@@ -348,7 +377,6 @@
                 }else{
                     className = 'node2'
                 }
-                console.log(133,data)
                 return (
                     h('p', {
 
@@ -646,6 +674,7 @@
     padding: 7px;
     margin-right: 30px;
     background: #fff;
+    overflow-y: auto;
     .shade{
         position: absolute;
         top:8px;

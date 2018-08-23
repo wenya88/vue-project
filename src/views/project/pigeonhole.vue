@@ -54,7 +54,9 @@
               <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
                 <Icon type="pause" v-else-if=""></Icon> -->
-                <img class="card-box-pic" :src="item.image[0]"/>
+                <img  v-if="item.image[0]" class="card-box-pic" :src="item.image[0]"/>
+                <img v-else src="./task/QQ图片20180719133401.jpg"  class="card-box-pic"  alt="">
+
               </div>
               <div class="showHiden">
                 <div class="RcardBlock">

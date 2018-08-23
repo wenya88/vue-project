@@ -1,16 +1,24 @@
 <template>
     <Content class="companyNormLibrary">
-        <Row style="height: 100%">
-            <Col span="6" style="height: 100%">
+        <ul style="display: flex;height: 100%;">
+            <li style="min-width: 300px;">
                 <type-list style="height: 100%" ref="tree" :listData="formLeft"></type-list>
-            </Col>
-            <Col span="16">
-            <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+            </li>
+            <li style="flex: 1">
                 <standard-info></standard-info>
-            </Content>
-            </Col>
 
-        </Row>
+            </li>
+        </ul>
+        <!--<Row style="height: 100%">-->
+            <!--<Col span="8" style="height: 100%">-->
+                <!--<type-list style="height: 100%" ref="tree" :listData="formLeft"></type-list>-->
+            <!--</Col>-->
+            <!--<Col span="16">-->
+            <!--<Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">-->
+            <!--</Content>-->
+            <!--</Col>-->
+
+        <!--</Row>-->
     </Content>
 </template>
 <script>

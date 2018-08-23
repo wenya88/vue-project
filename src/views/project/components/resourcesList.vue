@@ -70,6 +70,7 @@
 
                         <!--?x-oss-process=video/snapshot,t_2000,f_jpg oss获取视频的缩略图 添加在视频路径后面-->
                         <img  v-else-if="item.stage_file.type == 'video'" class="card-box-pic" :src="item.stage_file.file+'?x-oss-process=video/snapshot,t_2000,f_jpg'" />
+                        <img  v-else-if="item.stage_file.type == '3d'" class="card-box-pic" src="./threeFile/liyuanba.png" />
 
                         <div class="tips">
                             <!--<div style="display: flex">-->

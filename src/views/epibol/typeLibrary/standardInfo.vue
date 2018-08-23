@@ -288,8 +288,9 @@
         },
         data() {
             return {
+
                 disabled: true, // 禁用
-                goinfo: null,
+                goinfo: {},
                 createInfo: false,
                 delnormsValue: '',
                 isSubmit: false,// 提交按钮
@@ -359,8 +360,8 @@
             });
 
             this.$bus.on('addType', (data) => {
-                this.addType(data);
                 this.goinfo = data;
+                this.addType(data);
                 this.isSubmit = true;
                 this.disabled = false;
             });
@@ -704,6 +705,10 @@
                 }
             },
             addType(data) {
+
+                if(data.cate_id){
+                    this.goinfo.parent_id = data.cate_id
+                }
                 this.clearInfo();
                 this.newData = data;
                 this.updateId = null;
