@@ -54,7 +54,7 @@
                                                 <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
                                             </li>
                                             <!--审核选项-->
-                                            <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;left:454px;width:212px;">
+                                            <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;right:20px;width:212px;">
                                                 <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
                                             </Select>
                                         </ul>
@@ -174,7 +174,7 @@
                                         <Col span="12">
                                         <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
                                         </Col>
-                                        <Icon v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
+                                        <Icon   v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
                                     </div>
                                 </template>
 

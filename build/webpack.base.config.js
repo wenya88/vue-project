@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+var Version = new Date().getTime();
 function resolve(dir) {
     return path.join(__dirname, dir);
 }
@@ -15,7 +16,7 @@ module.exports = {
         'lab': '@/js/labjs.min.js'
     },
     output: {
-        path: path.resolve(__dirname, '../dist/dist')
+        path: path.resolve(__dirname, '../dist/dist'),
     },
     module: {
         rules: [

@@ -12,11 +12,12 @@ fs.open('./build/env.js', 'w','0777',function(err, fd) {
     const buf = 'export default "production";';
     fs.write(fd, buf, 0, buf.length,0, function(err, written, buffer) {});
 });
+let math = Math.random();
 module.exports = merge(webpackBaseConfig, {
     output: {
         publicPath: './dist/',
-        filename: '[name].js',
-        chunkFilename: '[name].chunk.js'
+        filename: `[name]+${math}.js`,
+        chunkFilename: `[name].chunk${math}.js`
     },
     plugins: [
         new cleanWebpackPlugin(['dist/*'], {

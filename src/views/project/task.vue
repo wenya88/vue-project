@@ -135,16 +135,16 @@
             <!--主视图:列表/甘特图 -->
             <Tabs class="task-tab">
                 <Tab-pane label="看板">
-                    <tasklist style="padding-left: 450px;" ref="list"
+                    <tasklist style="padding-left: 400px;" ref="list"
                               v-on:showTaskDetails='showTaskDetails'
                               v-on:delTask="closeTaskDetails"></tasklist>
                 </Tab-pane>
                 <Tab-pane label="甘特图">
-                    <iframe style="padding-left: 450px;" id="show-iframe" frameborder=0   name="showHere" scrolling=auto
+                    <iframe style="padding-left: 400px;" id="show-iframe" frameborder=0   name="showHere" scrolling=auto
                     src="../../../src/views/project/gantt/gantt.html"></iframe>
                 </Tab-pane>
                 <Tab-pane label="进度管理">
-                    <v-schedule-plan style="padding-left: 450px;"></v-schedule-plan>
+                    <v-schedule-plan style="padding-left: 400px;"></v-schedule-plan>
                 </Tab-pane>
             </Tabs>
         </div>
@@ -464,7 +464,7 @@
                 position: absolute;
                 top: 77px;
                 left: -11px;
-                width: 457px;
+                width: 400px;
                 /*height: 916px;*/
                 height: 85%;
                 padding: 10px 23px;

@@ -58,6 +58,14 @@ export default {
     taskTaskList: (data) => {
         return Vue.$axios.post(url + 'task/task/list', qs.stringify(data))
     },
+    //项目概况
+    getProjectInfo: (data) => {
+        return Vue.$axios.post(url + 'task/project/project-info', qs.stringify(data))
+    },
+    // 任务详情反馈信息
+    getStageInfo: (data) => {
+        return Vue.$axios.post(url + 'task/task/stage-info', qs.stringify(data))
+    },
 
 
 

@@ -75,14 +75,16 @@
                             <!--<div style="display: flex">-->
                                <!--<p > <span class="tag" >{{item.tasktype_name}}</span><span>{{item.task_name}}</span></p>-->
                                 <!--<p class="date" style="width: 200px;">上传：{{item.create_date}}</p>-->
-                            <!--</div>-->
-                            <div style="display: flex">
+
+
+                            <div style="display: flex;justify-content: space-between">
                                 <p class="omit" >{{item.tasktype_name}}&emsp;{{item.task_name}}</p>
                                 <p class="omit" >{{item.create_date}} </p>
                             </div>
                             <div style="display: flex">
                                 <div class="userImg">
-                                    <img class="icon" src="../../../images/leader.png"/> {{item.run_uname}}
+                                    <img class="icon" src="../../../images/icon/3D.png"/>
+                                    <span style="text-align: center">{{item.run_uname}}</span>
                                 </div>
                                 <i class="line"></i>
                                 <table class="card-table">
@@ -107,6 +109,7 @@
                                     </tr>
                                 </table>
                             </div>
+
                         </div>
 
                     </div>

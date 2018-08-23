@@ -3,7 +3,7 @@
     <div class="taskDetailsContainer">
         <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
             <FormItem  v-if="!taskManagement"  label="任务名称">
-                <Input   v-model="editData.name"  :disabled="editDisabled">
+                <Input   v-model="editData.name"  :disabled="editDisabled" >
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
@@ -11,7 +11,7 @@
             <FormItem label="负责人" class="borBotm" >
                 <div class="head" >
                     <img v-if="taskManagement" src="./QQ图片20180719133401.jpg" class="headImg" alt="">
-                    <Select v-model="principalName"   :disabled="editDisabled" placeholder="">
+                    <Select v-model="principalName"   :disabled="editDisabled" placeholder="请选择负责人" @on-change="saveShow">
                         <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
                     </Select>
                 </div>
@@ -57,6 +57,7 @@
                                    @on-select="selectTaskType"
                                    :disabled="editDisabled"
                                    icon="android-color-palette"
+                                   @on-change="saveShow"
                     >
                         <Option v-for="(item,index) in taskTypesList"
                                 :key="'taskManagement'+index"
@@ -104,6 +105,7 @@
             <FormItem label="参考附件" class="borBotm">
                 <div>
                     <Upload
+                            @on-change="saveShow"
                             multiple
                             type="drag"
                             :show-upload-list="true"
@@ -120,6 +122,7 @@
             </FormItem>
             <FormItem label="备注" class="borBotm">
                 <Input
+                        @on-change="saveShow"
                         class="remark"
                         v-model="editData.description"
                         type="textarea"
@@ -128,6 +131,7 @@
 
                 ></Input>
             </FormItem>
+
         </Form>
     </div>
 </template>
@@ -145,6 +149,7 @@
         },
         data() {
             return {
+                saveButtonShow:false,
                 projectId:sessionStorage.getItem('projectID'),
                 //*任务属性*//
                 taskID:0,
@@ -199,6 +204,9 @@
             },
         },
         methods:{
+            saveShow(){
+              this.$emit('buttonShow');
+            },
             ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
             //获取任务详情
             initTaskDetailFromID(id,fatherFunctions) {
@@ -447,6 +455,7 @@
             },
             //开始时间
             setTimeRange(date,date_now) {
+                this.$emit('buttonShow');
                 this.editData.expect_start_date = date[0];
                 this.editData.expect_end_date = date[1];
             },
@@ -460,7 +469,7 @@
             },
             //设置子项目
             setChildProject(pId) {
-
+                this.$emit('buttonShow');
                 this.editData.project_child = pId;
 
             },
@@ -527,6 +536,7 @@
             //----------上传文件-------------//
             // 上传附件成功后返回
             referenceFileSuccess(response, file ,fileList) {
+                this.$emit('buttonShow');
                 this.referenceFileUrl.push(response.file.url);
             },
             //移除附件

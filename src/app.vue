@@ -1,3 +1,5 @@
+<script src="../../develop/dist/0.chunk.js"></script>
+<script src="../../develop/dist/0.chunk.1534735769255.js"></script>
 <template>
     <div id="main" class="app-main">
         <router-view></router-view>
