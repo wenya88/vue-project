@@ -1,14 +1,15 @@
 <template>
-    <Content    :style="{minHeight: '280px', background: '#fff'}">
-        <Row>
-            <Col span="6">
-                <type-list ref="tree" :listData="formLeft" ></type-list>
+    <Content class="companyNormLibrary">
+        <Row style="height: 100%">
+            <Col span="6" style="height: 100%">
+                <type-list style="height: 100%" ref="tree" :listData="formLeft"></type-list>
             </Col>
             <Col span="16">
-                <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
-                    <standard-info></standard-info>
-                </Content>
+            <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+                <standard-info></standard-info>
+            </Content>
             </Col>
+
         </Row>
     </Content>
 </template>
@@ -28,12 +29,19 @@
             standardInfo
         },
         data() {
-            return{
+            return {
                 formLeft: {},
             }
         },
-        mounted() {},
-        methods:{
-        }
+        mounted() {
+        },
+        methods: {}
     };
 </script>
+<style lang="less">
+    .companyNormLibrary {
+        height: 100%;
+        background: #eef1f2;
+        padding-top: 30px;
+    }
+</style>

@@ -288,6 +288,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'epibolCompany',
                 title: '合作',
+                meta:{role:'c3'},
                 component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); },
 
             }, {
