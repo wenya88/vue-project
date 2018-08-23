@@ -90,8 +90,8 @@
                       </ul>
                    </div>
                    <div class="clearfix propress_box">
-                    <P class="propress_surplus" v-if="item.Surplus < 0">剩余<span class="propress_surplus_time">{{item.Surplus}}</span>个工作日</p>
-                    <p class="propress_surplus" v-if="item.Surplus > 0">延期</p>
+                    <P class="propress_surplus" v-if="item.Surplus > 0">剩余<span class="propress_surplus_time">{{item.Surplus}}</span>个工作日</p>
+                    <p class="propress_surplus" v-if="item.Surplus < 0">延期</p>
                     <div class="prop-bx">
                       <Progress :percent="item.work_now" hide-info :stroke-width="5" status="success"/>
                     </div>
