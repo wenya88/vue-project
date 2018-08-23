@@ -46,7 +46,7 @@
            <div class="task_feedback_box" :style="`width:${allListWidth}`">
               <div class="clearfix task_feedback_msg" v-for="(item, index) in examinList" :key="index">
                 <div class="feedback_iamge_father">
-                 <img :src="item.image" class="task_feedback_image"/>
+                 <img :src="item.file" class="task_feedback_image"/>
                 </div>
                  <div class="task_feedback_details">
                     <div class="clearfix feedback_words_box">
@@ -108,7 +108,7 @@
            </div>
            <!-- 上传文件 -->
            <div class="upload_box">
-               <upload-box v-if="!nameLists.length">
+               <upload-box v-if="!isImgShow">
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
                    <div class="title_all">
@@ -176,6 +176,7 @@ export default {
       partObj: {},
       widths: '',
       widthAll: '',
+      isImgShow: false,
       left: 0,
       taskleft: 0,
       momentTime: 0,
@@ -277,6 +278,7 @@ export default {
       this.feilsUrl = ''
       this.filesStatus = 0
       this.feilsList = []
+      this.isImgShow = false
     },
     // 预览
     getYus (index) {
@@ -341,6 +343,7 @@ export default {
         }
         nameLists.push(nameObj)
       })
+      this.isImgShow = true
       this.nameLists = nameLists
       this.feilsList = list
       this.getYu(0)
@@ -883,7 +886,15 @@ export default {
              items.create_time_title = !items.create_time ? null : this.getTimeTitle(items.create_time)
              items.client_audit_title = !items.client_audit_time ? null : this.getTimeTitle(items.create_time)
              items.inside_audit_title = !items.inside_audit_time ? null : this.getTimeTitle(items.create_time)
-             allList.push(items)
+             if (!allList.length) {
+               allList.push(items)
+             } else {
+                allList.forEach(dom => {
+                   if (dom.id !== items.id) {
+                     allList.push(items)
+                   }
+                });
+             }
           }
         })
       }
@@ -917,7 +928,14 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
          this.stageList = data.data.stage
-         this.standardList = data.data.standard
+         const list = data.data.standard
+         const newList = []
+         list.forEach(element => {
+           if (element.type == 'file') {
+             newList.push(element)
+           }
+         });
+         this.standardList = newList
        })
     },
     // 获取时间字段
