@@ -11,18 +11,16 @@
           :percent="param.num"
           stroke-linecap="square"
           stroke-color="#3bceb6"
-          trail-color="#d5f0eb"
-        >
+          trail-color="#d5f0eb">
           <div class="text">
-            <p class="big"  style="color:#3bceb6;">{{param.num}}</p>
+            <p class="big"  style="color:#3bceb6;">{{param.num}} <span style="color: #adadad">/ {{ finishCount }}</span></p>
           </div>
         </i-circle>
         <p class="description">归档</p>
       </div>
       <div  v-if="projectSet.qualitySecond" class="second" @click="resourcesData(1)">
         <i-circle
-
-          :size="118"
+          :size="120"
           :trail-width="0"
           :stroke-width="13"
           :percent="100"
@@ -37,8 +35,7 @@
       </div>
       <div  v-if="projectSet.qualityThird" class="third" @click="resourcesData(3)">
         <i-circle
-
-          :size="118"
+          :size="120"
           :trail-width="0"
           :stroke-width="13"
           :percent="100"
@@ -52,7 +49,7 @@
       </div>
       <div  v-if="projectSet.qualityFourth" class="fourth" @click="resourcesData(2)">
         <i-circle
-          :size="118"
+          :size="120"
           :trail-width="0"
           :stroke-width="13"
           :percent="100"
@@ -66,8 +63,7 @@
       </div>
       <div  v-if="projectSet.qualityFifth" class="fifth" @click="resourcesData(4)">
         <i-circle
-
-          :size="118"
+          :size="120"
           :trail-width="0"
           :stroke-width="13"
           :percent="100"
@@ -129,6 +125,7 @@ export default {
   },
   data() {
     return {
+      finishCount:null,
       finish: true,
       sortNumber: '',
       isTabModal: false,
@@ -179,6 +176,7 @@ export default {
     this.fetchNum(3);
     this.fetchNum(4);
     this.fetchFinishNum();
+    this.getCompalteCount();
     // this.getTaskList();
     // if(this.status == '1') {
     //   this.sortStatus = 'stage_create_time';
@@ -228,11 +226,11 @@ export default {
         this.$refs.list.fetchData()
       },0)
     },
-      setTimeOutFun(status){
-          setTimeout(() => {
-              this.$refs.list.getTaskTwoMenuList(status);
-          },0)
-      },
+    setTimeOutFun(status){
+        setTimeout(() => {
+            this.$refs.list.getTaskTwoMenuList(status);
+        },0)
+    },
     ScrollLoad(){
       let scr=document.getElementById("completed");
       scr.onscroll=function(){
@@ -248,6 +246,15 @@ export default {
     cancel() {
       this.$Message.info('点击了取消');
     },
+    /*获取归档总数*/
+    getCompalteCount(){
+        this.$axios.post(this.GLOBAL.baseRouter+'task/task/count',qs.stringify({project_id:sessionStorage.projectID})).then(res=>res.data).then(res=>{
+            if(res.err_code == 0){
+                this.finishCount = res.count;
+            }
+        })
+    },
+
     /**
      * 获取文件不同阶段的文件数
      */
@@ -324,7 +331,7 @@ export default {
 //         sessionStorage.AllowEdit='Other';
 //       }
      },
-    loadMore() {
+     loadMore() {
       if (!this.loading) {
         this.loading = true
         // 请求下一页数据

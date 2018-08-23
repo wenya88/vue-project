@@ -3,7 +3,11 @@
 </style>
 <template>
     <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
-        <div class="taskClassLiHeader"><span>规范名称</span><button>保存</button></div>
+        <div class="taskClassLiHeader">
+            <span>规范名称</span>
+            <button v-if="isSubmit||project" @click="submitTaskClas">保存</button>
+            <button v-else style="background: #ccc" disabled> 系统默认无法修改 </button>
+        </div>
         <Form class="taskClassLiContener" :model="formLeft" label-position="left" :label-width="100">
             <Row>
                 <Col span="16">
@@ -87,9 +91,9 @@
 
                             </Step>
                         </Steps>
-                        <div>
-                            <Icon @click.native="addSteps" v-if="!disabled" style="font-size:36px;color: #39f;cursor: pointer;padding: 10px;" type="plus-circled":disabled="disabled"></Icon>
-                        </div>
+                        <!--<div>-->
+                            <Icon @click.native="addSteps" v-if="!disabled" style="font-size:38px;color: #3bceb6;cursor: pointer;" type="plus-circled":disabled="disabled"></Icon>
+                        <!--</div>-->
 
                     </div>
                 </Col>
@@ -167,14 +171,14 @@
                                     <Icon v-if="!OtherfileShow&&!disabled" class="addguifan"  @click="OtherfileAdd" type="plus"></Icon>
                                 </p>
                                 <template v-if="tstandard.length>0">
-                                    <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask">
+                                    <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" style="display: flex">
                                         <Col span="12">
                                         <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
                                         </Col>
                                         <Col span="12">
                                         <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
                                         </Col>
-                                        <Icon   v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
+                                        <Icon   v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon" :disabled="disabled"></Icon>
                                     </div>
                                 </template>
 
@@ -199,31 +203,27 @@
 
 
         <!--规范增加-->
-        <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
-        <Button type="primary" @click="modal1 = true">增加规范</Button>
-        <Button type="primary" @click="modal2 = true">删除规范</Button>
-        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>
-        <Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>
-        <Modal v-model="modal1" @on-ok="addNorms">
-            <section>
-                <div style="margin-bottom: 5px">
-                    <span>增加标签&emsp;：&emsp;</span>
-                    <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
-                </div>
-            </section>
-        </Modal>
-        <Modal
-                v-model="modal2"
-
-                @on-ok="delNorms"
-        >
-            <div>删除</div>
-            <Select v-model="delnormsValue" size="small" class="standard">
-                <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
-                    {{ item.name }}
-                </Option>
-            </Select>
-        </Modal>
+        <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
+        <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
+        <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
+        <!--<Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>-->
+        <!--<Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>-->
+        <!--<Modal v-model="modal1" @on-ok="addNorms">-->
+            <!--<section>-->
+                <!--<div style="margin-bottom: 5px">-->
+                    <!--<span>增加标签&emsp;：&emsp;</span>-->
+                    <!--<Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>-->
+                <!--</div>-->
+            <!--</section>-->
+        <!--</Modal>-->
+        <!--<Modal v-model="modal2" @on-ok="delNorms">-->
+            <!--<div>删除</div>-->
+            <!--<Select v-model="delnormsValue" size="small" class="standard">-->
+                <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
+                    <!--{{ item.name }}-->
+                <!--</Option>-->
+            <!--</Select>-->
+        <!--</Modal>-->
     </Content>
 
 </template>
@@ -778,7 +778,7 @@
          .taskClassLiHeader{
              display: flex;justify-content: space-between;align-items: center;background: #c4f0e9;padding: 15px 40px;
              span{font-size: 14px;color: @r_green};
-             button{background: @r_green;color: #fff;border: 0;font-size: 13px;padding: 8px 30px;border-radius: 3px}
+             button{background: @r_green;color: #fff;border: 0;font-size: 13px;padding: 8px 30px;border-radius: 3px;outline: none}
          };
          .taskClassLiContener{
              padding: 30px 40px;
@@ -819,6 +819,7 @@
             min-height: 102px !important;
         }
         .fileAttr.ivu-row {
+            display: flex;
             &::after {
                 clear: none;
             }
@@ -828,18 +829,18 @@
             margin: 10px 0;
             height: 40px;
             .delIcon {
-                margin-left: 30px;
+                /*margin-left: 30px;*/
                 padding: 10px;
                 font-size: 16px;
                 cursor: pointer;
-                opacity: 0;
+                /*opacity: 0;*/
                 transition: all .2s;
             }
-            &:hover {
-                .delIcon {
-                    opacity: 1;
-                }
-            }
+            /*&:hover {*/
+                /*.delIcon {*/
+                    /*opacity: 1;*/
+                /*}*/
+            /*}*/
         }
         .iconColor {
             border: 1px solid #51c6ff !important;
@@ -1004,12 +1005,12 @@
                         /*top:9px;*/
                         /*right: -52px;*/
                         .priority {
-                            width: 36px;
-                            height: 36px;
+                            width: 38px;
+                            height: 38px;
                             /*margin-bottom: 4px;*/
                             font-size: 12px;
                             text-align: center;
-                            line-height: 36px;
+                            line-height: 38px;
                             background-color: #fff;
                             border-radius: 50%;
                             vertical-align: middle;
