@@ -52,11 +52,7 @@
     /*color: #FFFFFF !important;*/
 }
 
-.ivu-modal-header {
-    position: relative;
-    top: 55px;
-    padding: 0 !important;
-}
+
 .area_model {
     height: 700px;
     border: 1px solid #d7dde4;

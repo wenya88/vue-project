@@ -10,27 +10,24 @@
                             <p>{{item.remark_name}}</p>
                         </div>
                         <div class="job">
-                            <span>{{item.department_name}}</span>
-                            <!--<span>{{item.job}}</span>-->
+                            <!--<span>{{item.department_name}}</span>-->
+                            <span>{{item.job || 'Null'}}</span>
                         </div>
-                        <i class="deleteI" @click.native="removeShow(item.id)"></i>
+                        <i class="deleteI" @click="removeShow(item.id)"></i>
                     </li>
                 </template>
                 <Spin v-if="!memberArray" size="large" fix>
-                    <Icon type="load-c" size=18        class="demo-spin-icon-load"></Icon>
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>加载中...</div>
                 </Spin>
             </ul>
             <Modal
-                    class="removeCard"
-                    title="该成员移除项目？"
                     v-model="removeModal"
-                    width="300"
+                    title="该成员移除项目？"
+                    width="380"
                     @on-ok="removeCard"
-                    :closable="false">
-                <div style="color: #FF6600">
-                    说明：如果该成员负责相关任务，移除后任务将暂停，任务执行人将空缺
-                </div>
+                    @on-cancel="cancel">
+                <p style="color: #FF6600" >说明：如果该成员负责相关任务，移除后任务将暂停，任务执行人将空缺。</p>
             </Modal>
         </div>
         <div class="whole">
@@ -39,13 +36,11 @@
                 <div class="departmentList" v-for="(item,index) in items" :key="index">
                     <p class="wholeTitle">
                         <span>{{item.department_name}}</span>
-                        <i class="ivu-icon" @click.native="addShow(item.members)"></i>
-
-                        <!--<Icon type="ios-checkmark"></Icon>-->
+                        <i class="ivu-icon" @click="addShow(item.members)"></i>
                     </p>
                     <div class="persionList">
                         <ul>
-                            <li v-for="(member,i) in item.members" :key="i" class="activeSty">
+                            <li v-for="(member,i) in item.members" :key="i" :class="{'activeSty':member.is_join}">
                                 <div>
                                     <img :src="member.headimage ? member.headimage : imgHead"/>
                                     <span>{{member.remark_name}}</span>
@@ -55,40 +50,19 @@
                         </ul>
                     </div>
                 </div>
-
-
-                <ul v-for="(item,index) in items" :key="index">
-                    <li class="wholeTitle">
-                        <span>{{item.department_name}}</span>
-                        <i class="ivu-icon" @click.native="addShow(item.members)"></i>
-                    </li>
-                    <div class="wholeList">
-                        <p v-for="(member,i) in item.members" :key="i">
-                            <span v-if="!member.is_join" @click="onCard(member.member_id)">
-                                <img :src="member.headimage ? member.headimage : imgHead" alt="">{{member.remark_name}}
-                                <Icon class="icon" type="plus-round"></Icon>
-                            </span>
-                            <span v-else @click="onCard(member.member_id)" class="pitchOn">
-                                <img :src="member.headimage ? member.headimage : imgHead" alt="">{{member.remark_name}}
-                                <Icon class="icon" type="checkmark-circled"></Icon>
-                            </span>
-                        </p>
-                    </div>
-                </ul>
+                <Modal
+                        v-model="addModal"
+                        title="移入项目"
+                        width="380"
+                        @on-ok="addGroup"
+                        @on-cancel="cancel">
+                    <p style="color: #FF6600" >说明：部门成员全部加入项目？</p>
+                </Modal>
             </template>
         </div>
     </div>
 
-            <!--<Modal-->
-                    <!--class="removeCard"-->
-                    <!--v-model="addModal"-->
-                    <!--width="200"-->
-                    <!--@on-ok="addGroup"-->
-                    <!--:closable="false">-->
-                <!--<div style="color: #FF6600">-->
-                    <!--部门成员全部加入项目？-->
-                <!--</div>-->
-            <!--</Modal>-->
+
 </template>
 
 <script>
@@ -259,6 +233,7 @@
                             color: #fff;
                         }
                         img {
+                            display: inline-block;
                             width: 50px;
                             height: 50px;
                             border-radius: 100%;
