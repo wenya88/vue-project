@@ -21,10 +21,10 @@
         </div>
          <!-- 时间结束 -->
         <div class="task_ka" :style="`height:${boxHg}`">
-         <div class="task_top_box" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
+         <div :class="`task_top_box ${elems.taskBack}`" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
            <div class="task_describe">
              <div class="clearfix task_describe_title">
-               <p class="state-introd">{{elems.isComplete}}</p>
+               <p class="state-introd" :style="`background:${elems.leftTopColor}`">{{elems.isComplete}}</p>
                <div class="task_describe_father">
                  <p class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</p>
                </div>
@@ -118,18 +118,18 @@
                  </template>
                </upload-box>
                <div class='all_upload_page' v-else>
-                <GeminiScrollbar class="crollbar">
+                 <Row v-if="nameList.length != filenum">
+                    <Col class="demo-spin-col" span="24">
+                        <Spin size="large"></Spin>
+                    </Col>
+                 </Row>
+                <GeminiScrollbar class="crollbar" v-else>
                  <div class="again_upload_father">
                    <p class="again_upload_title">上传文件</p>
                    <p class="again_upload" @click="againFun">重新上传</p>
                  </div>
                  <div class="yu_lan">
-                   <img :src="feilsUrl" v-show="filesStatus==1" @load='gets'/>
-                     <Row v-if="ispin">
-                      <Col class="demo-spin-col" span="24">
-                        <Spin size="large"></Spin>
-                      </Col>
-                     </Row>
+                   <img :src="feilsUrl" v-show="filesStatus==1"/>
                    <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
                         your browser does not support the video tag
                     </video>
@@ -163,7 +163,7 @@
    </div>
 </template>
 <script>
-import {mapMutations} from 'vuex'
+import {mapMutations,mapState} from 'vuex'
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
 import threeModule from '../project/components/threeModule.vue'
@@ -201,7 +201,6 @@ export default {
       feilsUrl: '',
       task_id: '',
       stageList: [],
-      ispin: false,
       startTime: '2018-6-20',
       endTime: '2018-8-10'
     }
@@ -217,9 +216,17 @@ export default {
     this.getMsgLists()
   },
   computed: {
+    ...mapState({
+      filenum(data){
+        return data.app.filenum
+      }
+    }),
     uploadList () {
       return this.$store.state.app.uploadFile
     }
+    // uploadLength () {
+    //   return this.$store.state.app.filenum
+    // }
   },
   watch: {
     uploadList(data) {
@@ -342,6 +349,7 @@ export default {
       this.task_id = data.id
       this.task_name = data.name
       this.isclose = true
+      this.againFun()
       this.getStageList()
     },
     // 点击关闭
@@ -454,10 +462,22 @@ export default {
           }
         })
         if (flag) {
-          if (items.status != 4) {
-            items.isComplete = '未完成'
+          if (items.status == 1) {
+            items.isComplete = '待开始'
+            items.leftTopColor = '#7cbefc'
+            items.taskBack = 'task-wait'
+          } else if (items.status == 2) {
+            items.isComplete = '进行中'
+            items.leftTopColor = '#3bceb6'
+            items.taskBack = 'task-doing'
+          } else if (items.status == 3) {
+            items.isComplete = '暂停'
+            items.leftTopColor = '#bdbdbd'
+            items.taskBack = 'task-pause'
           } else {
             items.isComplete = '已完成'
+            items.leftTopColor = '#fcc44a'
+            items.taskBack = 'task-complete'
           }
           objList.push(items);
         }
@@ -951,10 +971,6 @@ export default {
         this.againFun()
        })
     },
-    // 是否加载完成
-    gets () {
-      this.ispin = false
-    },
     // 回到初始状态
     getOriginal () {
       this.index = 0
@@ -1057,7 +1073,7 @@ export default {
   border-radius: 4px;
   overflow: hidden;
   z-index: 1;
-  background: rgb(72,197,183);
+  // background: rgb(72,197,183);
 }
 .timeSoltFather{
   background: #fdfdfd;
@@ -1120,12 +1136,36 @@ export default {
  height: 30px;
  line-height: 30px;
  color: #ffffff;
- background: #fcc44a;
+//  background: #fcc44a;
  text-align: center;
  position: absolute;
  top: 3px;
  left: -33px;
  transform: rotate(-45deg);
+}
+.task-wait{
+  background: -webkit-linear-gradient(left, rgb(185,224,254) , rgb(158,211,253)); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(right, rgb(185,224,254) , rgb(158,211,253)); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(right, rgb(185,224,254) , rgb(158,211,253)); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to right, rgb(185,224,254) , rgb(158,211,253)); /* 标准的语法 */
+}
+.task-doing{
+  background: -webkit-linear-gradient(left, rgb(146,235,224), rgb(108,226,211)); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(right, rgb(146,235,224), rgb(108,226,211)); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(right, rgb(146,235,224), rgb(108,226,211)); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to right, rgb(146,235,224), rgb(108,226,211)); /* 标准的语法 */
+}
+.task-pause{
+  background: -webkit-linear-gradient(left, rgb(219,207,254) , rgb(201,183,254)); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(right, rgb(219,207,254) , rgb(201,183,254)); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(right, rgb(219,207,254) , rgb(201,183,254)); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to right, rgb(219,207,254) , rgb(201,183,254)); /* 标准的语法 */
+}
+.task-complete{
+  background: -webkit-linear-gradient(left, rgb(254,227,154) , rgb(253,215,114)); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(right, rgb(254,227,154) , rgb(253,215,114)); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(right, rgb(254,227,154) , rgb(253,215,114)); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to right, rgb(254,227,154) , rgb(253,215,114)); /* 标准的语法 */
 }
 .task_describe_father{
   /* padding-right: 60px; */
@@ -1134,7 +1174,7 @@ export default {
   line-height: 60px;
 }
 .task_describe_msg{
-  font-size: 20px;
+  font-size: 18px;
   color: #ffffff;
   cursor: pointer;
 }
@@ -1476,8 +1516,11 @@ export default {
    background: rgba(24,191,164, .8);
 }
 .yulanBack {
-  border: 1px solid rgb(24,191,164)!important;
-  color: rgb(24,191,164);
+  background: #fcc44a!important;
+  color: #ffffff;
+  .precond{
+    color: #ffffff;
+  }
 }
 .prompt_title{
   font-size: 18px;
@@ -1514,6 +1557,7 @@ export default {
 .yu_lan{
  width: 100%;
  height: 300px;
+ padding-right: 20px;
  /* margin-top: 50px; */
 }
 .yulan_span{
@@ -1523,10 +1567,9 @@ export default {
 }
 .yulan_span>div{
   display: inline-block;
-  background: rgb(210,210,210);
+  background: #eef1f2;
   margin-left: 10px;
   /* float: left; */
-  border:1px solid #ffffff;
   margin-top: 10px;
   position: relative;
   cursor: pointer;
@@ -1558,6 +1601,15 @@ export default {
 .all_upload_page{
  width: 100%;
  height: 100%;
+ .ivu-row{
+   width: 100%;
+   height: 100%;
+   .demo-spin-col>div {
+    width: 50px;
+    margin: 180px auto 0;
+    text-align: center;
+  }
+ }
 }
 .again_upload_father{
  width: 100%;
@@ -1610,8 +1662,6 @@ export default {
  padding: 5px 10px;
 }
 .precond{
-  background: rgb(255,153,0);;
-  color: #ffffff;
   padding: 3px;
   margin-right: 3px;
 }
@@ -1624,22 +1674,23 @@ export default {
   z-index: 9999;
   position: absolute;
   left: 0;
-  top: 30px;
+  top: 29px;
   display: none;
+  margin-bottom: 20px;
 }
 .yulan_sanjiao{
   height: 0px;
   width: 0px;
   margin-left: 20px;
   border-right: 5px solid transparent;
-  border-bottom: 10px solid rgb(255,153,0);
+  border-bottom: 10px solid #fcc44a;
   border-left: 5px solid transparent;
 }
 .yulan_zhujian{
  width: 100%;
  height: 30px;
  border-radius: 4px;
- background: rgb(255,153,0);
+ background: #fcc44a;
  text-align: center;
  line-height: 30px;
  cursor: pointer;
