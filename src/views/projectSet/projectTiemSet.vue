@@ -1,8 +1,10 @@
 <template>
     <div>
         <div class="projectSetMenu">
-            <span v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}"
-                  @click="switchSet(index,item.state)" :key="index">{{item.name}}</span>
+            <ul class="setMenuList">
+                <li v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}"
+                      @click="switchSet(index,item.state)" :key="index">{{item.name}}</li>
+            </ul>
         </div>
         <div class="projectSetRow">
             <keep-alive>

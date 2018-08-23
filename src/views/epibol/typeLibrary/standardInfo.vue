@@ -203,27 +203,30 @@
 
 
         <!--规范增加-->
-        <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
-        <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
-        <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
-        <!--<Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">提交</Button>-->
-        <!--<Button v-else  type="error" style="display: block;margin: 0 auto;width: 200px" >系统默认无法修改</Button>-->
-        <!--<Modal v-model="modal1" @on-ok="addNorms">-->
-            <!--<section>-->
-                <!--<div style="margin-bottom: 5px">-->
-                    <!--<span>增加标签&emsp;：&emsp;</span>-->
-                    <!--<Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>-->
-                <!--</div>-->
-            <!--</section>-->
-        <!--</Modal>-->
-        <!--<Modal v-model="modal2" @on-ok="delNorms">-->
-            <!--<div>删除</div>-->
-            <!--<Select v-model="delnormsValue" size="small" class="standard">-->
-                <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
-                    <!--{{ item.name }}-->
-                <!--</Option>-->
-            <!--</Select>-->
-        <!--</Modal>-->
+        <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
+        <Button type="primary" @click="modal1 = true">增加规范</Button>
+        <Button type="primary" @click="modal2 = true">删除规范</Button>
+        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">保存</Button>
+        <Modal v-model="modal1" @on-ok="addNorms">
+            <section>
+                <div style="margin-bottom: 5px">
+                    <span>增加标签&emsp;：&emsp;</span>
+                    <Input v-model="normValue" placeholder="增加规范标签" style="width: 200px"></Input>
+                </div>
+            </section>
+        </Modal>
+        <Modal
+                v-model="modal2"
+
+                @on-ok="delNorms"
+        >
+            <div>删除</div>
+            <Select v-model="delnormsValue" size="small" class="standard">
+                <Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">
+                    {{ item.name }}
+                </Option>
+            </Select>
+        </Modal>
     </Content>
 
 </template>

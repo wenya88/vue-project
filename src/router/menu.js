@@ -124,18 +124,18 @@ export const menu = [
             }
         ]
     },
-    {
-        path: '/artwiki',
-        name: 'artwiki',
-        title: '艺术大厅',
-        children: [
-            {
-                path: '/artwiki/home',
-                name: 'awkHome',
-                title: '艺术大厅',
-            }
-        ]
-    },
+    // {
+    //     path: '/artwiki',
+    //     name: 'artwiki',
+    //     title: '艺术大厅',
+    //     children: [
+    //         {
+    //             path: '/artwiki/home',
+    //             name: 'awkHome',
+    //             title: '艺术大厅',
+    //         }
+    //     ]
+    // },
 
 
 ];

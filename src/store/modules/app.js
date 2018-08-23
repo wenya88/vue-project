@@ -219,7 +219,7 @@ const app = {
             if (data.indexOf('c2')!==-1) {
 
                 // c2 公司投标
-                // state.epibol.callForBids = false
+                state.epibol.callForBids = false
             }
             if (data.indexOf('c2_1')!==-1) {
                 // c2 已报名投标
@@ -237,7 +237,7 @@ const app = {
             }
             if (data.indexOf('c4')!==-1) {
                 // c2 合同
-                // state.epibol.contract = false
+                state.epibol.contract = false
             }
             if (data.indexOf('c5')!==-1) {
                 // c2 项目
