@@ -65,7 +65,7 @@
                     <span>{{item.remark_name}}</span>
                   </div>
                   <div class="right">
-                    <span>{{item.name}}</span><i>原画</i>
+                    <span>{{item.name | substrfun}}</span><i>原画</i>
 
                     <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
                         <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
@@ -310,6 +310,15 @@
                 this.typeIndex = index;
                 this.selTaskType = type;
                 this.fetchData();
+            }
+        },
+        filters:{
+            substrfun:function (val) {
+                if(val && val.length > 5){
+                    return val.substr(0,4)+'...';
+                }else {
+                    return val;
+                }
             }
         }
     }
