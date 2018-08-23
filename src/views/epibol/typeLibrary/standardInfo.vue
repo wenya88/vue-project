@@ -33,9 +33,18 @@
                                             <!--规范列表-->
 
 
-                                            <Taskselect :dataList="norms" :disabled="disabled"
-                                                        v-on:addNormsFun="addNorms"
-                                                        :callbackStatus="callbackStatus"></Taskselect>
+                                            <Taskselect
+                                                    :parentIndex="index"
+                                                    :chilenIndex="i"
+                                                    :module="fstandard"
+                                                    :normName="list.norm_name"
+                                                    :dataList="norms"
+                                                    :disabled="disabled"
+                                                    v-on:Selectdata = "updataSelect"
+                                                    v-on:addNormsFun ="addNorms"
+                                                    :callbackStatus="callbackStatus">
+
+                                            </Taskselect>
 
 
                                             <!--<Select v-model="list.norm" size="small" class="standard" :disabled="disabled">-->
@@ -74,11 +83,19 @@
                                         <div v-show="step.show" class="stepsList">
                                             <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
                                                    :disabled="disabled"></Input>
-                                            <Select v-model="stepInfoList.norm" class="standard" size="small">
-                                                <Option v-for="item in norms" :value="item.id" :key="item.id">
-                                                    {{ item.name }}
-                                                </Option>
-                                            </Select>
+                                            <Taskselect
+                                                    :module="fstandard"
+                                                    :dataList="norms"
+                                                    :disabled="disabled"
+                                                    v-on:Selectdata = "updataSelect"
+                                                    v-on:addNormsFun ="addNorms"
+                                                    :callbackStatus="callbackStatus">
+                                            </Taskselect>
+                                            <!--<Select v-model="stepInfoList.norm" class="standard" size="small">-->
+                                                <!--<Option v-for="item in norms" :value="item.id" :key="item.id">-->
+                                                    <!--{{ item.name }}-->
+                                                <!--</Option>-->
+                                            <!--</Select>-->
                                             <div class="priorityContainer">
                                                 <p class="priority" style="border: 1px solid #ccc;"
                                                    :class="`priority${stepInfoList.level}`">
@@ -231,9 +248,9 @@
         <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
         <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
         <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
-        <Button v-if="isSubmit||project" type="primary" style="display: block;margin: 0 auto;width: 200px"
-                @click="submitTaskClas">保存
-        </Button>
+        <!--<Button v-if="isSubmit||project" type="primary" style="display: block;margin: 0 auto;width: 200px"-->
+                <!--@click="submitTaskClas">保存-->
+        <!--</Button>-->
         <Modal v-model="modal1" @on-ok="addNorms">
             <section>
                 <div style="margin-bottom: 5px">
@@ -288,7 +305,10 @@
         },
         data() {
             return {
-
+                curreSelect:{
+                    id:null,
+                    val:null
+                },
                 disabled: true, // 禁用
                 goinfo: {},
                 createInfo: false,
@@ -384,6 +404,15 @@
 
         },
         methods: {
+
+            updataSelect(data){
+                if(data.falg){
+                    this.fstandard = data.data;
+                }else {
+                    this.curreSelect.id = data.id;
+                    this.curreSelect.val = data.val;
+                }
+            },
             projectdisabled() {
                 if (this.project) {
                     this.disabled = false;
@@ -592,13 +621,15 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                console.log(this.fstandard)
+
                 this.fstandard[index].require.push({
-                    norm: this.stepInfoList.norm,
+                    norm: this.curreSelect.id,
                     text: this.stepInfoList.text,
-                    level: this.stepInfoList.level
+                    level: this.stepInfoList.level,
+                    norm_name:this.curreSelect.val
                 });
-                this.$set(this.fstandard[index], 'show', false);
+                // console.log(this.fstandard[index])
+                this.$set(this.fstandard[index],'show',false);
                 this.stepInfoList = {
                     text: '',
                     norm: '',
@@ -706,7 +737,7 @@
             },
             addType(data) {
 
-                if(data.cate_id){
+                if (data.cate_id) {
                     this.goinfo.parent_id = data.cate_id
                 }
                 this.clearInfo();
