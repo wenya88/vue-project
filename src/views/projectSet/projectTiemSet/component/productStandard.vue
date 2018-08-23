@@ -9,6 +9,7 @@
                 </li>
             </ul>
             <div class="addType">
+            <div class="addTypeBox" >
                 <div class="addButton">
                     <Dropdown trigger="click" style="padding: 9px 14px 9px 14px;border-radius: 4px">
                         <span class="typeMenu">
@@ -27,19 +28,20 @@
                                 <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
                                     <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children" >
-                                    <div class="type" :class="children.border?'sign':''" >
-                                        <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
-                                        <!--alt=""-->
-                                        <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
-                                        <span>{{children.tasktype_name}}</span>
-                                        <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
-                                    </div>
+                                        <div class="type" :class="children.border?'sign':''" >
+                                            <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
+                                            <!--alt=""-->
+                                            <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
+                                            <span>{{children.tasktype_name}}</span>
+                                            <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
+                                        </div>
                                     </li>
                                 </ul>
                             </dl>
                         </DropdownMenu>
                     </Dropdown>
                 </div>
+            </div>
             </div>
         </section>
         <!--规范表单-->
@@ -377,6 +379,7 @@
 
             .typeTabsContainer {
                 display: flex;
+
                 padding: 21px 0 0 0;
                 background: @gray;
                 border-bottom: 1px solid @green;
@@ -418,10 +421,17 @@
             .addType {
                 position: relative;
                 flex: 1;
-                min-height: 40px;
+                min-height: 66px;
                 background: @gray;
                 border-bottom: 1px solid @green;
+                .addTypeBox{
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    padding: 44px 80px;
+                    background: #eef1f2;
 
+                }
                 .addButton {
                     position: absolute;
                     top: 26px;

@@ -1,7 +1,7 @@
 <template>
-<div>
-    <h1 style="text-align: center">开发中...</h1>
-</div>
+    <div>
+        <h1 class="app">开发中...</h1>
+    </div>
 </template>
 
 <script>
@@ -19,6 +19,9 @@
     }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+    .app {
+        text-align: center;
+        margin-top: 30%;
+    }
 </style>

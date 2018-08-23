@@ -31,7 +31,7 @@
             <Input v-model="changName.value" style="width: 90%" placeholder="请输入新的名称"></Input>
         </Modal>
         <!--上传组件测试-->
-        <v-upload></v-upload>
+        <!--<v-upload></v-upload>-->
     </div>
 </template>
 <script>
@@ -96,17 +96,20 @@
                                     width: '100%'
                                 }
                             }, [
-                                h('span', [
-                                    h('Icon', {
-                                        props: {
-                                            type: 'ios-folder-outline'
-                                        },
-                                        style: {
-                                            marginRight: '8px'
-                                        }
-                                    }),
-                                    h('span', data.name)
-                                ]),
+
+//                                h('span', [
+//                                    h('Icon', {
+//                                        props: {
+//                                            type: 'ios-folder-outline'
+//                                        },
+//                                        style: {
+//                                            marginRight: '8px',
+//                                            display:'none'
+//                                        }
+//                                    }),
+//                                    h('span', data.name)
+//                                ]),
+
                                 h('span', {
                                     style: {
                                         display: 'inline-block',
@@ -605,6 +608,9 @@
         }
         .ivu-modal-footer {
             border-top: 1px solid transparent !important;
+        }
+        .ivu-tree-arrow{
+            display: none;
         }
     }
 
