@@ -152,9 +152,9 @@
                             /*展开之前选中的分类*/
                             this.showExpand(item);
                             /*展开点击了详情的分类  默认展示系统默认*/
-                            if(item.cate_id === this.expandDetails[0]){
+                            if(this.expandDetails[0] && item.cate_id === this.expandDetails[0].id){
                                 item.expand = true;
-                            }else  if(index === 0 && !this.expandDetails[0]) {
+                            }else  if(this.expandDetails[0] && index === 0 && !this.expandDetails[0].id) {
                                 item.expand = true;
                                 expand = 'expand'
                             }
@@ -627,7 +627,8 @@
                 if(nodeStair !== null){
                     root.map((roots) => {
                         if(roots.nodeKey === nodeStair){
-                            this.expandDetails[0] = roots.node.cate_id;
+                            console.log(133,roots)
+                            this.expandDetails[0] = {id:roots.node.cate_id,status :roots.node.status };
                         }
                     })
                 }

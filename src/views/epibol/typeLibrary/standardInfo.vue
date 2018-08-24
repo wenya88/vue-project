@@ -1,5 +1,6 @@
 <template>
     <Content class="taskClassLibrary">
+
         <div class="taskClassLiHeader">
             <span>规范名称</span>
             <button v-if="isSubmit||project" @click="submitTaskClas">保存</button>
@@ -40,8 +41,8 @@
                                                     :normName="list.norm_name"
                                                     :dataList="norms"
                                                     :disabled="disabled"
-                                                    v-on:Selectdata = "updataSelect"
-                                                    v-on:addNormsFun ="addNorms"
+                                                    v-on:Selectdata="updataSelect"
+                                                    v-on:addNormsFun="addNorms"
                                                     :callbackStatus="callbackStatus">
 
                                             </Taskselect>
@@ -87,14 +88,14 @@
                                                     :module="fstandard"
                                                     :dataList="norms"
                                                     :disabled="disabled"
-                                                    v-on:Selectdata = "updataSelect"
-                                                    v-on:addNormsFun ="addNorms"
+                                                    v-on:Selectdata="updataSelect"
+                                                    v-on:addNormsFun="addNorms"
                                                     :callbackStatus="callbackStatus">
                                             </Taskselect>
                                             <!--<Select v-model="stepInfoList.norm" class="standard" size="small">-->
-                                                <!--<Option v-for="item in norms" :value="item.id" :key="item.id">-->
-                                                    <!--{{ item.name }}-->
-                                                <!--</Option>-->
+                                            <!--<Option v-for="item in norms" :value="item.id" :key="item.id">-->
+                                            <!--{{ item.name }}-->
+                                            <!--</Option>-->
                                             <!--</Select>-->
                                             <div class="priorityContainer">
                                                 <p class="priority" style="border: 1px solid #ccc;"
@@ -249,7 +250,7 @@
         <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
         <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
         <!--<Button v-if="isSubmit||project" type="primary" style="display: block;margin: 0 auto;width: 200px"-->
-                <!--@click="submitTaskClas">保存-->
+        <!--@click="submitTaskClas">保存-->
         <!--</Button>-->
         <Modal v-model="modal1" @on-ok="addNorms">
             <section>
@@ -305,9 +306,9 @@
         },
         data() {
             return {
-                curreSelect:{
-                    id:null,
-                    val:null
+                curreSelect: {
+                    id: null,
+                    val: null
                 },
                 disabled: true, // 禁用
                 goinfo: {},
@@ -372,12 +373,18 @@
             if (!this.project) {
                 this.iconList();
             }
+
+            if (this.defId) {
+                this.newtaskTypesDetail('default');
+            }
+
             /*进入详情*/
             this.$bus.on('typesDetail', (data) => {
                 this.goinfo = data;
                 this.newtaskTypesDetail(data);
 
             });
+            this.isDisabled();
 
             this.$bus.on('addType', (data) => {
                 this.goinfo = data;
@@ -405,10 +412,10 @@
         },
         methods: {
 
-            updataSelect(data){
-                if(data.falg){
+            updataSelect(data) {
+                if (data.falg) {
                     this.fstandard = data.data;
-                }else {
+                } else {
                     this.curreSelect.id = data.id;
                     this.curreSelect.val = data.val;
                 }
@@ -626,10 +633,10 @@
                     norm: this.curreSelect.id,
                     text: this.stepInfoList.text,
                     level: this.stepInfoList.level,
-                    norm_name:this.curreSelect.val
+                    norm_name: this.curreSelect.val
                 });
                 // console.log(this.fstandard[index])
-                this.$set(this.fstandard[index],'show',false);
+                this.$set(this.fstandard[index], 'show', false);
                 this.stepInfoList = {
                     text: '',
                     norm: '',
@@ -674,10 +681,16 @@
 
             },
             async newtaskTypesDetail(dataDetail) {
+
                 // 进入详情
                 if (dataDetail.rank === 2 || dataDetail === 'default') {
-                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
-                    this.disabled = dataDetail.status === 0 || dataDetail === 'default';
+//                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
+                    if (dataDetail !== 'default') {
+                        this.isSubmit = dataDetail.status !== 0;
+
+                        this.disabled = dataDetail.status === 0;
+                    }
+
                     let obj = {id: dataDetail.id};
                     this.clearInfo();
                     // 获取更新id
@@ -788,6 +801,14 @@
                     this.$Message.error(data.err_message);
                 }
 
+            },
+            isDisabled() {
+                let expandDetails = JSON.parse(sessionStorage.getItem('expandDetails')) || [];
+                if (expandDetails[0]) {
+                    this.isSubmit = expandDetails[0].status !== 0;
+
+                    this.disabled = expandDetails[0].status === 0;
+                }
             }
         },
         computed: {

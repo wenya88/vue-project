@@ -141,7 +141,8 @@
         },
         mounted() {
             this.menuInit();
-            this.infoinit()
+            this.infoinit();
+
         },
         data() {
             return {
