@@ -860,6 +860,7 @@ export default {
       let ones = {}
       let index = 0
       let allList = []
+      let idList = []
       let heightList = []
       const clentWidth = Number(this.widths.split('px')[0])
       for (let i in obj) {
@@ -902,12 +903,20 @@ export default {
              items.inside_audit_title = !items.inside_audit_time ? null : this.getTimeTitle(items.create_time)
              if (!allList.length) {
                allList.push(items)
+               idList.push(items.id)
              } else {
-                allList.forEach(dom => {
-                   if (dom.id !== items.id) {
-                     allList.push(items)
-                   }
-                });
+                 if (idList.indexOf(items.id) == -1) {
+                   console.log('2')
+                   idList.push(items.id)
+                   allList.push(items)
+                 }
+                // allList.forEach(dom => {
+                //    console.log('2')
+                //    if (dom.id !== items.id) {
+                //       console.log('3', dom.id, items.id)
+                //      allList.push(items)
+                //    }
+                // });
              }
           }
         })
@@ -932,6 +941,7 @@ export default {
       }
       const listLt = allList.length;
       this.allListWidth = listLt * 520 - 20 + 'px'
+      console.log('重复数据', allList)
       this.examinList = allList
     },
     // 查找阶段
@@ -1796,6 +1806,9 @@ export default {
       background: #fdfdfd;
       margin-right: 20px;
       float: left;
+      &:last-child {
+         margin-right: 0;
+      }
       .feedback_iamge_father{
         width: 100px;
         height: 100px;
