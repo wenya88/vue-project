@@ -151,7 +151,6 @@ export default {
       var nums = {} // 定义一个对象储存
       const currentPoject = this.list.id // 获取当前显示的项目
       if (!localStorage.numList) { // 初始化,没有消息时
-          // console.log('初始未读', nums, numList)
           headerList.forEach(items => {
             const projectName = `project_${items.id}`
             numList[projectName] = 0
@@ -179,11 +178,9 @@ export default {
             for (let k in numberList) { // 获取上一个消息总数
               if (i === k) {
                 if (currentPoject === i) {
-                  console.log('当前id', numed)
                   numed[i] = 0
                 } else {
                   const numbers = Number(numList[i]) - Number(numberList[k])
-                  console.log('不是当前id', numed, numbers)
                   if (numbers!==0) {
                       numed[i]+=numbers
                   }
@@ -203,7 +200,7 @@ export default {
 <style scoped>
 .real_time_room{
  width: 100%;
- height: calc(100% - 54px);
+ height: calc(100% - 70px);
 }
 .header_realTime_room{
  width: 120px;
@@ -222,7 +219,7 @@ export default {
   width:calc(100% - 120px);
   height:100%;
   background: #ffffff;
-  border-left: 1px solid rgb(228,228,228);
+  border-left: 1px solid #eef1f2;
   float: left;
 }
 .header_navigation>li{

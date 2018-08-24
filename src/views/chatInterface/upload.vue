@@ -19,7 +19,6 @@ export default {
   },
   watch: {
     uploadObj : function(e) {
-    //   console.log('上传', e)
     },
     uploadType: function (e) {
       
@@ -28,7 +27,6 @@ export default {
   methods: {
     // 点击
     getClick() {
-    //   console.log('1111')
       this.$store.state.blob = false
     },
     getData () {
@@ -99,7 +97,6 @@ export default {
     //     uploader.start()
     //   }, false)
       uploader.bind('UploadProgress', function(uploader, files) {
-        //  console.log('显示', files)
       })
       // 图片上传成功触发，ps:data是返回值（第三个参数是返回值）
       uploader.bind('FileUploaded',function(uploader, files, data){
@@ -112,9 +109,7 @@ export default {
             fileName: files.name,
             fileDown: datas.file_url
           }
-          // console.log('刷会', files.name, datas.file_url)
         }
-        //  console.log('上传成功',data)
       })
       // 上传发生错误时
       uploader.bind('Error', function (uploader, error) {
