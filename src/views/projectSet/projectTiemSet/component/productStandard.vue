@@ -18,12 +18,16 @@
                         </span>
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
-                                <p v-for="(item,index) in specification" :key="index"
+                                <div v-for="(item,index) in specification" :key="index"
                                    :class="menuColor === index?'fonsW':''"
                                    @click="selecSpecification(item.children,index)">
-                                    {{item.name}}({{item.children.length}})</p>
+                                    {{item.name}}({{item.children.length}})
+
+
+                                </div>
                             </div>
                             <dl v-for="(item,i) in StandardizeSec" :key="i">
+
                                 <dt>{{item.name}}</dt>
                                 <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
@@ -137,7 +141,8 @@
         },
         mounted() {
             this.menuInit();
-            this.infoinit()
+            this.infoinit();
+
         },
         data() {
             return {
@@ -185,6 +190,7 @@
                                 })
                             }
                             this.StandardizeSec = res.data.data[0].children
+                            console.log(32,this.specification)
                         } else {
                             this.$Message.error(res.data.err_message);
                         }

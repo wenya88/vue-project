@@ -1,6 +1,8 @@
 <template>
-    <div>
-        <Tree class="treeMapContainer" @on-toggle-expand="showTree" :data="treeMap" :render="renderContent"></Tree>
+    <div class="typelibLeftContainer">
+            <Tree class="treeMapContainer" @on-toggle-expand="showTree" :data="treeMap" :render="renderContent"></Tree>
+
+       <p class="shade"></p>
         <!--复制-->
         <Modal
                 class="treeMapWindow"
@@ -96,20 +98,7 @@
                                     width: '100%'
                                 }
                             }, [
-
-//                                h('span', [
-//                                    h('Icon', {
-//                                        props: {
-//                                            type: 'ios-folder-outline'
-//                                        },
-//                                        style: {
-//                                            marginRight: '8px',
-//                                            display:'none'
-//                                        }
-//                                    }),
-//                                    h('span', data.name)
-//                                ]),
-
+                                h('span', ),
                                 h('span', {
                                     style: {
                                         display: 'inline-block',
@@ -163,9 +152,9 @@
                             /*展开之前选中的分类*/
                             this.showExpand(item);
                             /*展开点击了详情的分类  默认展示系统默认*/
-                            if(item.cate_id === this.expandDetails[0]){
+                            if(this.expandDetails[0] && item.cate_id === this.expandDetails[0].id){
                                 item.expand = true;
-                            }else  if(index === 0 && !this.expandDetails[0]) {
+                            }else  if(this.expandDetails[0] && index === 0 && !this.expandDetails[0].id) {
                                 item.expand = true;
                                 expand = 'expand'
                             }
@@ -339,7 +328,6 @@
                      style: {
                          display: 'inline-block',
                          float: 'right',
-                         marginRight: '32px',
                          marginTop: '6px',
                          fontSize: '20px',
                          cursor: 'pointer',
@@ -358,7 +346,7 @@
                              style: {
                                  display: 'inline-block',
                                  float: 'right',
-                                 marginRight: '32px',
+                                 marginRight: '20px',
                                  fontSize: '20px',
                                  cursor: 'pointer'
                              },
@@ -370,8 +358,8 @@
                                  top: '0px',
                                  right: '0px',
                                  display: 'inline-block',
-                                 marginRight: '32px',
-                                 zIndex: '3'
+                                 marginRight: '12px',
+                                 zIndex: '13'
                              }
                          },
                          data.btnShow ? [folderButton, button, copyButton, delButton] : ''
@@ -380,23 +368,40 @@
             },
             /*渲染所有*/
             renderingTree(h,root,node,data,iconFile,textTitle,menu){
+
+                let className = '';
+                if(data.rank === 0){
+                    className = 'node0'
+                }else if(data.rank === 1){
+                    className = 'node1'
+                }else{
+                    className = 'node2'
+                }
                 return (
                     h('p', {
+
                         style: {
                             display: 'inline-block',
                             width: '100%',
+                            height:'35px',
+                            lineHeight: '35px',
+                            paddingLeft: '35px',
+                            background : data.rank === 0?'#eef1f2':'',
+                            color : data.rank === 0||data.rank === 1?'#777':'#bdbdbd',
+                            borderRadius: '6px 6px 0 0',
+//                            border : data.rank === 0?'1px solid red':'',
                         }
-                    }, [
+                    },  [
                         h('span', [
-                            h('Icon', {
-                                props: {
-                                    type: iconFile ? 'ios-folder-outline' : 'ios-paper-outline'
-                                },
-                                style: {
-                                    marginRight: '8px',
-                                    fontSize: '20px'
-                                }
-                            }),
+//                            h('Icon', {
+//                                props: {
+//                                    type: iconFile ? 'ios-folder-outline' : 'ios-paper-outline'
+//                                },
+//                                style: {
+//                                    marginRight: '8px',
+//                                    fontSize: '20px'
+//                                }
+//                            }),
                             h('span', {
                                 style: {
                                     width: '100px',
@@ -413,7 +418,57 @@
                                 textTitle
                             ])
                         ]),
-                        menu
+//                        menu
+
+                        data.status!==0? h('span',
+                            {
+                          class:'buttonList'
+                        },
+                            [
+                           data.rank === 2? '': h('Icon', {
+                               props:{
+                                   type:'ios-plus-outline'
+                               },
+                               style: {
+                                   marginRight: '8px',
+                                   fontSize: '20px'
+                               },
+
+                               on: {
+                                   click: () => {this.append(data) }
+                               }
+                           }),
+                                data.rank === 2?'':h('Icon', {
+                                props:{
+                                    type:'edit'
+                                },
+                                style: {
+                                    marginRight: '8px',
+                                    fontSize: '20px'
+                                },
+
+                                on: {
+                                    click: () => {this.changeName(data) }
+                                }
+                            }),
+                            h('Icon', {
+                                props:{
+                                    type:'ios-trash-outline'
+                                },
+                                style: {
+                                    marginRight: '8px',
+                                    fontSize: '20px'
+                                },
+
+                                on: {
+                                    click: () => { this.delButton(root, node, data) }
+                                }
+                            })
+                        ]):''
+
+
+
+
                     ])
                 )
             },
@@ -429,11 +484,11 @@
                 } else if (treeData.rank === 0) {
                     /*添加类型*/
                     obj = {
-                        name: '新建子分类',
+                        name: '新建制作规范',
                         parent_id: treeData.cate_id
                     }
                 } else {
-                    treeData.children.push({name:'新建分类',parent_id: treeData.cate_id,rank:2,temporary:true,btnShow:false});
+                    treeData.children.push({name:'新建规范',parent_id: treeData.cate_id,rank:2,temporary:true,btnShow:false});
                     this.$bus.emit('addType', treeData);
                     return false
                 }
@@ -572,7 +627,8 @@
                 if(nodeStair !== null){
                     root.map((roots) => {
                         if(roots.nodeKey === nodeStair){
-                            this.expandDetails[0] = roots.node.cate_id;
+                            console.log(133,roots)
+                            this.expandDetails[0] = {id:roots.node.cate_id,status :roots.node.status };
                         }
                     })
                 }
@@ -601,40 +657,84 @@
     }
 </script>
 <style lang="less">
+
     .treeMapWindow {
         .ivu-modal-header {
-            border-bottom: 1px solid transparent !important;
             border: 1px solid transparent !important;
         }
+
         .ivu-modal-footer {
             border-top: 1px solid transparent !important;
         }
-        .ivu-tree-arrow{
-            display: none;
-        }
+
+    }
+.typelibLeftContainer{
+    position: relative;
+    /*top:-40px;*/
+    height: 100%;
+    padding: 7px;
+    margin-right: 30px;
+    background: #fff;
+    overflow-y: auto;
+    .shade{
+        position: absolute;
+        top:8px;
+        left: 30px;
+        width: 80px;
+        height: 20px;
+        background: #fff;
+        z-index: 20;
+    }
+    .ivu-tree li ul{
+        padding: 0 !important;
+
+    }
+.ivu-tree-arrow{
+    position: relative;
+    top:0;
+    left: 33px;
+    z-index: 10;
+}
+    /*.ivu-tree ul li{*/
+        /*border: 1px solid #eef1f2;*/
+        /*border-radius: 2px;*/
+    /*}*/
+    .treeMapContainer {
+        position: absolute;
+        top:-10px;
+        width: 84%;
+.buttonList{
+    position: absolute;
+    right: 0;
+    i{
+        color: #3bceb6;
+        vertical-align: middle;
+    }
+}
+        /*.ivu-tree-children {*/
+            /*p {*/
+                /*position: relative;*/
+                /*&:hover {*/
+                    /*section {*/
+                        /*opacity: 1 !important;*/
+                        /*transition: all .3s;*/
+                    /*}*/
+                /*}*/
+                /*section {*/
+                    /*h1 {*/
+                        /*div:nth-of-type(1) {*/
+                            /*padding-top: 5px;*/
+                        /*}*/
+                        /*div:nth-last-of-type(1) {*/
+                            /*padding-bottom: 5px;*/
+                        /*}*/
+                    /*}*/
+                /*}*/
+            /*}*/
+        /*}*/
     }
 
-    .treeMapContainer {
-        .ivu-tree-children {
-            p {
-                position: relative;
-                &:hover {
-                    section {
-                        opacity: 1 !important;
-                        transition: all .3s;
-                    }
-                }
-                section {
-                    h1 {
-                        div:nth-of-type(1) {
-                            padding-top: 5px;
-                        }
-                        div:nth-last-of-type(1) {
-                            padding-bottom: 5px;
-                        }
-                    }
-                }
-            }
-        }
-    }
+
+
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="taskselect" @click.stop>
+    <div class="taskselect" @click.stop >
         <div style="overflow: hidden">
             <input type="text" :value="currenVal" :disabled="disabled" class="currenVal" readonly @click.stop="isShowFun = !isShowFun"/>
             <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>

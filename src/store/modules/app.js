@@ -75,11 +75,12 @@ const app = {
             contract: true,              // 合同,
             callForBids: true,           // 招标,
             eHome: true,                 // 概况,
-            projectHome:true,
+            projectHome:true,            // 项目
+            cooperation:true,           //合作
         },
         callForBidsdts: {
             HaveTender: true,             // 已报名招标
-            invitation: true              // 外包邀请
+            invitation: true  ,            // 外包邀请
         },
         manager:{
             manager_page_header:true,       // 经营
@@ -120,6 +121,7 @@ const app = {
             epibol级权限
         */
         epibolMenuList(state, {menuList, item}) {
+
             const array = item.children.map((child, idx) => {
                 if (!state.epibol.callForBids && child.name === 'bidManage') {
                     return ''
@@ -130,6 +132,8 @@ const app = {
                 } else if (!state.epibol.memberManager && child.name === 'memberManager') {
                     return ''
                 } else if (!state.epibol.projectHome && child.name === 'projectManage') {
+                    return ''
+                }else if (!state.epibol.cooperation && child.name === 'epibolCompany') {
                     return ''
                 }
                 return child
@@ -145,6 +149,7 @@ const app = {
                     }
                 }*/
             });
+
 
             menuList[1].children = array.filter((child) => {
                 return child !== ''
@@ -220,6 +225,11 @@ const app = {
 
                 // c2 公司投标
                 state.epibol.callForBids = false
+            }
+            if (data.indexOf('c3')!==-1) {
+
+                // c2 公司投标
+                state.epibol.cooperation = false
             }
             if (data.indexOf('c2_1')!==-1) {
                 // c2 已报名投标
@@ -333,8 +343,7 @@ const app = {
         },
         updateMenulistRole({commit}) {
             let accessCode = parseInt(Cookies.get('post_id'));
-            accessCode = 1;
-            // accessCode = 1;
+
             // let userType = Cookies.get('user_type')
             // let userType = sessionStorage.user_type;
             let menuList = [], childrenList = [];

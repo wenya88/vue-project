@@ -214,7 +214,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'setSchedule',
                 title: '日程安排',
-                meta:{role:1},
+
                 component: resolve => { require(['@/views/manager/setSchedule.vue'], resolve); }
             },
 
@@ -288,6 +288,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'epibolCompany',
                 title: '合作',
+                meta:{role:'c3'},
                 component: resolve => { require(['@/views/customer/epibolCompany.vue'], resolve); },
 
             }, {

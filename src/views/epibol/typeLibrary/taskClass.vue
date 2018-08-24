@@ -1,15 +1,24 @@
 <template>
-    <Content    :style="{minHeight: '280px', background: '#fff'}">
-        <Row>
-            <Col span="6">
-                <type-list ref="tree" :listData="formLeft" ></type-list>
-            </Col>
-            <Col span="16">
-                <Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
-                    <standard-info></standard-info>
-                </Content>
-            </Col>
-        </Row>
+    <Content class="companyNormLibrary">
+        <ul style="display: flex;height: 100%;">
+            <li style="min-width: 300px;">
+                <type-list style="height: 100%" ref="tree" :listData="formLeft"></type-list>
+            </li>
+            <li style="flex: 1">
+                <standard-info></standard-info>
+
+            </li>
+        </ul>
+        <!--<Row style="height: 100%">-->
+            <!--<Col span="8" style="height: 100%">-->
+                <!--<type-list style="height: 100%" ref="tree" :listData="formLeft"></type-list>-->
+            <!--</Col>-->
+            <!--<Col span="16">-->
+            <!--<Content :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">-->
+            <!--</Content>-->
+            <!--</Col>-->
+
+        <!--</Row>-->
     </Content>
 </template>
 <script>
@@ -28,12 +37,19 @@
             standardInfo
         },
         data() {
-            return{
+            return {
                 formLeft: {},
             }
         },
-        mounted() {},
-        methods:{
-        }
+        mounted() {
+        },
+        methods: {}
     };
 </script>
+<style lang="less">
+    .companyNormLibrary {
+        height: 100%;
+        background: #eef1f2;
+        padding-top: 30px;
+    }
+</style>

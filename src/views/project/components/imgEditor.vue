@@ -58,7 +58,7 @@
                                         <!--style="vertical-align: text-bottom;font-size: 18px;"></i></span>-->
                 <!--<div class="clear"></div>-->
             <!--</div>-->
-            <h1>12  </h1>
+
             <feedbackInfo  v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
         </div>
     </div>
