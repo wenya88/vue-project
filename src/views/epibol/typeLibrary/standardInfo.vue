@@ -833,14 +833,14 @@
             },
             // 刷新页面 禁止效果
             isDisabled() {
-                if (this.expandDetails[0]) {
+                if (this.expandDetails[0]&&!this.project) {
                     this.isSubmit = this.expandDetails[0].status !== 0;
 
                     this.disabled = this.expandDetails[0].status === 0;
                 }
                 // 项目
                 if (this.project) {
-                    this.disabled = false;
+                    this.disabled = true;
                 }
             }
         },
@@ -1006,6 +1006,7 @@
                 cursor: pointer;
                 /*opacity: 0;*/
                 transition: all .2s;
+                z-index: 2;
             }
             /*&:hover {*/
             /*.delIcon {*/

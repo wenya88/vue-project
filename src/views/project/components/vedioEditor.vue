@@ -506,7 +506,7 @@
             },
 
             //需要修改
-            commitEidt(type) {
+            commitEidt({type,FeedbackValue}) {
                 let url = this.GLOBAL.baseRouter + 'task/task/inside-audit'
                 let Okparams = {
                     "stage_id": this.stageID,
@@ -520,7 +520,7 @@
                 let EDITparams = {
                     "stage_id": this.stageID,
                     "audit": 2,
-                    "feedback": this.FeedbackValue,
+                    "feedback": FeedbackValue,
                     "file": JSON.stringify([{
                         "file_id": this.fileID,
                         "tag": JSON.parse(sessionStorage.getItem('videoTime')) || []

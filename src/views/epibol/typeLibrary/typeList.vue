@@ -530,14 +530,14 @@
             /*点击进入详情*/
             goTaskList(data, root, node) {
 
-                if (data.temporary) {
-                    // 新建时没保存 但是用户点击了其他详情，又点击回来
-                    this.$bus.emit('addType', data);
-                } else {
-                    this.$bus.emit('typesDetail', data);
-                }
                 /*详情展开*/
                 if (data.rank === 2) {
+                    if (data.temporary) {
+                        // 新建时没保存 但是用户点击了其他详情，又点击回来
+                        this.$bus.emit('addType', data);
+                    } else {
+                        this.$bus.emit('typesDetail', data);
+                    }
 
                     this.detailsExpand(data, root, node)
                     // 增加选中背景色
@@ -638,6 +638,7 @@
             },
             /*分类展开*/
             classifyExpand(data) {
+
                 if (data.cate_id) {
                     if (this.expandArray.length > 0) {
                         let showExpand = true;
