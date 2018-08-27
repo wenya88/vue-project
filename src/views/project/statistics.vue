@@ -24,7 +24,7 @@
                                 <b>{{countData.schedule.sy_rate || 0}}</b><i>%</i>
                             </i-circle>
                             <div class="numbersSty">
-                                剩余<span style="color: #fcc44a">{{countData.schedule.sy_time || 0 | timeSet}}</span>个工作日
+                                剩余<span style="color: #fcc44a">{{countData.schedule.sy_time || 0 }}</span>个工作日
                             </div>
                         </div>
                     </div>
@@ -149,9 +149,9 @@
             });
         },
         filters: {
-            timeSet: function (time) {
-                return parseInt(time / (1000 * 60 * 60 * 24));
-            }
+            // timeSet: function (time) {
+            //     return parseInt(time / (1000 * 60 * 60 * 24));
+            // }
         }
     }
 </script>

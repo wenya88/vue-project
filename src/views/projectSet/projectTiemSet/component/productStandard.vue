@@ -9,43 +9,30 @@
                 </li>
             </ul>
             <div class="addType">
-            <div class="addTypeBox" >
-                <div class="addButton">
-                    <Dropdown trigger="click" style="padding: 9px 14px 9px 14px;border-radius: 4px">
-                        <span class="typeMenu">
-                            <Icon type="ios-plus-outline" size="18"></Icon>
-                            <span style="vertical-align: top">添加规范</span>
-                        </span>
-                        <DropdownMenu style="padding: 10px;" slot="list">
-                            <div class="header">
-                                <div v-for="(item,index) in specification" :key="index"
-                                   :class="menuColor === index?'fonsW':''"
-                                   @click="selecSpecification(item.children,index)">
-                                    {{item.name}}({{item.children.length}})
-
-
+                <Dropdown trigger="click">
+                    <div class="typeMenu">
+                        <Icon type="ios-plus-outline" size="18"></Icon>
+                        <span style="vertical-align: top">添加规范</span>
+                    </div>
+                    <DropdownMenu slot="list" style="top: 40px;min-width: 300px">
+                        <div class="header">
+                            <span v-for="(item,index) in specification" :key="index" :class="menuColor === index?'fonsW':''" @click="selecSpecification(item.children,index)">{{item.name}}({{item.children.length}})</span>
+                        </div>
+                        <dl v-for="(item,i) in StandardizeSec" :key="i">
+                            <dt>{{item.name}}</dt>
+                            <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
+                            <dd @click="greenSign(index,i,children)" v-for="(children,index) in item.children">
+                                <div class="type" :class="children.border?'sign':''" >
+                                    <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
+                                    <!--alt=""-->
+                                    <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
+                                    <span>{{children.tasktype_name}}</span>
+                                    <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
                                 </div>
-                            </div>
-                            <dl v-for="(item,i) in StandardizeSec" :key="i">
-
-                                <dt>{{item.name}}</dt>
-                                <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
-                                <ul class="typeList">
-                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children" >
-                                        <div class="type" :class="children.border?'sign':''" >
-                                            <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
-                                            <!--alt=""-->
-                                            <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
-                                            <span>{{children.tasktype_name}}</span>
-                                            <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </dl>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
-            </div>
+                            </dd>
+                        </dl>
+                    </DropdownMenu>
+                </Dropdown>
             </div>
         </section>
         <!--规范表单-->
@@ -277,6 +264,7 @@
                     });
             },
             selecSpecification(data, index) {
+                console.log(data);
                 this.StandardizeSec = data;
                 this.menuColor = index
             },
@@ -378,13 +366,14 @@
     @gray:#eef1f2;
     .projectSpeContainer {
         .tabHead {
+            position: relative;
             display: flex;
             padding-bottom: 30px;
             background: @gray;
 
             .typeTabsContainer {
                 display: flex;
-
+                width: 100%;
                 padding: 21px 0 0 0;
                 background: @gray;
                 border-bottom: 1px solid @green;
@@ -424,47 +413,37 @@
                 }
             }
             .addType {
-                position: relative;
-                flex: 1;
-                min-height: 66px;
-                background: @gray;
-                border-bottom: 1px solid @green;
+                position: absolute;
+                right: 40px;
+                bottom: 40px;
+                background: #fff;
+                border-radius: 5px;
                 .addTypeBox{
                     position: absolute;
-                    top: 0;
                     right: 0;
-                    padding: 44px 80px;
-                    background: #eef1f2;
-
-                }
-                .addButton {
-                    position: absolute;
-                    top: 26px;
-                    right: 30px;
-                    /*padding: 10px 14px;*/
-                    text-align: center;
+                    bottom: 5px;
                     background: #fff;
-                    .ivu-dropdown, .ivu-select-dropdown {
-                        top: 50px !important;
-                    }
-                    .ivu-dropdown, .ivu-select-dropdown{
-                        border: 1px solid @green;
 
-                    }
                 }
                 .typeMenu {
                     color: @green;
                     cursor: pointer;
-
+                    padding:8px 10px;
                 }
                 .header {
                     display: flex;
-                    margin-bottom: 25px;
                     font-size: 16px;
                     color: #6b6b6b;
+                    justify-content: space-between;
+                    padding: 10px;
+                    cursor: pointer;
                     .fonsW {
                         color: @green;
                     }
+                    span{
+                        display: inline-block;
+                    }
+
                     p {
                         min-width: 100px;
                         margin: 0 6px;
@@ -475,12 +454,50 @@
                         cursor: pointer;
                     }
                 }
-                dt {
-                    height: 30px;
-                    padding-left: 20px;
-                    line-height: 30px;
-                    font-size: 14px;
-                    color: #777;
+                dl{
+                    padding: 10px;
+                    overflow: hidden;
+                    dt {
+                        font-size: 14px;
+                        color: #777;
+                        padding-left: 10px;
+                    }
+                    dd{
+                        padding: 9px;
+                        float: left;
+                        cursor: pointer;
+                        /*margin: 5px 3.275%;*/
+
+                        .type {
+                            position: relative;
+                            min-width: 75px;
+                            height: 30px;
+                            padding: 0 4px 0 7px;
+                            line-height: 30px;
+                            color: #bdbdbd;
+                            img {
+                                margin: 29px 4px 0 0;
+                            }
+                            .icon{
+                                position: absolute;
+                                top: 0;
+                                right: 2px;
+                                padding-left: 5px;
+                                color: #3bceb6;
+                                line-height: 30px;
+                            }
+
+                        }
+                        .sign {
+                            color:@green ;
+                            background: #c4f0e9;
+                            border: 1px solid @green;
+                            border-radius: 4px;
+                            img {
+                                margin: 27px 4px 0 0;
+                            }
+                        }
+                    }
                 }
                 .typeList {
                     display: flex;
@@ -493,35 +510,7 @@
                         padding: 0 20px;
                         margin-left: 15px;
                     }
-                    .type {
-                        display: flex;
-                        min-width: 75px;
-                        height: 30px;
-                        padding: 0 4px 0 7px;
-                        text-align: center;
-                        line-height: 30px;
-                        color: #bdbdbd;
-                        overflow: hidden;
-                        img {
-                            margin: 29px 4px 0 0;
-                        }
-                        .icon{
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            padding-left: 5px;color: #3bceb6;line-height: 30px;
-                        }
 
-                    }
-                    .sign {
-                        color:@green ;
-                        background: #c4f0e9;
-                        border: 1px solid @green;
-                        border-radius: 4px;
-                        img {
-                            margin: 27px 4px 0 0;
-                        }
-                    }
                 }
 
             }

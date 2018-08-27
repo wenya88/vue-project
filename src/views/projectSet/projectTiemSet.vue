@@ -1,9 +1,8 @@
 <template>
     <div>
-        <div class="projectSetMenu">
+        <div class="headerNavBar" >
             <ul class="setMenuList">
-                <li v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}"
-                      @click="switchSet(index,item.state)" :key="index">{{item.name}}</li>
+                <li v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}" @click="switchSet(index,item.state)" :key="index">{{item.name}}</li>
             </ul>
         </div>
         <div class="projectSetRow">
@@ -66,4 +65,15 @@
 </script>
 <style lang="less">
     @import './projectTiemSet/style/timeSet.less';
+    .headerNavBar{
+        /*display: flex;*/
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*left: 200px;*/
+        /*height: 64px;*/
+        /*z-index: 999;*/
+        /*align-items: flex-end;*/
+        /*padding-left: 40px;*/
+    }
+
 </style>
