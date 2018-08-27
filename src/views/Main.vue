@@ -342,6 +342,7 @@
 </script>
 <style lang="less">
     @import "./main.less";
+    .main-header-con{box-shadow: none!important;}
    .main-header-avator{
      z-index: 999!important;
    }
