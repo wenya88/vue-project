@@ -85,22 +85,22 @@
             <!--</li>-->
             <!--</ul>-->
 
-            <Menu style="min-width: 200px;max-width: 200px;" class="leftMenuList">
-                <Submenu v-if="menuList" v-for="(item,index) in menuList" :title="item.title||item.name" :name="index" :key="index">
+            <Menu style="min-width: 180px;max-width: 180px;" class="leftMenuList">
+                <Submenu v-if="menuList" v-for="(item,index) in menuList" class="navList" :title="item.title||item.name" :name="index" :key="index">
                     <template slot="title">
 
-                        <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi" style="vertical-align: text-bottom;font-size: 16px;"></i>
-                        <i v-else-if="item.title === '我的工作台'" class="iconfont icon-xiangmuxiaoxi"  style="vertical-align: text-bottom;font-size: 18px;"></i>
-                        <span v-else>&emsp;&nbsp;&nbsp;</span>
-                        <span class="navText">
-                        {{item.title || item.name}}
-                        </span>
+                        <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi"  style="color:#5d646b;vertical-align: middle;font-size: 16px;"></i>
+
+                        <i v-else-if="item.title === '我的工作台'" class="iconfont icon-xiangmuxiaoxi"  style="color:#5d646b;vertical-align: middle;font-size: 14px;"></i>
+                        <span  v-else> <Icon  style="color:#5d646b;vertical-align: middle" type="ios-calendar-outline" /></span>
+                        <span class="navText">{{item.title || item.name}}</span>
                     </template>
                     <template v-if="item.children">
-                        <MenuItem v-for="(children,i) in item.children"  :title="children.title"
-                                  @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
-                            &emsp;&nbsp;&nbsp;{{children.title}}
-                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        <MenuItem v-for="(children,i) in item.children"  :title="children.title" class="childrenList"
+                        @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+
+                        &emsp;&nbsp;&nbsp;{{children.title}}
+                        <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
                         </MenuItem>
                     </template>
                     <template v-else>
@@ -288,6 +288,7 @@
                                 localStorage.removeItem('numList');
                                 localStorage.removeItem('nums');
                                 webSocket.close();
+                                window.location.reload();
                             }
                         })
                 } else if (name === 'ownSpace') {
@@ -365,19 +366,34 @@
 
    }
     .leftMenuList {
-        background: #19322e !important;
-        /*background: #19322e !important;*/
+        background: #2c353e !important;
+        /*background: #2c353e !important;*/
+        .navList{
+            .ivu-menu-submenu-title{
+                padding: 11px  30px 11px 32px !important;
+            }
+        }
+        .childrenList{
+            /*height: 38px;*/
+            padding: 8px  30px 8px 44px !important;
+            color: #bebfc1;
+            /*line-height: 38px;*/
+        }
         .navText {
             display: inline-block;
-            max-width: 100px;
+            max-width: 70px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            vertical-align: middle;
+            color: #71757a;
         }
         img {
             background: #fff;
         }
-
+        .ivu-menu-submenu-title-icon{
+            color: #8e9194;
+        }
         .active1 {
             width: 50px;
             height: 50px;
@@ -386,11 +402,12 @@
 
         }
         .ivu-menu, .ivu-menu-submenu-title {
-            color: #fff;
+            color: #bebfc1;
+            border-bottom: 1px solid #424a52;
 
         }
         .ivu-menu-submenu {
-            background: #19322e !important
+            background: #2c353e !important
 
             /*background: linear-gradient('left',#24655b, #1d433d) !important;*/
         }
@@ -425,11 +442,11 @@
     }
 
     .logo {
-        width: 199px;
+        width: 179px;
         height: 64px;
-        background: #19322e url("../images/navLogo.png") no-repeat 67px 9px;
+        background: #2c353e url("../images/navLogo.png") no-repeat 67px 9px;
         background-size: 48px;
-        border-bottom: 1px solid #42514f;
+        border-bottom: 1px solid #424a52;
     }
 
     .layout-nav {

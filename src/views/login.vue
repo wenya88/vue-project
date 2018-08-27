@@ -147,10 +147,13 @@ export default {
                 password: password
             };
             // Cookies.set('password', this.form.password);
+
             this.$axios.post(this.GLOBAL.baseRouter+'system/login/login', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
                         if(res.err_code == 0) {
+
+
                             Cookies.set('user', this.loginform.email);
                             localStorage.token = res.token
                             this.$store.state.msgShow = true
@@ -159,8 +162,11 @@ export default {
                               this.$store.state.useList = JSON.parse(localStorage.useList)
                             }
                             axios.defaults.headers.common['token'] = res.token;
-                            this.$router.push('/home/home')
+
+                            this.$router.push('/home/home');
                             this.$store.dispatch('getMenulistRole');
+
+
                         } else {
                             this.$refs.loginError.errorInfo(res.err_message);
                         }
