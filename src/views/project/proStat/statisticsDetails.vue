@@ -1,11 +1,8 @@
 <template>
     <div>
-        <div class="navBreadcrumb">
-            <Breadcrumb>
-                <BreadcrumbItem to="/project/statistics">统计</BreadcrumbItem>
-                <BreadcrumbItem>{{compTitle}}</BreadcrumbItem>
-            </Breadcrumb>
-        </div>
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{compTitle}}</div>
+        </main-native>
         <keep-alive>
             <component :is="compName"></component>
         </keep-alive>
@@ -19,6 +16,7 @@ import EchartsStyle from './echartsStyle.vue';
 import EchartsTask from './echartsTask.vue';
 import EchartsTypeTask from './echartsTypeTask.vue';
 import EchartsState from './echartsState.vue';
+import mainNative from '../../main-components/mainNative.vue';
 export default {
     data(){
         return{
@@ -27,7 +25,8 @@ export default {
         }
     },
     components:{
-        echartsDayTask
+        echartsDayTask,
+        mainNative
     },
     computed:{
         routeParams(){

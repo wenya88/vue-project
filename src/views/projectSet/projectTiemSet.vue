@@ -1,13 +1,24 @@
 <template>
     <div>
-        <div class="headerNavBar" >
-            <ul class="setMenuList">
-                <li v-for="(item,index) in prjectMenu" v-if="projectSet[item.role]" :class="{checked:index==mIndex}" @click="switchSet(index,item.state)" :key="index">{{item.name}}</li>
-            </ul>
-        </div>
+        <main-native>
+            <div class="main-header-style iconfont">
+                <div class="headerNavBar" >
+                    <ul class="setMenuList">
+                        <li v-for="(item,index) in prjectMenu"
+                            v-if="projectSet[item.role]"
+                            :class="{checked:index==mIndex}"
+                            @click="switchSet(index,item.state)"
+                            :key="index">
+                            {{item.name}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main-native>
+
         <div class="projectSetRow">
             <keep-alive>
-                <component :is="componentChecked"></component>
+                <component :is="componentChecked" :islink="true"></component>
             </keep-alive>
         </div>
     </div>
@@ -17,8 +28,12 @@
     import timeSet from './projectTiemSet/component/timeSet'
     import peopleSet from './projectTiemSet/component/peopleSet'
     import productStandard from './projectTiemSet/component/productStandard'
+    import mainNative from '../main-components/mainNative.vue';
     import {mapState} from 'vuex'
     export default {
+        components: {
+            mainNative
+        },
         data() {
             return {
                 prjectMenu: [
@@ -65,15 +80,4 @@
 </script>
 <style lang="less">
     @import './projectTiemSet/style/timeSet.less';
-    .headerNavBar{
-        /*display: flex;*/
-        /*position: absolute;*/
-        /*top: 0;*/
-        /*left: 200px;*/
-        /*height: 64px;*/
-        /*z-index: 999;*/
-        /*align-items: flex-end;*/
-        /*padding-left: 40px;*/
-    }
-
 </style>

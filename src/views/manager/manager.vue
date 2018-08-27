@@ -1,6 +1,12 @@
 <template>
     <div class="manager_page_all">
-        <p class="manager_file_head"><span class="manager_icon iconfont icon-bar-chart"></span>经营概览</p>
+
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
+
+
+
         <div class="clearfix manager_page_header" v-if="manager.manager_page_header">
             <div class='left_manager_head'>
                 <managaer-in :data='business_concept'></managaer-in>
@@ -16,7 +22,7 @@
                 <Col  v-if="manager.mangaer_main_bid" class="mangaer_main_bid" span="8">
                 <mangaer-bid :bidList='bid'></mangaer-bid>
                 </Col>
-                <!-- 签单 --> 
+                <!-- 签单 -->
                 <Col v-if="manager.mangaer_main_Sign" class="mangaer_main_Sign" span="16">
                 <div class="mangaer_Sign_children">
                     <mangaer-sign :contList='contract'></mangaer-sign>
@@ -52,6 +58,7 @@
     import mangaerTem from './managaerTem.vue'
     import managaerIn from './managaIn.vue'
     import managex from './managex.vue'
+    import mainNative from '../main-components/mainNative.vue'
     export default {
         data () {
             return {
@@ -71,7 +78,8 @@
 
             mangaerTem,
             managaerIn,
-            managex
+            managex,
+            mainNative
         },
         mounted () {
             this.getData()
@@ -106,22 +114,14 @@
         }
     }
 </script>
-<style scoped>
+<style lang="less" scoped>
+    @green:#3bceb6;
     .manager_page_all{
         width: 100%;
         min-height: 100%;
 
     }
-    .manager_file_head{
-      height: 80px;
-      line-height: 80px;
-      font-size: 20px;
-    }
-    .manager_icon{
-      font-size: 20px;
-      color: #3bceb6;
-      margin-right: 5px;
-    }
+
     .manager_page_header{
         width: 100%;
         height: 120px;
