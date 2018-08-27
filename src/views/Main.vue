@@ -338,7 +338,16 @@
 </script>
 <style lang="less">
     @import "./main.less";
-
+    .headerNavBar{
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 200px;
+        height: 64px;
+        z-index: 999;
+        align-items: flex-end;
+        padding-left: 40px;
+    }
    .main-header-avator{
      z-index: 999!important;
    }

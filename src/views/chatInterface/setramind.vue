@@ -193,7 +193,7 @@ export default {
  width: 100%;
  height: 80px;
  padding: 10px 10px;
- border-bottom: 1px solid rgb(174,174,174);
+ border-bottom: 1px solid #eef1f2;
  position: relative;
 }
 .set_msg_title{

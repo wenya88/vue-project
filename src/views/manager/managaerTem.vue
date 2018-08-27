@@ -162,7 +162,7 @@ export default {
 }
 .tem_main{
   width: 100%;
-  height: 200px;
+  height: 220px;
   position: relative;
 }
 .tem_main>div{
@@ -171,13 +171,13 @@ export default {
   float: left;
 }
 .canvas_msg{
-  font-size: 16px;
+  font-size: 12px;
   text-align: center;
 }
 #rader,
 #free{
   width: 100%;
-  height: 160px;
+  height: 200px;
   float: left;
   margin-bottom: 10px;
 }
