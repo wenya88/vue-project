@@ -4,15 +4,32 @@
    <div class="real_all" v-if="isShow">
      <div class="clearfix real_header_box">
         <div class="header_project project_is_actice" @click="getReal(0)">
-          <!-- <p class='header_project_image'><img src='../../images/chat-icon.png'></p> -->
-          <p>项目沟通</p>
+          <p class="chat_image_father">
+          <img src='../../images/chat-icon.png' class='header_project_image'/>
+           <span class='msg-identifi' v-if="nums"></span>
+          </p>
+          <p class="header_chat_name">项目沟通</p>
           <!-- <span v-if="nums">({{nums}})</span> -->
         </div>
-        <div class="header_project" @click="getReal(1)">消息提醒<span v-show="MsgIdx">({{MsgIdx}})</span></div>
-        <div class="left-option">
-            <p class="option-she iconfont icon-ymy-setup-copy" @click="setIsSetShow" v-if='isMsg'></p>
-            <p class="close_all" @click="closeMsg">x</p>
-        </div>
+        <div class="header_project" @click="getReal(1)">
+          <p class="chat_image_father">
+          <img src='../../images/chat-icon1.png' class='header_project_image'/>
+          <span class='msg-identifi' v-show="MsgIdx"></span>
+          </p>
+          <p class="header_chat_name">消息提醒</p>
+          <!-- <span v-show="MsgIdx">({{MsgIdx}})</span> -->
+          </div>
+        <ul class="left-option">
+          <li @click="getOptionBack(0)">
+            <p class="close_all iconfont icon-ymy-reduction-copy"></p>
+          </li>
+          <li v-if='isMsg' @click="getOptionBack(1)">
+            <p class="option-she iconfont icon-ymy-setup-copy"></p>
+          </li>
+          <li  @click="getOptionBack(2)">
+            <p class="option-sousuo iconfont icon-sousuo"></p>
+          </li>
+        </ul>
      </div>
      <real-message v-if="!isMsg"></real-message>
      <remind v-else></remind>
@@ -95,6 +112,24 @@ export default {
        this.allNum = list.length - index + length
       } else {
        this.allNum = 0
+      }
+    },
+    // 设置按钮点击 
+    getOptionBack (index) {
+      const documents = document.getElementsByClassName('left-option')[0]
+      const lists = documents.getElementsByTagName('li')
+      for (let i = 0; i < lists.length; i++) {
+         if (index === i) {
+           lists[i].classList.add('newLiClass')
+         } else {
+           lists[i].classList.remove('newLiClass')
+         }
+      }
+      if (!index) {
+        this.closeMsg()
+      } else if (index === 1) {
+        this.setIsSetShow()
+      } else {
       }
     },
     // 获取未读消息
@@ -223,6 +258,16 @@ export default {
 .msg_button_fix:hover {
   animation: myfix 2s ease-in-out 0s 1 alternate forwards;
 }
+.msg-identifi{
+ display: inline-block;
+ width: 8px;
+ height: 8px;
+ background: red;
+ border-radius: 50%;
+ position:absolute;
+ top: 5px;
+ right: 20px;
+}
 @keyframes myfix {
   0% {
     opacity: .5;
@@ -250,56 +295,80 @@ export default {
  width: 600px;
  z-index: 999;
  background: #ffffff;
- border-right: 2px solid rgba(49,187,159);
- border-left: 2px solid rgba(49,187,159);
+ border-right: 1px solid #eef1f2;
+ border-left: 1px solid #eef1f2;
 }
 .real_header_box{
   width: 100%;
-  height: 50px;
+  height: 70px;
   background:url('../../images/chat.png');
   background-size: 100% 100%;
 }
 .header_project{
   float: left;
   font-size: 16px;
-  height: 48px;
+  height: 70px;
   text-align: center;
-  width: 100px;
-  line-height: 48px;
+  width: 80px;
   margin-left: 20px;
   cursor: pointer;
   color: #ffffff;
-  font-weight: bolder;
+}
+.chat_image_father{
+  width: 100%;
+  height: 23px;
+  margin-top: 10px;
+  position: relative;
 }
 .header_project_image{
-  width: 30px;
-  height:20px;
+  width: 20px;
+  height:23px;
+}
+.header_chat_name{
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 5px;
 }
 .project_is_actice{
-  border-bottom: 2px solid  rgba(49,187,159,1)!important;
-  color: rgba(49,187,159,1)!important;
+  background: rgb(50,195,171);
 }
 .left-option{
   float: right;
-  width: 80px;
+  /* width: 80px; */
   height: 100%;
 }
-.close_all{
-  width: 20px;
-  height: 20px;
+.left-option li{
   float: right;
-  margin: 15px 10px 0 0;
+  width: 45px;
+  height: 45px;
+}
+.close_all{
+  font-size: 20px;
+  margin-top: 15px;
   color: #ffffff;
   text-align: center;
   line-height: 20px;
   cursor: pointer;
-  background: rgba(255,0,0);
+  color: #ffffff;
 }
 .option-she{
   font-size: 20px;
-  margin-top: 10px;
+  margin-top: 8px;
+  text-align: center;
+  color: #ffffff;
   cursor: pointer;
-  float: left;
+}
+.option-sousuo{
+  font-size: 20px;
+  margin-top: 10px;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+}
+.newLiClass{
+  background: rgb(133,207,173);
 }
 .showNumbers{
   display: block;

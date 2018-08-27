@@ -13,25 +13,21 @@
         <div class="clearfix mangaer_main">
             <Row>
                 <!-- 投标 -->
-
-                <Col v-if="manager.mangaer_main_bid" class="mangaer_main_bid" span="8">
+                <Col  v-if="manager.mangaer_main_bid" class="mangaer_main_bid" span="8">
                 <mangaer-bid :bidList='bid'></mangaer-bid>
                 </Col>
-                <!-- 签单 -->
-
+                <!-- 签单 --> 
                 <Col v-if="manager.mangaer_main_Sign" class="mangaer_main_Sign" span="16">
                 <div class="mangaer_Sign_children">
                     <mangaer-sign :contList='contract'></mangaer-sign>
                 </div>
                 </Col>
                 <!-- 项目 -->
-
                 <Col v-if="manager.mangaer_main_project" class="mangaer_main_project" span="8">
                 <mangaer-pject :jectList='project'></mangaer-pject>
                 </Col>
                 <!-- 质量 -->
-
-                <Col v-if="manager.mangaer_main_quality" class="mangaer_main_quality" span="8">
+                <Col  v-if="manager.mangaer_main_quality" class="mangaer_main_quality" span="8">
                 <div class="mangaer_quality_children">
                     <mangaer-qua :quaList='quality'></mangaer-qua>
                 </div>
@@ -88,7 +84,6 @@
                 }
                 this.$axios.post(url, qs.stringify(items)).then(data => {
                     const objData = data.data
-                    console.log('经理数据', data.data)
                     objData.bid.add = objData.bid.add.split('%')[0]
                     objData.bid.win_rate = Number(objData.bid.win_rate.split('%')[0])
                     objData.quality.outside_pass = objData.quality.outside_pass.split('%')[0]

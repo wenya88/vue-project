@@ -1,10 +1,10 @@
 <template>
   <div class="clearfix message_remind_all">
     <div class="message_remind_left">
-      <div class="message_remin_input">
+      <!-- <div class="message_remin_input">
        <input v-model="msgRmind" placeholder="请输入"/>
        <i class="iconfont icon-sousuo"/>
-      </div>
+      </div> -->
       <div class="msg_title_all">
         <div class="msg_title" v-for="(itme, index) in objList" :key="index" @click="getObj(index)">
           <p :class="itme.bojectStyle">{{itme.name}}</p>
@@ -13,19 +13,19 @@
       </div>
     </div>
     <div class="message_remind_right">
-     <div class="message_sign">
-       <p @click="setSign" v-show="msgList.length">标识全部已读</p>
-     </div>
      <div class="clearfix msg_sign" v-for="(items, index) in msgList" :key="index">
         <div class="msg_sign_box">
           <p>{{items.message}}</p>
           <p>{{items.date}}</p>
         </div>
         <div class="msg_sign_button">
-          <p class="read_sign" v-show="items.state == '1'">已读</p>
-          <p v-show="items.state == '0'" @click="setSigned(index)">标识已读</p>
-          <p v-show="items.state == '0'">查看</p>
+          <p class="read_sign"  v-show="items.state == '1'">已读</p>
+          <p class='sign-end' v-show="items.state == '0'" @click="setSigned(index)">标识已读</p>
+          <p class='sign-see' v-show="items.state == '0'">查看</p>
         </div>
+     </div>
+      <div class="message_sign">
+       <p @click="setSign"  v-show="msgList.length">标识全部已读</p>
      </div>
     </div>
   </div>
@@ -54,7 +54,6 @@ export default {
   },
   watch: {
     getTabNum(e) {
-      // console.log('点击11', e)
       if (e === 2) {
         this.getHead()
         this.typeName = 'project'
@@ -152,7 +151,6 @@ export default {
         const headlist = JSON.parse(localStorage.headerList)
         this.objList = headlist
         this.typeName = 'project'
-        // console.log('headList', headlist)
       } else {
         this.objList = []
       }
@@ -214,7 +212,6 @@ export default {
         id: lists.msg_id
       }
       let url = this.GLOBAL.baseRouter+"/system/user/read-notice"
-      // console.log('标记已读', items)
       this.$axios.post(url, qs.stringify(items)).then(data => {
          lists.state = '1'
          this.getMsgInterface()
@@ -245,7 +242,7 @@ export default {
  height: 100%;
  float: left;
  padding: 0 10px;
- border-left: 1px solid rgb(225,225,225);
+ border-left: 1px solid #eef1f2;
 }
 .message_remin_input{
   width: 100%;
@@ -309,27 +306,29 @@ export default {
 }
 .message_sign>p{
   height: 30px;
-  padding: 0 10px;
-  border-radius: 10px;
+  padding: 2px 10px;
+  border-radius: 4px;
   margin-top:10px;
+  font-size: 14px;
   float: right;
   text-align: center;
   line-height: 30px;
   color: #ffffff;
   cursor: pointer;
-  background: rgb(134,134,134);
+  background: #fcc44a;
 }
 .msg_sign{
  box-sizing: border-box;
  width: 100%;
  min-height: 80px;
  padding: 10px 0;
- border-bottom: 1px solid rgb(215,215,215);
+ border-bottom: 1px solid #eef1f2;
 }
 .msg_sign_box{
  width: calc(100% - 150px);
  height: 100%;
  float: left;
+ overflow: hidden;
 }
 .msg_sign_box>p{
  width: 100%;
@@ -349,11 +348,12 @@ export default {
 }
 .msg_sign_button>p{
  float: right;
- padding: 0 10px;
- border-radius: 10px;
+ padding: 2px 10px;
+ border-radius: 4px;
  color: #ffffff;
  cursor: pointer;
  font-size: 14px;
+ margin-top: 15px;
 }
 .read_sign{
  background: rgb(215,215,215)!important;
@@ -364,15 +364,15 @@ export default {
  line-height: 30px;
  border-radius: 4px;
 }
-.msg_sign_button>p:last-child{
-  background: rgb(24,191,164);
+.sign-see{
+  background: #3bceb6;
 }
-.msg_sign_button>p:first-child{
-  background: rgb(134,134,134);
-  /* margin-left: 10px; */
-}
-.msg_sign_button>p:nth-child(2){
-  background: rgb(134,134,134);
+.sign-end{
+  background: #fcc44a;
   margin-left: 10px;
 }
+/* .msg_sign_button>p:nth-child(2){
+  background: rgb(134,134,134);
+  margin-left: 10px;
+} */
 </style>

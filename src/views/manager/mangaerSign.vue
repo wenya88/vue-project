@@ -155,6 +155,12 @@ export default {
           axisLine:{       //y轴
              show:false
            },
+          splitLine: {
+            lineStyle: {
+              // 使用深浅的间隔色
+              color: ['#eef1f2']
+            }
+          },
         },
         series: [
           {

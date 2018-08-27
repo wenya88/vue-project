@@ -5,35 +5,39 @@
       <div class="realTime_interface" @mousewheel="getScoller">
          <span class="chat_load" @click="getMoreMsg">查看更多消息</span>
          <div v-for="(item, index) in datalist" :key="index" class="ko">
-         <div v-if ='item.user_id !== userMsg.id'>
-           <div class="clearfix realTime_message">
-             <img :src="item.headimage">
-             <p class="realTime_time_text">{{item.remark_name}}</p>
-             <p class="realTime_time">{{item.date}}</p>
-           </div>
-           <div>
-             <p class="triangle_type"></p>
-             <p>
-             <span :class="`Send_content is_own_no ${item.group_id}`" v-html="item.message">
-               <!-- {{item.message}} -->
-             </span>
-             </p>
+         <div v-if ='item.user_id !== userMsg.id' class="clearfix">
+           <img :src="item.headimage" class="chats-image-left"/>
+           <div class="chat-msg-left">
+            <div class="clearfix realTime_message">
+              <p class="realTime_time_text">{{item.remark_name}}</p>
+              <p class="realTime_time">{{item.date}}</p>
+            </div>
+            <div class="clearfix">
+              <p class="triangle_type iconfont icon-ymy-leftchat-copy"></p>
+              <p class="chat-own-no">
+              <span :class="`Send_content is_own_no ${item.group_id}`" v-html="item.message">
+                <!-- {{item.message}} -->
+              </span>
+              </p>
+            </div>
            </div>
          </div>
          <!-- 第二个 -->
          <div class="clearfix ko" v-else>
+            <img :src="userMsg.headimage" class="chats-image-right"/>
+           <div class="chat-msg-right">
            <div class="realTime_message_own">
-             <img :src="userMsg.headimage">
              <p class="realTime_time_text">我</p>
              <p class="realTime_time">{{item.date}}</p>
            </div>
-           <div class="is_own_float">
-             <p class="triangle_type_own"></p>
-             <p>
+           <div class="is_own_float clearfix">
+             <p class="triangle_type_own iconfont icon-ymy-chat-copy"></p>
+             <p class="chat-own">
              <span class="Send_content is_own ${item.group_id}" v-html="item.message">
                <!-- {{item.message}} -->
              </span>
              </p>
+           </div>
            </div>
          </div>
          </div>
@@ -41,6 +45,19 @@
        </GeminiScrollbar>
        </div>
       <form class="send_information_box">
+          <div id='file_id'>
+              <span class="pace">
+                <i class="iconfont icon-biaoqing1"/>
+              </span>
+              <span class="file_class_father">
+                <i class="iconfont icon-tupian1"/>
+                <uploader :uploadObj='uploadobj' :ids='file'></uploader>
+              </span>
+              <span>
+                <i class="iconfont icon-wenjianjia"/>
+                <uploader :uploadObj='uploadobj' :ids="wenjian"></uploader>
+              </span>
+          </div>
          <div class="send_message_remind">
            <div :class="`send_input ${data.absold ? '' : 'disable'}`" contenteditable="true" id="testInput" @keyup.enter="submit" @keydown="keyIn($event)"></div>
            <div class="clearfix send_message_children" v-show="isShowMessage">
@@ -59,20 +76,6 @@
            <!-- </GeminiScrollbar> -->
          </div>
          <div class="clearfix send_Function_button">
-           <div id='file_id'>
-              <span class="pace">
-                <i class="iconfont icon-biaoqing1"/>
-              </span>
-              <span class="file_class_father">
-                <i class="iconfont icon-tupian1"/>
-                <uploader :uploadObj='uploadobj' :ids='file'></uploader>
-                <!-- <input type="file" class="file_class"/> -->
-              </span>
-              <span>
-                <i class="iconfont icon-wenjianjia"/>
-                <uploader :uploadObj='uploadobj' :ids="wenjian"></uploader>
-              </span>
-           </div>
            <p :class="`button_send ${data.absold ? '' : 'disable'}`" @click="submit">回车发送</p>
          </div>
       </form>
@@ -149,7 +152,7 @@ export default {
     getImg (e) {
       const blob = this.$store.state.blob
       if (!blob) {
-        const imgs = `<img src = '${e}' style='max-width: 100px; max-height: 100px '></img>`
+        const imgs = `<img src = '${e}' style='max-width: 260px; max-height: 140px; border-radius: 4px;'></img>`
         this.getSong(imgs)
       } 
       else {
@@ -159,7 +162,11 @@ export default {
     },
     getFile (e) {
       const file = e
-      const files = `<p class="file_upload">上传文件${e.fileName}<a href="${e.fileDown}" class="file_upload_ltext">下载</a></p>`
+      const files = `
+      <div class="file_upload"><p class="file-up-name">
+      <span class='clearfix file-up-icon iconfont icon-ymy-folder-copy'></span><span>上传文件${e.fileName}</span></p>
+      <a href="${e.fileDown}" class="file_upload_ltext">下载</a>
+      </div>`
       this.getSong(files)
     },
     data: function (e) {
@@ -234,7 +241,6 @@ export default {
        }
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const oldList = data.data.data.reverse()
-        //  console.log('获取的数据', oldList)
          oldList.forEach(items => {
            items.isRead = true
          })
@@ -305,14 +311,12 @@ export default {
       const currentDistance = scrollHeights - cententHeught
       const currentScrollY = dcment.scrollTop
       if (currentDistance > 0) {
-        //  console.log('滚动条', currentDistance, scrollHeights)
          if (currentScrollY === 0) {
            this.getMoreMsg()
            this.$nextTick(() => {
              dcment.scrollTop = 200
            })
       }
-      // console.log('滑动', currentScrollY)
       }
     },
     // 按下按钮所做的事
@@ -632,10 +636,13 @@ export default {
   width: 100%;
   height: 100px;
 }
+.send_information_box{
+  border-top:1px solid #eef1f2; 
+}
 .send_message_remind{
   position: relative;
   width: 100%;
-  height: 100px;
+  height: 60px;
 }
 .send_message_children{
  position: absolute;
@@ -689,11 +696,10 @@ export default {
  outline:none;
  border: none;
  width: 100%;
- height: 100px;
+ height: 60px;
  overflow-y: auto;
  text-indent: 2em;
  line-height: 20px;
- background: rgba(231,231,231,1);
 }
 .send_input:empty:before{
     content: '请输入沟通内容（@可指定接受消息人员）';
@@ -752,6 +758,10 @@ export default {
   right:0;
   margin: auto;
   cursor: pointer;
+}
+#file_id{
+  width: 100%;
+  height: 40px;
 }
 #file_id span{
  display: block;
