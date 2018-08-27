@@ -1,6 +1,8 @@
 <template>
-  <div>
     <div class="newContract">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <dl>
             <dt>
                 <span class="span">
@@ -11,11 +13,11 @@
             <contract-list :contData="contData" ref="contractRef"></contract-list>
         </dl>
     </div>
-  </div>
 </template>
 <script>
 var qs=require('querystring');
 import contractList from './contractManage/component/contractList';
+import mainNative from '../main-components/mainNative.vue';
 export default {
   data(){
         return{
@@ -24,7 +26,8 @@ export default {
         }
   },
   components:{
-    contractList:contractList
+      contractList:contractList,
+      mainNative:mainNative
   },
   mounted(){
     this.contractData(this.search);

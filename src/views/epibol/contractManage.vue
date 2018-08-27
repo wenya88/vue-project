@@ -1,5 +1,8 @@
 <template>
     <div class="newContract">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <dl>
             <dt>
                 <span class="span">
@@ -19,6 +22,7 @@
 <script>
 var qs=require('querystring');
 import contractList from './contractManage/component/contractList';
+import mainNative from '../main-components/mainNative.vue';
 import {mapState} from 'vuex';
 export default {
     data(){
@@ -35,7 +39,8 @@ export default {
        })
     },
     components:{
-        contractList:contractList
+        contractList:contractList,
+        mainNative:mainNative
     },
     mounted(){
         this.contractData();
@@ -107,7 +112,7 @@ export default {
                 }
             })
         }
-        
+
     }
 }
 </script>

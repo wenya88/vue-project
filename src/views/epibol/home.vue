@@ -1,6 +1,9 @@
 <template>
     <div class="homePage">
         <!-- 首页头部 -->
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <div class="pageHeader">
 
         </div>
@@ -53,7 +56,7 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                
+
                 <!-- 内容 -->
                 <div class="contentRow">
                     <div class="project" @click="project">
@@ -68,7 +71,7 @@
                         <i class="iconfont icon-hetong"></i>
                         <span>合同</span>
                     </div>
-                    <div class="group" @click="group"> 
+                    <div class="group" @click="group">
                         <i class="iconfont icon-tuandui"></i>
                         <span>团队</span>
                     </div>
@@ -86,7 +89,11 @@
 </template>
 <script>
 import {mapState} from 'vuex';
+import mainNative from '../main-components/mainNative.vue';
 export default {
+    components: {
+        mainNative
+    },
     methods:{
         companySet(){
             this.$router.push('/epibol/taskClass');

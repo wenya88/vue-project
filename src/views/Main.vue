@@ -22,6 +22,8 @@
                 </Menu>
             </Header>
         </div>
+        <mainNative></mainNative>
+
         <div class="main-header-avator">
             <div class="user-dropdown-menu-con" style="float: left;">
                 <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
@@ -126,13 +128,15 @@
     import messageTip from './main-components/message-tip.vue';
     import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
+    import mainNative from './main-components/mainNative.vue';
     import {mapState} from 'vuex'
 
     export default {
         components: {
             shrinkableMenu,
             themeSwitch,
-            messageTip
+            messageTip,
+            mainNative
         },
         data() {
             return {
@@ -338,16 +342,7 @@
 </script>
 <style lang="less">
     @import "./main.less";
-    .headerNavBar{
-        display: flex;
-        position: absolute;
-        top: 0;
-        left: 200px;
-        height: 64px;
-        z-index: 999;
-        align-items: flex-end;
-        padding-left: 40px;
-    }
+    .main-header-con{box-shadow: none!important;}
    .main-header-avator{
      z-index: 999!important;
    }

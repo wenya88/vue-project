@@ -1,6 +1,9 @@
 <template>
   <div class="qualityContainer" id="completed">
-    <div class="qualityTitle"><p class="icon"></p><span style="font-size: 18px;line-height: 100px;">资源管理</span></div>
+    <main-native>
+      <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+    </main-native>
+    <!--<div class="qualityTitle"><p class="icon"></p><span style="font-size: 18px;line-height: 100px;">资源管理</span></div>-->
     <div class="nav">
       <!--<div v-if="projectSet.qualityFrist" class="frist" @click="finishData(4)">-->
       <div v-if="true" class="frist" @click="finishData(4)">
@@ -116,12 +119,14 @@ import mySort from '../main-components/sort';
 import pigeonhole from './pigeonhole';
 import resourcesList from './components/resourcesList';
 import { mapGetters ,mapState} from 'vuex'
+import mainNative from '../main-components/mainNative.vue';
 export default {
   components: {
     mySort,
     browsetask,
     pigeonhole,
-    resourcesList
+    resourcesList,
+      mainNative
   },
   data() {
     return {

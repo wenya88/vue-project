@@ -1,9 +1,17 @@
 <template>
-  <div>项目库</div>
+  <div>
+    <main-native>
+      <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+    </main-native>
+  </div>
 </template>
 
 <script>
+import mainNative from '../main-components/mainNative.vue';
 export default {
+  components:{
+        mainNative
+    },
   data() {
     return {
 

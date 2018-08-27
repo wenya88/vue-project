@@ -42,9 +42,7 @@
             </Tabs>
           </span>
             <section class="videoRight">
-                <filebrowse ref="filebrowse"
-                            class="filebrowseContainer"
-                ></filebrowse>
+                <filebrowse ref="filebrowse" class="filebrowseContainer"></filebrowse>
             </section>
         </div>
     </div>
