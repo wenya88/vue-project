@@ -376,7 +376,7 @@
         /*background: #2c353e !important;*/
         .navList{
             .ivu-menu-submenu-title{
-                padding: 11px  30px 11px 32px !important;
+                padding: 11px  30px 11px 30px !important;
             }
         }
         .childrenList{

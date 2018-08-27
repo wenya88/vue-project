@@ -31,7 +31,7 @@
     <!--</div>-->
 
 
-    <feedback-Info v-on:commitEidt="onSubmit" :fileId="fileId" ></feedback-Info>
+    <feedback-Info ref="feedback" v-on:commitEidt="onSubmit" :fileId="fileId" ></feedback-Info>
     </body>
 </template>
 <script>
@@ -74,8 +74,10 @@ import feedbackInfo from './feedbackInfo.vue'
         },
         mounted() {
             this.getSign();
+            this.getId();
         },
         computed: {
+            
             storeFileURl() {
                 return this.$store.state.ImgVedioStatus.FileURl
             },
@@ -84,18 +86,31 @@ import feedbackInfo from './feedbackInfo.vue'
             },
         },
         methods: {
+            async getId(){
+             
+                let url = this.GLOBAL.baseRouter + 'task/task/task-stage&task_id=' +  this.storeTaskID;
+                this.$axios.get(url).then( ({data})=> {
+                    this.fileID = data.data[0].file.task_id
+                }, () => {
+                    this.$Message.error('请求失败')
+                })
+//                storeTaskID
+            },
             onSubmit({type,FeedbackValue}) {
-                if (sessionStorage.resourcesStatus == 1) {  // 内部审核
-                    let url = this.GLOBAL.baseRouter + 'task/task/inside-audit';
+
+                let  url = null;
+                if (this.signData.status == 1) {  // 内部审核
+                     url = this.GLOBAL.baseRouter + 'task/task/inside-audit';
                     this.AllowEditRow = true;
-                } else if (sessionStorage.resourcesStatus == 2) {  // 客户审核
-                    let url = this.GLOBAL.baseRouter + 'task/task/client-audit';
+                } else if (this.signData.status  == 2) {  // 客户审核
+                     url = this.GLOBAL.baseRouter + 'task/task/client-audit';
                     this.AllowEditRow = true;
                 } else {
                     this.AllowEditRow = false;
                 }
+
                 let okParams = {
-                    "stage_id": this.stageID,
+                    "stage_id": this.signData.id,
                     "audit": 1,//1为通过审核,2为不通过
                     "feedback": '',
                     "file": [JSON.stringify({
@@ -104,7 +119,7 @@ import feedbackInfo from './feedbackInfo.vue'
                     })]
                 }
                 let editParams = {
-                    "stage_id": this.stageID,
+                    "stage_id":this.signData.id,
                     "audit": 2,
                     "feedback": FeedbackValue,
                     "file": JSON.stringify([{
@@ -114,23 +129,32 @@ import feedbackInfo from './feedbackInfo.vue'
                     }])
                 }
                 if (type == 'ok') {
+
+
                     this.$axios.post(url, qs.stringify(okParams))
                         .then(res => res.data)
                         .then(res => {
                             if (res.err_code == 0) {
                                 this.$Message.success(res.err_message);
+                                this.$refs.feedback.init()
                             }
                         })
                 } else if (type == 'edit') {
+
                     this.$axios.post(url, qs.stringify(editParams))
+
+
                         .then(res => res.data)
                         .then(res => {
                             if (res.err_code == 0) {
+                                this.$refs.feedback.init()
                                 sessionStorage.removeItem('threeData');
                                 this.$Message.success(res.err_message);
+                                this.$refs.feedback.init()
                             }
                         })
                 }
+
             },
             onload() {
                 if (window.THREE) {
@@ -466,7 +490,7 @@ import feedbackInfo from './feedbackInfo.vue'
                 }
             },
             getSign() {
-                let TaskID = this.storeTaskID
+                let TaskID = this.storeTaskID 
                 if (TaskID == 0 || TaskID === null) {
                     return false;
                 }

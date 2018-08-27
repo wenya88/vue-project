@@ -30,13 +30,14 @@
             <task-details :emitDetailsData="detailsData"></task-details>
             <div slot="header" class="taskTitle"><em>{{taskType==null?'-':taskType}}</em><span>{{taskTitle}}</span></div>
             <div slot="footer">
-                <Button type="success" long @click="joinTest" :disabled='flag'>{{joinStatut}}</Button>
+                <Button type="success" v-if="applyrole" long @click="joinTest" :disabled='flag'>{{joinStatut}}</Button>
             </div>
         </Modal>
     </div>
 </template>
 <script>
 var qs=require('querystring')
+import {mapState} from 'vuex'
 import taskDetails from './taskDetails';
 export default {
     data(){
@@ -47,7 +48,8 @@ export default {
           detailsData:{},
           Tid:null,
           joinStatut:null,
-          flag:false
+          flag:false,
+
         }
     },
     props:{
@@ -64,7 +66,8 @@ export default {
     methods:{
         // 初始化高
         autoH(){
-            $(".taskList").height($(window).height()-215)
+            $(".taskList").height($(window).height()-215);
+
         },
         showDetails(name,type,item,id,join){
             this.detailsData=item; //发送数据
@@ -101,6 +104,14 @@ export default {
                 this.$Message.error('')
             })
         }
+    },
+    computed:{
+        ...mapState({
+            applyrole(value){
+                return value.app.callForBidsdts.HaveTender
+            }
+        }),
+
     }
 }
 </script>
