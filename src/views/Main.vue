@@ -83,11 +83,11 @@
             <!--</li>-->
             <!--</ul>-->
 
-            <Menu style="min-width: 200px;max-width: 200px;" class="leftMenuList">
-                <Submenu v-if="menuList" v-for="(item,index) in menuList" :title="item.title||item.name" :name="index" :key="index">
+            <Menu style="min-width: 180px;max-width: 180px;" class="leftMenuList">
+                <Submenu v-if="menuList" v-for="(item,index) in menuList" class="navList" :title="item.title||item.name" :name="index" :key="index">
                     <template slot="title">
 
-                        <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi" style="vertical-align: text-bottom;font-size: 16px;"></i>
+                        <i  v-if="item.title === '公司'" class="iconfont icon-hezuobaoxiangongsi" style="vertical-align: text-bottom;font-size: 14px;"></i>
                         <i v-else-if="item.title === '我的工作台'" class="iconfont icon-xiangmuxiaoxi"  style="vertical-align: text-bottom;font-size: 18px;"></i>
                         <span v-else>&emsp;&nbsp;&nbsp;</span>
                         <span class="navText">
@@ -96,9 +96,10 @@
                     </template>
                     <template v-if="item.children">
                         <MenuItem v-for="(children,i) in item.children"  :title="children.title"
-                                  @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
-                            &emsp;&nbsp;&nbsp;{{children.title}}
-                            <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
+                        class="childrenList"
+                        @click.native="$router.push({path:children.path})" :name="index+'-'+i" :key="i">
+                        &emsp;&nbsp;&nbsp;{{children.title}}
+                        <!--<router-link style="width: 158px;height: 49px" :to="children.path">{{children.title}}</router-link>-->
                         </MenuItem>
                     </template>
                     <template v-else>
@@ -364,9 +365,19 @@
     .leftMenuList {
         background: #19322e !important;
         /*background: #19322e !important;*/
+        .navList{
+            .ivu-menu-submenu-title{
+                padding: 11px  24px 11px 24px !important;
+            }
+        }
+        .childrenList{
+            /*height: 38px;*/
+            padding: 8px  24px 8px 24px !important;
+            /*line-height: 38px;*/
+        }
         .navText {
             display: inline-block;
-            max-width: 100px;
+            max-width: 80px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -384,6 +395,7 @@
         }
         .ivu-menu, .ivu-menu-submenu-title {
             color: #fff;
+            border-bottom: 1px solid #424a52;
 
         }
         .ivu-menu-submenu {
@@ -422,7 +434,7 @@
     }
 
     .logo {
-        width: 199px;
+        width: 179px;
         height: 64px;
         background: #19322e url("../images/navLogo.png") no-repeat 67px 9px;
         background-size: 48px;

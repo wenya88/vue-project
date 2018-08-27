@@ -136,6 +136,17 @@ const app = {
                 }else if (!state.epibol.cooperation && child.name === 'epibolCompany') {
                     return ''
                 }
+
+                    // if(JSON.parse(Cookies.get('company')).type === 0){
+
+                        // child.path = '/epibol/bidManage' //jia
+
+                    // }else {
+
+                        // child.path = '/customer/epibolCompany' // yi
+                    // }
+
+
                 return child
                 /*if(child.auth) {
                     if(userType == 1) {
@@ -151,6 +162,7 @@ const app = {
             });
 
 
+console.log(11,menuList)
             menuList[1].children = array.filter((child) => {
                 return child !== ''
             });
@@ -350,8 +362,11 @@ const app = {
 
             menu.forEach((item, index) => {
                 if (item.access) {
-                    // 工作台
-                    if(item.access === accessCode) {
+                    // 工作台  // 1经理 2组长 3成员
+                    if((item.access === 1||item.access === 2||item.access === 3)&& item.access === accessCode) {
+                            menuList.push(item);
+                    }
+                    else if (item.access === 3) {
                             menuList.push(item);
                     }
                 } else {

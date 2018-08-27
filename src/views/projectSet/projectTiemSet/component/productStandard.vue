@@ -19,6 +19,7 @@
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
                                 <div v-for="(item,index) in specification" :key="index"
+
                                    :class="menuColor === index?'fonsW':''"
                                    @click="selecSpecification(item.children,index)">
                                     {{item.name}}({{item.children.length}})
@@ -27,12 +28,11 @@
                                 </div>
                             </div>
                             <dl v-for="(item,i) in StandardizeSec" :key="i">
-
                                 <dt>{{item.name}}</dt>
                                 <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
-                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children" >
-                                        <div class="type" :class="children.border?'sign':''" >
+                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children"      >
+                                        <div class="type" :class="menuColor === index && listColor === i?'sign':''" >
                                             <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
                                             <!--alt=""-->
                                             <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
@@ -146,6 +146,7 @@
         },
         data() {
             return {
+                listColor:null,
                 disabled: false,
                 menuColor: 0,
                 infoUpdate: null,
@@ -344,6 +345,7 @@
             },
             /*添加*/
             greenSign(index, i, children) {
+                this.listColor = i;
                 this.btnSign = [index, i];
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/add', qs.stringify({
                     project_id: this.project_id,
@@ -353,7 +355,7 @@
                         if (data.err_code === 0) {
                             this.projectTasktype({id:data.id},this.typeTabs.length)
                             this.listInit()
-                            this.menuInit()
+//                            this.menuInit()
                         } else {
                             this.$Message.error(data.err_message);
                         }

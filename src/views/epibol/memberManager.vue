@@ -34,6 +34,7 @@
                     </Layout>
                 </Layout>
             </TabPane>
+
             <TabPane v-if="roleMgt" label="权限设置" name="auth">
                 <Layout>
                     <Sider>

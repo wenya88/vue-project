@@ -249,9 +249,6 @@
         <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
         <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
         <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
-        <!--<Button v-if="isSubmit||project" type="primary" style="display: block;margin: 0 auto;width: 200px"-->
-        <!--@click="submitTaskClas">保存-->
-        <!--</Button>-->
         <Modal v-model="modal1" @on-ok="addNorms">
             <section>
                 <div style="margin-bottom: 5px">
@@ -277,7 +274,7 @@
 </template>
 <script>
 
-    import {mapState} from 'vuex';
+    import {mapState, mapMutations} from 'vuex';
     import qs from 'querystring';
     import api from 'api';
     import Icon from "iview/src/components/icon/icon";
@@ -306,17 +303,19 @@
         },
         data() {
             return {
+
+                expandDetails: JSON.parse(sessionStorage.getItem('expandDetails')) || [],
                 curreSelect: {
                     id: null,
                     val: null
                 },
                 disabled: true, // 禁用
-                goinfo: {},
-                createInfo: false,
+                updateId: null, //更新Id
+                goinfo: null, // 新增id
+
                 delnormsValue: '',
                 isSubmit: false,// 提交按钮
-                updateId: null, // 更新
-                newData: null, // 添加
+
 
                 reviewList: [{id: 0, label: '外部审核'}, {id: 1, label: '内部审核'}],
                 fstandard: [],   // 流程规范
@@ -366,32 +365,35 @@
             };
         },
         mounted() {
-            this.projectdisabled()
+
+
             // 获取规范列表
             this.getNormslist();
+
             // icon列表
             if (!this.project) {
                 this.iconList();
             }
 
-            if (this.defId) {
-                this.newtaskTypesDetail('default');
-            }
-
             /*进入详情*/
             this.$bus.on('typesDetail', (data) => {
-                this.goinfo = data;
+                this.updateId = data.id;
                 this.newtaskTypesDetail(data);
+                // 提交变为更新
+                this.goinfo = null;
 
             });
-            this.isDisabled();
 
+
+            // 新建详情
             this.$bus.on('addType', (data) => {
-                this.goinfo = data;
+
+                // 获取树状图上个节点信息
                 this.addType(data);
-                this.isSubmit = true;
-                this.disabled = false;
+
             });
+
+            // 项目类型库添加
             this.$bus.on('projectInfo', (data) => {
                 this.addInfo(data);
                 this.tabsTypeId = data.id;
@@ -407,10 +409,17 @@
                     });
                 }
             });
+            // 是否编辑
+            this.isDisabled();
 
+
+            if (this.defId) {
+                this.newtaskTypesDetail('default')
+            }
 
         },
         methods: {
+            ...mapMutations(['setDefId']),
 
             updataSelect(data) {
                 if (data.falg) {
@@ -420,11 +429,7 @@
                     this.curreSelect.val = data.val;
                 }
             },
-            projectdisabled() {
-                if (this.project) {
-                    this.disabled = false;
-                }
-            },
+
 
             /*获取规范列表*/
             async getNormslist() {
@@ -468,6 +473,7 @@
             },
             /*提交*/
             submitTaskClas() {
+
                 /*项目级*/
                 if (this.project) {
                     this.submitProject()
@@ -503,7 +509,7 @@
                 let res = await api.taskprojectCateUpdate(obj);
                 if (res.data.err_code === 0) {
                     this.$Message.success("保存成功");
-                    this.$emit('update')
+                    this.$emit('update');
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
                     this.$Message.error(res.data.err_message);
@@ -513,11 +519,12 @@
             async submitCompany() {
                 let url = 'task/task-type/add';
                 let obj = null;
-                /*更新*/
-                if (this.updateId !== null || this.createInfo) {
-                    url = 'task/task-type/update';
+
+                // 点击添加的情况
+                if (this.goinfo) {
+                    /*新增*/
                     obj = {
-                        id: this.updateId,
+                        category_id: this.goinfo.cate_id,
                         name: this.typename.typename,
                         stage: JSON.stringify(this.fstandard),
                         standard: JSON.stringify(this.tstandard.concat(this.pstandard)),
@@ -525,9 +532,10 @@
                         color: this.identification.iconColor,
                     };
                 } else {
-                    /*新增*/
+                    /*更新*/
+                    url = 'task/task-type/update';
                     obj = {
-                        category_id: this.goinfo.parent_id,
+                        id: this.updateId || this.defId,
                         name: this.typename.typename,
                         stage: JSON.stringify(this.fstandard),
                         standard: JSON.stringify(this.tstandard.concat(this.pstandard)),
@@ -538,17 +546,30 @@
                 }
                 let res = await api.taskTypeAdd(obj, url);
                 if (res.data.err_code === 0) {
-                    this.createInfo = true;
-                    this.newtaskTypesDetail(this.goinfo);
+//                    this.newtaskTypesDetail(this.goinfo);
+
                     this.$Message.success("保存成功");
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                    if (url === 'task/task-type/add') {
+                        this.goinfo = null;
+                        this.updateId = res.data.id
+                    }
+//                    if (url === 'task/task-type/add') {
+//                        // 添加 成功
+//                        this.updateId = res.data.id
+//                        this.expandDetails[2] = res.data.id
+//                    } else {
+//                        // 更新成功
+//                        this.expandDetails[2] = this.updateId
+//                    }
+//                    sessionStorage.setItem('expandDetails', JSON.stringify(this.expandDetails))
                 } else {
                     this.$Message.error(res.data.err_message);
                 }
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.tstandard.push({name: this.OtherfileName, values: this.OtherfileMain, type: 'hand'});
+                this.tstandard.push({name: this.OtherfileName, values: this.OtherfileMain, type: 'file'});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
@@ -682,40 +703,40 @@
             },
             async newtaskTypesDetail(dataDetail) {
 
-                // 进入详情
-                if (dataDetail.rank === 2 || dataDetail === 'default') {
-//                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
-                    if (dataDetail !== 'default') {
-                        this.isSubmit = dataDetail.status !== 0;
+                let obj = {id: dataDetail.id};
+                // 点击进入详情
+                if (dataDetail.rank === 2) {
+                    this.isSubmit = dataDetail.status !== 0;
 
-                        this.disabled = dataDetail.status === 0;
-                    }
-
-                    let obj = {id: dataDetail.id};
-                    this.clearInfo();
-                    // 获取更新id
-                    this.updateId = dataDetail.id;
-                    if (dataDetail === 'default') {
-                        obj = {
-                            id: this.defId
-                        }
-                    }
-                    let {data} = await api.taskCateinfo(obj);
-                    if (data.err_code === 0) {
-                        this.addInfo(data)
-                    } else {
-                        this.$Message.error(data.err_message);
+                    this.disabled = dataDetail.status === 0;
+                } else if (dataDetail === 'default') {
+                    // 页面刷新 进入默认详情
+                    obj = {
+                        id: this.defId
                     }
                 }
+
+                this.clearInfo();
+
+                let {data} = await api.taskCateinfo(obj);
+                if (data.err_code === 0) {
+                    this.addInfo(data)
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+
             },
             addInfo(data) {
                 this.typename.typename = data.tasktype_name;
+
                 this.tstandard = data.standard.filter((item) => {
                     return item.type === 'file'
+
                 });
                 this.pstandard = data.standard.filter((item) => {
                     return item.type === 'progress'
                 }); // 制作规范
+
 
                 if (Array.isArray(data.stage) && data) {
                     data.stage.map((item) => {
@@ -736,9 +757,11 @@
                     this.stepInfoList.level = type
                 }
             },
+
             delFlowNorm(index, i) {
                 this.fstandard[index].require.splice(i, 1);
             },
+
             flowAddShow(index) {
                 if (this.fstandard) {
                     this.stepInfoList = {text: '', norm: '', level: '优先级'};
@@ -748,15 +771,21 @@
                     this.fstandard[index].show = !this.fstandard[index].show
                 }
             },
+            // 添加详情
             addType(data) {
 
                 if (data.cate_id) {
-                    this.goinfo.parent_id = data.cate_id
+                    // 直接新建
+                    this.goinfo = data;
+                } else if (data.parent_id) {
+                    // 新建时没保存 但是用户点击了其他详情，又点击回来
+                    this.goinfo = {cate_id: data.parent_id}
+
                 }
+
+                this.isSubmit = true;
+                this.disabled = false;
                 this.clearInfo();
-                this.newData = data;
-                this.updateId = null;
-                this.createInfo = false;
 
             },
             /*清空页面*/
@@ -802,25 +831,33 @@
                 }
 
             },
+            // 刷新页面 禁止效果
             isDisabled() {
-                let expandDetails = JSON.parse(sessionStorage.getItem('expandDetails')) || [];
-                if (expandDetails[0]) {
-                    this.isSubmit = expandDetails[0].status !== 0;
+                if (this.expandDetails[0]) {
+                    this.isSubmit = this.expandDetails[0].status !== 0;
 
-                    this.disabled = expandDetails[0].status === 0;
+                    this.disabled = this.expandDetails[0].status === 0;
+                }
+                // 项目
+                if (this.project) {
+                    this.disabled = false;
                 }
             }
         },
         computed: {
             ...mapState({
+                // 进入页面系统默认id  和 点击详情获取的id
                 defId(data) {
+
                     return data.typelib.defId
                 }
             })
         },
         watch: {
+
             // 异步defId数据
             defId(data) {
+                console.log(7, 'defid', data)
                 if (data !== null) {
                     this.newtaskTypesDetail('default');
                 }
