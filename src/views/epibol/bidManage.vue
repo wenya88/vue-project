@@ -1,9 +1,29 @@
 <template>
    <!-- 投标 -->
   <div class="bidManage">
-      <Tabs value="application" :animated="false">
-        <!-- 已报名招标 -->
-        <TabPane v-if="callForBidsdts.HaveTender" :label="appName" name="application">
+      <main-native>
+          <div class="main-header-style iconfont">
+              <ul class="setMenuList">
+                  <li v-for="(item,index) in tabsInfo.tabs" :class="{'checked':index == tabsInfo.tabIndex}" @click="tabsInfo.tabIndex = index">
+                      {{ item.tab }}
+                      <span v-if="item.count">({{item.count}})</span>
+                  </li>
+              </ul>
+          </div>
+      </main-native>
+
+      <div>
+          <div class="newBid" v-if="callForBidsdts.HaveTender && tabsInfo.tabIndex == 0" name="application">
+              <bid-list :applicationData="applicationData"></bid-list>
+          </div>
+          <div class="newBid" v-if="callForBidsdts.invitation && tabsInfo.tabIndex == 1" name="invite">
+              <bid-invite :inviteData="inviteData"></bid-invite>
+          </div>
+      </div>
+
+      <!--<Tabs value="application" :animated="false">-->
+        <!--&lt;!&ndash; 已报名招标 &ndash;&gt;-->
+        <!--<TabPane v-if="callForBidsdts.HaveTender" :label="appName" name="application">-->
             <!-- 搜索条件 -->
             <!-- <div class="fileCondition">
                 <em>
@@ -11,7 +31,7 @@
                         <Option v-for="item in filerList" :value="item.index" :key="item.index">{{ item.value }}</Option>
                     </Select>
                 </em>
-                <em> 
+                <em>
                     <Select v-model="resultData" size="small" style="width:110px">
                         <Option v-for="item in resultList" :value="item.index" :key="item.index">{{ item.value }}</Option>
                     </Select>
@@ -23,15 +43,15 @@
                 </em>
                 <div class="clear"></div>
             </div> -->
-            <div class="newBid">
-                 <bid-list :applicationData="applicationData"></bid-list>
-            </div>
-        </TabPane>
+            <!--<div class="newBid">-->
+                 <!--<bid-list :applicationData="applicationData"></bid-list>-->
+            <!--</div>-->
+        <!--</TabPane>-->
         <!-- 外包邀请 -->
-        <TabPane v-if="callForBidsdts.invitation" :label="inviteName" name="invite">
+        <!--<TabPane v-if="callForBidsdts.invitation" :label="inviteName" name="invite">-->
             <!-- 搜索条件 -->
             <!-- <div class="fileCondition">
-                <em> 
+                <em>
                     <Select v-model="fileInvite" size="small" style="width:110px">
                         <Option v-for="item in inviteList" :value="item.key" :key="item.value">{{ item.value }}</Option>
                     </Select>
@@ -43,41 +63,49 @@
                 </em>
                 <div class="clear"></div>
             </div> -->
-            <div class="newBid">
-                <bid-invite :inviteData="inviteData"></bid-invite>
-            </div>
-        </TabPane>
-      </Tabs>
+            <!--<div class="newBid">-->
+                <!--<bid-invite :inviteData="inviteData"></bid-invite>-->
+            <!--</div>-->
+        <!--</TabPane>-->
+      <!--</Tabs>-->
   </div>
 </template>
 <script>
 import {mapState} from 'vuex';
 import bidInvite from './bidManage/component/bidInvite';
 import bidList from './bidManage/component/bidList';
+import mainNative from '../main-components/mainNative.vue';
 var qs = require('querystring');
 export default {
     data () {
         return {
-            appName: (h) => {
-                    return h('div', [
-                        h('span', '已报名'),
-                        // h('Badge', {
-                        //     props: {
-                        //         count:'('+this.applicationData.length+')',
-                        //     }
-                        // })
-                    ])
-                },
-            inviteName:(h)=>{
-                 return h('div', [
-                        h('span', '外包邀请'),
-                        h('Badge', {
-                            props: {
-                                count:'( '+this.inviteData.length+' )',
-                            }
-                        })
-                    ])
+            tabsInfo:{
+                tabs:[
+                  {tab:'已报名',name:'application',count:null},
+                  {tab:'外包邀请',name:'invite',count:null}
+                ],
+                tabIndex:0
             },
+            // appName: (h) => {
+            //         return h('div', [
+            //             h('span', '已报名'),
+            //             // h('Badge', {
+            //             //     props: {
+            //             //         count:'('+this.applicationData.length+')',
+            //             //     }
+            //             // })
+            //         ])
+            //     },
+            // inviteName:(h)=>{
+            //      return h('div', [
+            //             h('span', '外包邀请'),
+            //             h('Badge', {
+            //                 props: {
+            //                     count:'( '+this.inviteData.length+' )',
+            //                 }
+            //             })
+            //         ])
+            // },
             companyID:2,
             applicationData:[],
             condtionData:0,
@@ -111,7 +139,8 @@ export default {
     },
     components:{
         bidList:bidList,
-        bidInvite:bidInvite
+        bidInvite:bidInvite,
+        mainNative:mainNative
     },
     mounted(){
         this.bidGet();
@@ -120,7 +149,7 @@ export default {
             this.inviteGet();
         });
         this.$bus.on('setExecuteUser',()=>{
-            this.bidGet(); 
+            this.bidGet();
         });
         this.autoH();
     },
@@ -132,7 +161,7 @@ export default {
            this.bidGet(this.condtionData,val);
         },
         fileInvite(val){
-           this.inviteGet(this.searchData,val) 
+           this.inviteGet(this.searchData,val)
         }
     },
     methods:{
@@ -187,11 +216,12 @@ export default {
                 if(msg.data.err_code==0){
                     _this.$Loading.finish();
                     _this.inviteData=msg.data.data;
+                    _this.tabsInfo.tabs[1].count = msg.data.page.count;
                 }
             },()=>{
                 _this.$Loading.error();
             })
-        }
+        },
     },
     computed:{
         ...mapState({
