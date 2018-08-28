@@ -40,6 +40,7 @@ Vue.use(Bus);
 Vue.use(notice);
 Vue.use(plupload);
 Vue.use(GeminiScrollbar);
+
 Vue.directive('scroll', {
     bind: function(el, binding) {
         window.addEventListener('scroll', function() {

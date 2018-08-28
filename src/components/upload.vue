@@ -1,7 +1,8 @@
 <template>
+
     <div class="uploadContainer">
-        <slot name="upload">
-            <button id="browse" class="browse">选择文件</button>
+        <slot name="upload" >
+            <button :id="id" class="browse">选择文件</button>
             <p class="button">选择文件</p>
         </slot>
     </div>
@@ -21,6 +22,9 @@
      *  silverlight_xap_url     :   xap文件
      *
      *  slot 插槽 点击按钮一定要加id: browse
+     *
+     *  FileUploadedSuccess   上传成功回调
+     *  UploadProgress        选择文件并确定回调
      *
      * */
 
@@ -42,7 +46,10 @@
                     ]
                 }
             },
-            maxFileSize: {
+            id: {
+                type: String,
+                default: 'browse'
+            }, maxFileSize: {
                 type: String,
                 default: '100mb'
             },
@@ -63,9 +70,11 @@
         },
         mounted() {
             /*图片上传*/
+
             this.upload();
 
         },
+
         data() {
             return {
                 uploadKey: null,
@@ -91,8 +100,9 @@
                 })
             },
             upload() {
+
                 window.uploader = new plupload.Uploader({
-                    browse_button: 'browse', // 触发文件选择对话框的按钮，为那个元素id
+                    browse_button: this.id, // 触发文件选择对话框的按钮，为那个元素id
                     runtimes: 'html5,flash,silverlight,html4',
                     url: 'http://59.111.95.148/file/oss/oss', // 服务器端的上传页面地址
                     flash_swf_url: this.flash_swf_url, // swf文件，当需要使用swf方式进行上传时需要配置该参数
@@ -108,7 +118,6 @@
                 uploader.init();
 
                 uploader.bind('UploadProgress',  (uploader, file) => {
-
                 });
 
                 /*上传*/
@@ -135,16 +144,17 @@
                             uploader.start(); // 实例化上传
 
                         })
-
+                    this.$emit("UploadProgress",{uploader, files});
 
                 });
                 // 图片上传完触发
 
                 uploader.bind('FilesAdded', (uploader, files) => {
-
+//
                 });
                 // 图片上传成功回调
                 uploader.bind('FileUploaded', (uploader, files, data) => {
+
                     let configure = null;
                     if(this.files.length>1){
                         this.num+=1;
@@ -181,13 +191,13 @@
                     this.imgsrc = JSON.parse(data.response);
 
                     this.setfileUrl(obj);
-
                     this.$bus.emit("FileUploaded");
+                    this.$emit("FileUploadedSuccess",{uploader, files, data,num:this.num});
+
+
                 });
 
-                uploader.bind('FileUploaded', (uploader, file) => {
 
-                });
 
             },
         },

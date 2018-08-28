@@ -1,18 +1,22 @@
 <!-- 任务详情组件 -->
 <template>
     <div class="taskDetailsContainer">
-        <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60" >
-            <FormItem  v-if="!taskManagement"  label="任务名称">
-                <Input   v-model="editData.name"  :disabled="editDisabled" >
+
+        <Form :label-position="taskManagement?'top':'left'" :label-width="taskManagement?0:60">
+            <FormItem v-if="!taskManagement" label="任务名称">
+
+                <Input v-model="editData.name" :disabled="editDisabled">
                 <span v-if="taskManagement" slot="prepend"><Icon type="ios-person-outline"></Icon></span>
                 </Input>
             </FormItem>
 
-            <FormItem label="负责人" class="borBotm" >
-                <div class="head" >
+            <FormItem label="负责人" class="borBotm">
+                <div class="head">
                     <img v-if="taskManagement" src="./QQ图片20180719133401.jpg" class="headImg" alt="">
-                    <Select v-model="principalName"   :disabled="editDisabled" placeholder="请选择负责人" @on-change="saveShow">
-                        <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">{{ item.remark_name }}</Option>
+                    <Select v-model="principalName" :disabled="editDisabled" placeholder="请选择负责人" @on-change="saveShow">
+                        <Option v-for="(item,index) in principal" :value="item.member_id" :key="'principal'+index">
+                            {{ item.remark_name }}
+                        </Option>
                     </Select>
                 </div>
             </FormItem>
@@ -53,11 +57,11 @@
             </FormItem>
             <FormItem v-if="taskManagement" label="任务类型" class="borBotm">
                 <section class="requirement">
-                    <AutoComplete  v-model="editData.tasktype_name"
-                                   @on-select="selectTaskType"
-                                   :disabled="editDisabled"
-                                   icon="android-color-palette"
-                                   @on-change="saveShow"
+                    <AutoComplete v-model="editData.tasktype_name"
+                                  @on-select="selectTaskType"
+                                  :disabled="editDisabled"
+                                  icon="android-color-palette"
+                                  @on-change="saveShow"
                     >
                         <Option v-for="(item,index) in taskTypesList"
                                 :key="'taskManagement'+index"
@@ -69,7 +73,7 @@
                     <Card :bordered="true" style="text-align: center">
                         <div v-for="(item,index) in taskTypeInfo" :key="'file'+index">
                             <p>
-                                <span>尺寸</span><span>{{item.require[0].value?item.require[0].value:'无'}}</span>
+                                <span>尺寸</span><span>{{item.require[0].value ? item.require[0].value : '无'}}</span>
                             </p>
                             <p>
                                 <span>格式</span><span>{{item.file_format}}</span>
@@ -81,10 +85,10 @@
             </FormItem>
             <template v-else>
                 <FormItem label="任务类型" class="borBotm">
-                    <AutoComplete  v-model="editData.tasktype_name"
-                                   placeholder="选择任务类型"
-                                   @on-select="selectTaskType"
-                                   :disabled="editDisabled"
+                    <AutoComplete v-model="editData.tasktype_name"
+                                  placeholder="选择任务类型"
+                                  @on-select="selectTaskType"
+                                  :disabled="editDisabled"
                     >
                         <Option v-for="(item,index) in taskTypesList"
                                 :key="'taskTypesList'+index"
@@ -94,7 +98,7 @@
                         </Option>
                     </AutoComplete>
                 </FormItem>
-                <FormItem  label="文件要求">
+                <FormItem label="文件要求">
                     <Card :bordered="true" style="text-align: center">
                         <p v-for="(item,index) in taskTypeInfo" :key="'taskTypeInfo'+index">
                             {{item.file_format}}&#160&#160{{item.require[0].value}}
@@ -102,22 +106,36 @@
                     </Card>
                 </FormItem>
             </template>
+
             <FormItem label="参考附件" class="borBotm">
                 <div>
+                    <v-upload :id="uploadId" v-on:FileUploadedSuccess="getUploadFile">
+                        <template slot="upload">
+                            <button :id="uploadId" class="btn">选择文件</button>
+                            <p class="shade">选择文件</p>
+                        </template>
+                    </v-upload>
+                    <ul>
+                        <li class="flieList" v-for="(items,index) in flieList" :key="index">
+                            <span><Icon type="android-document"></Icon><span> {{items.name}}</span></span>
+                            <Icon type="ios-close-outline"></Icon>
+                        </li>
+                    </ul>
 
-                    <Upload
-                            @on-change="saveShow"
-                            multiple
-                            type="drag"
-                            :show-upload-list="true"
-                            :on-success="referenceFileSuccess"
-                            :on-remove ="referenceFileRemove"
-                            :action="fileup"
-                            :default-file-list="referenceFileName"
-                    >
-                        <Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>
-                        <p>点击或拖入上传</p>
-                    </Upload>
+                    <!--<Upload-->
+                    <!--@on-change="saveShow"-->
+                    <!--multiple-->
+                    <!--type="drag"-->
+                    <!--:show-upload-list="true"-->
+                    <!--:on-success="referenceFileSuccess"-->
+                    <!--:on-remove ="referenceFileRemove"-->
+                    <!--:action="fileup"-->
+                    <!--:default-file-list="referenceFileName"-->
+                    <!--&gt;-->
+                    <!--<Icon type="ios-cloud-upload" size="32" style="color: #3399ff"></Icon>-->
+                    <!--<p>点击或拖入上传</p>-->
+                    <!--</Upload>-->
+
                 </div>
                 <!-- <div v-for="item in editData.file" :key="item.url">{{item.url}}</div> -->
             </FormItem>
@@ -139,36 +157,39 @@
 
 <script>
     var qs = require("querystring");
-    import {mapState,mapMutations} from 'vuex';
+    import {mapState, mapMutations} from 'vuex';
     import api from 'api';
-    export default{
-        props:{
-            taskManagement:{
-                type:String,
-                default:''
+    import vUpload from '@/components/upload'
+
+    export default {
+        props: {
+            taskManagement: {
+                type: String,
+                default: ''
             }
         },
         data() {
             return {
-                saveButtonShow:false,
-                projectId:sessionStorage.getItem('projectID'),
+                flieList: [],// 上传组件回显的图片
+                saveButtonShow: false,
+                projectId: sessionStorage.getItem('projectID'),
                 //*任务属性*//
-                taskID:0,
-                editData:{},
+                taskID: 0,
+                editData: {},
                 //*任务属性选项*//
-                editDisabled:false,//能否编辑
-                isNewTask:false,//是否为新任务
+                editDisabled: false,//能否编辑
+                isNewTask: false,//是否为新任务
                 principal: [],//负责人列表
                 principalName: "",//搜索框负责人名字
                 principalNum: 1,
                 principalType: [],//供选择的负责人类型
                 referenceFileList: [],//附件文件列表
                 childProjectsList: [],//供选择的子项目列表
-                taskTypesList:[],//供选择的任务类型
-                taskTypeInfo:{},//任务类型信息
+                taskTypesList: [],//供选择的任务类型
+                taskTypeInfo: {},//任务类型信息
                 referenceFileName: [],//附件文件名称
-                referenceFileUrl:[],//附件文件地址
-                dateRange:"",
+                referenceFileUrl: [],//附件文件地址
+                dateRange: "",
                 principalList: [],
                 //*时间属性选项*//
                 startTime: {
@@ -183,51 +204,53 @@
                 },
             }
         },
-        created(){
+        created() {
             this.getTaskTypeList();
         },
-        mounted(){
-            if(this.userStatus !== 'member'){
+        mounted() {
+            if (this.userStatus !== 'member') {
                 this.setEditDisabled(false)
             }
         },
-        computed:{
+        computed: {
             ...mapState({
-                userStatus(value){
+                userStatus(value) {
                     return value.project.userStatus
                 }
             }),
-            getTimeRange(){
-                return [this.editData.expect_start_date,this.editData.expect_end_date]
+            getTimeRange() {
+                return [this.editData.expect_start_date, this.editData.expect_end_date]
             },
-            fileup(){
+            fileup() {
                 return this.$store.state.paySkip.fileUpload
             },
+            uploadId() {
+                return 'upload' + Math.random()
+            }
+
         },
-        methods:{
-            saveShow(){
-              this.$emit('buttonShow');
+        methods: {
+            saveShow() {
+                this.$emit('buttonShow');
             },
-            ...mapMutations(['setTaskInfo','changeComponentTaskID','changeComponentFileURl']),
+            ...mapMutations(['setTaskInfo', 'changeComponentTaskID', 'changeComponentFileURl']),
             //获取任务详情
-            initTaskDetailFromID(id,fatherFunctions) {
-                // console.log('详情',id,fatherFunctions)
-                if(id!=0)
-                {
+            initTaskDetailFromID(id, fatherFunctions) {
+                if (id != 0) {
                     this.getChildProject()
                     this.taskID = id;
-                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: this.taskID}))
+                    this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info', qs.stringify({id: this.taskID}))
                     //                this.$axios.post(this.GLOBAL.baseRouter + 'task/task/info',qs.stringify({id: 445}))
-                        .then( res => res.data)
-                        .then( res => {
+                        .then(res => res.data)
+                        .then(res => {
                                 this.initTaskDetailFromData(res);
                                 this.getTaskTypeRequire(res.tasktype_id);
                                 this.clickMenberDropdown();
-                                this.callFatherFunction(fatherFunctions)  ;
+                                this.callFatherFunction(fatherFunctions);
                                 this.principalName = res.member_id;
                                 this.setTaskInfo(res);  // vux存储info
 
-                                this.$bus.emit('initFileBrowse',{taskid:res.id,type:res.stage_file_type});
+                                this.$bus.emit('initFileBrowse', {taskid: res.id, type: res.stage_file_type});
                                 this.changeComponentTaskID(res.id)
                                 this.changeComponentFileURl(res.stage_file)
 
@@ -241,52 +264,45 @@
                 }
             },
             //直接赋值任务属性-DONE
-            initTaskDetailFromData(data)
-            {
+            initTaskDetailFromData(data) {
                 this.editData = data;
                 this.formatLocalData();
 
             },
             //设置能否编辑-DONE
-            setEditDisabled(forbidEdit)
-            {
+            setEditDisabled(forbidEdit) {
                 this.editDisabled = forbidEdit;
             },
             //新增任务初始化-DONE
-            initTaskDetailFromNew(projectInfo)
-            {
+            initTaskDetailFromNew(projectInfo) {
                 this.isNewTask = true;
                 this.initProjectInfo(projectInfo);
                 this.clickMenberDropdown();
                 this.getChildProject()
             },
             //初始化项目相关信息-DONE
-            initProjectInfo(projectInfo)
-            {
-                if(projectInfo){
+            initProjectInfo(projectInfo) {
+                if (projectInfo) {
                     this.editData.project_id = projectInfo.id;
                 }
 //            this.childProjectsList = projectInfo.child;
             },
             //外部获得任务数据-DONE
-            getTaskDetail()
-            {
+            getTaskDetail() {
                 return this.editData;
             },
             //获得任务类型要求-DONE
-            getTaskTypeRequire(tasktype_id)
-            {
-                if(tasktype_id == 0 || tasktype_id == null)
+            getTaskTypeRequire(tasktype_id) {
+                if (tasktype_id == 0 || tasktype_id == null)
                     return false;
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info',qs.stringify({id: tasktype_id}))
-                    .then( res => res.data)
-                    .then( res => {
-                            this.taskTypeInfo=[];
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/task-type/info', qs.stringify({id: tasktype_id}))
+                    .then(res => res.data)
+                    .then(res => {
+                            this.taskTypeInfo = [];
                             this.taskTypeInfo = res.file;
 
                             // res.file.forEach((res)=>
                             // {
-                            //     console.log(res);
                             //     this.taskTypeInfo.push({
                             //         file_format:res.file_format,
                             //         config_name:res.require.value,
@@ -301,11 +317,10 @@
                     });
             },
             //获得全部任务类型列表-DONE
-            getTaskTypeList()
-            {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list',qs.stringify({project_id: this.projectId}))
-                    .then( res => res.data)
-                    .then( ({data}) => {
+            getTaskTypeList() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/list', qs.stringify({project_id: this.projectId}))
+                    .then(res => res.data)
+                    .then(({data}) => {
                         this.taskTypesList = data
                     })
                     .catch(error => {
@@ -313,16 +328,14 @@
                     });
             },
             //格式化本地数据
-            formatLocalData()
-            {
+            formatLocalData() {
                 this.referenceFileName = [];
-                if      (this.editData.file)
-                {
+                if (this.editData.file) {
                     this.editData.file.forEach(
-                        (res)=>{
+                        (res) => {
                             this.referenceFileName.push({
-                                name:"",
-                                url:res
+                                name: "",
+                                url: res
                             });
                         }
                     );
@@ -330,23 +343,21 @@
 
             },
             //用于父组件通信-DONE
-            callFatherFunction(fatherfunctions)
-            {
-                if(this.editData.child)
+            callFatherFunction(fatherfunctions) {
+                if (this.editData.child)
                     this.$emit('sendSubTaskList', this.editData);//这里子任务需要父任务的一些属性
-                if(this.editData.log)
+                if (this.editData.log)
                     this.$emit('sendLogData', this.editData.log);
-                if(fatherfunctions)
-                {
+                if (fatherfunctions) {
                     fatherfunctions.forEach(
-                        (res)=>{
+                        (res) => {
                             this.$emit(res.functionName);
                         }
                     );
                 }
             },
             //主任务保存编辑数据
-            saveTaskDetails(link,id) {
+            saveTaskDetails(link, id) {
 
                 let dataForm = {};
                 dataForm.id = this.editData.id;
@@ -355,30 +366,26 @@
                 dataForm.project = this.projectId;
 //                dataForm.project = this.editData.project_id;
                 dataForm.project_child = this.editData.project_child;
-                dataForm.tasktype_id = this.editData.tasktype_id ? this.editData.tasktype_id: 0;
+                dataForm.tasktype_id = this.editData.tasktype_id ? this.editData.tasktype_id : 0;
                 dataForm.expect_start_time = this.editData.expect_start_date;
                 dataForm.expect_end_time = this.editData.expect_end_date;
                 dataForm.description = this.editData.description;
-                dataForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl): [];
+//                dataForm.file = JSON.stringify(this.referenceFileUrl) ? JSON.stringify(this.referenceFileUrl) : [];
+                dataForm.file = JSON.stringify(this.flieList) ?JSON.stringify(this.flieList): [];
                 dataForm.run_member_id = this.principalName;
                 dataForm.remark_name = this.principalName;
-                if(id){
+                if (id) {
                     dataForm.father = id;
                 }
 
 
-                return this.isNewTask ?this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm,link);
+                return this.isNewTask ? this.addTaskDetails(dataForm) : this.updateTaskDetail(dataForm, link);
             },
             //获得参与人ID
-            getUserId(namesData)
-            {
-                if(this.principal.length > 0)
-                {
-                    for(let i=0;i<this.principal.length;i++)
-                    {
-                        if(namesData == this.principal[i].remark_name)
-                        {
-                            console.log(this.principal[i].id);
+            getUserId(namesData) {
+                if (this.principal.length > 0) {
+                    for (let i = 0; i < this.principal.length; i++) {
+                        if (namesData == this.principal[i].remark_name) {
 
                             return this.principal[i].id;
                         }
@@ -388,17 +395,12 @@
                     return null;
             },
             //获得参与人ID
-            getUserName(namesId)
-            {
+            getUserName(namesId) {
 
 
-                if(this.principal.length > 0)
-                {
-                    for(let i=0;i<this.principal.length;i++)
-                    {
-                        if(namesId == this.principal[i].id)
-                        {
-                            console.log(this.principal[i].remark_name);
+                if (this.principal.length > 0) {
+                    for (let i = 0; i < this.principal.length; i++) {
+                        if (namesId == this.principal[i].id) {
 
                             return this.principal[i].remark_name;
                         }
@@ -408,8 +410,7 @@
                     return "";
             },
             //新增任务
-            addTaskDetails(dataForm)
-            {
+            addTaskDetails(dataForm) {
                 this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dataForm))
                     .then(res => {
                         this.$bus.emit('refreshCurrentTaskList');
@@ -421,12 +422,11 @@
                 return true;
             },
             //更新任务
-            updateTaskDetail(dataForm,link)
-            {
+            updateTaskDetail(dataForm, link) {
                 this.$axios.post(this.GLOBAL.baseRouter + "/task/task/update", qs.stringify(dataForm))
                     .then(res => {
                         this.$bus.emit('refreshCurrentTaskList');
-                        if(link){
+                        if (link) {
 //                                this.$router.push({path:'/project/task'});
                         }
                     })
@@ -437,9 +437,8 @@
                 return true;
             },
             //删除任务
-            delTaskDetail()
-            {
-                this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id:this.editData.id}))
+            delTaskDetail() {
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/task/delete", qs.stringify({id: this.editData.id}))
                     .then(res => {
                         this.$bus.emit('refreshCurrentTaskList');
                     })
@@ -450,21 +449,20 @@
                 return true;
             },
             //初始化编辑数据
-            initEditData()
-            {
-                this.editData={};
+            initEditData() {
+                this.editData = {};
             },
             //开始时间
-            setTimeRange(date,date_now) {
+            setTimeRange(date, date_now) {
                 this.$emit('buttonShow');
                 this.editData.expect_start_date = date[0];
                 this.editData.expect_end_date = date[1];
             },
             // 获得子项目
-            getChildProject(){
+            getChildProject() {
 
-                this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id:sessionStorage.getItem('projectID')}))
-                    .then(({data})=>{
+                this.$axios.post(this.GLOBAL.baseRouter + "/task/project/child-list", qs.stringify({id: sessionStorage.getItem('projectID')}))
+                    .then(({data}) => {
                         this.childProjectsList = data.data
                     })
             },
@@ -475,15 +473,12 @@
 
             },
             //选择任务类型自动改变类型要求-DONE
-            selectTaskType(id_name)
-            {
+            selectTaskType(id_name) {
 
-                if(id_name!=null)
-                {
+                if (id_name != null) {
                     this.taskTypesList.forEach(
-                        (res)=>{
-                            if(res.tasktype_name == id_name)
-                            {
+                        (res) => {
+                            if (res.tasktype_name == id_name) {
                                 this.editData.tasktype_id = parseInt(res.id);
                                 this.getTaskTypeRequire(res.id);
                             }
@@ -493,23 +488,18 @@
             },
             //----------参与人-------------//
             //点击参与人下拉
-            clickMenberDropdown()
-            {
-                this.$axios.post(this.GLOBAL.baseRouter + 'task/company/joined-members',qs.stringify({project_id: this.projectId}))
-                    .then( res => res.data)
-                    .then( res => {
+            clickMenberDropdown() {
+                this.$axios.post(this.GLOBAL.baseRouter + 'task/company/joined-members', qs.stringify({project_id: this.projectId}))
+                    .then(res => res.data)
+                    .then(res => {
                             this.principal = res.data;
-                            // console.log('负责人',res.data)
 //                        this.principal=[];
 //                        this.principalName="";
 //                        this.principal = res.data;
 //                        this.principalName = this.getUserName(this.editData.member_id)
-                            // console.log(1.1,this.principalName);
-                            //     console.log(1.2,this.principal);
                         }
                     )
                     .catch(error => {
-                        // console.log(error);
 
                         this.$Message.error("获取公司成员失败，请重试！");
                     });
@@ -536,18 +526,14 @@
             },
             //----------上传文件-------------//
             // 上传附件成功后返回
-            referenceFileSuccess(response, file ,fileList) {
-                console.log(111)
+            referenceFileSuccess(response, file, fileList) {
                 this.$emit('buttonShow');
                 this.referenceFileUrl.push(response.file.url);
             },
             //移除附件
-            referenceFileRemove(file,fileList)
-            {
-                for(let i = 0;i<this.referenceFileUrl.length;i++)
-                {
-                    if(this.referenceFileUrl[i] == file.response.affix.url)
-                    {
+            referenceFileRemove(file, fileList) {
+                for (let i = 0; i < this.referenceFileUrl.length; i++) {
+                    if (this.referenceFileUrl[i] == file.response.affix.url) {
                         this.referenceFileUrl.splice(i);
                     }
                 }
@@ -576,50 +562,98 @@
                 }
                 return check;
             },
-            clearAllData(){
+             getUploadFile(uploader, files, data, num) {
+
+
+                const obj = {url: JSON.parse(uploader.data.response).file_url, name: uploader.data.name}
+                this.flieList.push(obj)
+//                if (this.flieList.length === uploader.num) {
+//                    let {data} = await api.accessoryUpload({file: JSON.stringify(this.flieList)});
+
+//                }
+            },
+            clearAllData() {
                 this.editData = {};
                 this.principalName = '';
                 this.referenceFileName = [];
                 this.taskTypeInfo = [];
             }
+        },
+        components: {
+            vUpload
         }
     };
 </script>
 <style lang="less">
-    @bor:#f2f9f9;
-    .taskDetailsContainer{
-        .head{
+    @bor: #f2f9f9;
+    .taskDetailsContainer {
+        .head {
             display: flex;
-            .headImg{
+            .headImg {
                 width: 45px;
                 height: 45px;
                 border-radius: 50%;
             }
         }
-        .borBotm{padding:  0 10px 14px 20px;
+        .uploadContainer {
+            margin-top: 0;
+            .btn {
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
+            .shade {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                line-height: 110px;
+                background: #fff;
+                border: 1px dashed #ccc;
+
+            }
+            &:hover {
+                .shade {
+
+                    border: 1px dashed #3bceb6 !important;
+                }
+            }
+        }
+        .flieList {
+            display: flex;
+            padding: 0 5px;
+            justify-content: space-between;
+            align-items: center;
+            &:hover {
+                background: #ccc;
+            }
+        }
+        .borBotm {
+            padding: 0 10px 14px 20px;
 
             border-bottom: 1px solid @bor;
         }
 
-        textarea.ivu-input{
+        textarea.ivu-input {
             /*height: 30px !important;*/
             /*min-height: 30px !important;*/
         }
     }
 
-
-    .taskdetail{
-        display:inline-block;
-        overflow:hidden;
+    .taskdetail {
+        display: inline-block;
+        overflow: hidden;
     }
-    .taskdetail-left{
-        width:400px;
-        float:left;
+
+    .taskdetail-left {
+        width: 400px;
+        float: left;
         padding: 0 20px 0 0;
     }
-    .taskdetail-right{
-        width:600px;
-        float:left;
+
+    .taskdetail-right {
+        width: 600px;
+        float: left;
         padding: 0 0 0 20px;
     }
 </style>

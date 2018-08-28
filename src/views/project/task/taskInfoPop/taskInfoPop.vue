@@ -272,7 +272,6 @@
                     return value.project.userStatus
                 } ,
                 projectDetail(value){
-                    console.log(1113,value.project.detail.setDetailAll)
                     return value.project.detail.setDetailAll
                 }
             })

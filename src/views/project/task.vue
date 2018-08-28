@@ -385,7 +385,6 @@
             },
             // 删除项目
             delProject(data) {
-                console.log('删除', data)
                 let id = null;
                 if (data.child_id) {
                     id = data.child_id
