@@ -42,7 +42,7 @@
         },
         methods: {
              init(data){
-                if(data){
+                if(data&&data.stage_list.length>0){
                     data.stage_list.map((item,index) => {
                         if(data.stage[index]){
                             this.getstage(item.id,data.stage[index].stage_name)
@@ -86,6 +86,7 @@
         },
         watch:{
             infoDetails(data){
+                console.log(113,data)
                 this.init(data)
             }
         },

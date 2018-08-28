@@ -175,8 +175,8 @@ export default {
             let pcNav=document.getElementsByClassName('chartNavBox')[0];
             let dH=document.documentElement.offsetHeight;
             let dW=document.documentElement.offsetWidth;
-            pcH.style.height=dH-183+"px";
-            pcH.style.width=dW-160+"px";
+            pcH.style.height=dH-210+"px";
+            pcH.style.width=dW-270+"px";
             pcB.style.height=dH-118+"px";
             pcNav.style.width=pcH.style.width;//chartNav
            

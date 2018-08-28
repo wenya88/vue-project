@@ -372,6 +372,7 @@
         .navList{
             .ivu-menu-submenu-title{
                 padding: 11px  30px 11px 30px !important;
+                border-top: 1px solid #424a52;
             }
         }
         .childrenList{
@@ -404,7 +405,7 @@
         }
         .ivu-menu, .ivu-menu-submenu-title {
             color: #bebfc1;
-            border-bottom: 1px solid #424a52;
+            /*border-bottom: 1px solid #424a52;*/
 
         }
         .ivu-menu-submenu {
