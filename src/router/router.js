@@ -263,7 +263,7 @@ export const appRouter = [
                 component: resolve => { require(['@/views/project/components/threeModule.vue'], resolve); }
             },
             {
-                path: '/epibol/contractDetails/:id',
+                path: '/epibol/contractDetails',
                 icon: 'ios-paper-outline',
                 name: 'contractDetails',
                 title: '合同详情',

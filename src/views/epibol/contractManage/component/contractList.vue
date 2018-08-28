@@ -93,9 +93,8 @@ export default {
         },
         // 详情
         contDetails(item){
-            this.$store.commit('changContractStatus',true);//显示列表还是输入框
             this.$store.commit('getContractIDCommit',item);
-            this.newAddData();
+            this.$router.push('/epibol/contractDetails')
         }
         
     },
