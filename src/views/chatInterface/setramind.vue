@@ -183,7 +183,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang='less'>
 .set_radmin{
  width: 100%;
  height: 100%;
@@ -224,6 +224,9 @@ export default {
   width: 100%;
   height: calc(100% - 80px);
   padding: 10px 20px;
+  .ivu-checkbox-wrapper{
+    width: 30%;
+  }
 }
 .set_radmin_checkbox>div{
  width: 100%;

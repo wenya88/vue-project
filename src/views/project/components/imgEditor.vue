@@ -59,7 +59,7 @@
                 <!--<div class="clear"></div>-->
             <!--</div>-->
 
-            <feedbackInfo  v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
+            <feedbackInfo  ref="feedback" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
         </div>
     </div>
 </template>
@@ -304,6 +304,7 @@
                                 this.$Message.success(msg.data.err_message);
                                 this.initImgEditor();
                                 sessionStorage.removeItem('ImgData');
+                                this.$refs.feedback.init()
                             }, () => {
                                 this.$Message.error(msg.data.err_message);
                             })
@@ -320,6 +321,7 @@
                         this.$Message.success(msg.data.err_message);
                         this.initImgEditor();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })

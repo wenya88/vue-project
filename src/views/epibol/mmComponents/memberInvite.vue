@@ -9,6 +9,7 @@
                             <td width=120px>备注名称</td>
                             <td width=120px>部门</td>
                             <td width=120px>职位</td>
+                          
                         </tr>
                         <tr>
                             <td width=280>
@@ -272,6 +273,7 @@ export default {
                                 this.$Message.error('电子邮箱已存在');
                             }
                         })
+                        window.location.reload()
                 }
             })
         },

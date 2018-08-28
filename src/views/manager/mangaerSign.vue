@@ -106,10 +106,13 @@ export default {
       const bidMeng = [] // 合同金额
       for(let i in lists) {
         const num = lists[i].num
-        const price = lists[i].price
+        const price = lists[i].price / 10000
         bidNum.push(num)
         bidMeng.push(price)
       }
+      // const littt = [1,5,6,8,0,2,3,0]
+      const maxNum =  Math.max.apply(null, bidNum)
+      const maxMeng = Math.ceil(Math.max.apply(null, bidMeng))
       let textMsg = function (parames) {
         const  tempStr = parames + "\n" + yearName;
         return tempStr
@@ -117,104 +120,114 @@ export default {
       }
       myCharts.setOption({
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+                color: '#999'
+            }
+          }
+        },
+        grid: {
+          left: 'left',
+          right: '4%',
+          top: '80px',
+          bottom: '3%',
+          containLabel: true
         },
         legend: {
           icon:'stack',
           right: '10%',
           data:['合同数量','合同金额']
         },
-        grid: {
-          left: 'left',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          axisLine: {
-            show: false
-          },
-          axisLabel: {
-            formatter: textMsg
-          },
-          data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-        },
-        yAxis: {
-          type: 'value',
-          // show: false,
-          axisTick:{       //y轴刻度线
-            show:false
-          },
-          axisLine:{       //y轴
+        xAxis: [
+          {
+            type: 'category',
+            axisLabel: {
+              formatter: textMsg
+            },
+            axisTick:{       //x轴刻度线
+              show:false
+            },
+            axisLine:{       //x轴
              show:false
-           },
-          splitLine: {
-            lineStyle: {
-              // 使用深浅的间隔色
-              color: ['#eef1f2']
+            },
+            data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '订单(个)',
+            min: 0,
+            max: maxNum,
+            splitLine: {
+              show:false,
+            },
+            interval: maxNum/5,
+            axisLabel: {
+                formatter: '{value} 个',
+                color: '#bdbdbd'
+            },
+            axisLine:{
+              lineStyle:{
+                color: '#bdbdbd'
+              }
             }
           },
-        },
+           {
+            type: 'value',
+            name: '金额(万)',
+             splitLine: {
+               show:false,
+             },
+            min: 0,
+            max: maxMeng,
+            interval: maxMeng/5,
+            axisLabel: {
+                color: '#bdbdbd',
+                formatter: '{value} 万'
+            },
+            axisLine:{
+              lineStyle:{
+                color: '#bdbdbd'
+              }
+            }
+          }
+        ],
         series: [
+          {
+            name:'合同金额',
+            type:'bar',
+            yAxisIndex: 1,
+            itemStyle:{
+             normal:{
+               color: '#cef2ec',
+              }
+            },
+            data: bidMeng
+          },
           {
             name:'合同数量',
             type:'line',
-            stack: '总量',
-            areaStyle: {
-              normal: {
-                  color: new echarts.graphic.LinearGradient(
-                    0, 0, 0, 1,
-                   [
-                    {offset: 0, color: 'rgb(254,243,219)'},
-                    // {offset: 0.5, color: 'rgb(255,153,0)'},
-                    {offset: 1, color: 'rgb(253,243,218)'}
-                   ]
-                  )
-            }},
+            yAxisIndex: 0,
+            symbol:'circle',//拐点样式
+            symbolSize: 8,//拐点大小
             itemStyle:{
-              normal: {
-                color:'rgb(255,153,0)',
-                // lineStyle:{
-                //   type:'dotted'
-                // }
-              }  
-            },
-            data:bidNum
-          },
-          {
-            name:'合同金额',
-            type:'line',
-            stack: '总量',
-            areaStyle: {
-              normal: {
-                  color: new echarts.graphic.LinearGradient(
-                    0, 0, 0, 1,
-                   [
-                    {offset: 0, color: 'rgb(223,249,244)'},
-                    // {offset: 0.5, color: 'rgb(255,153,0)'},
-                    {offset: 1, color: 'rgb(224,237,208)'}
-                   ]
-                  )
-            }},
-            itemStyle:{
-              normal: {
-                color:'rgb(49,187,159)',
-                // lineStyle:{
-                //   type:'dotted'
-                // }
+              normal:{
+                color: '#fcc44a',
+                lineStyle:{
+                  width:2,
+                  type:'dotted'  //'dotted'虚线 'solid'实线
+                }
               }
-            },
-            data:bidMeng
+            }, 
+            data:bidNum
           }
         ]
       })
+
+      
     }
   }
 }
@@ -322,7 +335,7 @@ export default {
   position: absolute;
   right: 30px;
   top: 10px;
-  z-index: 9999;
+  z-index: 999;
 }
 .year_bx>li{
   float: left;

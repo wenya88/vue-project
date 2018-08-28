@@ -1,6 +1,6 @@
 <template>
     <div class="classify">
-        <div class="title">{{title}}
+        <div class="title"> <i class="icon iconfont icon-company" ></i>{{title}}
             <slot name="title"></slot>
             ({{number}})
             <slot name="number"></slot>
@@ -10,18 +10,27 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
                         {{item.name}}
-                        <span class="numStyle">{{item.member_count}}</span>
+                        <span class="numStyle">({{item.member_count}})</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end" v-if="index+1 < deptList.length">
-                            <span>...</span>
-                            <div class="api" slot="content">
+                        <!-- <Poptip class="more" placement="bottom-end" v-if="index+1 < deptList.length"> -->
+                            <!-- <span>...</span> -->
+                            <!-- <div class="api" slot="content"> -->
                                 <!-- <slot name="fmore"></slot> -->
-                                <ul class="editItem">
+                                <!-- <ul class="editItem">
                                     <li @click="editDept(item.id,item.name)">编辑</li>
                                     <li @click="delDept(item.id)">删除</li>
                                 </ul>
-                            </div>
-                        </Poptip>
+                            </div>  -->
+                        <!-- </Poptip> -->
+                       
+                        <span class="api">
+                            <!-- <slot name="fmore"></slot> -->
+                            <Icon @click="editDept(item.id,item.name)" type="edit" ></Icon>
+                            
+                            <Icon @click="delDept(item.id)" type="ios-trash-outline" ></Icon>
+                            
+                        </span>
+                        <!-- <span v-if="!item.name">未分配部门</span> -->
                     </li>
                 </ul>
                 <slot name="addDept"></slot>
@@ -30,26 +39,37 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in dutyList" :key="index" :class="{'actived': SMenuIndex == index}" @click="open2Table(index,item.company_id,item.id)">
                         {{item.name}}
-                        <span class="numStyle">{{item.member_count}}</span>
+                         <span class="numStyle">({{item.member_count}})</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
-                        <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1">
-                            <span>...</span>
-                            <div class="api" slot="content">
-                                <!-- <slot name="fmore"></slot> -->
+                        <!-- <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1"> -->
+                           <!-- <span>...</span> -->
+                            <!-- <div class="api" slot="content">
+                                <slot name="fmore"></slot>
                                 <ul>
                                     <li @click="editDuty(item.id,item.name)">编辑</li>
                                     <li @click="delDuty(item.id)">删除</li>
                                 </ul>
-                            </div>
-                        </Poptip>
+                            </div>   -->
+                             <span v-if="item.company_id" class="api">
+                                <Icon @click="editDuty(item.id,item.name)" type="edit" class="edit"></Icon>
+                                <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon>
+                                <!-- （默认） -->
+                            </span> 
+                             <span v-if="!item.company_id" class="api">
+                                <!-- <Icon @click="editDuty(item.id,item.name)" type="edit" class="edit"></Icon>
+                                <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon> -->
+                                （默认）
+                            </span> 
+                        <!-- </Poptip> -->
                     </li>
                 </ul>
                 <slot name="addDuty"></slot>
-            </TabPane>
+            </TabPane> 
         </Tabs>
     </div>
 </template>
 <script>
+import './font/iconfont.css';
 export default {
     name: 'memberTypeMenu',
     data() {
@@ -146,12 +166,45 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style scoped lang="less">
 .title{
-    height: 36px;
-    line-height: 36px;
+    height: 48px;
+    line-height: 48px;
     text-align: center;
     background: rgba(34, 215, 187, 0.176470588235294);
+    padding: 0 40px;
+    width: 362px;
+    font-size: 16px;
+    
+}
+.icon-company{
+    font-size: 22px;
+    padding-right: 12px;
+    font-weight: bold;
+}
+.ivu-tabs-nav-scroll{
+    text-align: center!important;
+    margin: 0 auto!important;
+}
+li.actived{
+    background: linear-gradient(to right,#78DDCD,#E2F8F4)!important;
+    border:0!important;
+    border-left: 3px solid #31bb9f!important;
+    color: #fff!important;
+    .api{
+        color: #31bb9f;
+    }
+
+}
+.api{
+    color: #BDBDBD;
+    float:right;
+    font-size: 12px;
+    .ivu-icon{
+        padding: 5px;
+        font-size: 16px;
+        font-weight: 400;
+    }
 }
 .fMenu{
     height: auto;
@@ -163,7 +216,7 @@ export default {
 }
 .fMenu li:hover{
     background: #f2f2f2;
-    border-right: 3px solid #31bb9f;
+    // border-right: 3px solid #31bb9f;
     color: #31bb9f;
 }
 .fMenu li.actived{
@@ -178,12 +231,12 @@ export default {
     text-align: center;
     line-height: 30px;
 }
-.numStyle, .more{
-    float: right;
-}
-.more, .fMenu li:hover .numStyle{
-    display: none;
-}
+// .numStyle, .more{
+//     // float: right;
+// }
+// .more, .fMenu li:hover .numStyle{
+    
+// }
 .ivu-menu-light{
     /*background: #fff !important;*/
 }
@@ -192,9 +245,59 @@ export default {
 }
 .ivu-tabs-bar{
     margin-bottom: 0 !important;
+    
 }
 .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab, .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
     width: 100px !important;
     text-align: center !important;
 }
+</style>
+<style lang="less">
+    .classify .ivu-tabs-bar{
+        height: 55px!important;
+        margin: 20px;
+        margin-bottom:0;
+        border-bottom: 0;
+        .ivu-tabs-nav-container{
+            height: 100%!important;
+            .ivu-tabs-nav-wrap{
+                height: 100%!important;
+                margin: 0 auto;
+                .ivu-tabs-nav{
+                    border:1px solid #31bb9f!important;
+                    border-radius: 4px!important; 
+                    padding: 0px;
+                    
+                    // border: 0;
+                }
+            }
+        }
+    }
+    .classify .ivu-tabs-bar .ivu-tabs-nav-container 
+    .ivu-tabs-nav-wrap .ivu-tabs-nav-scroll .ivu-tabs-nav .ivu-tabs-tab{
+        /* height: 50px!important; */
+        /* margin:20px!important;
+        height:100px!important; */
+        /* overflow: visible!important; */
+        width: 160px;
+       border: 0!important;
+       height: 40px;
+       line-height: 40px;
+       background: #fff;
+       border-radius: 4px;
+       padding: 0;
+       margin: 0;
+       transition: none!important;
+       transform: none!important;
+       border-width: 0;
+       &.ivu-tabs-tab-active{
+           border:1px solid #31bb9f!important;
+            height: 42px;
+           background: #31bb9f;
+           color: #fff;
+           border-radius: 0;
+           
+           
+       }
+    }
 </style>

@@ -18,6 +18,7 @@
           <div class="tips-message">
             <span>2</span>勾选"关联的任务"后，默认拥有所关联任务的权限
           </div>
+         <div @click="close"><Icon type="close"></Icon></div>
         </div>
         <auth-tree :project="projectAuth" :bid="bidAuth" :contract="contractAuth"></auth-tree>
       </div>
@@ -75,6 +76,11 @@ export default {
     changeTabs(name) {  //根据name的不同加载不同的权限列表
       // console.log(name)
     },
+    close(){
+     let tips= document.querySelectorAll('.tips')
+     tips[0].style.display="none";
+     console.log(tips)
+    },
     changeType() {
       let project = [],bid = [],contract = []
       this.$bus.on("changeAuth", (val,list) => {
@@ -97,6 +103,7 @@ export default {
   updated() {
     this.changeType();
   }
+ 
 }
 </script>
 
@@ -106,17 +113,19 @@ export default {
     float: left;
     .content-left{
       float: left;
-      width: 75%;
+      width: 70%;
       padding-left: 50px;
       border-right: 1px solid #e4e4e4;
       border-left: 1px solid #e4e4e4;
+      background: #fff;
       .title{
-        height: 36px;
-        line-height: 36px;
-        background: rgba(228, 228, 228, 0.6);
+        height: 50px;
+        line-height: 50px;
+        background: #C4F0E9;
         margin-bottom: 20px;
         margin-left: -50px;
         padding-left: 50px;
+        font-size: 18px;
       }
       .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-nav-wrap{
         height: 34px;
@@ -131,20 +140,25 @@ export default {
       }
     }
     .content-right{
-      width: 24.9%;
+      width: 28%;
       float: left;
+      margin-left: 20px;
+      background: #fff;
       .title{
-        height: 36px;
-        line-height: 36px;
-        background: rgba(228, 228, 228, 0.6);
+        height: 50px;
+        line-height: 50px;
+        background: #C4F0E9;
         margin-bottom: 20px;
         padding-left: 30px;
+        font-size: 18px;
+        
       }
       .tips{
         margin: 10px;
         border: 1px solid #ffeeac;
         background: #fff7eb;
-        padding: 10px;
+        padding: 30px 40px 30px 32px;
+        position: relative;
         .tips-message{
           :first-child{
             margin-bottom: 10px;
@@ -160,6 +174,13 @@ export default {
             color: #fff;
             margin-right: 3px;
           }
+          
+        }
+        .ivu-icon-close{
+          position:absolute;
+          top: 10px;
+          right: 10px;
+          color: #FDA692;
         }
       }
     }

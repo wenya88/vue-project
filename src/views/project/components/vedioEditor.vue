@@ -160,7 +160,7 @@
         </div>
 
 
-            <feedback-Info v-if="fileId" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
+            <feedback-Info ref="feedback" v-if="fileId" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
         <img id="img" :src="img" style="opacity:0" alt="">
         <Modal
                 v-model="saveCanvasShow"
@@ -526,11 +526,13 @@
                         "tag": JSON.parse(sessionStorage.getItem('videoTime')) || []
                     }])
                 };
+
                 if (type == 'edit') {
                     this.$axios.post(url, qs.stringify(EDITparams)).then(msg => {
                         this.$Message.success(msg.data.err_message);
                         this.VedioGet();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })
@@ -539,6 +541,7 @@
                         this.$Message.success(msg.data.err_message);
                         this.VedioGet();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })
