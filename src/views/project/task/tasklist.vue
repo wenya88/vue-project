@@ -32,7 +32,7 @@
                 <template v-if="dataList_type.underWay.length>0">
                     <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
                          :key="index">
-                        <template>
+                        <template v-if="items.status == 3">
                             <p class="pause">暂停中</p>
                             <p class="sign"></p>
                         </template>
