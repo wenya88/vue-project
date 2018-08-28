@@ -1,5 +1,8 @@
 <template>
     <div class="projectManage">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <!-- 项目管理头部 -->
         <div class="projectMenu">
             <dl>
@@ -58,6 +61,7 @@
 import AddProbox from '../main-components/addProject.vue';
 import projectList from './projectManage/projectList';
 import projectChart from './projectManage/projectChart';
+import mainNative from '../main-components/mainNative.vue';
 var qs=require('querystring');
 export default {
   data(){
@@ -97,7 +101,8 @@ export default {
   components:{
       AddProbox:AddProbox,
       projectList:projectList,
-      projectChart:projectChart
+      projectChart:projectChart,
+      mainNative:mainNative
   },
   mounted(){
       this.$bus.on("AddProInfo",(val)=>{
@@ -182,7 +187,7 @@ export default {
         _this.$axios.get(url).then(msg=>{
             _this.MsgData=msg.data.project;
         })
-    }, 
+    },
     HDataFilte(val){
         let _this=this;
         this.PSelect=val;
@@ -190,8 +195,8 @@ export default {
         _this.$axios.get(url).then(msg=>{
             _this.MsgData=msg.data.project;
         })
-    }, 
-    
+    },
+
     // 新建或编辑项目
     subOk(){
         let _this=this;
@@ -214,7 +219,7 @@ export default {
                 _this.$Message.info('提交成功');
                 _this.getData();
                 _this.$bus.emit("submitOk");
-                
+
             },()=>{
                 _this.$Message.error('提交失败！')
             })
@@ -257,7 +262,7 @@ export default {
     ProSearch(){
         this.getData(this.search)
     },
-    
+
 
   }
 }

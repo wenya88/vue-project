@@ -52,8 +52,47 @@
            .sIncome{
                 float:left;width:30%;height:100%;border-right:1px dashed @line;
            }
+           .sGrade{
+               width:17%;float:left;height:100%;text-align:center;margin-top:-5px;
+               .title{
+                   font-size:@f14;margin-top:3px;
+               }
+               .ivu-rate-star{
+                   margin-right:1px;
+               }
+               .ivu-rate{
+                   font-size:12px;
+               }
+               .gradeText{
+                   margin-bottom:@p5;
+                   font-size:@f14;
+                   span{
+                       font-size:@f20;
+                       color:#fea329;
+                       margin-right:2px;
+                   }
+               }
+           }
            .sDisbu{
                margin-left:3%;
+           }
+           .sProje{
+                 width:20%;
+                .infoMent{
+                    text-align:center;
+                    span{
+                        font-size:@f26;margin-right:@p5;
+                    }
+                    .project{
+                        color:@green;
+                    }
+                    .number{
+                        color:#7cbefc;
+                    }
+                    p{
+                        font-size:@f14;margin-top:@p5;
+                    }
+                }
            }
            .title{
                 font-size:@f16;color:@seven;margin-bottom:@p15;
@@ -102,5 +141,48 @@
                 }
             }
        }
+    }
+
+    // statisEchart
+    .statisEchart{
+        .echartTitle{
+            font-weight:lighter;
+            height:40px;
+            font-size:@f16;
+            color:@seven;
+        }
+        margin-top:@p30;
+        .echartColumn{
+            float:left;
+            background:@white;
+            border-radius:@r5;
+            padding:@p20;
+        }
+        // 中标率
+        .bidding{
+            width:68%;
+        }
+        // 收入走势
+        .earning{
+            width:30%;
+            margin-left:2%;
+        }
+        // 承接项目走势
+        .project{
+            margin-top:@p30;
+            width:33%;
+            margin-right:2%;
+        }
+        // 质量走势
+        .quality{
+           &:extend(.statisics .statisEchart .project);
+           margin-right:0px;
+        }
+        // 成员空闲走势
+        .member{
+            &:extend(.statisics .statisEchart .quality);
+            width:30%;
+            margin-left:2%;
+        }
     }
 }

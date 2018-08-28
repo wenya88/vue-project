@@ -104,6 +104,7 @@
             </template>
             <FormItem label="参考附件" class="borBotm">
                 <div>
+
                     <Upload
                             @on-change="saveShow"
                             multiple
@@ -536,6 +537,7 @@
             //----------上传文件-------------//
             // 上传附件成功后返回
             referenceFileSuccess(response, file ,fileList) {
+                console.log(111)
                 this.$emit('buttonShow');
                 this.referenceFileUrl.push(response.file.url);
             },

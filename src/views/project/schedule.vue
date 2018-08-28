@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 800px;overflow: hidden">
       <!-- 项目进度右侧 -->
       <!--<div class="projectPlanRight">-->
           <!--<div class="rightTitle">-->
@@ -82,7 +82,7 @@
                 <!--</Col>-->
             <!--</Row>-->
         <!--</div>-->
-        
+
         <!-- Echart -->
         <div class="projectEchart">
             <EchartLine></EchartLine>

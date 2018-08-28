@@ -7,6 +7,7 @@ const typelib = {
     },
     mutations: {
         setDefId(state,data){
+
             state.defId = data
         }
     },

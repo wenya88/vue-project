@@ -9,7 +9,7 @@
         <div class="taskinfopopContainer">
           <span>
                 <div class="taskinfopopTitle" v-if="projectDetail">
-                <span class="detailTitle"> {{projectDetail.name}}</span>
+                <span class="detailTitle"> {{projectDetail.name||projectDetail.tasktype_name}}</span>
                 <span class="tag" :class="'tag'+projectDetail.status"> <Icon type="ios-minus-outline"  ></Icon>{{projectDetail.status|status}}</span>
             </div>
             <Tabs   type="card" class="filebrowse taskManagement">
@@ -42,9 +42,7 @@
             </Tabs>
           </span>
             <section class="videoRight">
-                <filebrowse ref="filebrowse"
-                            class="filebrowseContainer"
-                ></filebrowse>
+                <filebrowse ref="filebrowse" class="filebrowseContainer"></filebrowse>
             </section>
         </div>
     </div>
@@ -274,6 +272,7 @@
                     return value.project.userStatus
                 } ,
                 projectDetail(value){
+                    console.log(1113,value.project.detail.setDetailAll)
                     return value.project.detail.setDetailAll
                 }
             })

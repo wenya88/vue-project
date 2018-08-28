@@ -1,5 +1,8 @@
 <template>
     <div class="projectMemberContainer">
+        <main-native>
+            <div class="main-header-style iconfont"><i v-if="!islink"></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <div class="member">
             <p class="title" v-if="memberArray">已加入项目组(<span> {{ memberArray.length }} </span>)</p>
             <ul class="cardList">
@@ -65,10 +68,13 @@
 
 <script>
     import qs from 'querystring'
-
+    import mainNative from '../../../main-components/mainNative.vue';
     export default {
-        created() {
-
+        props:{
+            'islink':{
+                type:Boolean,
+                default:false
+            }
         },
         mounted() {
             this.getItems();
@@ -173,7 +179,9 @@
             }
         },
         computed: {},
-        components: {},
+        components: {
+            mainNative
+        },
         watch:{
             '$route'(){
                 this.getItems();

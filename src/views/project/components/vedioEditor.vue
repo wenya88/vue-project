@@ -160,7 +160,7 @@
         </div>
 
 
-            <feedback-Info v-if="fileId" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
+            <feedback-Info ref="feedback" v-if="fileId" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedback-Info>
         <img id="img" :src="img" style="opacity:0" alt="">
         <Modal
                 v-model="saveCanvasShow"
@@ -506,7 +506,7 @@
             },
 
             //需要修改
-            commitEidt(type) {
+            commitEidt({type,FeedbackValue}) {
                 let url = this.GLOBAL.baseRouter + 'task/task/inside-audit'
                 let Okparams = {
                     "stage_id": this.stageID,
@@ -520,17 +520,19 @@
                 let EDITparams = {
                     "stage_id": this.stageID,
                     "audit": 2,
-                    "feedback": this.FeedbackValue,
+                    "feedback": FeedbackValue,
                     "file": JSON.stringify([{
                         "file_id": this.fileID,
                         "tag": JSON.parse(sessionStorage.getItem('videoTime')) || []
                     }])
                 };
+
                 if (type == 'edit') {
                     this.$axios.post(url, qs.stringify(EDITparams)).then(msg => {
                         this.$Message.success(msg.data.err_message);
                         this.VedioGet();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })
@@ -539,6 +541,7 @@
                         this.$Message.success(msg.data.err_message);
                         this.VedioGet();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })

@@ -1,23 +1,32 @@
 <template>
     <div class="membermanager">
-        <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
+
+       
         <Tabs size="small" v-model="tabsType">
-            <TabPane v-if="memberMgt" label="成员管理" name="member">
+             <TabPane v-if="memberMgt" label="成员管理" name="member">
                 <Layout>
                     <Sider>
                         <membertype :title="title" :number="number" :deptList='deptList' :dutyList='dutyList' @openDept="deptData" @openDuty="dutyData" @deptEdit="editDept" @deptDel="delDept" @dutyDel="delDuty" @dutyEdit="editDuty">
                             <div slot="addDept">
                                 <div class="addDept" @click="addDept()">
-                                    <Icon type="plus" color="#31BB9F" size="16"></Icon>增加部门</div>
+                                    <!-- <Icon type="plus" color="#31BB9F" size="16"></Icon>增加部门</div> -->
+                                    <i class="icon iconfont icon-jia" ></i></div>
                             </div>
                             <div slot="addDuty">
                                 <div class="addDept" @click="addDuty()">
-                                    <Icon type="plus" color="#31BB9F" size="16"></Icon>增加职能</div>
+                                    <i class="icon iconfont icon-jia" ></i></div>
+                                    <!-- <Icon type="plus" color="#31BB9F" size="16"></Icon>增加职能</div> -->
                             </div>
                         </membertype>
                     </Sider>
                     <Layout>
                         <Content>
+                            <div class="search">
+                                <!-- <input class="search-input" type="search" placeholder="备注/手机名/邮箱">
+                                <Icon @click="searchList" type="search"></Icon> -->
+                                 <Button class="addBtn"  size="large" icon="person-add" @click.native="clickInviteMember">添加成员</Button>
+                                 
+                            </div>
                             <memberlist ref="list" @choiseRow="selectMember"></memberlist>
                             <memberinvite 
                             ref="invite"
@@ -38,6 +47,7 @@
                 <Layout>
                     <Sider>
                         <auth-type :title="title" :number="number" :postList="postList" @openAuth="authData"></auth-type>
+                        <!-- <i class="icon iconfont icon-jia" ></i> -->
                     </Sider>
                     <Layout>
                         <Content>
@@ -45,7 +55,7 @@
                         </Content>
                     </Layout>
                 </Layout>
-            </TabPane> 
+            </TabPane>  
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
@@ -58,7 +68,7 @@
         </Modal>
         <Modal v-model="delDutyModal" title="确认删除职能？" @on-ok="delDutyOk" @on-cancel="cancel">
             <p>删除职能后成员将移入“自定义角色”</p>
-        </Modal>
+        </Modal> 
     </div>
 </template>
 
@@ -114,7 +124,7 @@ export default {
     },
     created() {
         let company = JSON.parse(Cookies.get('company'))
-        console.log(typeof company.member_id)
+        // console.log(typeof company.member_id)
         this.title = company.company_name;
         this.number = company.member_id+''
     },
@@ -143,6 +153,9 @@ export default {
         this.initialLoad();
     },
     methods: {
+        searchList(){
+            alert('1111')
+        },
         initialLoad(){
             if(this.postList.length>0){
                 // console.log("/////"+this.postList)
@@ -204,6 +217,7 @@ export default {
         addDept() {
             this.deptStatus = 'add';
             this.editModel = true;
+            // alert(111)
         },
         editDept(id, name) {
             this.deptStatus = 'edit';
@@ -351,7 +365,10 @@ export default {
                 .then(res => {
                     if (res.err_code == 0) {
                         this.$refs.message.isShowPage(true);
-                        this.param = res
+                        this.param = res;
+                        this.param.post_id = Number(this.param.post_id);
+                        this.param.department_id = Number(this.param.department_id);
+                        // console.log('param',this.param)
                     }
                 })
         },
@@ -475,7 +492,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+.ivu-layout-content{
+    background: #EEF1F2!important;
+    padding-left: 20px;
+}
+.ivu-menu-light{
+    background: #EEF1F2;
+}
+.ivu-tabs{
+    margin-left: 50px;
+    background: #EEF1F2;
+
+}
+.ivu-layout-sider{
+    width: 362px!important;
+    max-width: 362px!important;
+    flex:0 0 362px!important;
+}
 .ivu-layout-sider,
 .ivu-layout-header {
     background: #fff;
@@ -484,7 +518,14 @@ export default {
     position: absolute;
     right: 18px;
     z-index: 1;
-    margin-top: 15px;
+    // margin-top: 15px;
+    background: #fff;
+    color: #31BB9F;
+    border: 0;
+}
+.icon-jia{
+    color: #FCC44A;
+    font-size: 24px;
 }
 .addDept {
     color: #31BB9F;
@@ -493,6 +534,32 @@ export default {
     padding: 0 20px;
     cursor: pointer;
 }
+.search{
+    padding-bottom: 50px;
+    width: 300px;
+    .search-input{
+        padding-left:10px; 
+        font-size: 14px;
+        height: 40px;
+        background: #fff;
+        border: 0;
+        line-height: 40px;
+        width: 240px;
+    }
+    .ivu-icon-search{
+        font-size: 20px;
+        color: #fff;
+        line-height: 40px;
+        width: 50px;
+        height: 40px;;
+        text-align: center;
+        background: #31BB9F;
+        border-radius: 0 8px 8px 0;
+        position: absolute;
+        cursor: pointer;
+    }
+}
+
 </style>
 <style lang="less">
 // .membermanager{
@@ -510,14 +577,17 @@ export default {
             }
             .ivu-tabs-tab-active{
                 color: #4ac4b5;
+                border-bottom: 2px solid #4ac4b5;
             }
         }
     }
 .membermanager{
+     background: #EEF1F2;
     .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-nav-wrap{
         height: 34px;
         line-height: 17px;
         margin-top: 0;
+        
     }
     .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
         margin-right: 0;
@@ -525,5 +595,7 @@ export default {
         width: 100px;
         text-align: center;
     }
+    
 }
 </style>
+

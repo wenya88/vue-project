@@ -4,7 +4,7 @@
       <div class="title">{{item.name}}</div>
       <div class="content">{{item.summary}}</div>   <!--item.auth_id-->
       <i-switch size="large" v-model="item.auth=='0'?false:true" @on-change="changeSwitch" @click.native="authID(item.auth_id)">
-        <span slot="open">开启</span>
+        <span slot="open" >启用</span>
         <span slot="close">关闭</span>
       </i-switch>
     </div>
@@ -71,8 +71,16 @@ export default {
     line-height: 25px;
     margin-bottom: 20px;
     .title, .content{
-      width: 80%;
+      width: 90%;
       float: left;
+      color: #9F9F9F;
+    }
+    .content{
+      color: #c6c6c6;
+    }
+     .ivu-switch-checked{
+      background: #3BCEB6!important;
+      border: #3BCEB6;
     }
   }
 }

@@ -1,16 +1,21 @@
 <template>
     <Form :model="loginform">
         <FormItem>
-             <Input v-model="loginform.email" placeholder="请输入邮箱账号"></Input>
-             <i class="iconfont icon-youxiang1"></i>
+                <Input v-model="loginform.email" placeholder="请输入邮箱账号"></Input>
+                <div class="inputPosition">
+                    <i class="iconfont icon-youxiang1"></i>
+                </div>
         </FormItem>
         <FormItem>
             <Input v-model="loginform.password" :type="pwpic3.pwdType3" placeholder="请输入密码" prefix="ios-contact"></Input>
-            <i class="iconfont icon-mima1"></i>
-            <span 
-                :class="[pwpic3.pwdType3=='password'?'iconfont icon-chakanmima1 lookPas':'iconfont icon-chakanmima lookPas']" 
-                @click="changeType3()">
-            </span>
+            <div class="inputPosition">
+                <i class="iconfont icon-mima1"></i>
+                <span 
+                    :class="[pwpic3.pwdType3=='password'?'iconfont icon-chakanmima1 lookPas':'iconfont icon-chakanmima lookPas']" 
+                    @click="changeType3()">
+                </span>
+            </div>
+            
         </FormItem>
         <div class="errorHint" v-if="errorHint.hintFlag"><span class="iconfont icon-cuowu1"></span>{{errorHint.hintData}}</div>
     </Form>

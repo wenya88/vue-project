@@ -59,7 +59,7 @@
                 <!--<div class="clear"></div>-->
             <!--</div>-->
 
-            <feedbackInfo  v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
+            <feedbackInfo  ref="feedback" v-on:commitEidt="commitEidt" :fileId="fileId" ></feedbackInfo>
         </div>
     </div>
 </template>
@@ -70,7 +70,8 @@
     import {imgCanvas} from './imgEditorTwo/imgCanvas.js';
     import {canvasControl} from './imgEditorTwo/imgControl.js';
     import {AutoResizeImage} from './imgEditorTwo/autoResizeImage.js';
-    import feedbackInfo from './feedbackInfo.vue'
+    import feedbackInfo from './feedbackInfo.vue';
+    import api from 'api';
     export default {
         components: {
             OnLoad: OnLoad,
@@ -132,6 +133,9 @@
             storeTaskID() {
                 return this.$store.state.ImgVedioStatus.TaskID
             },
+            storeStageId(){
+                return this.$store.state.ImgVedioStatus.stageId
+            },
             storeFileURl() {
                 return this.$store.state.ImgVedioStatus.FileURl
             },
@@ -186,7 +190,8 @@
                 this.$bus.emit('InfoRefresh')
             },
             initImgEditor() {
-                this.url = this.storeFileURl;
+                this.getStageInfo();
+                // this.url = this.storeFileURl;
                 this.get();
                 this.onLoad();
                 this.clearSession();
@@ -254,7 +259,7 @@
             },
 
             //edit
-            commitEidt(type) {
+            commitEidt({type,FeedbackValue}) {
                 let url = this.GLOBAL.baseRouter + 'task/task/inside-audit';
                 let Okparams = {
                     "stage_id": this.stageID,
@@ -287,7 +292,7 @@
                             let EDITparams = {
                                 "stage_id": this.stageID,
                                 "audit": 2,
-                                "feedback": this.FeedbackValue,
+                                "feedback": FeedbackValue,
                                 "file": JSON.stringify([{
                                     "file_id": this.fileID,
                                     "tag": sessionStorage.ImgData != undefined ? JSON.parse(sessionStorage.ImgData) : '[]',
@@ -299,6 +304,7 @@
                                 this.$Message.success(msg.data.err_message);
                                 this.initImgEditor();
                                 sessionStorage.removeItem('ImgData');
+                                this.$refs.feedback.init()
                             }, () => {
                                 this.$Message.error(msg.data.err_message);
                             })
@@ -315,6 +321,7 @@
                         this.$Message.success(msg.data.err_message);
                         this.initImgEditor();
                         sessionStorage.removeItem('ImgData');
+                        this.$refs.feedback.init()
                     }, () => {
                         this.$Message.error(msg.data.err_message);
                     })
@@ -382,6 +389,14 @@
                     _this.$Message.error('请求失败')
                 })
             },
+
+            //获取任务阶段详情
+            async getStageInfo(){
+                let {data} = await api.getStageInfo({id: this.storeStageId});
+                if (data.err_code === 0) {
+                    this.url = data.file[0].thumb || null;
+                }
+            }
         }
 
     }
