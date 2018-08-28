@@ -101,6 +101,7 @@ export default {
         membermessage,
         authType,
         authMessage,
+        mainNative
 
     },
     data() {
@@ -312,7 +313,7 @@ export default {
         addDuty() {
             this.dutyStatus = 'add';
             this.dutyModel = true;
-            
+
         },
         editDuty(id, name) {
             this.dutyStatus = 'edit';
