@@ -51,7 +51,7 @@
                                 <em :class="[item.action_time==''?'Sline notSline':'Sline']"></em>
                                 <em class="statusInfo">
                                     <em :class="[item.action_time==''?'text blueText':'text']">
-                                      <i class="iconfont icon-home_normal"></i>  {{item.key}}
+                                      {{item.key}}
                                     </em>
                                     <p>{{item.action_time}}</p>
                                 </em>
@@ -61,7 +61,7 @@
                             <div v-if="index%2!=0?true:false" class="leftSatus">
                                 <em class="statusInfo">
                                     <em :class="[item.action_time==''?'text blueText':'text']">
-                                      <i class="iconfont icon-home_normal"></i>  {{item.key}}
+                                      {{item.key}}
                                     </em>
                                     <p>{{item.action_time}}</p>
                                 </em>

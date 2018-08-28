@@ -149,12 +149,14 @@
                           .statusInfo{
                               float:left;margin-left:10px;width:180px;line-height:18px;color:#c9c9c9;
                               margin-top:-13px;text-align:center;margin-bottom:-25px;height:62px;
-                              
                               .text{
-                                background:@green;line-height:38px;color:@white;display:block;border-radius:50px;font-size:@f14;
+                                background:@green;line-height:38px;color:@white;display:block;border-radius:50px;font-size:@f16;
+                                border:1px solid @green;letter-spacing:@p5;
                               }
                               .blueText{
-                                background:#ddd;
+                                background:#fff;
+                                border-color: #eef1f2;
+                                color:@seven;
                               }
                               p{
                                   margin-top:@p5;color:@seven;font-family:@ff;font-weight:lighter;
@@ -190,7 +192,152 @@
                 font-weight:lighter;
             }
             .costContent{
-                margin-top:@p20;
+                margin:@p20 0px;width:100%;
+                ul{
+                    border:1px solid #eef1f2;
+                }
+                li{
+                    font-family:@ff;
+                    font-size:@f14;
+                    display:block;
+                    font-weight:lighter;
+                    border-top:1px solid #eef1f2;
+                    line-height:78px;
+                    .span{
+                        width:20%;
+                        float:left;
+                        display:inline-block;
+                        text-align:center;
+                        &:nth-of-type(1){
+                            padding-left:@p20;
+                            text-align:left;
+                        }
+                        &:nth-of-type(5){
+                            padding-right:@p20;
+                            text-align:right;
+                        }
+                    }
+                }
+                .title{
+                    line-height:46px;border-top:0px;
+                    background:#fdfdfd;
+                }
+                .fooder{
+                    background: #fafdfd;
+                    line-height:46px;
+                    text-align:right;
+                    padding-right:@p10;
+                    em{
+                        font-style:normal;
+                        color:#e43;
+                        font-size:@f18;
+                    }
+                }
+            }
+            .payContent{
+                li{
+                    .span{
+                        &:nth-of-type(1){
+                            width:20%;
+                        }
+                        &:nth-of-type(2){
+                            width:60%;
+                            text-align:left;
+                        }
+                        &:nth-of-type(3){
+                            width:20%;
+                            padding-right:@p10;
+                        }
+                    }
+                    .ivu-progress-bg{
+                        background:@green;
+                    }
+                    .ivu-progress-show-info{
+                        .ivu-progress-outer{
+                            padding-right:105px;
+                            margin-right:-105px;
+                        }
+                    }
+                    .ivu-progress-text{
+                        font-size:@f14;
+                        .num{
+                            color:#3bceb6;
+                            font-size:@f16;
+                            margin-right:@p5;
+                            font-weight: 400;
+                        }
+                    }
+                }
+                .title{
+                    .span{
+                        &:nth-of-type(2){
+                            text-align:center;
+                        }
+                    }
+                }
+            }
+        }
+        //合同详情
+        .contractDeta{
+            padding:@p20;
+            .contractList{
+                float:left;
+                padding:0px @p30;
+                width:260px;
+                overflow:auto;
+                &::-webkit-scrollbar {/*滚动条整体样式*/
+                    width: 14px;     /*高宽分别对应横竖滚动条的尺寸*/
+                    height: 4px;
+                }
+                &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+                    border-radius: 5px;
+                    background: rgba(59,206,182,1);
+                }
+                &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+                    border-radius: 5px;
+                    background: rgba(238,241,242,1);
+                }
+                p{
+                    color:@seven;
+                    font-weight:lighter;
+                    text-align:center;
+                    display:block;
+                    margin-bottom:@p10;
+                    img{
+                        width:200px;
+                        border-radius:@r4;
+                        border:2px solid @line;
+                        margin-bottom:@p5;
+                        height:200px;
+                        cursor:pointer;
+                    }
+                    .showImg{
+                        border-color:@green;
+                    }
+                }
+            }
+            .contract{
+                margin-left:320px;
+                border:1px solid #eef1f2;
+                border-radius:@r4;
+                text-align:center;
+                overflow:auto;
+                padding:@p10;
+                img{
+                    max-width:90%;
+                }
+                &::-webkit-scrollbar {/*滚动条整体样式*/
+                    width: 14px;     /*高宽分别对应横竖滚动条的尺寸*/
+                    height: 14px;
+                }
+                &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+                    border-radius: 0px;
+                    background: rgba(59,206,182,1);
+                }
+                &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+                    border-radius: 0px;
+                    background: rgba(238,241,242,1);
+                }
             }
         }
     }

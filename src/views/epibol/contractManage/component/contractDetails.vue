@@ -18,10 +18,10 @@ var qs=require('querystring');
 import {mapState} from 'vuex';
 import contractBase from './contractDetails/contractBase';
 import contractCost from './contractDetails/contractCost';
+import contractDeta from './contractDetails/contractDeta';
 export default {
    data(){
        return{
-           contractID:40, // 临时ID
            nIndex:'0',
            isModule:contractBase,
            contractCostData:Array,//金额及付款
@@ -32,9 +32,9 @@ export default {
    computed:{
         ...mapState({
         //    合同ID
-            // contractID(data){
-            //     return data.paySkip.contractID 
-            // }
+            contractID(data){
+                return data.paySkip.contractID 
+            }
         })
    },
    mounted(){
@@ -64,7 +64,10 @@ export default {
                 },100)
             }else if(nmber=='2'){
                 // 附件
-                this.$refs.moduleInfo.moduleData(this.filesData);
+                this.isModule=contractDeta;
+                setTimeout(()=>{
+                    this.$refs.moduleInfo.moduleData(this.filesData);
+                },100)
             }
         },
         // 合同数据
@@ -99,6 +102,8 @@ export default {
                     this.$Message.error("请求失败!")
                     this.$Loading.error();
                 })
+            }else{
+                this.$router.go(-1)
             }
         },
    }

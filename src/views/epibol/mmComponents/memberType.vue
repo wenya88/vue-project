@@ -10,7 +10,7 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
                         {{item.name}}
-                        <!-- <span class="numStyle">{{item.member_count}}</span> -->
+                        <span class="numStyle">({{item.member_count}})</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
                         <!-- <Poptip class="more" placement="bottom-end" v-if="index+1 < deptList.length"> -->
                             <!-- <span>...</span> -->
@@ -22,11 +22,15 @@
                                 </ul>
                             </div>  -->
                         <!-- </Poptip> -->
+                       
                         <span class="api">
+                            <!-- <slot name="fmore"></slot> -->
                             <Icon @click="editDept(item.id,item.name)" type="edit" ></Icon>
                             
                             <Icon @click="delDept(item.id)" type="ios-trash-outline" ></Icon>
+                            
                         </span>
+                        <!-- <span v-if="!item.name">未分配部门</span> -->
                     </li>
                 </ul>
                 <slot name="addDept"></slot>
@@ -35,10 +39,10 @@
                 <ul class="fMenu">
                     <li v-for="(item,index) in dutyList" :key="index" :class="{'actived': SMenuIndex == index}" @click="open2Table(index,item.company_id,item.id)">
                         {{item.name}}
-                        <!-- <span class="numStyle">{{item.member_count}}</span>
-                        <span class="more" @click.stop="editItem()">...</span>
-                        <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1">
-                            <span>...</span> -->
+                         <span class="numStyle">({{item.member_count}})</span>
+                        <!-- <span class="more" @click.stop="editItem()">...</span> -->
+                        <!-- <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1"> -->
+                           <!-- <span>...</span> -->
                             <!-- <div class="api" slot="content">
                                 <slot name="fmore"></slot>
                                 <ul>
@@ -46,9 +50,15 @@
                                     <li @click="delDuty(item.id)">删除</li>
                                 </ul>
                             </div>   -->
-                             <span class="api">
+                             <span v-if="item.company_id" class="api">
                                 <Icon @click="editDuty(item.id,item.name)" type="edit" class="edit"></Icon>
-                                <Icon @click="editDuty(item.id)" type="ios-trash-outline" class=""></Icon>
+                                <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon>
+                                <!-- （默认） -->
+                            </span> 
+                             <span v-if="!item.company_id" class="api">
+                                <!-- <Icon @click="editDuty(item.id,item.name)" type="edit" class="edit"></Icon>
+                                <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon> -->
+                                （默认）
                             </span> 
                         <!-- </Poptip> -->
                     </li>
@@ -189,10 +199,10 @@ li.actived{
 .api{
     color: #BDBDBD;
     float:right;
-    font-size: 20px;
+    font-size: 12px;
     .ivu-icon{
         padding: 5px;
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 400;
     }
 }
@@ -221,12 +231,12 @@ li.actived{
     text-align: center;
     line-height: 30px;
 }
-.numStyle, .more{
-    float: right;
-}
-.more, .fMenu li:hover .numStyle{
-    display: none;
-}
+// .numStyle, .more{
+//     // float: right;
+// }
+// .more, .fMenu li:hover .numStyle{
+    
+// }
 .ivu-menu-light{
     /*background: #fff !important;*/
 }

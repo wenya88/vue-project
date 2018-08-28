@@ -312,6 +312,7 @@ export default {
         addDuty() {
             this.dutyStatus = 'add';
             this.dutyModel = true;
+            
         },
         editDuty(id, name) {
             this.dutyStatus = 'edit';
@@ -359,6 +360,7 @@ export default {
         clickInviteMember() {
             //this.showAddNewTodo = true;
             this.$refs.invite.isShowPage(true);
+            // window.location.reload();
         },
         selectMember(index) {
             let data = {
