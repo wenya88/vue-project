@@ -38,7 +38,7 @@
             <TabPane label="职能">
                 <ul class="fMenu">
                     <li v-for="(item,index) in dutyList" :key="index" :class="{'actived': SMenuIndex == index}" @click="open2Table(index,item.company_id,item.id)">
-                        {{item.name}}{{item.company_id}}
+                        {{item.name}}
                          <span class="numStyle">({{item.member_count}})</span>
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
                         <!-- <Poptip class="more" placement="bottom-end" v-if="item.is_default!=1"> -->
