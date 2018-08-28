@@ -1,23 +1,30 @@
 <template>
+<div>
     <div :id="biddingColor.echartID" class="echartLine"></div>
+    <span v-show="cFlag">{{biddingData}}</span>
+</div>
 </template>
 <script>
 export default {
     data(){
         return{
-
+            cData:[],
+            cTime:[],
+            cFlag:false
         }
     },
-    props:{
-        biddingColor:{
-            type:Object
-        }
-    },
+    props:['biddingColor','biddingData'],
     mounted(){
+        this.myCharts(this.biddingColor.Cstart,this.biddingColor.Cend,this.biddingColor.Cline,this.biddingColor.echartID);
+    },
+    updated(){
+        this.cData=this.biddingData.data;
+        this.cTime=this.biddingData.time;
         this.myCharts(this.biddingColor.Cstart,this.biddingColor.Cend,this.biddingColor.Cline,this.biddingColor.echartID);
     },
     methods:{
         myCharts(Cstart,Cend,Cline,echartID){
+            let _this=this;
             let echarts = require('echarts');
             let myChart = echarts.init(document.getElementById(echartID));
             // 绘制图表
@@ -38,7 +45,7 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: ['一月','二月','三月','四月','五月','六月','七月'],
+                    data: _this.cTime,
                     axisLabel: {
                         inside: false,
                         textStyle: {
@@ -82,7 +89,7 @@ export default {
                         name:'中标率',
                         type:'line',
                         stack: '总量',
-                        data:[120, 132, 101, 134, 90, 230, 210],
+                        data:_this.cData,
                         color:Cline, // 折线颜色
                         areaStyle: {
                             normal: {

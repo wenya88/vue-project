@@ -1,8 +1,5 @@
 <template>
     <div class="statisics">
-        <main-native>
-            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
-        </main-native>
         <!-- Menu -->
         <div class="statisics-menu">
             <div class="ivu-div">
@@ -61,6 +58,18 @@
     </div>
 </template>
 <script>
+<<<<<<< HEAD
+import statisMenu from './statistics/component/statisMenu';
+import statisHome from './statistics/component/statisHome';
+export default {
+    data(){
+        return{
+           contneComponent:statisHome
+        }
+    },
+    components:{
+        statisMenu:statisMenu
+=======
     import mainNative from '../main-components/mainNative.vue';
     export default {
         data(){
@@ -121,7 +130,9 @@
         components:{
             mainNative
         }
+>>>>>>> 99e33a5c27de4582e665ebacbe23f30a34b69e32
     }
+}
 </script>
 <style lang="less">
     @import './statistics/style/statistics.less';
