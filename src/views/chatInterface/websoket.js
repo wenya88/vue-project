@@ -1,9 +1,9 @@
    import notice from '@/notice/notice.js' // 通知类
    import store  from '@/store/index'
    import Cookies from 'js-cookie';
-  //  const wsurl = 'ws:' + Cookies.get('hostName').split(':')[1] + ':8282'
-  function connectSocket(msgData) {
-    const wsurl = 'ws://59.111.95.148:8282'
+   const wsurl = 'ws:' + Cookies.get('hostName').split(':')[1] + ':8282'
+   function connectSocket(msgData) {
+    // const wsurl = 'ws://59.111.95.148:8282'
     window.webSocket = new WebSocket(wsurl)
     /*建立连接*/
     webSocket.onopen = evt => {

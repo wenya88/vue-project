@@ -15,12 +15,12 @@
         <!-- ContractComponent -->
         <keep-alive>
             <basic-info v-if="nIndex==0" ref="editContract"></basic-info>
-            <contract-cost v-if="nIndex==1" :contractCostData="contractCostData"></contract-cost>
+            <contract-cost v-if="nIndex==1" :contractCostData="contractCostData" ref="costData"></contract-cost>
             <confir-contract v-if="nIndex==2" :filesData="filesData"></confir-contract>
         </keep-alive>
         <!-- nextRow -->
         <div class="nextRow"  v-if="!lineFlag">
-            <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep" :disabled="Bdisabled">上一步</Button>
+            <Button type="success" v-show="nIndex==1||nIndex==2?true:false" @click.native="lastStep">上一步</Button>
             <Button type="success" @click.native="nextStep" v-show="nIndex==2?false:true" :disabled="Bdisabled">下一步</Button>
             <Button type="warning" v-show="contrateButton&&nIndex==2" @click="commitContract">保存合同</Button>
         </div>
@@ -152,12 +152,20 @@ export default {
             if(this.nIndex>=0&&this.nIndex<2){
                 this.nIndex++;
             }
+            if(this.nIndex==1){
+                this.$nextTick(()=>{
+                    this.$refs.costData.priceChange();
+                })
+            }
             // temporary
         },
         // last
         lastStep(){
             if(this.nIndex>0){
                 this.nIndex--;
+            }
+            if(this.nIndex<1){
+                this.Bdisabled=false
             }
         }
     }

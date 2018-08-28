@@ -545,7 +545,7 @@
             },
             // 验证码倒计时
             getAuthCode(type) {
-                console.log(11)
+
                 if (this[type] = '验证码') {
                     let s = 60;
                     this[type] = s;

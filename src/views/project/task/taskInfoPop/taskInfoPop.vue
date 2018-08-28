@@ -1,8 +1,11 @@
 <!-- 任务信息弹窗-->
 <template>
     <div class="taskinfopop">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <div class="title">
-            <span><Icon type="ios-person"  size="30" style="vertical-align: middle;color: #3bceb6;" ></Icon>任务/详情</span>
+            <!--<span><Icon type="ios-person"  size="30" style="vertical-align: middle;color: #3bceb6;" ></Icon>任务/详情</span>-->
         <Button  style="font-size: 18px;" @click="leaveInfo" type="text">返回</Button>
         </div>
 
@@ -57,6 +60,7 @@
     import filebrowse from "../../components/fileBrowseManager";
     import vStandard from "./standard";
     import vResource from "./resource";
+    import mainNative from '../../../main-components/mainNative.vue';
 
     export default {
         props: [
@@ -68,7 +72,8 @@
             tasklog,
             filebrowse,
             vStandard,
-            vResource
+            vResource,
+            mainNative
         },
         mounted() {
             this.initTaskDetail();
@@ -272,7 +277,6 @@
                     return value.project.userStatus
                 } ,
                 projectDetail(value){
-                    console.log(1113,value.project.detail.setDetailAll)
                     return value.project.detail.setDetailAll
                 }
             })
@@ -301,12 +305,12 @@
     .taskinfopop {
         overflow: hidden;
         .title {
-            display: flex;
-            margin-top: 5px;
             padding: 0 52px 0 0;
+            margin-top: 5px;
+            text-align: right;
             line-height: 40px;
             font-size: 18px;
-            justify-content: space-between;
+
         }
         .taskinfopopTitle{
             width: 415px;

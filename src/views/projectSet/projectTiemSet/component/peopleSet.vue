@@ -1,65 +1,67 @@
 <template>
-    <div class="projectMemberContainer">
+    <div>
         <main-native>
             <div class="main-header-style iconfont"><i v-if="!islink"></i>{{this.$route.meta.title}}</div>
         </main-native>
-        <div class="member">
-            <p class="title" v-if="memberArray">已加入项目组(<span> {{ memberArray.length }} </span>)</p>
-            <ul class="cardList">
-                <template v-if="memberArray">
-                    <li class="cardBox" v-for="(item,index) in memberArray" :key="index">
-                        <div class="card">
-                            <img  :src="item.headimage ? item.headimage : imgHead" alt="头像">
-                            <p>{{item.remark_name}}</p>
-                        </div>
-                        <div class="job">
-                            <!--<span>{{item.department_name || 'Null'}}</span>-->
-                            <span>{{item.job || 'Null'}}</span>
-                        </div>
-                        <i class="deleteI" @click="removeShow(item.id)"></i>
-                    </li>
-                </template>
-                <Spin v-if="!memberArray" size="large" fix>
-                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-                    <div>加载中...</div>
-                </Spin>
-            </ul>
-            <Modal
-                    v-model="removeModal"
-                    title="该成员移除项目？"
-                    width="380"
-                    @on-ok="removeCard">
-                <p style="color: #FF6600" >说明：如果该成员负责相关任务，移除后任务将暂停，任务执行人将空缺。</p>
-            </Modal>
-        </div>
-        <div class="whole">
-            <p class="title">公司成员</p>
-            <template v-if="items">
-                <div class="departmentList" v-for="(item,index) in items" :key="index">
-                    <p class="wholeTitle">
-                        <span>{{item.department_name}}</span>
-                        <i class="ivu-icon" @click="addShow(item.members)"></i>
-                    </p>
-                    <div class="persionList">
-                        <ul>
-                            <li v-for="(member,i) in item.members" :key="i" :class="{'activeSty':member.is_join}" @click="onCard(member.member_id)">
-                                <div>
-                                    <img :src="member.headimage ? member.headimage : imgHead"/>
-                                    <span> {{ member.remark_name }} </span>
-                                </div>
-                                <i class="ivu-icon"></i>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="projectMemberContainer">
+            <div class="member">
+                <p class="title" v-if="memberArray">已加入项目组(<span> {{ memberArray.length }} </span>)</p>
+                <ul class="cardList">
+                    <template v-if="memberArray">
+                        <li class="cardBox" v-for="(item,index) in memberArray" :key="index">
+                            <div class="card">
+                                <img  :src="item.headimage ? item.headimage : imgHead" alt="头像">
+                                <p>{{item.remark_name}}</p>
+                            </div>
+                            <div class="job">
+                                <!--<span>{{item.department_name || 'Null'}}</span>-->
+                                <span>{{item.job || 'Null'}}</span>
+                            </div>
+                            <i class="deleteI" @click="removeShow(item.id)"></i>
+                        </li>
+                    </template>
+                    <Spin v-if="!memberArray" size="large" fix>
+                        <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                        <div>加载中...</div>
+                    </Spin>
+                </ul>
                 <Modal
-                        v-model="addModal"
-                        title="移入项目"
+                        v-model="removeModal"
+                        title="该成员移除项目？"
                         width="380"
-                        @on-ok="addGroup">
-                    <p style="color: #FF6600" >说明：部门成员全部加入项目？</p>
+                        @on-ok="removeCard">
+                    <p style="color: #FF6600" >说明：如果该成员负责相关任务，移除后任务将暂停，任务执行人将空缺。</p>
                 </Modal>
-            </template>
+            </div>
+            <div class="whole">
+                <p class="title">公司成员</p>
+                <template v-if="items">
+                    <div class="departmentList" v-for="(item,index) in items" :key="index">
+                        <p class="wholeTitle">
+                            <span>{{item.department_name}}</span>
+                            <i class="ivu-icon" @click="addShow(item.members)"></i>
+                        </p>
+                        <div class="persionList">
+                            <ul>
+                                <li v-for="(member,i) in item.members" :key="i" :class="{'activeSty':member.is_join}" @click="onCard(member.member_id)">
+                                    <div>
+                                        <img :src="member.headimage ? member.headimage : imgHead"/>
+                                        <span> {{ member.remark_name }} </span>
+                                    </div>
+                                    <i class="ivu-icon"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <Modal
+                            v-model="addModal"
+                            title="移入项目"
+                            width="380"
+                            @on-ok="addGroup">
+                        <p style="color: #FF6600" >说明：部门成员全部加入项目？</p>
+                    </Modal>
+                </template>
+            </div>
         </div>
     </div>
 
@@ -79,6 +81,7 @@
         mounted() {
             this.getItems();
             this.getMemberArray();
+            this.autoH();
         },
         data() {
             return {
@@ -176,7 +179,11 @@
             },
             _messageError(data) {
                 this.$Message.error(data)
-            }
+            },
+            // 设置行高
+            autoH(){
+                $('.projectMemberContainer').height($(window).height()-124)
+            },
         },
         computed: {},
         components: {
@@ -201,9 +208,10 @@
     .projectMemberContainer {
         display: flex;
         justify-content: space-between;
-        padding: 30px;
+        overflow: hidden;
+        padding: 30px 0;
         .member, .whole {
-            background: #fff;padding: 30px;
+            background: #fff;padding: 30px;overflow: hidden;
             .title {
                 font-size: 16px;
                 color: @gray;
@@ -213,16 +221,18 @@
         .member {
             width: 35%;
             .cardList {
-                margin-top: 30px;
-                display: flex;
+                margin-top: 15px;
+                /*display: flex;*/
                 /*justify-content: space-between;*/
-                flex-wrap: wrap;
+                /*flex-wrap: wrap;*/
                 padding: 2px;
+                height: 100%;
+                overflow: auto;
                 .demo-spin-icon-load {
                     animation: ani-demo-spin 1s linear infinite;
                 }
                 .cardBox {
-                    /*float: left;*/
+                    float: left;
                     position: relative;
                     width: 30%;
                     /*margin-bottom: 20px;*/
@@ -245,6 +255,7 @@
                             height: 50px;
                             border-radius: 100%;
                             background: #ccc;
+                            overflow: hidden;
                         }
 
 
@@ -303,7 +314,9 @@
         .whole {
             width: 63%;
             .departmentList{
-                margin-top: 30px;
+                margin-top: 15px;
+                height: 100%;
+                overflow: auto;
                 .wholeTitle {
                     display: flex;
                     justify-content: space-between;
