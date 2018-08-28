@@ -70,12 +70,12 @@
                     <li>
                         <span class="span">
                             <Select v-model="agentUser" filterable>
-                                <Option v-for="item in projectUserData" :value="item.realname" :key="item.user_id">{{ item.realname }}</Option>
+                                <Option v-for="item in projectUserData" :value="item.remark_name" :key="item.user_id">{{ item.remark_name }}</Option>
                             </Select>
                         </span>
                         <span class="span">
                             <Select v-model="projectUser" filterable>
-                                <Option v-for="item in projectUserData" :value="item.realname" :key="item.user_id">{{ item.realname }}</Option>
+                                <Option v-for="item in projectUserData" :value="item.remark_name" :key="item.user_id">{{ item.remark_name }}</Option>
                             </Select>
                         </span>
                         <div class="clear"></div>
