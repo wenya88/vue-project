@@ -1,5 +1,8 @@
 <template>
   <div class="bidManage">
+      <main-native>
+          <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+      </main-native>
      <Tabs @on-click="application" :animated="false">
           <!-- 合作公司 -->
           <TabPane :label="comName" name="coopCom">
@@ -7,7 +10,7 @@
                     <em class="newAdd">
                         <Button type="success" size="small" @click.native="newAddCoop"><Icon type="plus"></Icon> 添加公司</Button>
                     </em>
-                    <em> 
+                    <em>
                         <Select v-model="sourceData" size="small" style="width:80px">
                             <Option v-for="item in sourceList" :value="item.index" :key="item.index">{{ item.value }}</Option>
                         </Select>
@@ -27,7 +30,7 @@
                 <em class="newAdd">
                     <Button type="success" size="small" @click.native="newAdd"><Icon type="plus"></Icon> 新增</Button>
                 </em>
-                <em> 
+                <em>
                     <Select v-model="stateData" size="small" style="width:80px">
                         <Option v-for="item in stateList" :value="item.index" :key="item.index">{{ item.value }}</Option>
                     </Select>
@@ -57,7 +60,7 @@
                 <company-invite :intivesData="intivesData" ref="companyIntive"></company-invite>
           </TabPane>
      </Tabs>
-     
+
   </div>
 </template>
 <script>
@@ -65,6 +68,7 @@ var qs=require('querystring')
 import companyInvite from './epibolCompany/component/companyInvite';
 import testTask from './epibolCompany/component/testTask';
 import coopCorp from './epibolCompany/component/coopCorp';
+import mainNative from '../main-components/mainNative.vue';
 export default {
     data(){
       return{
@@ -127,14 +131,15 @@ export default {
     components:{
         testTask:testTask,
         coopCorp:coopCorp,
-        companyInvite:companyInvite
+        companyInvite:companyInvite,
+        mainNative:mainNative
     },
     mounted(){
         this.testTaskGet();
         this.coopCorpGet();
         this.companyInvite();
         this.$bus.on('submitOk',()=>{
-           this.testTaskGet(this.stateData,this.searchData); 
+           this.testTaskGet(this.stateData,this.searchData);
         })
         this.$bus.on('succeedCommit',()=>{
            this.coopCorpGet(this.sourceData,this.searchData);
@@ -156,12 +161,12 @@ export default {
       },
     //   切换
       application(name){
-          
+
       },
     //   搜索
       search(){
          this.testTaskGet(this.stateData,this.searchData);
-      }, 
+      },
       searchCoop(){
           this.coopCorpGet(this.sourceData,this.searchData);
       },

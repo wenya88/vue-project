@@ -1,5 +1,8 @@
 <template>
   <div>
+      <main-native>
+          <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+      </main-native>
       <div class="taskMenu">
             <span  v-for="(item,index) in sortList" :key="index">
                 <a @click="sortAction(index,item.action)" :class="{show:index==SLindex}">
@@ -9,12 +12,12 @@
                       item.Cindex==2?'remIconUp':'',
                       ]"></i>
                       {{item.label}}
-                </a>                        
+                </a>
             </span>
             <span class="MLeft10">
                 <Input v-model="search" placeholder="项目名称" @on-enter="ProSearch">
                     <Button slot="append" icon="ios-search"  @click.native="ProSearch"></Button>
-                </Input>    
+                </Input>
             </span>
       </div>
       <task-list :taskData="taskData"></task-list>
@@ -23,6 +26,7 @@
 <script>
 var qs=require('querystring');
 import taskList from './component/taskList';
+import mainNative from '../main-components/mainNative.vue';
 export default {
   data(){
     return{
@@ -42,7 +46,8 @@ export default {
     }
   },
   components:{
-    taskList:taskList
+      taskList:taskList,
+      mainNative:mainNative
   },
   mounted(){
     this.taskListData();

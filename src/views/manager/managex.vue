@@ -65,8 +65,8 @@ export default {
    }
   &_img{
     float: left;
-    height: 50px;
-    width: 50px;
+    height: 60px;
+    width: 60px;
   }
   &_box{
     float: left;

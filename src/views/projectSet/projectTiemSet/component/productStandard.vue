@@ -18,21 +18,28 @@
                         </span>
                         <DropdownMenu style="padding: 10px;" slot="list">
                             <div class="header">
-                                <p v-for="(item,index) in specification" :key="index"
-                                   :class="menuColor === index?'fonsW':''"
+
+                                <div v-for="(item,index) in specification" :key="index"
+
+                                :class="menuColor === index?'fonsW':''"
+
                                    @click="selecSpecification(item.children,index)">
-                                    {{item.name}}({{item.children.length}})</p>
+                                    {{item.name}}({{item.children.length}})
+
+                                </div>
                             </div>
-                            <dl v-for="(item,i) in StandardizeSec" :key="i">
+                            <dl v-for="(item,index) in StandardizeSec" :key="index">
                                 <dt>{{item.name}}</dt>
                                 <!--:class="index === btnSign[0] && i === btnSign[1]?'sign':''"-->
                                 <ul class="typeList">
-                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,index) in item.children" >
-                                        <div class="type" :class="children.border?'sign':''" >
+                                    <li  class="typeBox"  @click="greenSign(index,i,children)" v-for="(children,i) in item.children"      >
+                                        <div class="type" :class="children.border?'sign':''"  >
+                                        <!--<div class="type" :class="menuColor === index && listColor === i?'sign':''" >-->
                                             <!--<img v-if="children.icon_url" width="16" height="16" :src="children.icon_url"-->
                                             <!--alt=""-->
                                             <!--:style="{filter: `drop-shadow(${children.color?children.color:'black'} 0px -20px)`}">-->
                                             <span>{{children.tasktype_name}}</span>
+
                                             <Icon  class="icon" v-if="children.border" type="checkmark-circled"></Icon>
                                         </div>
                                     </li>
@@ -56,7 +63,7 @@
                                 <Icon v-if="!attrContentW.show && !disabled"  class="addguifan" type="plus"    @click.native="attrContentW.show=!attrContentW.show" ></Icon>
                             </p>
                             <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
-                                <Col span="5">
+                                <Col span="12">
                                 <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
@@ -70,7 +77,7 @@
                                 <Icon @click.native="removeAttrContent(index)" type="trash-b" class="delIcon"></Icon>
                             </Row>
                             <template v-if="attrContentW.show" :style='{margin:"10px 0"}'>
-                                <Col span="5">
+                                <Col span="12">
                                 <AutoComplete v-model="attrContentW.name" placeholder="额外属性名称" clearable>
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
@@ -91,12 +98,12 @@
                                       @click="ruleListW.show=!ruleListW.show"  type="plus"></Icon>
                             </p>
                             <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
-                                <Col span="5">
+                                <Col span="12">
                                 <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
-                                <Col span="10">
+                                <Col span="12">
                                 <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
                                               :disabled="disabled">
                                     <!-- <Option v-for="item in re  qData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
@@ -105,12 +112,12 @@
                                 <Icon @click.native="removeRuleList(index)" type="trash-b" class="delIcon"></Icon>
                             </Row>
                             <template v-if="ruleListW.show" :style='{margin:"10px 0"}'>
-                                <Col span="5">
+                                <Col span="12">
                                 <AutoComplete v-model="ruleListW.name" placeholder="额外属性名称" clearable>
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
-                                <Col span="10">
+                                <Col span="12">
                                 <AutoComplete v-model="ruleListW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
                                     <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                                 </AutoComplete>
@@ -137,16 +144,18 @@
         },
         mounted() {
             this.menuInit();
-            this.infoinit()
+            this.infoinit();
+
         },
         data() {
             return {
+                listColor:null,
                 disabled: false,
                 menuColor: 0,
                 infoUpdate: null,
                 tabsTypeId: null,
                 project_id: sessionStorage.getItem('projectID'),
-                btnSign: [0, 0],
+                btnSign: [],
                 specification: [],
                 StandardizeSec: [],
                 typeList: [],
@@ -185,6 +194,7 @@
                                 })
                             }
                             this.StandardizeSec = res.data.data[0].children
+                            console.log(32,this.specification)
                         } else {
                             this.$Message.error(res.data.err_message);
                         }
@@ -295,7 +305,7 @@
                 }
             },
             addruleList() {
-                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'file'});
+                this.ruleList.push({name: this.ruleListW.name, values: this.ruleListW.values, type: 'hand'});
                 this.ruleListW = {
                     show: false,
                     name: '',
@@ -338,7 +348,19 @@
             },
             /*添加*/
             greenSign(index, i, children) {
-                this.btnSign = [index, i];
+                let addSwitch = false
+                this.typeTabs.map((item) => {
+                   if( item.tasktype_id == children.id){
+                       addSwitch = true
+                   }
+                });
+
+                if(addSwitch){
+                    return false
+                }
+
+//                this.listColor.push(i);
+//                this.btnSign.push(index) ;
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/project-tasktype/add', qs.stringify({
                     project_id: this.project_id,
                     tasktype_id: children.id
@@ -444,6 +466,9 @@
                     }
                     .ivu-dropdown, .ivu-select-dropdown{
                         border: 1px solid @green;
+
+                    }
+                    .btnSign{
 
                     }
                 }

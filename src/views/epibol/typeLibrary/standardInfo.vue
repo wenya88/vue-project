@@ -1,8 +1,6 @@
-<style lang="less" scoped>
-
-</style>
 <template>
-    <Content class="taskClassLibrary"  :style="{padding: '0 0 70px', minHeight: '280px', background: '#fff'}">
+    <Content class="taskClassLibrary">
+
         <div class="taskClassLiHeader">
             <span>规范名称</span>
             <button v-if="isSubmit||project" @click="submitTaskClas">保存</button>
@@ -11,202 +9,246 @@
         <Form class="taskClassLiContener" :model="formLeft" label-position="left" :label-width="100">
             <Row>
                 <Col span="16">
-                    <span class="titleH2">制作流程规范</span>
-                    <!--流程核心-->
-                    <div class="stepCentral">
-                        <Steps v-if="fstandard"  :current="current" direction="vertical" size="small">
-                            <Step v-for="(step,index) in fstandard" class="stepContainer"  :key="index">
+                <span class="titleH2">制作流程规范</span>
+                <!--流程核心-->
+                <div class="stepCentral">
+                    <Steps v-if="fstandard" :current="current" direction="vertical" size="small">
+                        <Step v-for="(step,index) in fstandard" class="stepContainer" :key="index">
 
-                                <div class="stepRight">
-                                    <!--步骤名称-->
-                                    <div>
-                                        <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow" class="title" style="cursor: pointer">{{step.stage_name}}</div>
-                                        <p  class="acmSign" v-if="fstandard.length === index+1" >交稿阶段</p>
-                                        <input v-show="step.flowTIlteShow"  @blur="step.flowTIlteShow = !step.flowTIlteShow" v-model="step.stage_name" class="title" type="text"/>
+                            <div class="stepRight">
+                                <!--步骤名称-->
+                                <div>
+                                    <div v-show="!step.flowTIlteShow" @click="step.flowTIlteShow = !step.flowTIlteShow"
+                                         class="title" style="cursor: pointer">{{step.stage_name}}
                                     </div>
-                                    <!---->
-                                    <div>
-                                        <ul class="stepsUl">
-                                            <li class="stepsList" v-for="(list,i) in step.require" :key="i">
-                                                <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled" class="borderBottomSty"></Input>
-                                                <!--规范列表-->
+                                    <p class="acmSign" v-if="fstandard.length === index+1">交稿阶段</p>
+                                    <input v-show="step.flowTIlteShow" @blur="step.flowTIlteShow = !step.flowTIlteShow"
+                                           v-model="step.stage_name" class="title" type="text"/>
+                                </div>
+                                <!---->
+                                <div>
+                                    <ul class="stepsUl">
+                                        <li class="stepsList" v-for="(list,i) in step.require" :key="i">
+                                            <Input v-model="list.text" placeholder="输入对该阶段要求" :disabled="disabled"
+                                                   class="borderBottomSty"></Input>
+                                            <!--规范列表-->
 
 
+                                            <Taskselect
+                                                    :parentIndex="index"
+                                                    :chilenIndex="i"
+                                                    :module="fstandard"
+                                                    :normName="list.norm_name"
+                                                    :dataList="norms"
+                                                    :disabled="disabled"
+                                                    v-on:Selectdata="updataSelect"
+                                                    v-on:addNormsFun="addNorms"
+                                                    :callbackStatus="callbackStatus">
 
-                                                <Taskselect :dataList="norms" :disabled="disabled" v-on:addNormsFun ="addNorms" :callbackStatus="callbackStatus"></Taskselect>
+                                            </Taskselect>
 
 
+                                            <!--<Select v-model="list.norm" size="small" class="standard" :disabled="disabled">-->
+                                            <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
+                                            <!--{{ item.name }}-->
+                                            <!--</Option>-->
+                                            <!--</Select>-->
 
 
-                                                <!--<Select v-model="list.norm" size="small" class="standard" :disabled="disabled">-->
-                                                    <!--<Option v-for="item in norms" :label="item.name" :value="item.id" :key="item.id">-->
-                                                        <!--{{ item.name }}-->
-                                                    <!--</Option>-->
-                                                <!--</Select>-->
-
-
-
-
-                                                <div  class="priorityContainer" >
-                                                    <p class="priority"  :class="`priority${list.level}`" >{{list.level|priorityValue}}</p>
-                                                    <div v-if="!disabled" class="priorityList" >
-                                                        <p class="priority priority3" @click="editPriority('3',index,i)">高</p>
-                                                        <p class="priority priority2" @click="editPriority('2',index,i)">中</p>
-                                                        <p class="priority priority1" @click="editPriority('1',index,i)">低</p>
-                                                    </div>
+                                            <div class="priorityContainer">
+                                                <p class="priority" :class="`priority${list.level}`">
+                                                    {{list.level | priorityValue}}</p>
+                                                <div v-if="!disabled" class="priorityList">
+                                                    <p class="priority priority3" @click="editPriority('3',index,i)">
+                                                        高</p>
+                                                    <p class="priority priority2" @click="editPriority('2',index,i)">
+                                                        中</p>
+                                                    <p class="priority priority1" @click="editPriority('1',index,i)">
+                                                        低</p>
                                                 </div>
-                                                <Icon v-if="!disabled" type="trash-b" class="delIcon" @click="delFlowNorm(index,i)":disabled="disabled"></Icon>
-                                            </li>
-                                            <!--审核选项-->
-                                            <Select  v-if="project" v-model="step.review" multiple style="position:absolute;top:-20px;right:20px;width:212px;">
-                                                <Option v-for="item in reviewList" :value="item.id" :key="item.id">{{ item.label }}</Option>
-                                            </Select>
-                                        </ul>
-                                        <!--流程info增加-->
-                                        <div class="stepsUl">
-                                            {{step.show}}
-                                            <div v-show="step.show" class="stepsList">
-                                                <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求" :disabled="disabled"></Input>
-                                                <Select v-model="stepInfoList.norm" class="standard" size="small">
-                                                    <Option v-for="item in norms" :value="item.id" :key="item.id">
-                                                        {{ item.name }}
-                                                    </Option>
-                                                </Select>
-                                                <div class="priorityContainer">
-                                                    <p class="priority" style="border: 1px solid #ccc;" :class="`priority${stepInfoList.level}`" >{{stepInfoList.level|priorityValue}}</p>
-                                                    <div class="priorityList">
-                                                        <p class="priority priority3" @click="editPriority('3')">高</p>
-                                                        <p class="priority priority2" @click="editPriority('2')">中</p>
-                                                        <p class="priority priority1" @click="editPriority('1')">低</p>
-                                                    </div>
-                                                </div>
-                                                <Button @click="stepAdd(index)" type="text">确认</Button>
-                                                <Button @click="closeStepList(index)" type="text">取消</Button>
                                             </div>
-                                            <Icon v-show="!step.show" v-if="!disabled" class="addguifan" @click.native="flowAddShow(index)" type="plus"
-                                                  style="margin-left:10px;font-size: 12px;cursor: pointer":disabled="disabled"></Icon>
+                                            <Icon v-if="!disabled" type="trash-b" class="delIcon"
+                                                  @click="delFlowNorm(index,i)" :disabled="disabled"></Icon>
+                                        </li>
+                                        <!--审核选项-->
+                                        <Select v-if="project" v-model="step.review" multiple
+                                                style="position:absolute;top:-20px;right:20px;width:212px;">
+                                            <Option v-for="item in reviewList" :value="item.id" :key="item.id">
+                                                {{ item.label }}
+                                            </Option>
+                                        </Select>
+                                    </ul>
+                                    <!--流程info增加-->
+                                    <div class="stepsUl">
+                                        {{step.show}}
+                                        <div v-show="step.show" class="stepsList">
+                                            <Input v-model="stepInfoList.text" placeholder="请输入对该阶段要求"
+                                                   :disabled="disabled"></Input>
+                                            <Taskselect
+                                                    :module="fstandard"
+                                                    :dataList="norms"
+                                                    :disabled="disabled"
+                                                    v-on:Selectdata="updataSelect"
+                                                    v-on:addNormsFun="addNorms"
+                                                    :callbackStatus="callbackStatus">
+                                            </Taskselect>
+                                            <!--<Select v-model="stepInfoList.norm" class="standard" size="small">-->
+                                            <!--<Option v-for="item in norms" :value="item.id" :key="item.id">-->
+                                            <!--{{ item.name }}-->
+                                            <!--</Option>-->
+                                            <!--</Select>-->
+                                            <div class="priorityContainer">
+                                                <p class="priority" style="border: 1px solid #ccc;"
+                                                   :class="`priority${stepInfoList.level}`">
+                                                    {{stepInfoList.level | priorityValue}}</p>
+                                                <div class="priorityList">
+                                                    <p class="priority priority3" @click="editPriority('3')">高</p>
+                                                    <p class="priority priority2" @click="editPriority('2')">中</p>
+                                                    <p class="priority priority1" @click="editPriority('1')">低</p>
+                                                </div>
+                                            </div>
+                                            <Button @click="stepAdd(index)" type="text">确认</Button>
+                                            <Button @click="closeStepList(index)" type="text">取消</Button>
                                         </div>
+                                        <Icon v-show="!step.show" v-if="!disabled" class="addguifan"
+                                              @click.native="flowAddShow(index)" type="plus"
+                                              style="margin-left:10px;font-size: 12px;cursor: pointer"
+                                              :disabled="disabled"></Icon>
                                     </div>
                                 </div>
+                            </div>
 
-                            </Step>
-                        </Steps>
-                        <!--<div>-->
-                            <Icon @click.native="addSteps" v-if="!disabled" style="font-size:38px;color: #3bceb6;cursor: pointer;" type="plus-circled":disabled="disabled"></Icon>
-                        <!--</div>-->
+                        </Step>
+                    </Steps>
+                    <!--<div>-->
+                    <Icon @click.native="addSteps" v-if="!disabled"
+                          style="font-size:38px;color: #3bceb6;cursor: pointer;" type="plus-circled"
+                          :disabled="disabled"></Icon>
+                    <!--</div>-->
 
-                    </div>
+                </div>
                 </Col>
 
                 <Col span="8">
-                    <div class="contenerRight">
-                        <ul>
-                            <li>
-                                <!--内容规范-->
-                                <slot name="item"></slot>
-                                <!--任务类型名称-->
-                                <span class="titleH2">规范名称</span>
-                                <section v-if="!project" class="taskTypeName">
-                                    <div v-if="!disabled" v-show="boxShow" class="taskTypeNameBox">
-                                        <div v-for="(item,index) in TaskIdentity" :key="index" style="display: flex;flex-wrap: wrap">
-                                            <img :src="item.url" @click="secMarkers(item,'icon')" :class="{'iconColor':identification.iconBorder === item.id}" class="identification" width="30" height="36">
-                                            <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
-                                            <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon":disabled="disabled"></Icon>-->
-                                            <div @click="secMarkers(item)" class="identification"
-                                                 :class="{'iconColor':identification.iconColor === item.color}">
-                                                <p class="signColor" :style="{background:item.color}"></p>
-                                            </div>
+                <div class="contenerRight">
+                    <ul>
+                        <li>
+                            <!--内容规范-->
+                            <slot name="item"></slot>
+                            <!--任务类型名称-->
+                            <span class="titleH2">规范名称</span>
+                            <section v-if="!project" class="taskTypeName">
+                                <div v-if="!disabled" v-show="boxShow" class="taskTypeNameBox">
+                                    <div v-for="(item,index) in TaskIdentity" :key="index"
+                                         style="display: flex;flex-wrap: wrap">
+                                        <img :src="item.url" @click="secMarkers(item,'icon')"
+                                             :class="{'iconColor':identification.iconBorder === item.id}"
+                                             class="identification" width="30" height="36">
+                                        <!--<Icon @click.native="secMarkers(item,'icon')" class="identification"-->
+                                        <!--:class="{'iconColor':identification.iconBorder === item.icon}" :type="item.icon":disabled="disabled"></Icon>-->
+                                        <div @click="secMarkers(item)" class="identification"
+                                             :class="{'iconColor':identification.iconColor === item.color}">
+                                            <p class="signColor" :style="{background:item.color}"></p>
                                         </div>
-                                        <Button @click="addMarkers(true)" type="text">确认</Button>
-                                        <Button @click="addMarkers(false)" type="text">取消</Button>
                                     </div>
-                                    <Input placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
-                                    <span @click="showMarkers" class="btn">
-                                        <img v-if="identification.icon" :src="identification.icon"   :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
+                                    <Button @click="addMarkers(true)" type="text">确认</Button>
+                                    <Button @click="addMarkers(false)" type="text">取消</Button>
+                                </div>
+                                <Input placeholder="名称" v-model="typename.typename" :disabled="disabled"></Input>
+                                <span @click="showMarkers" class="btn">
+                                        <img v-if="identification.icon" :src="identification.icon"
+                                             :style="{filter: `drop-shadow(${identification.iconColor?identification.iconColor:'black'} 0px -30px)`,width:'30px',color:identification.color}"
                                              style="height:36px;margin-top:30px;">
                                         <template v-else>识别图标</template>
                                     </span>
-                                </section>
-                            </li>
-                            <li>
-                                <!--制作规范-->
-                                <p class="titleFloat">
-                                    <span class="titleH2">制作规范</span>
-                                    <Icon v-if="!fileShow&& !disabled" class="addguifan"  @click="fileListAdd" type="plus"></Icon>
-                                </p>
-                                <template v-if="pstandard.length>0" >
-                                    <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
-                                        <Col span="12">
-                                        <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
-                                            <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                                        </AutoComplete>
-                                        </Col>
-                                        <Col span="12">
-                                        <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled">
-                                            <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                                        </AutoComplete>
-                                        </Col>
-                                        <Icon v-if="!disabled" @click.native="removeFileat(index)" type="trash-b" class="delIcon":disabled="disabled"></Icon>
-                                    </Row>
-                                </template>
-                                <!--文件添加-->
-                                <template v-if="fileShow">
+                            </section>
+                        </li>
+                        <li>
+                            <!--制作规范-->
+                            <p class="titleFloat">
+                                <span class="titleH2">制作规范</span>
+                                <Icon v-if="!fileShow&& !disabled" class="addguifan" @click="fileListAdd"
+                                      type="plus"></Icon>
+                            </p>
+                            <template v-if="pstandard.length>0">
+                                <Row v-for="(item,index) in pstandard" :key="'pstandard'+index" class="fileAttr">
                                     <Col span="12">
-                                        <AutoComplete v-model="fileAddName" placeholder="规范名称" clearable :disabled="disabled">
-                                            <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
-                                        </AutoComplete>
+                                    <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
+                                        <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                    </AutoComplete>
                                     </Col>
                                     <Col span="12">
-                                        <AutoComplete v-model="fileAddMain" placeholder="描述" clearable :disabled="disabled">
-                                            <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
-                                        </AutoComplete>
+                                    <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled">
+                                        <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                    </AutoComplete>
                                     </Col>
-                                    <Button type="text" @click="addFileat()">确认</Button><Button type="text" @click="closeFileat()">取消</Button>
-                                </template>
-                            </li>
-                            <li>
-                                <!--文稿文件规范-->
-                                <p class="titleFloat">
-                                    <span class="titleH2">文稿文件规范</span>
-                                    <Icon v-if="!OtherfileShow&&!disabled" class="addguifan"  @click="OtherfileAdd" type="plus"></Icon>
-                                </p>
-                                <template v-if="tstandard.length>0">
-                                    <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask" style="display: flex">
-                                        <Col span="12">
-                                        <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
-                                        </Col>
-                                        <Col span="12">
-                                        <AutoComplete v-model="item.values" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
-                                        </Col>
-                                        <Icon   v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b" class="delIcon" :disabled="disabled"></Icon>
-                                    </div>
-                                </template>
+                                    <Icon v-if="!disabled" @click.native="removeFileat(index)" type="trash-b"
+                                          class="delIcon" :disabled="disabled"></Icon>
+                                </Row>
+                            </template>
+                            <!--文件添加-->
+                            <template v-if="fileShow">
+                                <Col span="12">
+                                <AutoComplete v-model="fileAddName" placeholder="规范名称" clearable :disabled="disabled">
+                                    <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Col span="12">
+                                <AutoComplete v-model="fileAddMain" placeholder="描述" clearable :disabled="disabled">
+                                    <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
+                                </AutoComplete>
+                                </Col>
+                                <Button type="text" @click="addFileat()">确认</Button>
+                                <Button type="text" @click="closeFileat()">取消</Button>
+                            </template>
+                        </li>
+                        <li>
+                            <!--文稿文件规范-->
+                            <p class="titleFloat">
+                                <span class="titleH2">文稿文件规范</span>
+                                <Icon v-if="!OtherfileShow&&!disabled" class="addguifan" @click="OtherfileAdd"
+                                      type="plus"></Icon>
+                            </p>
+                            <template v-if="tstandard.length>0">
+                                <div v-for="(item,index) in tstandard" :key="'tstandard'+index" class="attachingTask"
+                                     style="display: flex">
+                                    <Col span="12">
+                                    <AutoComplete v-model="item.name" placeholder="规范名称" clearable
+                                                  :disabled="disabled"></AutoComplete>
+                                    </Col>
+                                    <Col span="12">
+                                    <AutoComplete v-model="item.values" placeholder="描述" clearable
+                                                  :disabled="disabled"></AutoComplete>
+                                    </Col>
+                                    <Icon v-if="!disabled" @click.native="delOtherfile(index)" type="trash-b"
+                                          class="delIcon" :disabled="disabled"></Icon>
+                                </div>
+                            </template>
 
-                                <template v-if="OtherfileShow">
-                                    <Col span="12">
-                                    <AutoComplete v-model="OtherfileName" placeholder="规范名称" clearable :disabled="disabled"></AutoComplete>
-                                    </Col>
-                                    <Col span="12">
-                                    <AutoComplete v-model="OtherfileMain" placeholder="描述" clearable :disabled="disabled"></AutoComplete>
-                                    </Col>
-                                    <Button type="text" @click="addJunctShow">确认</Button>
-                                    <Button type="text" @click="closeOtherfile">取消</Button>
-                                </template>
-                            </li>
-                        </ul>
-                    </div>
+                            <template v-if="OtherfileShow">
+                                <Col span="12">
+                                <AutoComplete v-model="OtherfileName" placeholder="规范名称" clearable
+                                              :disabled="disabled"></AutoComplete>
+                                </Col>
+                                <Col span="12">
+                                <AutoComplete v-model="OtherfileMain" placeholder="描述" clearable
+                                              :disabled="disabled"></AutoComplete>
+                                </Col>
+                                <Button type="text" @click="addJunctShow">确认</Button>
+                                <Button type="text" @click="closeOtherfile">取消</Button>
+                            </template>
+                        </li>
+                    </ul>
+                </div>
                 </Col>
             </Row>
         </Form>
 
 
-
-
         <!--规范增加-->
-        <h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>
-        <Button type="primary" @click="modal1 = true">增加规范</Button>
-        <Button type="primary" @click="modal2 = true">删除规范</Button>
-        <Button v-if="isSubmit||project"  type="primary" style="display: block;margin: 0 auto;width: 200px" @click="submitTaskClas">保存</Button>
+        <!--<h4 :style="{paddingBottom:'10px', marginTop:'20px'}">编辑规范</h4>-->
+        <!--<Button type="primary" @click="modal1 = true">增加规范</Button>-->
+        <!--<Button type="primary" @click="modal2 = true">删除规范</Button>-->
         <Modal v-model="modal1" @on-ok="addNorms">
             <section>
                 <div style="margin-bottom: 5px">
@@ -232,7 +274,7 @@
 </template>
 <script>
 
-    import {mapState} from 'vuex';
+    import {mapState, mapMutations} from 'vuex';
     import qs from 'querystring';
     import api from 'api';
     import Icon from "iview/src/components/icon/icon";
@@ -261,26 +303,32 @@
         },
         data() {
             return {
-                disabled:true, // 禁用
-                goinfo:null,
-                createInfo:false,
-                delnormsValue:'',
-                isSubmit:false,// 提交按钮
-                updateId :null, // 更新
-                newData:null, // 添加
 
-                reviewList:[{id:0,label:'外部审核'},{id:1,label:'内部审核'}],
+                expandDetails: JSON.parse(sessionStorage.getItem('expandDetails')) || [],
+                curreSelect: {
+                    id: null,
+                    val: null
+                },
+                disabled: true, // 禁用
+                updateId: null, //更新Id
+                goinfo: null, // 新增id
+
+                delnormsValue: '',
+                isSubmit: false,// 提交按钮
+
+
+                reviewList: [{id: 0, label: '外部审核'}, {id: 1, label: '内部审核'}],
                 fstandard: [],   // 流程规范
                 pstandard: [],   // 制作规范
                 tstandard: [],   // 文件规范
                 typename: {
-                    typename:'',
-                    icon:'',
-                    color:'',
+                    typename: '',
+                    icon: '',
+                    color: '',
                 },    // 规范名称
 
                 /*调试接口添加*/
-                norms:[],
+                norms: [],
                 modal1: false,
                 modal2: false,
                 identification: {
@@ -313,34 +361,43 @@
                 otherfile: [{config_name: '', value: ''}],
 
                 //添加新标签完成后的回调状态
-                callbackStatus:false
+                callbackStatus: false
             };
         },
         mounted() {
-            this.projectdisabled()
+
+
             // 获取规范列表
             this.getNormslist();
+
             // icon列表
-            if(!this.project){
+            if (!this.project) {
                 this.iconList();
             }
+
             /*进入详情*/
             this.$bus.on('typesDetail', (data) => {
-                this.goinfo = data;
+                this.updateId = data.id;
                 this.newtaskTypesDetail(data);
+                // 提交变为更新
+                this.goinfo = null;
 
             });
 
+
+            // 新建详情
             this.$bus.on('addType', (data) => {
-               this.addType(data);
-                this.goinfo = data;
-               this.isSubmit = true;
-                this.disabled = false;
+
+                // 获取树状图上个节点信息
+                this.addType(data);
+
             });
+
+            // 项目类型库添加
             this.$bus.on('projectInfo', (data) => {
                 this.addInfo(data);
                 this.tabsTypeId = data.id;
-                if(data && data.stage){
+                if (data && data.stage) {
                     data.stage.map((item, index) => {
                         this.fstandard[index].review = [];
                         if (item.is_inside_audit == 1) {
@@ -352,15 +409,27 @@
                     });
                 }
             });
+            // 是否编辑
+            this.isDisabled();
 
+
+            if (this.defId) {
+                this.newtaskTypesDetail('default')
+            }
 
         },
         methods: {
-            projectdisabled(){
-                if(this.project){
-                    this.disabled = false;
+            ...mapMutations(['setDefId']),
+
+            updataSelect(data) {
+                if (data.falg) {
+                    this.fstandard = data.data;
+                } else {
+                    this.curreSelect.id = data.id;
+                    this.curreSelect.val = data.val;
                 }
             },
+
 
             /*获取规范列表*/
             async getNormslist() {
@@ -372,7 +441,7 @@
                 }
             },
             /*获取图标库*/
-            async iconList(){
+            async iconList() {
                 let {data} = await api.getIconList();
                 if (data.err_code === 0) {
                     if (data.data) {
@@ -403,88 +472,104 @@
                 }
             },
             /*提交*/
-             submitTaskClas(){
+            submitTaskClas() {
+
                 /*项目级*/
-                if(this.project){
-                     this.submitProject()
+                if (this.project) {
+                    this.submitProject()
                     return false
                 }
                 /*公司级*/
-               this.submitCompany()
+                this.submitCompany()
             },
             /*项目级提交*/
-            async submitProject(){
-                this.fstandard.map((item,index) => {
-                    if(item.review.indexOf(0) !== -1){
+            async submitProject() {
+                this.fstandard.map((item, index) => {
+                    if (item.review.indexOf(0) !== -1) {
                         this.fstandard[index].is_client_audit = 1
-                    }else{
+                    } else {
                         this.fstandard[index].is_client_audit = 0
                     }
-                    if(item.review.indexOf(1) !== -1){
+                    if (item.review.indexOf(1) !== -1) {
                         this.fstandard[index].is_inside_audit = 1
-                    }else{
+                    } else {
                         this.fstandard[index].is_inside_audit = 0
                     }
 
                 });
 
                 let obj = {
-                    id:this.tabsTypeId,
-                    name:this.typename.typename,
-                    stage:JSON.stringify(this.fstandard),
-                    standard : JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
-                    icon:this.identification.iconBorder,
-                    color:this.identification.iconColor,
+                    id: this.tabsTypeId,
+                    name: this.typename.typename,
+                    stage: JSON.stringify(this.fstandard),
+                    standard: JSON.stringify(this.tstandard.concat(this.pstandard).concat(this.ruleList).concat(this.attrContent)),
+                    icon: this.identification.iconBorder,
+                    color: this.identification.iconColor,
                 };
                 let res = await api.taskprojectCateUpdate(obj);
                 if (res.data.err_code === 0) {
                     this.$Message.success("保存成功");
-                    this.$emit('update')
+                    this.$emit('update');
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
                 } else {
                     this.$Message.error(res.data.err_message);
                 }
             },
             /*公司级提交*/
-            async submitCompany(){
+            async submitCompany() {
                 let url = 'task/task-type/add';
                 let obj = null;
-                /*更新*/
-                 if(this.updateId !== null || this.createInfo){
-                    url = 'task/task-type/update';
-                     obj = {
-                         id:this.updateId,
-                         name:this.typename.typename,
-                         stage:JSON.stringify(this.fstandard),
-                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                         icon:this.identification.iconBorder,
-                         color:this.identification.iconColor,
-                     };
-                }else{
-                     /*新增*/
-                     obj = {
-                         category_id:this.goinfo.parent_id,
-                         name:this.typename.typename,
-                         stage:JSON.stringify(this.fstandard),
-                         standard : JSON.stringify(this.tstandard.concat(this.pstandard)),
-                         icon:this.identification.iconBorder,
-                         color:this.identification.iconColor,
-                     };
 
-                 }
+                // 点击添加的情况
+                if (this.goinfo) {
+                    /*新增*/
+                    obj = {
+                        category_id: this.goinfo.cate_id,
+                        name: this.typename.typename,
+                        stage: JSON.stringify(this.fstandard),
+                        standard: JSON.stringify(this.tstandard.concat(this.pstandard)),
+                        icon: this.identification.iconBorder,
+                        color: this.identification.iconColor,
+                    };
+                } else {
+                    /*更新*/
+                    url = 'task/task-type/update';
+                    obj = {
+                        id: this.updateId || this.defId,
+                        name: this.typename.typename,
+                        stage: JSON.stringify(this.fstandard),
+                        standard: JSON.stringify(this.tstandard.concat(this.pstandard)),
+                        icon: this.identification.iconBorder,
+                        color: this.identification.iconColor,
+                    };
+
+                }
                 let res = await api.taskTypeAdd(obj, url);
                 if (res.data.err_code === 0) {
-                    this.createInfo = true ;
-                    this.newtaskTypesDetail(this.goinfo);
+//                    this.newtaskTypesDetail(this.goinfo);
+
                     this.$Message.success("保存成功");
                     this.$bus.emit('treeUpdate') // 刷新左侧树状图
+                    if (url === 'task/task-type/add') {
+                        this.goinfo = null;
+                        this.updateId = res.data.id
+                    }
+//                    if (url === 'task/task-type/add') {
+//                        // 添加 成功
+//                        this.updateId = res.data.id
+//                        this.expandDetails[2] = res.data.id
+//                    } else {
+//                        // 更新成功
+//                        this.expandDetails[2] = this.updateId
+//                    }
+//                    sessionStorage.setItem('expandDetails', JSON.stringify(this.expandDetails))
                 } else {
                     this.$Message.error(res.data.err_message);
                 }
             },
             //增加任务附加文件
             addJunctShow(data) {
-                this.tstandard.push({name : this.OtherfileName, values: this.OtherfileMain,type:'hand'});
+                this.tstandard.push({name: this.OtherfileName, values: this.OtherfileMain, type: 'file'});
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
@@ -506,15 +591,15 @@
                 } else {
 //                    aSp.current += 1;
                     this.fstandard.push({
-                        stage_name:'新建阶段',
+                        stage_name: '新建阶段',
                         require: [
                             {
                                 text: "",
-                                level:"优先级",
+                                level: "优先级",
                                 norm: ""
                             }],
-                        show:false,
-                        flowTIlteShow:false,
+                        show: false,
+                        flowTIlteShow: false,
                     });
                 }
             },
@@ -523,7 +608,7 @@
              */
             //增加文件属性
             addFileat() {
-                this.pstandard.push({name: this.fileAddName, values: this.fileAddMain,type:'progress'});
+                this.pstandard.push({name: this.fileAddName, values: this.fileAddMain, type: 'progress'});
                 this.fileShow = false;
                 this.fileAddName = '';
                 this.fileAddMain = '';
@@ -564,13 +649,15 @@
                 this.OtherfileMain = '';
             },
             stepAdd(index) {
-                console.log(this.fstandard)
+
                 this.fstandard[index].require.push({
-                    norm: this.stepInfoList.norm,
+                    norm: this.curreSelect.id,
                     text: this.stepInfoList.text,
-                    level: this.stepInfoList.level
+                    level: this.stepInfoList.level,
+                    norm_name: this.curreSelect.val
                 });
-                this.$set(this.fstandard[index],'show',false);
+                // console.log(this.fstandard[index])
+                this.$set(this.fstandard[index], 'show', false);
                 this.stepInfoList = {
                     text: '',
                     norm: '',
@@ -615,35 +702,41 @@
 
             },
             async newtaskTypesDetail(dataDetail) {
-                // 进入详情
-                if (dataDetail.rank === 2 || dataDetail === 'default') {
-                    this.isSubmit = dataDetail.status === 0 || !(dataDetail === 'default');
-                    this.disabled = dataDetail.status === 0 || dataDetail === 'default';
-                    let obj = {id:dataDetail.id};
-                    this.clearInfo();
-                    // 获取更新id
-                    this.updateId = dataDetail.id;
-                    if(dataDetail === 'default'){
-                        obj = {
-                            id:this.defId
-                        }
-                    }
-                    let {data} = await api.taskCateinfo(obj);
-                    if (data.err_code === 0) {
-                               this.addInfo(data)
-                    } else {
-                        this.$Message.error(data.err_message);
+
+                let obj = {id: dataDetail.id};
+                // 点击进入详情
+                if (dataDetail.rank === 2) {
+                    this.isSubmit = dataDetail.status !== 0;
+
+                    this.disabled = dataDetail.status === 0;
+                } else if (dataDetail === 'default') {
+                    // 页面刷新 进入默认详情
+                    obj = {
+                        id: this.defId
                     }
                 }
+
+                this.clearInfo();
+
+                let {data} = await api.taskCateinfo(obj);
+                if (data.err_code === 0) {
+                    this.addInfo(data)
+                } else {
+                    this.$Message.error(data.err_message);
+                }
+
             },
-            addInfo(data){
+            addInfo(data) {
                 this.typename.typename = data.tasktype_name;
+
                 this.tstandard = data.standard.filter((item) => {
                     return item.type === 'file'
+
                 });
                 this.pstandard = data.standard.filter((item) => {
                     return item.type === 'progress'
                 }); // 制作规范
+
 
                 if (Array.isArray(data.stage) && data) {
                     data.stage.map((item) => {
@@ -656,7 +749,7 @@
                 this.identification.icon = data.icon_url;
                 this.identification.iconColor = data.color;
             },
-            editPriority(type,index,i){
+            editPriority(type, index, i) {
                 if (index === 0 || index) {
                     this.fstandard[index].require[i].level = type
                 }
@@ -664,37 +757,49 @@
                     this.stepInfoList.level = type
                 }
             },
-            delFlowNorm(index,i){
-                this.fstandard[index].require.splice(i,1);
+
+            delFlowNorm(index, i) {
+                this.fstandard[index].require.splice(i, 1);
             },
-            flowAddShow(index){
-                if(this.fstandard){
-                    this.stepInfoList = {text: '',norm: '',level: '优先级'};
-                    this.fstandard.map((item)=>{
+
+            flowAddShow(index) {
+                if (this.fstandard) {
+                    this.stepInfoList = {text: '', norm: '', level: '优先级'};
+                    this.fstandard.map((item) => {
                         item.show = false
                     });
                     this.fstandard[index].show = !this.fstandard[index].show
                 }
-           },
-            addType(data){
+            },
+            // 添加详情
+            addType(data) {
+
+                if (data.cate_id) {
+                    // 直接新建
+                    this.goinfo = data;
+                } else if (data.parent_id) {
+                    // 新建时没保存 但是用户点击了其他详情，又点击回来
+                    this.goinfo = {cate_id: data.parent_id}
+
+                }
+
+                this.isSubmit = true;
+                this.disabled = false;
                 this.clearInfo();
-                this.newData = data ;
-                this.updateId = null;
-                this.createInfo = false;
 
             },
-             /*清空页面*/
-            clearInfo(){
+            /*清空页面*/
+            clearInfo() {
                 this.fileShow = false;
                 this.fileAddName = '';
                 this.fileAddMain = '';
                 this.OtherfileShow = false;
                 this.OtherfileName = '';
                 this.OtherfileMain = '';
-                this.fstandard= [];   // 流程规范
-                this.pstandard= [];   // 制作规范
-                this.tstandard= [];   // 文件规范
-                this.typename = {typename:'', icon:'', color:''};
+                this.fstandard = [];   // 流程规范
+                this.pstandard = [];   // 制作规范
+                this.tstandard = [];   // 文件规范
+                this.typename = {typename: '', icon: '', color: ''};
                 this.identification = {iconBorder: null, iconColor: null, icon: null, color: null};
             },
             /*添加规范*/
@@ -725,26 +830,42 @@
                     this.$Message.error(data.err_message);
                 }
 
+            },
+            // 刷新页面 禁止效果
+            isDisabled() {
+                if (this.expandDetails[0]&&!this.project) {
+                    this.isSubmit = this.expandDetails[0].status !== 0;
+
+                    this.disabled = this.expandDetails[0].status === 0;
+                }
+                // 项目
+                if (this.project) {
+                    this.disabled = true;
+                }
             }
         },
-        computed:{
+        computed: {
             ...mapState({
-                defId(data){
+                // 进入页面系统默认id  和 点击详情获取的id
+                defId(data) {
+
                     return data.typelib.defId
                 }
             })
         },
-        watch:{
+        watch: {
+
             // 异步defId数据
-            defId(data){
-                if(data !== null){
+            defId(data) {
+                console.log(7, 'defid', data)
+                if (data !== null) {
                     this.newtaskTypesDetail('default');
                 }
             }
         },
-        filters:{
+        filters: {
             /*优先级*/
-            priorityValue(value){
+            priorityValue(value) {
                 let data = value;
                 switch (value) {
                     case '3':
@@ -766,59 +887,106 @@
     };
 </script>
 <style lang="less">
-     @gray: #ccc;
-     @yeowll :#ffd66b;
-     @org :orange;
-     @red :red;
-     @red :red;
-     @step:#ffcc00;
-     @r_green:#3bceb6;
-     @r_textcolor:#bebebe;
-     @r_green:#3bceb6;
-     @r_textcolor:#bebebe;
-     /*UI改版样式开始*/
-     .taskClassLibrary{
-         .taskClassLiHeader{
-             display: flex;justify-content: space-between;align-items: center;background: #c4f0e9;padding: 15px 40px;
-             span{font-size: 14px;color: @r_green};
-             button{background: @r_green;color: #fff;border: 0;font-size: 13px;padding: 8px 30px;border-radius: 3px;outline: none}
-         };
-         .taskClassLiContener{
-             padding: 30px 40px;
-             .titleH2{font-weight: lighter;color: @r_textcolor;font-size: 15px}
-             .stepCentral{
-                 margin-top: 30px;padding-right: 30px;
-             }
-             .stepContainer{
-                 .ivu-steps-main{
-                     width: 100%!important;
-                     .stepRight{
-                         margin-left: 65px !important;margin-top: 10px;
-                         .title{left: -20px !important;z-index: 0!important;}
-                     }
-                 }
-             }
-             .addguifan{width: 20px;height: 20px;border: 1px solid orange;text-align: center;line-height: 18px;border-radius: 100%;color: orange}
-             .contenerRight{
-                 padding-left: 30px;border-left: 1px dashed #e1e1e1;
-                 ul li{
-                     margin-bottom: 30px;
-                     .titleFloat{display: flex;justify-content: space-between};
-                     .ivu-input{border-bottom: 1px solid #e2e3e4;}
-                 }
-
-             }
-         }
-     }
-     /*UI改版样式结束*/
-
-
-     .stepContainer{
-         .ivu-steps-main{width: 100%!important;}
-
-     }
+    @gray: #ccc;
+    @yeowll: #ffd66b;
+    @org: orange;
+    @red: red;
+    @red: red;
+    @step: #ffcc00;
+    @r_green: #3bceb6;
+    @r_textcolor: #bebebe;
+    @r_green: #3bceb6;
+    @r_textcolor: #bebebe;
+    /*UI改版样式开始*/
     .taskClassLibrary {
-        .ivu-steps-vertical ,.ivu-steps-item{
+        padding: 0 0 70px;
+        height: 100%;
+        background: #fff;
+        .taskClassLiHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #c4f0e9;
+            padding: 15px 40px;
+            span {
+                font-size: 14px;
+                color: @r_green
+            }
+        ;
+            button {
+                background: @r_green;
+                color: #fff;
+                border: 0;
+                font-size: 13px;
+                padding: 8px 30px;
+                border-radius: 3px;
+                outline: none
+            }
+        }
+    ;
+        .taskClassLiContener {
+            padding: 30px 40px;
+            .titleH2 {
+                font-weight: lighter;
+                color: @r_textcolor;
+                font-size: 15px
+            }
+            .stepCentral {
+                margin-top: 30px;
+                padding-right: 30px;
+            }
+            .stepContainer {
+                .ivu-steps-main {
+                    width: 100% !important;
+                    .stepRight {
+                        margin-left: 65px !important;
+                        margin-top: 10px;
+                        .title {
+                            left: -20px !important;
+                            z-index: 0 !important;
+                        }
+                    }
+                }
+            }
+            .addguifan {
+                width: 20px;
+                height: 20px;
+                border: 1px solid orange;
+                text-align: center;
+                line-height: 18px;
+                border-radius: 100%;
+                color: orange
+            }
+            .contenerRight {
+                padding-left: 30px;
+                border-left: 1px dashed #e1e1e1;
+                ul li {
+                    margin-bottom: 30px;
+                    .titleFloat {
+                        display: flex;
+                        justify-content: space-between
+                    }
+                ;
+                    .ivu-input {
+                        border-bottom: 1px solid #e2e3e4;
+                    }
+                }
+
+            }
+        }
+    }
+
+    /*UI改版样式结束*/
+
+    .stepContainer {
+        .ivu-steps-main {
+            width: 100% !important;
+        }
+
+    }
+
+    .taskClassLibrary {
+        .ivu-steps-vertical, .ivu-steps-item {
             min-height: 102px !important;
         }
         .fileAttr.ivu-row {
@@ -838,11 +1006,12 @@
                 cursor: pointer;
                 /*opacity: 0;*/
                 transition: all .2s;
+                z-index: 2;
             }
             /*&:hover {*/
-                /*.delIcon {*/
-                    /*opacity: 1;*/
-                /*}*/
+            /*.delIcon {*/
+            /*opacity: 1;*/
+            /*}*/
             /*}*/
         }
         .iconColor {
@@ -874,7 +1043,9 @@
                 box-shadow: none;
             }
         }
-        .borderBottomSty{border-bottom: 1px solid #e2e3e4;}
+        .borderBottomSty {
+            border-bottom: 1px solid #e2e3e4;
+        }
         .ivu-steps-main {
             overflow: visible !important;
         }
@@ -919,23 +1090,23 @@
         }
         .stepContainer {
             /*步骤条圈*/
-            .ivu-steps.ivu-steps-small,.ivu-steps-head-inner{
+            .ivu-steps.ivu-steps-small, .ivu-steps-head-inner {
                 width: 40px !important;
                 height: 40px !important;
                 line-height: 30px !important;
                 font-size: 16px !important;
                 background: @r_green !important;
                 border: 5px solid #c5f0ea !important;
-                span{
+                span {
                     color: #fff !important;
                 }
-                .ivu-icon{
+                .ivu-icon {
                     top: 4px !important;
                     font-size: 30px !important;
                 }
             }
             /*步骤条线*/
-            .ivu-steps-vertical.ivu-steps-small ,.ivu-steps-tail{
+            .ivu-steps-vertical.ivu-steps-small, .ivu-steps-tail {
                 left: 19px !important;
             }
             /*步骤条title*/
@@ -972,7 +1143,7 @@
                 padding: 0 2px;
                 line-height: 18px;
                 font-size: 12px;
-                background: #00cc00;
+                background: #3bceb6;
                 color: #fff;
                 border-radius: 6px;
             }
@@ -997,7 +1168,11 @@
                         height: 32px;
                         margin: 0 20px;
                         vertical-align: middle;
-                        .ivu-select-selection{border: 1px solid @r_green;text-align: center;color: @r_green}
+                        .ivu-select-selection {
+                            border: 1px solid @r_green;
+                            text-align: center;
+                            color: @r_green
+                        }
                         .ivu-select-selection, .ivu-select-selected-value, .ivu-select-placeholder {
                             height: 32px;
                             line-height: 32px;
@@ -1019,16 +1194,16 @@
                             vertical-align: middle;
                             cursor: pointer;
                         }
-                        .priority3{
+                        .priority3 {
                             border: 1px solid @red !important;
                             color: @red !important;
 
                         }
-                        .priority2{
-                           border: 1px solid @org !important;
+                        .priority2 {
+                            border: 1px solid @org !important;
                             color: @org !important;
                         }
-                        .priority1{
+                        .priority1 {
                             border: 1px solid @yeowll !important;
                             color: @yeowll !important;
                         }

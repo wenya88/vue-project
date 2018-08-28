@@ -75,11 +75,12 @@ const app = {
             contract: true,              // 合同,
             callForBids: true,           // 招标,
             eHome: true,                 // 概况,
-            projectHome:true,
+            projectHome:true,            // 项目
+            cooperation:true,           //合作
         },
         callForBidsdts: {
             HaveTender: true,             // 已报名招标
-            invitation: true              // 外包邀请
+            invitation: true  ,            // 外包邀请
         },
         manager:{
             manager_page_header:true,       // 经营
@@ -120,6 +121,8 @@ const app = {
             epibol级权限
         */
         epibolMenuList(state, {menuList, item}) {
+
+
             const array = item.children.map((child, idx) => {
                 if (!state.epibol.callForBids && child.name === 'bidManage') {
                     return ''
@@ -131,7 +134,22 @@ const app = {
                     return ''
                 } else if (!state.epibol.projectHome && child.name === 'projectManage') {
                     return ''
+                }else if (!state.epibol.cooperation && child.name === 'epibolCompany') {
+                    return ''
+                }else if(child.title === '合同'){
+                    if(JSON.parse(Cookies.get('company')).type === 1){
+
+                        child.path = '/customer/contractManage' //jia
+
+                    }else {
+
+                        child.path = '/epibol/contractManage' // yi
+                    }
                 }
+
+
+
+
                 return child
                 /*if(child.auth) {
                     if(userType == 1) {
@@ -146,11 +164,13 @@ const app = {
                 }*/
             });
 
+
+
             menuList[1].children = array.filter((child) => {
                 return child !== ''
             });
-            // state.menuList = menuList.concat(state.projectMenuList);
 
+            // state.menuList = menuList.concat(state.projectMenuList);
 
         },
         /*
@@ -220,6 +240,11 @@ const app = {
 
                 // c2 公司投标
                 state.epibol.callForBids = false
+            }
+            if (data.indexOf('c3')!==-1) {
+
+                // c2 公司投标
+                state.epibol.cooperation = false
             }
             if (data.indexOf('c2_1')!==-1) {
                 // c2 已报名投标
@@ -327,28 +352,33 @@ const app = {
         */
             async getMenulistRole({commit, dispatch}) {
             const {data} = await api.getInfoRole();
+
             const project = await api.taskProjectPage();
 
             commit('setRole', {id:data.limit.auth_id,project:project.data.project});
         },
         updateMenulistRole({commit}) {
+
             let accessCode = parseInt(Cookies.get('post_id'));
-            accessCode = 1;
-            // accessCode = 1;
+
             // let userType = Cookies.get('user_type')
             // let userType = sessionStorage.user_type;
             let menuList = [], childrenList = [];
 
-            menu.forEach((item, index) => {
+            JSON.parse(JSON.stringify(menu)).forEach((item, index) => {
+
                 if (item.access) {
-                    // 工作台
-                    if(item.access === accessCode) {
-                            menuList.push(item);
+                    // 工作台  // 1经理 2组长 3成员
+                    if( item.access === accessCode) {
+                            menuList.push(JSON.parse(JSON.stringify(item)));
                     }
+                    // else if (item.access === 3) {
+                    //         menuList.push(item);
+                    // }
                 } else {
-                    menuList.push(item);
+                    menuList.push(JSON.parse(JSON.stringify(item)));
                 }
-                commit('projectMenuList')
+                commit('projectMenuList');
                 if(index === menu.length-1) {
                     commit('concatProject', {menuList: menuList, item: item})
                 }else  if (item.name === "epibol") {

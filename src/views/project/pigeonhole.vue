@@ -54,7 +54,9 @@
               <div class="card-box" @click="fetchFileData(item.id,item.stage_file.type,item.stage_file.file,item)">
                 <!-- <Icon type="heart" color="red" v-if=""></Icon>
                 <Icon type="pause" v-else-if=""></Icon> -->
-                <img class="card-box-pic" :src="item.image[0]"/>
+                <img  v-if="item.image[0]" class="card-box-pic" :src="item.image[0]"/>
+                <img v-else src="./task/QQ图片20180719133401.jpg"  class="card-box-pic"  alt="">
+
               </div>
               <div class="showHiden">
                 <div class="RcardBlock">
@@ -63,7 +65,7 @@
                     <span>{{item.remark_name}}</span>
                   </div>
                   <div class="right">
-                    <span>{{item.name}}</span><i>原画</i>
+                    <span>{{item.name | substrfun}}</span><i>原画</i>
 
                     <span v-for="itemStatus in clickItem" v-show="itemStatus.id == item.id">
                         <span v-if="itemStatus.status" class="dowmloadFilefalse" title="打包完成后将自动下载">打包中<b class="ivu-icon animationB"></b></span>
@@ -308,6 +310,15 @@
                 this.typeIndex = index;
                 this.selTaskType = type;
                 this.fetchData();
+            }
+        },
+        filters:{
+            substrfun:function (val) {
+                if(val && val.length > 5){
+                    return val.substr(0,4)+'...';
+                }else {
+                    return val;
+                }
             }
         }
     }

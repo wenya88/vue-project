@@ -62,7 +62,6 @@
           list = Array.from(JSON.parse(localStorage.useList))
         }
         list.push(data);
-        // console.log('数据1', JSON.stringify(list))
         store.state.useList = list
         localStorage.useList = JSON.stringify(list)
       }

@@ -1,3 +1,5 @@
+
+
 export const menu = [
     {
         path: '/epibol/imPlementer',
@@ -22,6 +24,27 @@ export const menu = [
 
 
     },
+
+    {
+        path: '/manager/manager',
+        name: 'manager',
+        title: '我的工作台',
+        level: '1',
+        access: 1,
+        children: [
+            {
+                path: '/manager/manager',
+                name: 'eHome',
+                level: '1-1',
+                title: '我的工作',
+            }, {
+                path: '/manager/setSchedule',
+                name: 'eHome',
+                level: '1-1',
+                title: '日程安排',
+            },
+        ]
+    },
     {
         path: '/epibol/ProjectWorks',
         name: 'workbench',
@@ -44,26 +67,6 @@ export const menu = [
 
     },
     {
-        path: '/manager/manager',
-        name: 'manager',
-        title: '我的工作台',
-        level: '1',
-        access: 1,
-        children: [
-            {
-                path: '/manager/manager',
-                name: 'eHome',
-                level: '1-1',
-                title: '我的工作',
-            }, {
-                path: '/manager/setSchedule',
-                name: 'eHome',
-                level: '1-1',
-                title: '日程安排',
-            },
-        ]
-    },
-    {
         path: '/epibol',
         name: 'epibol',
 
@@ -79,9 +82,18 @@ export const menu = [
                 path: '/epibol/bidManage',
                 name: 'bidManage',
                 level: '2-2',
-                title: '投标',
+                title: '合作',
                 auth: 0,
-            }, {
+            },
+            {
+                path: '/customer/epibolCompany',
+                icon: 'ios-paper-outline',
+                name: 'epibolCompany',
+                title: '合作',
+
+
+            }
+            , {
                 path: '/epibol/contractManage',
                 name: 'contractManage',
                 level: '2-3',
@@ -357,3 +369,7 @@ export const menu = [
 //         ]
 //     }
 // ];
+
+
+
+

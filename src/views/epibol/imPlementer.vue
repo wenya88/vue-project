@@ -46,12 +46,12 @@
            <div class="task_feedback_box" :style="`width:${allListWidth}`">
               <div class="clearfix task_feedback_msg" v-for="(item, index) in examinList" :key="index">
                 <div class="feedback_iamge_father">
-                 <img :src="item.image" class="task_feedback_image"/>
+                 <img :src="item.file" class="task_feedback_image"/>
                 </div>
                  <div class="task_feedback_details">
                     <div class="clearfix feedback_words_box">
                       <div class="feedback_words">
-                        <p class="feedback_words_task">{{item.name}}</p>
+                        <p class="feedback_words_task"  @click="goTask(item.parentId)">{{item.name}}</p>
                         <p class="feedback_words_project">{{item.project_name}}</p>
                       </div>
                        <p class="feedback_explain">内部评审3天</p>
@@ -108,7 +108,7 @@
            </div>
            <!-- 上传文件 -->
            <div class="upload_box">
-               <upload-box v-if="!nameLists.length">
+               <upload-box v-if="!isImgShow">
                  <template slot='upload'>
                    <div id="browse" class="browse"></div>
                    <div class="title_all">
@@ -176,6 +176,7 @@ export default {
       partObj: {},
       widths: '',
       widthAll: '',
+      isImgShow: false,
       left: 0,
       taskleft: 0,
       momentTime: 0,
@@ -267,7 +268,6 @@ export default {
     },
     // 是否开始
     getAgin (data) {
-      // console.log('ssssss')
       this.task_id = data.id
       this.isAngin = true
     },
@@ -277,6 +277,7 @@ export default {
       this.feilsUrl = ''
       this.filesStatus = 0
       this.feilsList = []
+      this.isImgShow = false
     },
     // 预览
     getYus (index) {
@@ -341,6 +342,7 @@ export default {
         }
         nameLists.push(nameObj)
       })
+      this.isImgShow = true
       this.nameLists = nameLists
       this.feilsList = list
       this.getYu(0)
@@ -440,7 +442,6 @@ export default {
        this.$axios.post(url, qs.stringify(items)).then(data => {
          const nowList = data.data.data.dates
          this.momentTime = data.data.current_time
-        //  console.log('获取时间', data.data.current_time)
          let list = Object.assign(afterLists, nowList, beforeLists);
          this.getView(list)
        }, error => {
@@ -495,7 +496,6 @@ export default {
     // 获取任务
     getTast () {
       let list = this.tastList
-      // console.log('数据', list)
       let startTimes = this.startTime
       let endTimes = this.endTime
       const todays = this.getTimes(Date.now()).times
@@ -665,7 +665,24 @@ export default {
        for(let i in list) {
          object.push(i)
        }
-       const num = object.length
+       // 最低6层测试
+       let num = 0
+       if (object.length < 6) {
+         num = 6
+         const objLt = object.length
+         const differ = 6 - objLt
+         const soltNum = Number(object[objLt - 1])
+         for (let i = 0; i < differ; i++) {
+           const nums = i + soltNum + 1
+           list[nums] = [
+             {startIndex: 0,
+              endIndex:0 }
+           ]
+         }
+       } else {
+         num = object.length
+       }
+       // 测试结束
        const numbers = this.dateList.length
        const widths = this.widths
        let element = document.getElementsByClassName('timeSoltFather')[0]
@@ -697,7 +714,6 @@ export default {
                  }
                }
              }
-              // console.log('i', i)
               htmlDate+= `<div class='latt-father'>${childrenString}</div>`
          }
        div.innerHTML= htmlDate
@@ -844,6 +860,7 @@ export default {
       let ones = {}
       let index = 0
       let allList = []
+      let idList = []
       let heightList = []
       const clentWidth = Number(this.widths.split('px')[0])
       for (let i in obj) {
@@ -855,6 +872,7 @@ export default {
           if (Object.keys(item.stage).length != 0) {
             item.stage.left = left
             item.stage.name = item.name
+            item.stage.parentId = item.id
             item.stage.project_name = item.project_name
             ones[i].push(item.stage)
           }
@@ -883,7 +901,23 @@ export default {
              items.create_time_title = !items.create_time ? null : this.getTimeTitle(items.create_time)
              items.client_audit_title = !items.client_audit_time ? null : this.getTimeTitle(items.create_time)
              items.inside_audit_title = !items.inside_audit_time ? null : this.getTimeTitle(items.create_time)
-             allList.push(items)
+             if (!allList.length) {
+               allList.push(items)
+               idList.push(items.id)
+             } else {
+                 if (idList.indexOf(items.id) == -1) {
+                   console.log('2')
+                   idList.push(items.id)
+                   allList.push(items)
+                 }
+                // allList.forEach(dom => {
+                //    console.log('2')
+                //    if (dom.id !== items.id) {
+                //       console.log('3', dom.id, items.id)
+                //      allList.push(items)
+                //    }
+                // });
+             }
           }
         })
       }
@@ -907,6 +941,7 @@ export default {
       }
       const listLt = allList.length;
       this.allListWidth = listLt * 520 - 20 + 'px'
+      console.log('重复数据', allList)
       this.examinList = allList
     },
     // 查找阶段
@@ -917,7 +952,14 @@ export default {
       }
       this.$axios.post(url, qs.stringify(items)).then(data => {
          this.stageList = data.data.stage
-         this.standardList = data.data.standard
+         const list = data.data.standard
+         const newList = []
+         list.forEach(element => {
+           if (element.type == 'file') {
+             newList.push(element)
+           }
+         });
+         this.standardList = newList
        })
     },
     // 获取时间字段
@@ -945,7 +987,6 @@ export default {
        const url = this.GLOBAL.baseRouter+"/task/task/stage-upload"
        const list = this.feilsList
        const objList = []
-      //  console.log('上传', list)
        list.forEach(items => {
          const obj = JSON.parse(items.response)
          objList.push({
@@ -1739,6 +1780,7 @@ export default {
   float: left;
   height: 100%;
   border-right: 1px solid #eef1f2;
+  background:#fdfdfd;
 }
 .latt-child:first-child{
   border-left: 1px solid #eef1f2;
@@ -1764,6 +1806,9 @@ export default {
       background: #fdfdfd;
       margin-right: 20px;
       float: left;
+      &:last-child {
+         margin-right: 0;
+      }
       .feedback_iamge_father{
         width: 100px;
         height: 100px;
@@ -1789,6 +1834,7 @@ export default {
            .feedback_words_task{
              font-size: 16px;
              font-weight: bold;
+             cursor: pointer;
            }
            .feedback_words_project{
              font-size: 14px;

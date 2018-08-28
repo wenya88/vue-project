@@ -1,5 +1,8 @@
 <template>
     <div class="membermanager">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>
         <Tabs size="small" v-model="tabsType">
             <TabPane v-if="memberMgt" label="成员管理" name="member">
@@ -19,12 +22,12 @@
                     <Layout>
                         <Content>
                             <memberlist ref="list" @choiseRow="selectMember"></memberlist>
-                            <memberinvite 
+                            <memberinvite
                             ref="invite"
                             >
                             </memberinvite>
-                            <membermessage 
-                            ref="message" 
+                            <membermessage
+                            ref="message"
                             :param="param"
                             @cancel='close()'
                             @revised='editMember(param.id,param.remark_name,param.department_id,param.post_id)'
@@ -34,6 +37,7 @@
                     </Layout>
                 </Layout>
             </TabPane>
+
             <TabPane v-if="roleMgt" label="权限设置" name="auth">
                 <Layout>
                     <Sider>
@@ -45,7 +49,7 @@
                         </Content>
                     </Layout>
                 </Layout>
-            </TabPane> 
+            </TabPane>
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
@@ -74,6 +78,7 @@ import membermessage from './mmComponents/memberMessage.vue';
 
 import authType from './mmComponents/authType.vue';
 import authMessage from './mmComponents/authMessage.vue';
+import mainNative from '../main-components/mainNative.vue';
 import {mapState} from 'vuex'
 export default {
     // data() {
@@ -87,7 +92,8 @@ export default {
         memberinvite,
         membermessage,
         authType,
-        authMessage
+        authMessage,
+        mainNative
     },
     data() {
         return {

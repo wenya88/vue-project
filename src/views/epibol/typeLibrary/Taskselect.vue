@@ -1,5 +1,5 @@
 <template>
-    <div class="taskselect" @click.stop>
+    <div class="taskselect" @click.stop >
         <div style="overflow: hidden">
             <input type="text" :value="currenVal" :disabled="disabled" class="currenVal" readonly @click.stop="isShowFun = !isShowFun"/>
             <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>
@@ -7,7 +7,7 @@
 
         <div class="selectContent" v-if="isShowFun">
             <ul class="dataList" v-if="dataList">
-                <li v-for="item in dataList" :label="item.name" :value="item.id" :key="item.id"  @click="getVal(item.name)">{{ item.name }}</li>
+                <li v-for="(item,index) in dataList" :label="item.name" :value="item.id" :key="item.id"  @click="getVal(item.name,item.id)">{{ item.name }} </li>
             </ul>
             <p><input type="text" v-model="values" placeholder="输入新标签" @keyup.enter="$emit('addNormsFun',values)"/></p>
         </div>
@@ -22,8 +22,15 @@
                 type:Array,
                 default:{},
             },
+            normName:String,
             disabled:Boolean,
-            callbackStatus:Boolean
+            callbackStatus:Boolean,
+            parentIndex:Number,
+            chilenIndex:Number,
+            module:{
+                type:Array,
+                default:[]
+            }
         },
         watch:{
             callbackStatus(val){
@@ -33,14 +40,29 @@
         data(){
             return{
                 isShowFun:false,
-                currenVal:'请选择',
+                currenVal:this.normName || '请选择',
                 values:null
             }
         },
         methods:{
-            getVal(val){
+            getVal(val,id){
                 this.currenVal = val;
                 this.isShowFun = false;
+                if(this.parentIndex!=null){
+                    this.module[this.parentIndex].require[this.chilenIndex].norm = id;
+                    this.$emit('Selectdata',{data:this.module,falg:true});
+                }else {
+                    this.$emit('Selectdata',{id:id,val:val,falg:false});
+                }
+                // console.log(this.dataList)
+                // console.log(this.parentIndex);
+                // console.log(this.chilenIndex);
+                // console.log(index);
+                // console.log(JSON.stringify(this.module));
+                // console.log(this.module[0])
+
+                    // console.log(JSON.stringify(this.module));
+
             }
         },
         mounted () {

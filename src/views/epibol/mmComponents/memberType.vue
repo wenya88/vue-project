@@ -20,7 +20,7 @@
                                     <li @click="editDept(item.id,item.name)">编辑</li>
                                     <li @click="delDept(item.id)">删除</li>
                                 </ul>
-                            </div> 
+                            </div>
                         </Poptip>
                     </li>
                 </ul>
@@ -40,12 +40,12 @@
                                     <li @click="editDuty(item.id,item.name)">编辑</li>
                                     <li @click="delDuty(item.id)">删除</li>
                                 </ul>
-                            </div> 
+                            </div>
                         </Poptip>
                     </li>
                 </ul>
                 <slot name="addDuty"></slot>
-            </TabPane> 
+            </TabPane>
         </Tabs>
     </div>
 </template>

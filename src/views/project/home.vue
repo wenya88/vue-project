@@ -1,5 +1,8 @@
 <template>
     <div class="ProjectHomePage">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
         <!-- 首页头部 -->
         <Row>
             <Col span="24">
@@ -165,6 +168,7 @@
 <script>
 var qs=require('querystring')
 import vFlare from '@/components/d3flare'
+import mainNative from '../main-components/mainNative.vue';
 import {mapState} from 'vuex'
 export default {
     data(){
@@ -225,7 +229,8 @@ export default {
         })
     },
     components:{
-        vFlare
+        vFlare,
+        mainNative
     },
 
 }
