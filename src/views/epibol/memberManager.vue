@@ -81,6 +81,7 @@ import membertype from './mmComponents/memberType.vue';
 // import membercontroller from './mmComponents/memberController.vue';
 import memberinvite from './mmComponents/memberInvite.vue';
 import membermessage from './mmComponents/memberMessage.vue';
+import Cookie from 'js-cookie'
 
 import authType from './mmComponents/authType.vue';
 import authMessage from './mmComponents/authMessage.vue';
@@ -123,10 +124,11 @@ export default {
         };
     },
     created() {
+    
         let company = JSON.parse(Cookies.get('company'))
         // console.log(typeof company.member_id)
         this.title = company.company_name;
-        this.number = company.member_id+''
+        this.number = company.member_count+''
     },
     mounted() {
         this.deptListData();
@@ -170,7 +172,7 @@ export default {
          */
         deptListData() {
             let data = {
-                company_id: 1
+                company_id: Cookie.get('company').id
             }
             this.$store.dispatch('fetchDeptList', qs.stringify(data));
         },
@@ -179,7 +181,7 @@ export default {
          */
         dutyListData() {
             let data = {
-                company_id: 1
+                company_id: Cookie.get('company').id
             }
             this.$store.dispatch('fetchDutyList', qs.stringify(data));
         },
@@ -281,6 +283,8 @@ export default {
                     if (res.err_code == 0) {
                         this.deptListData();
                         this.$Message.success('删除部门成功');
+                        window.location.reload();
+
                     } else {
                         this.$Message.error('删除部门失败');
                     }
@@ -319,9 +323,10 @@ export default {
         okDuty(name) {
             if (name == 'add') {
                 let data = {
-                    company_id: 1,
+                    company_id: Cookie.get('company').id,
                     name: this.dutyName
                 }
+            
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/post/add', qs.stringify(data))
                     .then(res => res.data)
                     .then(res => {
@@ -503,7 +508,7 @@ export default {
     background: #EEF1F2;
 }
 .ivu-tabs{
-    margin-left: 50px;
+    // margin-left: 20px;
     background: #EEF1F2;
 
 }

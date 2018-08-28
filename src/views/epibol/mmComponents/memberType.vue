@@ -8,9 +8,14 @@
         <Tabs type="card">
             <TabPane label="部门">
                 <ul class="fMenu">
+                    
+                  
                     <li v-for="(item,index) in deptList" :key="index" :class="{'actived': FMenuIndex == index}" @click="openTable(index,item.company_id,item.id)">
                         {{item.name}}
+                        
                         <span class="numStyle">({{item.member_count}})</span>
+                        
+
                         <!-- <span class="more" @click.stop="editItem()">...</span> -->
                         <!-- <Poptip class="more" placement="bottom-end" v-if="index+1 < deptList.length"> -->
                             <!-- <span>...</span> -->
@@ -23,15 +28,22 @@
                             </div>  -->
                         <!-- </Poptip> -->
                        
-                        <span class="api">
+                        <span v-if="item.company_id" class="api">
                             <!-- <slot name="fmore"></slot> -->
                             <Icon @click="editDept(item.id,item.name)" type="edit" ></Icon>
                             
                             <Icon @click="delDept(item.id)" type="ios-trash-outline" ></Icon>
                             
                         </span>
-                        <!-- <span v-if="!item.name">未分配部门</span> -->
+                     
                     </li>
+                    <!-- <li>未分配门（0）</li> -->
+                    <!-- <div>
+                        <span v-if="!item.name">未分配部门</span>
+                        <Icon @click="editDept(item.id,item.name)" type="edit" ></Icon>
+                            
+                        <Icon @click="delDept(item.id)" type="ios-trash-outline" ></Icon> 
+                    </div> -->
                 </ul>
                 <slot name="addDept"></slot>
             </TabPane>
@@ -55,7 +67,7 @@
                                 <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon>
                                 <!-- （默认） -->
                             </span> 
-                             <span v-if="!item.company_id" class="api">
+                             <span v-if="!item.company_id&& item.name!='未分配角色'" class="api">
                                 <!-- <Icon @click="editDuty(item.id,item.name)" type="edit" class="edit"></Icon>
                                 <Icon @click="delDuty(item.id)" type="ios-trash-outline" class=""></Icon> -->
                                 （默认）
@@ -76,6 +88,7 @@ export default {
         return {
             FMenuIndex: null,
             SMenuIndex: null
+            // deptListtda:[]
         }
     },
     props: {
@@ -100,6 +113,11 @@ export default {
         // openNames: {
         //     type: Array
         // }
+    },
+    mounted(){
+        
+        // this.deptListtda=JSON.parse(sessionStorage.fetchList);
+        // sessionStorage.removeItem(fetchList)
     },
     methods: {
         /**
