@@ -305,12 +305,12 @@
     .taskinfopop {
         overflow: hidden;
         .title {
-            display: flex;
-            margin-top: 5px;
             padding: 0 52px 0 0;
+            margin-top: 5px;
+            text-align: right;
             line-height: 40px;
             font-size: 18px;
-            justify-content: space-between;
+
         }
         .taskinfopopTitle{
             width: 415px;

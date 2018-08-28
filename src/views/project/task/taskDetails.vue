@@ -118,7 +118,7 @@
                     <ul>
                         <li class="flieList" v-for="(items,index) in flieList" :key="index">
                             <span><Icon type="android-document"></Icon><span> {{items.name}}</span></span>
-                            <Icon type="ios-close-outline"></Icon>
+                            <Icon @click.native="delImage(items)" type="ios-close-outline"></Icon>
                         </li>
                     </ul>
 
@@ -248,6 +248,7 @@
                                 this.clickMenberDropdown();
                                 this.callFatherFunction(fatherFunctions);
                                 this.principalName = res.member_id;
+                                this.flieList = res.file||[];
                                 this.setTaskInfo(res);  // vux存储info
 
                                 this.$bus.emit('initFileBrowse', {taskid: res.id, type: res.stage_file_type});
@@ -566,7 +567,8 @@
             },
              getUploadFile(uploader) {
                 const obj = {url: JSON.parse(uploader.data.response).file_url, name: uploader.data.name}
-                this.flieList.push(obj)
+                this.flieList.push(obj);
+                 this.saveShow();
 
             },
             clearAllData() {
@@ -574,6 +576,13 @@
                 this.principalName = '';
                 this.referenceFileName = [];
                 this.taskTypeInfo = [];
+            },
+            delImage({url}){
+                this.flieList = this.flieList.filter((item) => {
+                 return item.url !== url
+                });
+                this.saveShow();
+
             }
         },
         components: {

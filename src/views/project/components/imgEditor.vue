@@ -366,7 +366,7 @@
                                 // 设置初始化值
                                 _this.data = val.file.tag;
                                 _this.StateFeedBack = val.status;
-                                console.log(113,val)
+
                                 _this.insTime = val.inside_audit_time;
                                 _this.cliTiem = val.client_audit_time;
                                 _this.insDate = val.inside_audit_date;
