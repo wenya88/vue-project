@@ -1,48 +1,52 @@
 ﻿<template>
-   <div class="page_week_all">
-     <!-- 左侧 -->
-     <div class="left_tips">
-        <img class='left_img_first' src='../../images/right.png'/>
-        <img class='left_img_last' src='../../images/right.png'/>
-     </div>
-     <!-- 右侧 -->
-     <div class="right_tips">
-        <img class='right_img_first' src='../../images/left.png'/>
-        <img class='right_img_last' src='../../images/left.png'/>
-     </div>
-    <p class="myTaskAll"><span class="iconfont icon-ymy-ren-copy"></span>我的任务</p>
-     <!-- 未读任务end -->
-     <div class="tiemSolt" :style="`height: ${boxHight}`" @mousedown="down">
-      <div :style="`width: ${widthAll}`" class="clearfix timeSoltFather">
-         <!-- 时间 -->
-         <div v-for="(item, indexed) in dateList"  :style="`width: ${widths}`" class="times_box" :key="indexed">
-          <span v-show='item.weeks'>{{item.weeks}}</span>
-          <span>{{item.dateStr}}</span>
-        </div>
-         <!-- 时间结束 -->
-        <div class="task_ka" :style="`height:${boxHg}`">
-         <div :class="`task_top_box ${elems.taskBack}`" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
-           <div class="task_describe">
-             <div class="clearfix task_describe_title">
-               <p class="state-introd" :style="`background:${elems.leftTopColor}`">{{elems.isComplete}}</p>
-               <div class="task_describe_father">
-                 <span class='task_describe-sign iconfont icon-bofang' @click='getAgin(elems)' v-if='elems.status == 1'></span>
-                 <span class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</span>
+    <div>
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
+       <div class="page_week_all">
+         <!-- 左侧 -->
+         <div class="left_tips">
+            <img class='left_img_first' src='../../images/right.png'/>
+            <img class='left_img_last' src='../../images/right.png'/>
+         </div>
+         <!-- 右侧 -->
+         <div class="right_tips">
+            <img class='right_img_first' src='../../images/left.png'/>
+            <img class='right_img_last' src='../../images/left.png'/>
+         </div>
+         <p class="myTaskAll"><span class="iconfont icon-ymy-ren-copy"></span>我的任务</p>
+         <!-- 未读任务end -->
+         <div class="tiemSolt" :style="`height: ${boxHight}`" @mousedown="down">
+          <div :style="`width: ${widthAll}`" class="clearfix timeSoltFather">
+             <!-- 时间 -->
+             <div v-for="(item, indexed) in dateList"  :style="`width: ${widths}`" class="times_box" :key="indexed">
+              <span v-show='item.weeks'>{{item.weeks}}</span>
+              <span>{{item.dateStr}}</span>
+            </div>
+             <!-- 时间结束 -->
+            <div class="task_ka" :style="`height:${boxHg}`">
+             <div :class="`task_top_box ${elems.taskBack}`" v-for="(elems, indexed) in tastList" :key="indexed" :style="`width:${elems.centWidth}; left:${elems.clienLeft}; top:${elems.top}`">
+               <div class="task_describe">
+                 <div class="clearfix task_describe_title">
+                   <p class="state-introd" :style="`background:${elems.leftTopColor}`">{{elems.isComplete}}</p>
+                   <div class="task_describe_father">
+                     <span class='task_describe-sign iconfont icon-bofang' @click='getAgin(elems)' v-if='elems.status == 1'></span>
+                     <span class="task_describe_msg" @click="goTask(elems.id)">{{elems.name}}</span>
+                   </div>
+                 </div>
+               </div>
+               <div class="upload_preview_box"  v-show="elems.status !== '1'"  @click="getUpload(elems)">
+                 <p class="iconfont icon-ymy-upload-copy"></p>
                </div>
              </div>
-           </div>
-           <div class="upload_preview_box"  v-show="elems.status !== '1'"  @click="getUpload(elems)">
-             <p class="iconfont icon-ymy-upload-copy"></p>
-           </div>
+            </div>
+            <!-- 审核任务box -->
+          </div>
          </div>
-        </div>
-        <!-- 审核任务box -->
-      </div>
-     </div>
-     <!-- 审核任务未读 -->
-     <!-- 审核任务 -->
-        <p class="myTaskAll"><span class="iconfont icon-ymy-wenjian-copy"></span>任务反馈</p>
-        <div class="task_feedback" @mousedown="getdown">
+         <!-- 审核任务未读 -->
+         <!-- 审核任务 -->
+         <p class="myTaskAll"><span class="iconfont icon-ymy-wenjian-copy"></span>任务反馈</p>
+         <div class="task_feedback" @mousedown="getdown">
            <div class="task_feedback_box" :style="`width:${allListWidth}`">
               <div class="clearfix task_feedback_msg" v-for="(item, index) in examinList" :key="index">
                 <div class="feedback_iamge_father">
@@ -76,95 +80,97 @@
               </div>
            </div>
         </div>
-     <!-- 上传界面 -->
-     <div class="upload_outer" v-if="isclose">
-      <div class="upload_page">
-        <p class="upload_page_close" @click="getclose">x</p>
-        <div class="upload_page_header">
-           <!-- <span class="upload_header_ce">测试</span> -->
-           <span class="upload_header_title">{{task_name}}</span>
-           <span class="upload_header_ce">测试</span>
-        </div>
-        <div class="upload_page_main">
-           <p class="Choice_page_title">选者上传阶段</p>
-           <ul class="choice_page_ul">
-              <li  v-for="(items,indexs) in stageList" @click="getClick(indexs)" :key="indexs">
-                <span :class="`iconfont icon-ymy-right-copy ${items.Instructions}`" v-if="indexs"></span>
-                <div :class="items.elementClass">
-                  <p>{{items.stage_name}}</p>
-                  <span class="iconfont icon-ymy-xuanzhong-copy upload_gou" v-if="items.iconShow"></span>
-                  <span class="upload_jiao" v-if="indexs == stageList.length-1">交稿阶段</span>
-                </div>
-             </li>
-           </ul>
-           <p class="Choice_page_title">文件交稿规范</p>
-           <div class="Choice_page_box">
-             <!-- <GeminiScrollbar class="crollbar"> -->
-              <p class="clearfix choice_title_Stand" v-for="(itd, indexs) in standardList" :key="indexs">
-                <span>{{itd.name}}</span>
-                <span>{{itd.values}}</span>
-              </p>
-             <!-- </GeminiScrollbar> -->
-           </div>
-           <!-- 上传文件 -->
-           <div class="upload_box">
-               <upload-box v-if="!isImgShow">
-                 <template slot='upload'>
-                   <div id="browse" class="browse"></div>
-                   <div class="title_all">
-                     <p class='iconfont icon-ymy-upload-copy font_class'></p>
-                     <p class="prompt_title">拖入/点击上传任务文件</p>
-                     <p class="prompt_title_last">支持jpg、gf、png</p>
-                     </div>
-                 </template>
-               </upload-box>
-               <div class='all_upload_page' v-else>
-                 <Row v-if="nameList.length != filenum">
-                    <Col class="demo-spin-col" span="24">
-                        <Spin size="large"></Spin>
-                    </Col>
-                 </Row>
-                <GeminiScrollbar class="crollbar" v-else>
-                 <div class="again_upload_father">
-                   <p class="again_upload_title">上传文件</p>
-                   <p class="again_upload" @click="againFun">重新上传</p>
-                 </div>
-                 <div class="yu_lan">
-                   <img :src="feilsUrl" v-show="filesStatus==1"/>
-                   <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
-                        your browser does not support the video tag
-                    </video>
-                    <three-module v-show="filesStatus==3">
-                    </three-module>
-                 </div>
-                  <div class="yulan_span">
-                    <div :class="`yulanBacks ${element.backClass}`" v-for="(element, indexs) in nameList" :key="indexs">
-                       <div class="yulan_bx" @click="getYus(indexs)">
-                          <p class="yulan_sanjiao"></p>
-                          <p class="yulan_zhujian">设为主文件</p>
-                       </div>
-                       <p class="xe_title" @click="getYu(indexs)"><span class="precond" v-show="element.is_precond">预</span><span>{{element.name}}</span></p>
+         <!-- 上传界面 -->
+         <div class="upload_outer" v-if="isclose">
+          <div class="upload_page">
+            <p class="upload_page_close" @click="getclose">x</p>
+            <div class="upload_page_header">
+               <!-- <span class="upload_header_ce">测试</span> -->
+               <span class="upload_header_title">{{task_name}}</span>
+               <span class="upload_header_ce">测试</span>
+            </div>
+            <div class="upload_page_main">
+               <p class="Choice_page_title">选者上传阶段</p>
+               <ul class="choice_page_ul">
+                  <li  v-for="(items,indexs) in stageList" @click="getClick(indexs)" :key="indexs">
+                    <span :class="`iconfont icon-ymy-right-copy ${items.Instructions}`" v-if="indexs"></span>
+                    <div :class="items.elementClass">
+                      <p>{{items.stage_name}}</p>
+                      <span class="iconfont icon-ymy-xuanzhong-copy upload_gou" v-if="items.iconShow"></span>
+                      <span class="upload_jiao" v-if="indexs == stageList.length-1">交稿阶段</span>
                     </div>
-                 </div>
-                 </GeminiScrollbar>
+                 </li>
+               </ul>
+               <p class="Choice_page_title">文件交稿规范</p>
+               <div class="Choice_page_box">
+                 <!-- <GeminiScrollbar class="crollbar"> -->
+                  <p class="clearfix choice_title_Stand" v-for="(itd, indexs) in standardList" :key="indexs">
+                    <span>{{itd.name}}</span>
+                    <span>{{itd.values}}</span>
+                  </p>
+                 <!-- </GeminiScrollbar> -->
                </div>
-           </div>
-           <p class="sure_title" @click="uploadImg">完成上传</p>
-        </div>
-      </div>
-      </div>
-     <!-- 上传界面end -->
-     <div class="is_angin" v-if="isAngin">
-        <p>是否开始任务</p>
-        <div class="is_angin_box">
-          <p @click="sureAngin">是</p>
-          <p @click="noAngin">否</p>
-        </div>
-      </div>
-   </div>
+               <!-- 上传文件 -->
+               <div class="upload_box">
+                   <upload-box v-if="!isImgShow">
+                     <template slot='upload'>
+                       <div id="browse" class="browse"></div>
+                       <div class="title_all">
+                         <p class='iconfont icon-ymy-upload-copy font_class'></p>
+                         <p class="prompt_title">拖入/点击上传任务文件</p>
+                         <p class="prompt_title_last">支持jpg、gf、png</p>
+                         </div>
+                     </template>
+                   </upload-box>
+                   <div class='all_upload_page' v-else>
+                     <Row v-if="nameList.length != filenum">
+                        <Col class="demo-spin-col" span="24">
+                            <Spin size="large"></Spin>
+                        </Col>
+                     </Row>
+                    <GeminiScrollbar class="crollbar" v-else>
+                     <div class="again_upload_father">
+                       <p class="again_upload_title">上传文件</p>
+                       <p class="again_upload" @click="againFun">重新上传</p>
+                     </div>
+                     <div class="yu_lan">
+                       <img :src="feilsUrl" v-show="filesStatus==1"/>
+                       <video :src="feilsUrl" width="100%" height="300px;" controls="controls" v-show="filesStatus==2">
+                            your browser does not support the video tag
+                        </video>
+                        <three-module v-show="filesStatus==3">
+                        </three-module>
+                     </div>
+                      <div class="yulan_span">
+                        <div :class="`yulanBacks ${element.backClass}`" v-for="(element, indexs) in nameList" :key="indexs">
+                           <div class="yulan_bx" @click="getYus(indexs)">
+                              <p class="yulan_sanjiao"></p>
+                              <p class="yulan_zhujian">设为主文件</p>
+                           </div>
+                           <p class="xe_title" @click="getYu(indexs)"><span class="precond" v-show="element.is_precond">预</span><span>{{element.name}}</span></p>
+                        </div>
+                     </div>
+                     </GeminiScrollbar>
+                   </div>
+               </div>
+               <p class="sure_title" @click="uploadImg">完成上传</p>
+            </div>
+          </div>
+          </div>
+         <!-- 上传界面end -->
+         <div class="is_angin" v-if="isAngin">
+            <p>是否开始任务</p>
+            <div class="is_angin_box">
+              <p @click="sureAngin">是</p>
+              <p @click="noAngin">否</p>
+            </div>
+          </div>
+       </div>
+    </div>
 </template>
 <script>
 import {mapMutations,mapState} from 'vuex'
+import mainNative from '../main-components/mainNative.vue';
 var qs = require('querystring')
 import uploadBox from '../../components/upload.vue'
 import threeModule from '../project/components/threeModule.vue'
@@ -209,7 +215,8 @@ export default {
   },
   components: {
     uploadBox,
-    threeModule
+    threeModule,
+    mainNative
   },
   mounted () {
     // this.getShowTime()
@@ -744,7 +751,7 @@ export default {
         title: timesTile
       }
       return itms
-      
+
     },
     // 获取时间任务时间段
     getTimeSlot () {

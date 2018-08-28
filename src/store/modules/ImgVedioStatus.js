@@ -8,7 +8,7 @@ const ImgVediostatus={
         changeComponentID(state,obj){
             state.TaskID=obj.taskId;
             state.stageId=obj.stageId;
-            // console.log(118,cData)
+            // console.log(118,obj)
         },
         changeComponentFileURl(state,cData){
             state.FileURl=cData;

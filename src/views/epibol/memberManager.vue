@@ -1,6 +1,12 @@
 <template>
     <div class="membermanager">
         <main-native>
+            <!--<div class="main-header-style iconfont">-->
+                <!--<ul class="setMenuList">-->
+                    <!--<li class="checked">成员管理</li>-->
+                    <!--<li>权限设置</li>-->
+                <!--</ul>-->
+            <!--</div>-->
             <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
         </main-native>
         <Button class="addBtn" type="primary" size="large" icon="plus-round" @click.native="clickInviteMember">添加成员</Button>

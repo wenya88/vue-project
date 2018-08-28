@@ -255,7 +255,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'imPlementer',
                 title: '实施人员',
-                meta:{role:3},
+                meta:{role:3,title:'我的工作'},
                 component: resolve => { require(['@/views/epibol/imPlementer.vue'], resolve); }
             }, {
                 path: '/epibol/ProjectWorks',
