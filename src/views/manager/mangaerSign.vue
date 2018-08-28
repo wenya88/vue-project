@@ -166,7 +166,7 @@ export default {
             },
             interval: maxNum/5,
             axisLabel: {
-                formatter: '{value} 个',
+                formatter: '{value}',
                 color: '#bdbdbd'
             },
             axisLine:{
@@ -186,7 +186,7 @@ export default {
             interval: maxMeng/5,
             axisLabel: {
                 color: '#bdbdbd',
-                formatter: '{value} 万'
+                formatter: '{value}'
             },
             axisLine:{
               lineStyle:{
