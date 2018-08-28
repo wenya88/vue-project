@@ -83,10 +83,10 @@
         <div class="upload_page_header">
            <!-- <span class="upload_header_ce">测试</span> -->
            <span class="upload_header_title">{{task_name}}</span>
-           <span class="upload_header_ce">测试</span>
+           <span class="upload_header_ce" v-if="is_tesk == 1">测试</span>
         </div>
         <div class="upload_page_main">
-           <p class="Choice_page_title">选者上传阶段</p>
+           <p class="Choice_page_title">选择上传阶段</p>
            <ul class="choice_page_ul">
               <li  v-for="(items,indexs) in stageList" @click="getClick(indexs)" :key="indexs">
                 <span :class="`iconfont icon-ymy-right-copy ${items.Instructions}`" v-if="indexs"></span>
@@ -97,7 +97,7 @@
                 </div>
              </li>
            </ul>
-           <p class="Choice_page_title">文件交稿规范</p>
+           <p class="Choice_page_title">交稿规范</p>
            <div class="Choice_page_box">
              <!-- <GeminiScrollbar class="crollbar"> -->
               <p class="clearfix choice_title_Stand" v-for="(itd, indexs) in standardList" :key="indexs">
@@ -113,7 +113,7 @@
                    <div id="browse" class="browse"></div>
                    <div class="title_all">
                      <p class='iconfont icon-ymy-upload-copy font_class'></p>
-                     <p class="prompt_title">拖入/点击上传任务文件</p>
+                     <p class="prompt_title">点击上传任务文件</p>
                      <p class="prompt_title_last">支持jpg、gf、png</p>
                      </div>
                  </template>
@@ -126,7 +126,7 @@
                  </Row>
                 <GeminiScrollbar class="crollbar" v-else>
                  <div class="again_upload_father">
-                   <p class="again_upload_title">上传文件</p>
+                   <!-- <p class="again_upload_title">上传文件</p> -->
                    <p class="again_upload" @click="againFun">重新上传</p>
                  </div>
                  <div class="yu_lan">
@@ -193,6 +193,7 @@ export default {
       isToday: true,
       boxHgs: '',
       boxHight: '',
+      is_tesk: '0',
       beforeData: {},
       afterData: {},
       listAll: {},
@@ -351,6 +352,8 @@ export default {
     // 上传
     getUpload (data) {
       this.task_id = data.id
+      this.is_tesk = data.is_test
+      console.log('点击数据', data)
       this.task_name = data.name
       this.isclose = true
       this.againFun()

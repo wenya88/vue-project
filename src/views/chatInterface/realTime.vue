@@ -121,7 +121,7 @@ export default {
     this.getOss()
     screenshot()
     // this.isLogin()
-    this.scrollToBottom()
+    // this.scrollToBottom()
     this.getName()
   },
   updated () {
@@ -561,6 +561,11 @@ export default {
       })
       this.$set(this, 'datalist', newList)
       this.getName()
+      const that = this
+      this.$nextTick(() => {
+        that.scrollToBottom()
+      })
+      // this.scrollToBottom()
     },
     // 获取字符串位置
     searchSubStr (str, subStr){
@@ -619,6 +624,7 @@ export default {
  height: calc(100% - 150px);
  position: relative;
  overflow: hidden;
+ z-index: 999;
 }
 .realTime_interface{
   box-sizing: border-box;
