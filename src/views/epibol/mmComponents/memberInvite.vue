@@ -273,6 +273,7 @@ export default {
                                 this.$Message.error('电子邮箱已存在');
                             }
                         })
+                        window.location.reload()
                 }
             })
         },
