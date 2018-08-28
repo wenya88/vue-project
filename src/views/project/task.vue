@@ -56,7 +56,7 @@
                                               :title="item.leader_name">{{item.leader_name}}</span></template>
                                     <!--单独的成员-->
                                     <div v-else class="alone">
-                                        <img class="headImg" src="./task/QQ图片20180719133401.jpg" alt="">
+                                        <img class="headImg" :src="item.headimage" alt="">
                                     </div>
                                 </div>
                                 <!--子项目和单独成员的进度条-->

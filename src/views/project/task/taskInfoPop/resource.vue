@@ -2,26 +2,24 @@
     <!--资源-->
     <div class="resourceContainer">
         <div class="box">
-            <Steps :current="0" direction="vertical" >
-                <Step  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)" >
-                    <div class="content">
-                        <div class="resourceTitle">
-                            <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>
-                            <p style="color: #c5c5c5">{{item.create_time|time}}</p>
-                        </div>
-
-                        <div class="file" >
-                            <p class="textB3" >上传文件规格</p>
-                            <ul>
-                                <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
-                                    <span>宽高</span>
-                                    <span>{{item}}</span>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="content" :current="0"  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)">
+                <div class="resourceTitle">
+                    <p><i class="steps">{{index+1}}</i> <span class="stepsTitle">{{item.name}}</span></p>
+                    <div>
+                        <p  class="resourceStatus" style="text-align: right">{{item.status | stateData}}</p>
+                        <p style="color: #c5c5c5">{{item.create_time|time}}</p>
                     </div>
-                </Step>
-            </Steps>
+                </div>
+                <div class="file" >
+                    <p class="textB3" >上传文件规格</p>
+                    <ul>
+                        <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
+                            <span>宽高</span>
+                            <span>{{item}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <!--<h1>{{imgEditorWH}}</h1>-->
     </div>
@@ -128,6 +126,7 @@
     @green:#3bceb6;
     @gray:#c5c5c5;
     .resourceContainer {
+        padding: 0 20px;
         .ivu-steps-head{
             top:31px;
             background: #fff !important;
@@ -162,15 +161,34 @@
             }
         }
         .content {
-            width: 350px;
+            margin-bottom: 40px;
             font-size: 14px;
             .resourceTitle{
-                position: absolute;
-                top:0;
-                right: 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 21px;
+                border-bottom: 1px solid #e2e2e2;
+                .steps{
+                    font-style: normal;
+                    display: inline-block;
+                    background: @green;
+                    color: #fff;
+                    font-size: 15px;
+                    border-radius: 100%;
+                    width: 25px;
+                    height: 25px;
+                    text-align: center;
+                    line-height: 25px;
+                }
+                .stepsTitle{
+                    color: @green;
+                }
+                /*position: absolute;*/
+                /*top:0;*/
+                /*right: 0;*/
             }
             .file{
-                margin: 45px 0 8px 0;
                 p{
                     margin: 5px 0;
                 }
@@ -182,9 +200,10 @@
                     margin-bottom: 15px;
                     justify-content: space-between;
                     color: #808181;
-                    background: #f2f2f2;
+                    background: #f8f8f8;
                     border-radius: 4px;
                 }
+                ul{border-bottom: 1px solid #e2e2e2}
             }
 
             .resourceStatus{

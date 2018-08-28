@@ -13,7 +13,7 @@
                                 <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
 
                                 <span>
-                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                                    <img  class="headImg" :src="items.headimage"  alt=""><span style="vertical-align: top" >{{items.remark_name ||items.nickname}}</span>
                                </span>
                             </div>
                             <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
@@ -35,7 +35,7 @@
                             <div class="BottomInfo">
                                 <span style="color: #777777" >{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
                                <span>
-                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                                    <img  class="headImg" :src="items.headimage"  alt=""><span style="vertical-align: top" >{{items.remark_name ||items.nickname}}</span>
                                </span>
                             </div>
                             <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
@@ -53,7 +53,7 @@
                             <div class="BottomInfo">
                                 <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
                                 <span>
-                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                                    <img  class="headImg" :src="items.headimage"  alt=""><span style="vertical-align: top" >{{items.remark_name ||items.nickname}}</span>
                                </span>                    </div>
                             <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                         </div>
