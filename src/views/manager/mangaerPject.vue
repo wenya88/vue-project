@@ -34,11 +34,11 @@ export default {
         {value:obj.doing, name: '实施项目'},
         {value:obj.inside, name: '内部项目'},
         {value:obj.outside, name: '外包项目、子项目'},
-        {value:obj.pause, name: '已暂停'}
+        {value:obj.pause,name: '已暂停'}
       ]
       const myCharts = echarts.init(document.getElementById('pjt_bx'))
       myCharts.setOption({
-        color: ['#7cbefc', '#fcc44a', '#3bceb6', '#eef1f2'],
+        color: ['#7cbefc', '#fcc44a', '#3bceb6', '#bdbdbd'],
         series: [
           {
             name:'访问来源',
