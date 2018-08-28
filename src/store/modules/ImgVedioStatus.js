@@ -10,6 +10,9 @@ const ImgVediostatus={
             state.stageId=obj.stageId;
             // console.log(118,obj)
         },
+        changeComponentTaskID(state,cData){
+            state.TaskID = cData;
+        },
         changeComponentFileURl(state,cData){
             state.FileURl=cData;
             // console.log(119,cData)

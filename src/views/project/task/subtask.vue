@@ -28,7 +28,7 @@
             </accretiontaskpop>
         </Modal>
 
-        <!-- 编辑任务组件 -->
+         <!--编辑任务组件 -->
         <Modal
                 v-model="isShowTaskDetails"
                 width="600"
