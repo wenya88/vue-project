@@ -6,7 +6,8 @@
         :columns="membercolumns" 
         :data="memberdata" 
         @on-row-click="clickRow"
-        :loading="loadingStatus">
+        :loading="loadingStatus"
+        >
         </Table>
         <Page 
         :total="count"
@@ -195,7 +196,7 @@ import { mapGetters } from 'vuex'
         },
         clickRow(index) {
             this.$emit('choiseRow', index)
-            // console.log(index)
+            console.log(index)
         }
     }
 }

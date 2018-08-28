@@ -17,21 +17,23 @@
           <Input v-model="param.password" placeholder="登录密码" style="width: 300px" :disabled="editStatus"/>
         </td>
       </tr> -->
+      
       <tr>
         <td width=300px>备注名</td>
         <td width=120px>所属部门</td>
         <td width=120px>职位</td>
       </tr>
-      <tr>
-        <td width=320><Input v-model="param.remark_name" placeholder="备注名" style="width: 300px"/></td>
-        <td width=160>
-          <Select v-model.number="param.department_id" style="width:140px">
+      <tr> 
+        <td width=320><Input v-model="param.remark_name"   placeholder="备注名" style="width: 300px"/></td>
+        <td width=160 >
+          <Select v-model="param.department_id"  style="width:140px" >
             <Option v-for="item in deptList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+
           </Select>
         </td>
         <td width=160>
-          <Select v-model.number="param.post_id" style="width:140px">
-            <Option v-for="item in dutyList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          <Select  v-model="param.post_id" style="width:140px">
+            <Option v-for="item in dutyList" :value="item.id"  :key="item.id">{{ item.name }}</Option>
           </Select>
         </td>
       </tr>
@@ -58,31 +60,38 @@
 
 <script>
 var qs = require('querystring');
+var t = 0;
 import { mapGetters } from 'vuex'
 export default {
   props: {
     param: {
-      type: Object,
-      default: ''
+      type: Object
     },
     editStatus: {
       type: Boolean,
       default: false
-    }
+    },
+   
   },
   data() {
     return {
-      showAddNew: false
+      showAddNew: false,
+      model1:t,
     }
+  },
+  created() {
+      console.log(this.param)
   },
   mounted() {
       this.deptListData();
       this.dutyListData();
+      // console.log(thiparam)
+    
   },
   computed: {
     ...mapGetters({
       deptList: 'getDeptList',
-      dutyList: 'getDutyList'
+      dutyList: 'getDutyList',
     })
   },
   methods: {
@@ -120,7 +129,7 @@ export default {
      */
     dutyListData() {
       let data = {
-        company_id: 1
+        company_id: 1,
       }
       this.$store.dispatch('fetchDutyList', qs.stringify(data));
     },

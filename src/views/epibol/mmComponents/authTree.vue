@@ -2,7 +2,7 @@
   <div>
     <ul>
       <CheckboxGroup v-model="project" @on-change="changeProjectBox">
-        <li><Checkbox label="1">全部项目</Checkbox></li>
+        <li><Checkbox class="title" label="1">全部项目</Checkbox></li>
         <li><Checkbox label="2">负责的项目</Checkbox></li>
         <li><Checkbox label="3">负责的子项目</Checkbox></li>
         <li><Checkbox label="4">负责的任务</Checkbox></li>
@@ -11,13 +11,13 @@
     </ul>
     <ul>
       <CheckboxGroup v-model="bid" @on-change="changeBidBox">
-        <li><Checkbox label="1">全部投标</Checkbox></li>
+        <li><Checkbox class="title" label="1">全部投标</Checkbox></li>
         <li><Checkbox label="2">负责的投标</Checkbox></li>
       </CheckboxGroup>
     </ul>
     <ul>
       <CheckboxGroup v-model="contract" @on-change="changeContractBox">
-        <li><Checkbox label="1">全部合同</Checkbox></li>
+        <li><Checkbox class="title" label="1">全部合同</Checkbox></li>
         <li><Checkbox label="2">负责的合同</Checkbox></li>
       </CheckboxGroup>
     </ul>
@@ -134,16 +134,23 @@ ul{
   padding: 20px;
   padding-bottom: 0;
   li{
-    line-height: 30px;
+    line-height: 44px;
+    &:nth-child(1){
+      background: #EEF1F2;
+      padding-left: 15px;
+    }
     &:nth-child(2){
       margin-left: 20px;
+      padding-left: 28px;
     }
-    &:nth-child(3){
+    &:nth-child(3),&:nth-child(4),&:nth-child(5){
+      padding-left: 50px;
       margin-left: 40px;
     }
-    &:nth-child(4),&:nth-child(5){
-      margin-left: 60px;
-    }
+    // &:nth-child(4),&:nth-child(5){
+    //   padding-left: 50px;
+    //   margin-left: 60px;
+    // }
   }
 }
 </style>
