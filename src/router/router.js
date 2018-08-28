@@ -147,6 +147,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'file',
                 title: '任务管理详情',
+                meta:{title:'任务管理详情'},
                 component:resolve=>{ require (['@/views/project/task/taskInfoPop/taskInfoPop.vue'],resolve)}
             },
             {
@@ -175,7 +176,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'eHome',
                 title: '概况页',
-                meta: {role: 'c1_1',title:'概况页'},
+                meta: {role: 'c1_1',title:'概况'},
                 component: resolve => { require(['@/views/epibol/home.vue'], resolve); }
             },
             {
@@ -214,7 +215,7 @@ export const appRouter = [
                 icon: 'ios-paper-outline',
                 name: 'manager',
                 title: '经理工作台',
-                meta:{role:1,title:'经营概览'},
+                meta:{role:1,title:'我的工作'},
                 component: resolve => { require(['@/views/manager/manager.vue'], resolve); }
             },
             {
