@@ -1,7 +1,9 @@
 <template>
     <div class="membermanager">
+        <main-native>
+            <div class="main-header-style iconfont"><i></i>{{this.$route.meta.title}}</div>
+        </main-native>
 
-       
         <Tabs size="small" v-model="tabsType">
              <TabPane v-if="memberMgt" label="成员管理" name="member">
                 <Layout>
@@ -25,15 +27,15 @@
                                 <!-- <input class="search-input" type="search" placeholder="备注/手机名/邮箱">
                                 <Icon @click="searchList" type="search"></Icon> -->
                                  <Button class="addBtn"  size="large" icon="person-add" @click.native="clickInviteMember">添加成员</Button>
-                                 
+
                             </div>
                             <memberlist ref="list" @choiseRow="selectMember"></memberlist>
-                            <memberinvite 
+                            <memberinvite
                             ref="invite"
                             >
                             </memberinvite>
-                            <membermessage 
-                            ref="message" 
+                            <membermessage
+                            ref="message"
                             :param="param"
                             @cancel='close()'
                             @revised='editMember(param.id,param.remark_name,param.department_id,param.post_id)'
@@ -55,7 +57,7 @@
                         </Content>
                     </Layout>
                 </Layout>
-            </TabPane>  
+            </TabPane>
         </Tabs>
         <Modal v-model="editModel" :title="deptStatus == 'add' ? '新增部门' : '编辑部门'" @on-ok="ok(deptStatus)" @on-cancel="cancel">
             <Input v-model="deptName" placeholder="请输入部门名称" style="width: 300px"></Input>
@@ -68,7 +70,7 @@
         </Modal>
         <Modal v-model="delDutyModal" title="确认删除职能？" @on-ok="delDutyOk" @on-cancel="cancel">
             <p>删除职能后成员将移入“自定义角色”</p>
-        </Modal> 
+        </Modal>
     </div>
 </template>
 
@@ -85,6 +87,7 @@ import membermessage from './mmComponents/memberMessage.vue';
 import authType from './mmComponents/authType.vue';
 import authMessage from './mmComponents/authMessage.vue';
 import {mapState} from 'vuex'
+import mainNative from '../main-components/mainNative.vue';
 export default {
     // data() {
     //     ownMemberTypes:[],
@@ -97,7 +100,8 @@ export default {
         memberinvite,
         membermessage,
         authType,
-        authMessage
+        authMessage,
+
     },
     data() {
         return {
@@ -538,7 +542,7 @@ export default {
     padding-bottom: 50px;
     width: 300px;
     .search-input{
-        padding-left:10px; 
+        padding-left:10px;
         font-size: 14px;
         height: 40px;
         background: #fff;
@@ -587,7 +591,7 @@ export default {
         height: 34px;
         line-height: 17px;
         margin-top: 0;
-        
+
     }
     .ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab{
         margin-right: 0;
@@ -595,7 +599,7 @@ export default {
         width: 100px;
         text-align: center;
     }
-    
+
 }
 </style>
 
