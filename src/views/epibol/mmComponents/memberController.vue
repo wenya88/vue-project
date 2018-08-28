@@ -16,6 +16,7 @@
         clickButton(info)
         {
             console.log(info);
+            // window.location.reload()
         },
     }
 }
