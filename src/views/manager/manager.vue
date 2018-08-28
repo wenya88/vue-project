@@ -119,7 +119,7 @@
     .manager_page_all{
         width: 100%;
         min-height: 100%;
-
+        padding-top: 30px;
     }
 
     .manager_page_header{

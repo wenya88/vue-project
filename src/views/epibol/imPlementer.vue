@@ -353,7 +353,6 @@ export default {
     getUpload (data) {
       this.task_id = data.id
       this.is_tesk = data.is_test
-      console.log('点击数据', data)
       this.task_name = data.name
       this.isclose = true
       this.againFun()
@@ -603,7 +602,14 @@ export default {
       let index = this.index
       if (Object.keys(solt).length==0) {
         solt[index] = []
-        solt[index].push(list[0])
+        if (!listLt) {
+           solt[index].push(
+             {startIndex: 0,
+              endIndex:0 }
+           )
+        } else {
+          solt[index].push(list[0])
+        }
         // list[0].top = 0 + 'px'
         this.solt = solt
       } else {
@@ -944,7 +950,6 @@ export default {
       }
       const listLt = allList.length;
       this.allListWidth = listLt * 520 - 20 + 'px'
-      console.log('重复数据', allList)
       this.examinList = allList
     },
     // 查找阶段
