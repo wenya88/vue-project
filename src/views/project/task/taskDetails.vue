@@ -414,6 +414,8 @@
                 this.$axios.post(this.GLOBAL.baseRouter + "/task/task/add", qs.stringify(dataForm))
                     .then(res => {
                         this.$bus.emit('refreshCurrentTaskList');
+                        this.$bus.emit('clearExcleData');
+
                     })
                     .catch(error => {
                         this.$Message.error("新建任务失败，请重试！");
@@ -562,15 +564,10 @@
                 }
                 return check;
             },
-             getUploadFile(uploader, files, data, num) {
-
-
+             getUploadFile(uploader) {
                 const obj = {url: JSON.parse(uploader.data.response).file_url, name: uploader.data.name}
                 this.flieList.push(obj)
-//                if (this.flieList.length === uploader.num) {
-//                    let {data} = await api.accessoryUpload({file: JSON.stringify(this.flieList)});
 
-//                }
             },
             clearAllData() {
                 this.editData = {};

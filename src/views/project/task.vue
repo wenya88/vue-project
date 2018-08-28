@@ -163,10 +163,13 @@
 
                 <!--主视图:列表/甘特图 -->
                 <div class="task-tab">
+                    <!--看板-->
                     <tasklist v-if="TabFlags.oneFlag"  ref="list" v-on:showTaskDetails='showTaskDetails' v-on:delTask="closeTaskDetails"></tasklist>
+                    <!--甘特图-->
                     <template v-if="TabFlags.twoFlag">
                         <iframe width="100%" height="100%"  id="show-iframe" frameborder=0   name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>
                     </template>
+                    <!--进度-->
                     <v-schedule-plan v-if="TabFlags.threeFlag"></v-schedule-plan>
                 </div>
                 <!--<Tabs class="task-tab">-->
@@ -329,8 +332,8 @@
                 this.isShowTaskDetails = false;
             },
             //保存新建任务弹窗
-            saveAccretionTaskPop() {
-                let result = this.$refs.add.saveTaskDetail();
+            async saveAccretionTaskPop() {
+                let result = await this.$refs.add.saveTaskDetail();
 
                 if (result) {
                     this.isSaveLoading = false;
@@ -396,7 +399,7 @@
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.$Message.success('删除成功');
-                            this.projectPlan()
+//                            this.projectPlan()
                         }
                     })
             },
@@ -663,6 +666,7 @@
                 .rightTitle {
                     position: relative;
                     color: #7d8180;
+                    background: #c4f0e9;
                     .editBtn {
                         position: absolute;
                         top: 50%;
