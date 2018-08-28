@@ -202,7 +202,6 @@
                             for(var item in res.data){
                                 this.clickItem.push({id:res.data[item].id,status:false,type:'task'})
                             }
-                            console.log(this.clickItem);
                         }
                     })
             },

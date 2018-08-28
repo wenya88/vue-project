@@ -1,70 +1,64 @@
 <!-- 任务列表组件 -->
 <template>
     <div class="taskListContainer">
-        <div class="taskSwichTab">
-            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon> 未进行（<span class="green">{{dataList_type.start.length}}</span>）</p>
-            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="blue"></Icon> 进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）</p>
-            <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="orange"></Icon> 已完成（<span class="orange">{{dataList_type.end.length}}</span>）</p>
-        </div>
         <div class="tasklistMaxDiv">
             <div class="taskoverflow">
-                <section class="WaitingToStart">
-                <!--<p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon> 未进行（<span class="green">{{dataList_type.start.length}}</span>）</p>-->
-                <template v-if="dataList_type.start.length>0">
-                    <div class="list" @click.stop="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start"
-                                  :key="index">
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="green"></Icon> 未进行（<span class="green">{{dataList_type.start.length}}</span>）</p>
+                <section class="WaitingToStart sectionSty">
+                    <template v-if="dataList_type.start.length>0">
+                        <div class="list" @click.stop="changeTaskListItem(items)" v-for="(items,index) in dataList_type.start" :key="index">
+                            <p class="projectName">{{items.name}}</p>
+                            <span class="taskStageName">原画设计</span>
+                            <div class="BottomInfo">
+                                <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
 
-                            <span>
-                                <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
-                           </span>
+                                <span>
+                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                               </span>
+                            </div>
+                            <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                         </div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-                    </div>
-                </template>
-            </section>
+                    </template>
+                </section>
             </div>
             <div class="taskoverflow">
-                <section class="perform">
-                <!--<p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="blue"></Icon> 进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）</p>-->
-                <template v-if="dataList_type.underWay.length>0">
-                    <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay"
-                         :key="index">
-                        <template v-if="items.status == 3">
-                            <p class="pause">暂停中</p>
-                            <p class="sign"></p>
-                        </template>
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777" >{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
-                           <span>
-                                <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
-                           </span>
+                <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="blue"></Icon> 进行中（<span class="blue">{{dataList_type.underWay.length}}</span>）</p>
+                <section class="perform sectionSty">
+                    <template v-if="dataList_type.underWay.length>0">
+                        <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.underWay" :key="index">
+                            <template v-if="items.status == 3">
+                                <p class="pause">暂停中</p>
+                                <p class="sign"></p>
+                            </template>
+                            <p class="projectName">{{items.name}}</p>
+                            <span class="taskStageName">原画设计</span>
+                            <div class="BottomInfo">
+                                <span style="color: #777777" >{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                               <span>
+                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                               </span>
+                            </div>
+                            <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
                         </div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-                    </div>
-                </template>
-            </section>
+                    </template>
+                </section>
             </div>
             <div class="taskoverflow">
-                <section class="complete">
-                <!--<p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="orange"></Icon> 已完成（<span class="orange">{{dataList_type.end.length}}</span>）</p>-->
-                <template v-if="dataList_type.end.length>0">
-                    <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end"
-                         :key="index">
-                        <p class="title">{{items.name}}</p>
-                        <div class="BottomInfo">
-                            <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
-
-                            <span>
-                                <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
-                           </span>                    </div>
-                        <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
-                    </div>
-                </template>
-            </section>
+                <p class="title"><Icon type="android-radio-button-off" style="vertical-align: middle" class="orange"></Icon> 已完成（<span class="orange">{{dataList_type.end.length}}</span>）</p>
+                <section class="complete sectionSty">
+                    <template v-if="dataList_type.end.length>0">
+                        <div class="list" @click="changeTaskListItem(items)" v-for="(items,index) in dataList_type.end" :key="index">
+                            <p class="projectName">{{items.name}}</p>
+                            <span class="taskStageName">原画设计</span>
+                            <div class="BottomInfo">
+                                <span style="color: #777777">{{items.expect_work_day}}工作日({{timeType(items.expect_start_date)}}-{{timeType(items.expect_end_date)}})</span>
+                                <span>
+                                    <img  class="headImg" src="./QQ图片20180719133401.jpg"  alt=""><span style="vertical-align: top" >{{items.remark_name}}</span>
+                               </span>                    </div>
+                            <Icon @click.native.stop="delButton(items)" class="close" type="close-circled"></Icon>
+                        </div>
+                    </template>
+                </section>
             </div>
         </div>
     </div>
@@ -519,9 +513,6 @@
 <style lang="less">
     @import "../../../styles/task/task.css";
     .taskListContainer {
-        /*height: 800px;*/
-        /*height: 100%;*/
-        /*overflow: auto;*/
         .green{
             color: #6ce2d3;
         }
@@ -531,53 +522,51 @@
         .blue{
             color: #9ed3fd;
         }
-        .taskSwichTab{
-            height: 45px;
-            line-height: 45px;
-            overflow: hidden;
-            p{
-                float: left;
-                width: 33.3333%;
-                text-align: center;
-                font-size: 16px;
-            }
-        }
         .tasklistMaxDiv{
             display: flex;
+            justify-content: space-between;
             width: 100%;
             height: 800px;
             overflow: hidden;
             .taskoverflow{
-                height: 760px;
-                overflow: auto;
-                width: 33.3333%;
+                height: 800px;
+                width: 32%;
+                min-width: 200px;
+                background: #fff;
+                border-radius: 5px;
+                .title{
+                    height: 45px;
+                    line-height: 45px;
+                    font-size: 16px;
+                    padding:0 20px;
+                    border-bottom: 1px solid #efefef;
+                }
+                .taskStageName{
+                    padding: 10px 0;
+                }
+                .sectionSty{
+                    height: 756px;
+                    overflow: auto;
+                }
             }
         }
         .WaitingToStart, .perform, .complete, .suspended {
-            /*float: left;*/
-            /*width: 33.3333%;*/
-            /*margin-right: 5px;*/
-            /*background: #fff;*/
-            /*height: 700px;*/
-
-            /*.title {*/
-                /*margin: 5px 0;*/
-                /*font-size: 16px;*/
-                /*text-align: center;*/
-            /*}*/
             .list {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
                 position: relative;
                 margin: 20px;
+                padding: 10px;
                 color: #ccc;
-                /*box-shadow: 2px 2px 2px #525252;*/
                 border-radius: 2px;
                 transition: all .3s;
-                text-align: center;
                 background: #fff;
                 border: 1px solid #efefef;
+                border-radius: 5px;
+                cursor: pointer;
                 .BottomInfo {
                     display: flex;
-                    padding: 20px;
                     justify-content: space-between;
                     .headImg{
                         width: 36px;
@@ -615,14 +604,11 @@
                     opacity: 0;
                     cursor: pointer;
                 }
-
-                .title {
-                    margin-bottom: 60px;
-                    padding-left: 35px;
+                .projectName{
                     text-align: left;
-                    color: #818181;
+                    font-size: 15px;
+                    color: #373737;
                 }
-
                 &:hover {
                     transform: scale(1.02);
                     .close {
@@ -636,56 +622,43 @@
                 clear: left;
             }
         }
-
-
     }
-
-
     .main-header-con {
         z-index: 1 !important;
     }
-
     .showAdd {
         display: inline-block;
     }
-
     .hideAdd {
         display: none;
     }
-
     .showEdit {
         display: inline-block;
     }
-
     .hideEdit {
         display: none;
     }
-
     .dropChild .ivu-select-dropdown {
         width: 300px !important;
         top: 40px !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
     .meberli li {
         height: 35px;
         line-height: 35px;
     }
-
     .pushDa Input {
         width: 100px !important;
         border-right: 0 !important;
         border-radius: 0 !important;
         position: relative;
     }
-
     .borderNome Input {
         border-radius: 0 !important;
         right: 20px;
         position: relative;
     }
-
     .btnStting {
         margin-bottom: 10px;
     }
@@ -694,21 +667,18 @@
         display: inline-block;
         overflow: hidden;
     }
-
     .tasklist {
         width: 1400px;
         z-index: 1;
         float: left;
         padding: 0 0px 0 0;
     }
-
     .tasklistdel {
         width: 82px;
         z-index: 1;
         float: left;
         padding: 0 0 0 -2px;
     }
-
     .dellisttask {
         width: 80px;
         position: absolute;
