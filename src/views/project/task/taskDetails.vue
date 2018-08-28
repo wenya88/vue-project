@@ -212,6 +212,10 @@
                 this.setEditDisabled(false)
             }
         },
+        beforeDestroy(){
+
+        },
+
         computed: {
             ...mapState({
                 userStatus(value) {

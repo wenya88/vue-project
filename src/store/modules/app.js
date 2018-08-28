@@ -46,7 +46,7 @@ const app = {
         messageCount: 0,
         isSetShow: false, // 显示设置
         uploadFile: [],  // 上传文件路径
-        filenum:null, // 上传文件数量
+        filenum: null, // 上传文件数量
         /* 以下 8月9日 权限 */
         role: null,              // 权限
         standardLibrary: true, // 公司级规范库
@@ -75,20 +75,20 @@ const app = {
             contract: true,              // 合同,
             callForBids: true,           // 招标,
             eHome: true,                 // 概况,
-            projectHome:true,            // 项目
-            cooperation:true,           //合作
+            projectHome: true,            // 项目
+            cooperation: true,           //合作
         },
         callForBidsdts: {
             HaveTender: true,             // 已报名招标
-            invitation: true  ,            // 外包邀请
+            invitation: true,            // 外包邀请
         },
-        manager:{
-            manager_page_header:true,       // 经营
-            mangaer_main_bid:true,       // 投标
-            mangaer_main_Sign:true,       // 合同
-            mangaer_main_project:true,       // 项目
-            mangaer_main_quality:true,       // 质量
-            mangaer_main_team:true,       // 团队
+        manager: {
+            manager_page_header: true,       // 经营
+            mangaer_main_bid: true,       // 投标
+            mangaer_main_Sign: true,       // 合同
+            mangaer_main_project: true,       // 项目
+            mangaer_main_quality: true,       // 质量
+            mangaer_main_team: true,       // 团队
 
         }
     },
@@ -111,11 +111,11 @@ const app = {
         clearfileUrl(state) {
             state.uploadFile = [];
         },
-        setFilenum(state,data) {
+        setFilenum(state, data) {
             state.filenum = data;
         },
         setIsSetShow(state) {
-          state.isSetShow = !state.isSetShow
+            state.isSetShow = !state.isSetShow
         },
         /*
             epibol级权限
@@ -134,21 +134,18 @@ const app = {
                     return ''
                 } else if (!state.epibol.projectHome && child.name === 'projectManage') {
                     return ''
-                }else if (!state.epibol.cooperation && child.name === 'epibolCompany') {
+                } else if (!state.epibol.cooperation && child.name === 'epibolCompany') {
                     return ''
-                }else if(child.title === '合同'){
-                    if(JSON.parse(Cookies.get('company')).type === 1){
+                } else if (child.title === '合同') {
+                    if (JSON.parse(Cookies.get('company')).type === 1) {
 
                         child.path = '/customer/contractManage' //jia
 
-                    }else {
+                    } else {
 
                         child.path = '/epibol/contractManage' // yi
                     }
                 }
-
-
-
 
                 return child
                 /*if(child.auth) {
@@ -163,7 +160,6 @@ const app = {
                     }
                 }*/
             });
-
 
 
             menuList[1].children = array.filter((child) => {
@@ -196,21 +192,24 @@ const app = {
                 return child
             });
 
-            state.children = array.filter((child) => {return child !== ''})
+            state.children = array.filter((child) => {
+                return child !== ''
+            })
 
 
         },
         /*合并项目二级菜单*/
-        concatProject(state, {menuList, item}){
+        concatProject(state, {menuList, item}) {
             state.menuList = menuList.concat(state.projectMenuList);
         },
         /*权限显隐控制*/
         setRole(state, data) {
+
             state.role = data.id;
             state.projectMenuList = data.project;
 
             data = data.id.split(',');
-            sessionStorage.setItem('userrole',JSON.stringify(data));
+            sessionStorage.setItem('userrole', JSON.stringify(data));
 
             if (data.indexOf('w4') !== -1) {
                 state.manager.manager_page_header = false
@@ -231,131 +230,147 @@ const app = {
                 state.manager.mangaer_main_team = false
             }
 
-            if (data.indexOf('c1_1')!==-1) {
+            if (data.indexOf('c1_1') !== -1) {
                 // 公司概况
                 state.epibol.eHome = false
 
             }
-            if (data.indexOf('c2')!==-1) {
+            if (data.indexOf('c2') !== -1) {
 
                 // c2 公司投标
                 state.epibol.callForBids = false
             }
-            if (data.indexOf('c3')!==-1) {
+            if (data.indexOf('c3') !== -1) {
 
                 // c2 公司投标
                 state.epibol.cooperation = false
             }
-            if (data.indexOf('c2_1')!==-1) {
+            if (data.indexOf('c2_1') !== -1) {
                 // c2 已报名投标
                 state.callForBidsdts.HaveTender = false
 
             }
-            if (data.indexOf('c2_2')!==-1) {
+            if (data.indexOf('c2_2') !== -1) {
                 // c2 外包邀请
                 state.callForBidsdts.invitation = false
 
             }
-            if (data.indexOf('c2_3')!==-1) {
+            if (data.indexOf('c2_3') !== -1) {
                 // c2 历史记录
 
             }
-            if (data.indexOf('c4')!==-1) {
+            if (data.indexOf('c4') !== -1) {
                 // c2 合同
                 state.epibol.contract = false
             }
-            if (data.indexOf('c5')!==-1) {
+            if (data.indexOf('c5') !== -1) {
                 // c2 项目
                 state.epibol.projectHome = false
             }
 
-            if (data.indexOf('c5_1')!==-1) {
+            if (data.indexOf('c5_1') !== -1) {
                 // c2 项目管理
             }
-            if (data.indexOf('c5_2')!==-1) {
+            if (data.indexOf('c5_2') !== -1) {
                 // c2 项目概况
                 state.projectSet.projectCustom = false
             }
-            if (data.indexOf('c5_3')!==-1) {
+            if (data.indexOf('c5_3') !== -1) {
                 // c2 任务管理（子项目
                 state.projectSet.projectTask = false
             }
-            if (data.indexOf('c5_4')!==-1) {
+            if (data.indexOf('c5_4') !== -1) {
                 // c2 资源管理
                 state.projectSet.projectQuality = false
             }
-            if (data.indexOf('c5_4.1')!==-1) {
+            if (data.indexOf('c5_4.1') !== -1) {
                 // c2 已归档
                 state.projectSet.qualityFrist = false
             }
-            if (data.indexOf('c5_4.2')!==-1) {
+            if (data.indexOf('c5_4.2') !== -1) {
                 // c2 内部待审
                 state.projectSet.qualitySecond = false
             }
-            if (data.indexOf('c5_4.3')!==-1) {
+            if (data.indexOf('c5_4.3') !== -1) {
                 // c2 内部反馈
                 state.projectSet.qualityThird = false
             }
-            if (data.indexOf('c5_4.4')!==-1) {
+            if (data.indexOf('c5_4.4') !== -1) {
                 // c2 客户待审
                 state.projectSet.qualityFourth = false
             }
-            if (data.indexOf('c5_4.5')!==-1) {
+            if (data.indexOf('c5_4.5') !== -1) {
                 // c2 客户反馈
                 state.projectSet.qualityFifth = false
             }
-            if (data.indexOf('c5_5')!==-1) {
+            if (data.indexOf('c5_5') !== -1) {
                 // c2 项目成员管理
                 state.projectSet.projectMember = false
             }
-            if (data.indexOf('c5_6')!==-1) {
+            if (data.indexOf('c5_6') !== -1) {
                 // c2 项目统计
                 state.projectSet.projectStatistics = false
             }
-            if (data.indexOf('c5_7')!==-1) {
+            if (data.indexOf('c5_7') !== -1) {
                 // c2 设置
                 state.projectSet.self = false
             }
-            if (data.indexOf('c5_7.1')!==-1) {
+            if (data.indexOf('c5_7.1') !== -1) {
                 // c2 项目规范设置
                 state.projectSet.projectNorm = false
             }
-            if (data.indexOf('c5_7.2')!==-1) {
+            if (data.indexOf('c5_7.2') !== -1) {
                 // c2 项目工作时间设置
                 state.projectSet.projectTitle = false
             }
 
-            if (data.indexOf('c6')!==-1) {
+            if (data.indexOf('c6') !== -1) {
                 // c2 团队
                 state.epibol.memberManager = false
             }
-            if (data.indexOf('c6_1')!==-1) {
+            if (data.indexOf('c6_1') !== -1) {
                 // c2 成员管理
                 state.memberMgt = false
             }
-            if (data.indexOf('c6_2')!==-1) {
+            if (data.indexOf('c6_2') !== -1) {
                 // c2 授权管理
                 state.roleMgt = false
             }
-            if (data.indexOf('c7')!==-1) {
+            if (data.indexOf('c7') !== -1) {
                 // c2 设置
                 state.standardLibrary = false
             }
 
             this.dispatch('updateMenulistRole')
         },
+        // 初始化把所有权限设置为true
+        roleInit(state) {
+            state.standardLibrary = true;
+            state.memberMgt = true;
+            state.roleMgt = true;
+            let changealltrue = (data) => {
+                for (let k in data) {
+                    data[k] = true
+                }
+            }
+            changealltrue(state.projectSet);
+            changealltrue(state.epibol);
+            changealltrue(state.callForBidsdts);
+            changealltrue(state.manager);
+        }
 
     },
     actions: {
         /*
             菜单权限管理
         */
-            async getMenulistRole({commit, dispatch}) {
+        async getMenulistRole({commit, dispatch}) {
             const {data} = await api.getInfoRole();
+            commit('roleInit'); // 权限初始化 都设置为true
 
             const project = await api.taskProjectPage();
 
-            commit('setRole', {id:data.limit.auth_id,project:project.data.project});
+            commit('setRole', {id: data.limit.auth_id, project: project.data.project});
         },
         updateMenulistRole({commit}) {
 
@@ -369,8 +384,8 @@ const app = {
 
                 if (item.access) {
                     // 工作台  // 1经理 2组长 3成员
-                    if( item.access === accessCode) {
-                            menuList.push(JSON.parse(JSON.stringify(item)));
+                    if (item.access === accessCode) {
+                        menuList.push(JSON.parse(JSON.stringify(item)));
                     }
                     // else if (item.access === 3) {
                     //         menuList.push(item);
@@ -379,9 +394,9 @@ const app = {
                     menuList.push(JSON.parse(JSON.stringify(item)));
                 }
                 commit('projectMenuList');
-                if(index === menu.length-1) {
+                if (index === menu.length - 1) {
                     commit('concatProject', {menuList: menuList, item: item})
-                }else  if (item.name === "epibol") {
+                } else if (item.name === "epibol") {
                     commit('epibolMenuList', {menuList: menuList, item: item})
                 }
 

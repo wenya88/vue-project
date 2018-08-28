@@ -337,7 +337,9 @@
             fetchFileData(stageId, type, file, taskId, item) {
 //      this.isTabModal = true;
                 this.$store.commit('changeComponentID', {taskId:taskId,stageId:stageId});
-                // this.$store.commit('changeComponentFileURl', file);
+
+                this.$store.commit('changeComponentTaskID', taskId);
+                this.$store.commit('changeComponentFileURl', file);
 
                 // 是否显示编辑信息
                 //sessionStorage.AllowEdit=_this.AllowEdit;
