@@ -175,6 +175,9 @@ export default {
             dutyList: 'getDutyList'
         })
     },
+    mounted(){
+        this.dutyListData();
+    },
     methods: {
         /**
          * 获取加密密码的密钥
