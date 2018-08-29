@@ -76,7 +76,7 @@ export const menu = [
                 path: '/epibol/home',
                 name: 'eHome',
                 level: '2-1',
-                title: '概况页',
+                title: '概况',
             },
             {
                 path: '/epibol/bidManage',
