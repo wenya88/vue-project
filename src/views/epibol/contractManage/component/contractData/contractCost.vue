@@ -119,11 +119,11 @@ export default {
             contractPayDate:[
                 {
                     key:'首笔款',
-                    num:'',
+                    num:0,
                     amount:'',
                 },{
                     key:'尾款',
-                    num:'',
+                    num:0,
                     amount:'',
                 }
             ],
@@ -135,6 +135,7 @@ export default {
             // ------------
             amount:0,
             dateIndex:0,
+            // -----------
         }
     },
     computed:{
@@ -150,6 +151,7 @@ export default {
     mounted(){
         this.autoHeight();
         this.editContractData();
+        this.priceChange();
     },
     methods:{
         // editContract

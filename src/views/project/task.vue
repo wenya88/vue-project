@@ -10,11 +10,6 @@
                         <li @click="switchTabFun(3)" :class="{'checked':TabFlags.threeFlag}">进度管理</li>
                     </ul>
                 </div>
-                <!--<p class="nativeItems">-->
-                    <!--<router-link to="/project/kanban">看板</router-link>-->
-                    <!--<router-link to="/foo">甘特图</router-link>-->
-                    <!--<router-link to="/project/jinduguanli">进度管理</router-link>-->
-                <!--</p>-->
             </div>
         </main-native>
 
@@ -61,8 +56,7 @@
                                               :title="item.leader_name">{{item.leader_name}}</span></template>
                                     <!--单独的成员-->
                                     <div v-else class="alone">
-                                        <img class="headImg" src="./task/QQ图片20180719133401.jpg" alt="">
-
+                                        <img class="headImg" :src="item.headimage" alt="">
                                     </div>
                                 </div>
                                 <!--子项目和单独成员的进度条-->
@@ -73,10 +67,6 @@
                                 <div class="ratio" :class="{'aloneRight': item.realname}">{{item.complete}}/{{item.total}}
                                 </div>
                             </section>
-
-
-
-
                             <!--有项目的成员-->
                             <section v-if="member.run_uid"  v-for="(member,i) in item.child_project"  :key="i"
                                      @click="changeTaskListData(member,'member','team',item)" class=" "  >
@@ -92,8 +82,7 @@
                                         <div style="margin: 0;color: #bdbdbd">{{member.realname}}</div>
                                         <Progress hide-info :percent="Number(member.progress)"></Progress>
                                     </div>
-                                    <div class="ratio" :class="{'aloneRight': member.realname}">{{member.complete}}/{{member.total}}
-                                    </div>
+                                    <div class="ratio" :class="{'aloneRight': member.realname}">{{member.complete}}/{{member.total}}</div>
                                 </section>
 
                                 <!--<template  >-->
@@ -116,9 +105,7 @@
                             <Input v-model="subProjectName" placeholder="项目名称" style="width: 200px"></Input>
                         </span>
                             <div  v-show="addInput" style="margin-top: 5px ;text-align: right;" ><Button @click="addButton(true)" >确定</Button>  <Button @click="addButton(false) ">取消</Button></div>
-                            <Icon v-show="!addInput" @click.native="addInputShow" type="ios-plus-outline" style="vertical-align: middle;color: #fcc44b;"
-                                  size="24"></Icon>
-
+                            <Icon v-show="!addInput" @click.native="addInputShow" type="ios-plus-outline" style="vertical-align: middle;color: #fcc44b;" size="24"></Icon>
                         </div>
                         <div class="line editList" v-for="(item,index) in ChildMsgData" :key="index">
                             <template v-if="item.child_project">
@@ -146,44 +133,21 @@
                                 </div>
                             </template>
                         </div>
-
                     </div>
                 </div>
 
-                <!--<div class="task-tab">-->
-                    <!--<router-view></router-view>-->
-                <!--</div>-->
-
-                <!--<Tabs class="task-tab">-->
-                <!--<Tab-pane>-->
-                <!--<router-view></router-view>-->
-                <!--</Tab-pane>-->
-                <!--</Tabs>-->
-
-
                 <!--主视图:列表/甘特图 -->
                 <div class="task-tab">
+                    <!--看板-->
                     <tasklist v-if="TabFlags.oneFlag"  ref="list" v-on:showTaskDetails='showTaskDetails' v-on:delTask="closeTaskDetails"></tasklist>
+                    <!--甘特图-->
                     <template v-if="TabFlags.twoFlag">
                         <iframe width="100%" height="100%"  id="show-iframe" frameborder=0   name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>
                     </template>
+                    <!--进度-->
                     <v-schedule-plan v-if="TabFlags.threeFlag"></v-schedule-plan>
                 </div>
-                <!--<Tabs class="task-tab">-->
-                    <!--<Tab-pane label="看板">-->
-                        <!--<tasklist style="padding-left: 400px;" ref="list"-->
-                        <!--v-on:showTaskDetails='showTaskDetails'-->
-                        <!--v-on:delTask="closeTaskDetails"></tasklist>-->
-                    <!--</Tab-pane>-->
-                    <!--<Tab-pane label="甘特图">-->
-                        <!--<iframe style="padding-left: 400px;" id="show-iframe" frameborder=0   name="showHere" scrolling=auto src="../../../src/views/project/gantt/gantt.html"></iframe>-->
-                    <!--</Tab-pane>-->
-                    <!--<Tab-pane label="进度管理">-->
-                        <!--<v-schedule-plan style="padding-left: 400px;"></v-schedule-plan>-->
-                    <!--</Tab-pane>-->
-                <!--</Tabs>-->
             </div>
-
             <!-- 新增任务组件 -->
             <Modal
                     v-model="isAccretionTask"
@@ -197,7 +161,6 @@
             >
                 <accretiontaskpop ref="add" v-on:refreshCurrentTaskList='refreshCurrentTaskList'></accretiontaskpop>
             </Modal>
-
             <!-- excel解析组件 -->
             <Modal v-model="isExcelTask" width="1200" @on-cancel="excelCancel">
                 <p slot="header">
@@ -329,8 +292,8 @@
                 this.isShowTaskDetails = false;
             },
             //保存新建任务弹窗
-            saveAccretionTaskPop() {
-                let result = this.$refs.add.saveTaskDetail();
+            async saveAccretionTaskPop() {
+                let result = await this.$refs.add.saveTaskDetail();
 
                 if (result) {
                     this.isSaveLoading = false;
@@ -385,7 +348,6 @@
             },
             // 删除项目
             delProject(data) {
-                console.log('删除', data)
                 let id = null;
                 if (data.child_id) {
                     id = data.child_id
@@ -397,7 +359,7 @@
                     .then(({data}) => {
                         if (data.err_code === 0) {
                             this.$Message.success('删除成功');
-                            this.projectPlan()
+//                            this.projectPlan()
                         }
                     })
             },
@@ -485,8 +447,6 @@
     @green: #3bceb6;
     .task {
         .ivu-tabs ,.ivu-tabs-content-animated{
-
-            /*overflow-y: scroll;*/
             height: 90%;
         }
         position: relative;
@@ -494,10 +454,8 @@
         .taskMainContainer {
             margin: 30px 0;
             display: flex;
-            /*position: relative;*/
+            justify-content: space-between;
             height: 100%;
-            /*padding-top: 14px;*/
-            /*background: #eef1f2;*/
             .ivu-tabs .ivu-tabs-content-animated {
                 margin-top: 60px;
             }
@@ -525,13 +483,7 @@
             }
             .projectPlanRight {
                 height: 800px;
-                /*position: absolute;*/
-                /*top: 77px;*/
-                /*left: -11px;*/
-                width: 400px;
-                /*height: 916px;*/
-                /*height: 85%;*/
-                /*padding: 10px 23px;*/
+                width: 24%;
                 z-index: 333;
                 overflow: hidden;
                 background: #fff;
@@ -664,6 +616,7 @@
                 .rightTitle {
                     position: relative;
                     color: #7d8180;
+                    background: #c4f0e9;
                     .editBtn {
                         position: absolute;
                         top: 50%;
@@ -672,7 +625,6 @@
                         cursor: pointer;
                     }
                 }
-
                 .editShowPlan {
                     margin-left: 355px !important;
                 }
@@ -690,7 +642,7 @@
             }
             .taskListContainer{
                 height: 800px;
-                background: #fff;
+                /*background: #fff;*/
             }
             .activeTask {
                 border: 1px solid #48c5b5;
@@ -702,29 +654,14 @@
     }
 
     .task-tab {
-        /*position: absolute;*/
-        width: 100%;
-        border-top: 1px solid #eae6e6;
-        background: #fff;
+        width: 74%;
         overflow: hidden;
-        /*z-index: 1;*/
-        /*overflow-x: hidden !important;*/
-        /*overflow-y: auto !important;*/
-
     }
 
     .task-operation {
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
-        /*position: absolute;*/
-        /*top: 87px;*/
-        /*width: 220px;*/
-        /*height: 60px;*/
-        /* text-align:right; */
-        /*float: right;*/
-        /*right: 17px;*/
-        /*padding: 4px 10px 10px 24px;*/
         z-index: 2;
     }
 </style>

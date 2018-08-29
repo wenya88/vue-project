@@ -66,7 +66,7 @@
                 <div class="card"
                      @click="fetchFileData(item.stage_id,item.stage_file.type,item.stage_file.file,item.task_id,item)">
                     <div class="card-box">
-                       {{item.tasktype_name}}
+
                         <img class="card-box-pic" :src="item.thumb" v-if="item.stage_file.type == 'image'"/>
                         <!--?x-oss-process=video/snapshot,t_2000,f_jpg oss获取视频的缩略图 添加在视频路径后面-->
                         <img  v-else-if="item.stage_file.type == 'video'" class="card-box-pic" :src="item.stage_file.file+'?x-oss-process=video/snapshot,t_2000,f_jpg'" />
@@ -337,7 +337,9 @@
             fetchFileData(stageId, type, file, taskId, item) {
 //      this.isTabModal = true;
                 this.$store.commit('changeComponentID', {taskId:taskId,stageId:stageId});
-                // this.$store.commit('changeComponentFileURl', file);
+
+                this.$store.commit('changeComponentTaskID', taskId);
+                this.$store.commit('changeComponentFileURl', file);
 
                 // 是否显示编辑信息
                 //sessionStorage.AllowEdit=_this.AllowEdit;

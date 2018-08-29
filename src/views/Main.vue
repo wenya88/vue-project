@@ -288,7 +288,7 @@
                                 localStorage.removeItem('numList');
                                 localStorage.removeItem('nums');
                                 webSocket.close();
-                                window.location.reload();
+//                                window.location.reload();
                             }
                         })
                 } else if (name === 'ownSpace') {
@@ -342,7 +342,18 @@
 </script>
 <style lang="less">
     @import "./main.less";
-    .main-header-con{box-shadow: none!important;}
+
+    .main{
+        .main-header-con,.ivu-layout-header, .ivu-menu-horizontal{
+            height: 52px;
+            line-height: 52px;
+        }
+
+    }
+    .main-header-con{
+        box-shadow: none!important;
+
+    }
    .main-header-avator{
      z-index: 999!important;
    }
@@ -372,6 +383,7 @@
         .navList{
             .ivu-menu-submenu-title{
                 padding: 11px  30px 11px 30px !important;
+                border-top: 1px solid #424a52;
             }
         }
         .childrenList{
@@ -404,7 +416,7 @@
         }
         .ivu-menu, .ivu-menu-submenu-title {
             color: #bebfc1;
-            border-bottom: 1px solid #424a52;
+            /*border-bottom: 1px solid #424a52;*/
 
         }
         .ivu-menu-submenu {
@@ -444,9 +456,9 @@
 
     .logo {
         width: 179px;
-        height: 64px;
+        height: 52px;
         background: #2c353e url("../images/navLogo.png") no-repeat 67px 9px;
-        background-size: 48px;
+        background-size: 39px;
         border-bottom: 1px solid #424a52;
     }
 

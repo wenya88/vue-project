@@ -77,7 +77,7 @@ import feedbackInfo from './feedbackInfo.vue'
             this.getId();
         },
         computed: {
-            
+
             storeFileURl() {
                 return this.$store.state.ImgVedioStatus.FileURl
             },
@@ -87,7 +87,7 @@ import feedbackInfo from './feedbackInfo.vue'
         },
         methods: {
             async getId(){
-             
+
                 let url = this.GLOBAL.baseRouter + 'task/task/task-stage&task_id=' +  this.storeTaskID;
                 this.$axios.get(url).then( ({data})=> {
                     this.fileID = data.data[0].file.task_id
@@ -490,7 +490,7 @@ import feedbackInfo from './feedbackInfo.vue'
                 }
             },
             getSign() {
-                let TaskID = this.storeTaskID 
+                let TaskID = this.storeTaskID
                 if (TaskID == 0 || TaskID === null) {
                     return false;
                 }

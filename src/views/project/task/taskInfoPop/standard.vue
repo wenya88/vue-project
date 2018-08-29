@@ -50,7 +50,7 @@
             </div>
             <!--上传-->
             <dd v-if="flowChartText" v-for="(item,index) in flowChartText" :key="index" class="uploadlist ">
-                <span>{{item.norm_name}}</span>
+                <span>{{item.norm_name || item.norm}}</span>
                 <div>
                     <span>{{item.text}}</span>
                     <span class="level" :class="'level'+item.level">{{item.level|level}}</span>

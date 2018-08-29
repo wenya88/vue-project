@@ -36,7 +36,7 @@
                 <!--</video>-->
                 <!--视频-->
                 <video id="haha" style="width:100%;object-fit: fill;">
-                    <source :src="VideoURL" type="video/mp4">
+                    <source :src="storeFileURl" type="video/mp4">
                 </video>
                 <!--进度条-->
                 <div class="controls">
@@ -573,6 +573,7 @@
             VedioGet() {
                 let _this = this;
                 _this.VideoURL = _this.storeFileURl;
+                console.log(999,  _this.VideoURL)
                 sessionStorage.removeItem('ImgData')
                 //  列表高度
                 $(".stageListRow").height(480)
@@ -1016,6 +1017,9 @@
             },
         },
         watch: {
+            storeFileURl(data){
+                return data
+            },
             video(value) {
                 const timeId = setInterval(() => {
                     if (value.readyState > 0) {

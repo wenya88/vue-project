@@ -66,6 +66,9 @@ export default {
     getStageInfo: (data) => {
         return Vue.$axios.post(url + 'task/task/stage-info', qs.stringify(data))
     },
+    accessoryUpload: (data) => {
+        return Vue.$axios.post(url + 'task/task/update', qs.stringify(data))
+    },
 
 
 

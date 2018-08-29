@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import Axios from '../request'
 import global from '../../components/Global'
-
+import Cookie from 'js-cookie'
 const state = {
   deptList: [],
   dutyList: [],
@@ -32,34 +32,36 @@ const actions = {
       .then(res => res.data)
       // .then(res => res.data)
       .then(res => {
-        // console.log('进入store',res,res[0].company_id)
+         //console.log(res)
         let fetchList = res.data;
         fetchList.push({
-          company_id: res.data[0].company_id,
+          company_id: Cookie.get('company').id,
           id: 0,
           member_count: res.free_member,
           name: '未分配部门'
         })
+        // sessionStorage.fetchList=JSON.stringify(fetchList)
         // console.log('获取部门列表',fetchList,res.free_member)
         commit('updateDeptList', fetchList);
-        commit('updateDeptLFComId', res.data[0].company_id);
+        commit('updateDeptLFComId', Cookie.get('company').id);
         commit('updateDeptLFdeptId', res.data[0].id);
       })
   },
   fetchDutyList({commit, state}, data) {
+    
     Axios.post(global.baseRouter+'task/post/list', data)
       .then(res => res.data)
       // .then(res => res.data)
       .then(res => {
         let fetchList = res.data;
         fetchList.push({
-          company_id: res.data[0].company_id,
+          company_id: Cookie.get('company').id,
           id: 0,
-          member_count: res.free_member,
+          member_count: Math.abs(res.free_member),
           name: '未分配角色'
         })
         commit('updateDutyList', fetchList);
-        commit('updateDutyLFComId', res.data[0].company_id);
+        commit('updateDutyLFComId', Cookie.get('company').id);
         commit('updateDutyLFpostId', res.data[0].id);
       })
   },
