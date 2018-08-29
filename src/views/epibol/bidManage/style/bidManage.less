@@ -53,7 +53,11 @@
                 }
                 .bidTitle{
                     &:extend(.bidManage .newBidList dl dd .title);
+                    cursor:pointer;
                     border-width:0px;
+                    &:hover{
+                        color:@green;
+                    }
                 }
                 .bidMoney{
                     border-bottom:1px dashed @line;
