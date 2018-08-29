@@ -27,14 +27,14 @@
             <!--</FormItem>-->
             <FormItem label="计划时间" class="borBotm">
                 <DatePicker
-                        :value="getTimeRange"
-                        @on-change="setTimeRange"
-                        format="yyyy-MM-dd"
-                        type="daterange"
-                        :options="startTime"
-                        split-panels
-
-                        :readonly="editDisabled"
+                    :value="getTimeRange"
+                    @on-change="setTimeRange"
+                    format="  yyyy-MM-dd  "
+                    type="daterange"
+                    :options="startTime"
+                    split-panels
+                    :readonly="editDisabled"
+                    style="width: 100%"
                 >
                 </DatePicker>
             </FormItem>
@@ -639,8 +639,7 @@
             }
         }
         .borBotm {
-            padding: 0 10px 14px 20px;
-
+            padding-bottom:14px;
             border-bottom: 1px solid @bor;
         }
 
