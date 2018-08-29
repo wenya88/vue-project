@@ -78,12 +78,14 @@ export default {
                 this.$axios.post(this.GLOBAL.baseRouter + 'task/task/task-stage',qs.stringify({task_id: this.taskID}))
                 .then( res => res.data)
                 .then( res => {
+
 //                        sessionStorage.TaskID = taskid;
+
                         this.$refs.imgeditor.initImgEditor();
                     }
                 )
                 .catch(error => {
-                    console.log(error);
+                    console.log(11,error);
 //                    this.$Message.error("获取任务信息失败，请重试！");
                 });
             }

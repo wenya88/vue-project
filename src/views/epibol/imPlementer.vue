@@ -237,13 +237,14 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setDetailAll']),
+    ...mapMutations(['setDetailAll','setUserStatus']),
     //跳转业务详情
     goTask(id) {
       const item = {
         id: id
       }
       this.setDetailAll(item)
+        this.setUserStatus('member')
       this.$router.push('/project/details')
     },
     // 确定开始
