@@ -2,7 +2,7 @@
     <!--资源-->
     <div class="resourceContainer">
         <div class="box">
-            <div class="content" v-for="(item,index) in formItem" :title="item.name" :key="index" @click="showimg(item)">
+            <div class="content" v-for="(item,index) in formItem" :title="item.name" :key="index" @click="showimg(item,index)">
                 <div class="resourceTitle">
                     <p><i class="steps">{{index+1}}</i> <span class="stepsTitle">{{item.name}}</span></p>
                     <div>
@@ -10,7 +10,7 @@
                         <p style="color: #c5c5c5">{{item.create_time|time}}</p>
                     </div>
                 </div>
-                <div class="file" >
+                <div class="file" :class="{'currentSty':index != currentIndex }">
                     <p class="textB3" >上传文件规格</p>
                     <ul>
                         <li  v-for="(item,index) in imgEditorWH" :key="index" class="fileList">
@@ -35,7 +35,8 @@
         },
         data() {
             return {
-                formItem:[]
+                formItem:[],
+                currentIndex:0
             }
         },
         methods: {
@@ -53,8 +54,11 @@
                 let {data} = await api.taskStageInfo({id:params});
                 data.name = name;
                 this.formItem.push(data);
+                this.currentIndex = this.formItem.length-1;
+                console.log(this.formItem);
             },
-            showimg(data){
+            showimg(data,index){
+               this.currentIndex = index;
                let url = null,task_id = null,type = null;
                 if(data && data.file){
                     data.file.map((item) => {
@@ -161,6 +165,7 @@
         .content {
             margin-bottom: 40px;
             font-size: 14px;
+            cursor: pointer;
             .resourceTitle{
                 display: flex;
                 justify-content: space-between;
@@ -203,6 +208,7 @@
                 }
                 ul{border-bottom: 1px solid #e2e2e2}
             }
+            .currentSty{display: none}
 
             .resourceStatus{
                 color: @green;

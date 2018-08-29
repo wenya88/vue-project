@@ -2,7 +2,8 @@
 const ImgVediostatus={
     state:{
         TaskID:null,
-        stageId:null
+        stageId:null,
+        FileURl:null
     },
     mutations:{
         changeComponentID(state,obj){
