@@ -12,7 +12,7 @@
           <span class="numStyle">{{item.member_count}}</span>
         </li>
       </ul> 
-      <i class="icon iconfont icon-jia" ></i>
+      <!-- <i class="icon iconfont icon-jia" ></i> -->
     </div>
   </div>
 </template>
@@ -87,7 +87,7 @@ export default {
   line-height: 50px;
 }
 .fMwnu-deful{
-  color: #FCC44A;
+  color:  #657180;
 }
 
 .fMenu li {

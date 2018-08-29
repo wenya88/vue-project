@@ -11,7 +11,7 @@
                     </Input>
                 </span>
                 <span class="em">
-                    <Button type="success" @click.native="newAdd"><i class="iconfont icon-xinjian"></i> 新增任务</Button>
+                    <Button type="success" @click.native="newAdd"><i class="iconfont icon-xinjian"></i> 增加合同</Button>
                 </span>
                 <div class="clear"></div>
             </dt>

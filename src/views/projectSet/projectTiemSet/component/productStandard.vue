@@ -64,12 +64,12 @@
                             </p>
                             <Row v-for="(item,index) in attrContent" :key="'attrContent'+index" class="fileAttr">
                                 <Col span="12">
-                                <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
+                                <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
                                 <Col span="12">
-                                <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                <AutoComplete v-model="item.values" placeholder="规范描述" clearable style="margin-left:20px"
                                               :disabled="disabled">
                                     <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                                 </AutoComplete>
@@ -78,12 +78,12 @@
                             </Row>
                             <template v-if="attrContentW.show" :style='{margin:"10px 0"}'>
                                 <Col span="12">
-                                <AutoComplete v-model="attrContentW.name" placeholder="额外属性名称" clearable>
+                                <AutoComplete v-model="attrContentW.name" placeholder="规范名称" clearable>
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
                                 <Col span="12">
-                                <AutoComplete v-model="attrContentW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                                <AutoComplete v-model="attrContentW.values" placeholder="规范描述" clearable style="margin-left:20px">
                                     <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                                 </AutoComplete>
                                 </Col>
@@ -99,12 +99,12 @@
                             </p>
                             <Row v-for="(item,index) in ruleList" :key="'ruleList'+index" class="fileAttr">
                                 <Col span="12">
-                                <AutoComplete v-model="item.name" placeholder="额外属性名称" clearable :disabled="disabled">
+                                <AutoComplete v-model="item.name" placeholder="规范名称" clearable :disabled="disabled">
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
                                 <Col span="12">
-                                <AutoComplete v-model="item.values" placeholder="额外属性说明" clearable style="margin-left:20px"
+                                <AutoComplete v-model="item.values" placeholder="规范描述" clearable style="margin-left:20px"
                                               :disabled="disabled">
                                     <!-- <Option v-for="item in re  qData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                                 </AutoComplete>
@@ -113,12 +113,12 @@
                             </Row>
                             <template v-if="ruleListW.show" :style='{margin:"10px 0"}'>
                                 <Col span="12">
-                                <AutoComplete v-model="ruleListW.name" placeholder="额外属性名称" clearable>
+                                <AutoComplete v-model="ruleListW.name" placeholder="规范名称" clearable>
                                     <!-- <Option v-for="item in reqData" :value="item.config_name" :key="item.conf">{{ item.config_name }}</Option> -->
                                 </AutoComplete>
                                 </Col>
                                 <Col span="12">
-                                <AutoComplete v-model="ruleListW.values" placeholder="额外属性说明" clearable style="margin-left:20px">
+                                <AutoComplete v-model="ruleListW.values" placeholder="规范描述" clearable style="margin-left:20px">
                                     <!-- <Option v-for="item in reqData" :value="item.value" :key="item.conf">{{ item.value }}</Option> -->
                                 </AutoComplete>
                                 </Col>

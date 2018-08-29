@@ -8,11 +8,11 @@
                 <div class="bidMoney">
                     <span>
                         测试金额
-                        <p>￥<em>{{item.test_price}}</em></p>
+                        <p>￥<em>{{Math.round(Number(item.test_price))}}</em></p>
                     </span>
                     <span>
                         项目预计
-                        <p>￥<em>{{item.project_max_price}}</em></p>
+                        <p>￥<em>{{Math.round(Number(item.project_max_price))}}</em></p>
                     </span>
                     <div class="clear"></div>
                 </div>
