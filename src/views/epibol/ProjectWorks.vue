@@ -62,7 +62,7 @@
                  <div class="open_box" v-if="item.isOpen">
                   <div class="group_progress_father">
                     <div class="group_progress">
-                      <Tooltip  content="等待开始" class="group_color_block" :style="`width:${item.waitNum};background: #3bceb6;`" v-if="item.waiting">
+                      <Tooltip  content="等待开始" class="group_color_block" :style="`width:${item.waitNum};background: #bdbdbd;`" v-if="item.waiting">
                       </Tooltip>
                       <Tooltip content="进行中" class="group_color_block" :style="`width:${item.doNum};background: #7cbefc;`" v-if="item.doing">
                       </Tooltip>
@@ -294,8 +294,13 @@ export default {
             const Surplus = (endWork.times - now_time.times) / (24 * 60 * 60 * 1000) + 1
             const workDay = (endWork.times - startWork.times) / (24 * 60 * 60 * 1000) + 1
             let work_now = 0
+            console.log('数据', workDay - Surplus)
             if (Surplus > 0) {
-              work_now = Math.floor((workDay - Surplus) / workDay * 100)
+              if (workDay - Surplus > 0) {
+                work_now = Math.floor((workDay - Surplus) / workDay * 100)
+              } else {
+                work_now = 0
+              }
             } else {
               work_now = 100
             }
