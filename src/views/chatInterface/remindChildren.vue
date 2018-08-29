@@ -60,6 +60,9 @@ export default {
       } else if (e === 3) {
         this.getTask()
         this.typeName = 'task'
+      } else {
+        this.objList = []
+        this.msgList = []
       }
     },
      getList (e) {
@@ -67,7 +70,7 @@ export default {
       const type = this.typeName
       const index = this.indexed
       const project_id = list[index].project_id
-      this.getMsg(type, project_id)
+      // this.getMsg(type, project_id)
     }
   },
   created () {
@@ -195,6 +198,22 @@ export default {
       }, error => {
         console.log('请求错误')
       })
+      // 新接口
+      // let url = this.GLOBAL.baseRouter+"system/user/get-notice-list"
+      // const items = {
+      //   search: '',
+      //   state: -1,
+      //   index: 0,
+      //   size: 10,
+      //   type: 'task'
+      // }
+      //  this.$axios.get(url, qs.stringify(items)).then(data => {
+        //  console.log('任务', data)
+        // this.objList = data.data.data
+        // this.getObj(0)
+      // }, error => {
+      //   console.log('请求错误')
+      // })
     },
     // 全部标记已读
     setSign () {

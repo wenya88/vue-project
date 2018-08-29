@@ -246,7 +246,7 @@ export default {
   height: 20px;
   line-height: 20px;
   margin-top: 5px;
-  background: rgba(255,153,0,1);
+  background: red;
   border-radius: 10px;
   color: #ffffff;
 }

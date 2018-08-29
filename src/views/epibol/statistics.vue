@@ -30,5 +30,3 @@ export default {
 <style lang="less">
 @import './statistics/style/statistics.less';
 </style>
-
-

@@ -26,7 +26,7 @@
           <li v-if='isMsg' @click="getOptionBack(1)">
             <p class="option-she iconfont icon-ymy-setup-copy"></p>
           </li>
-          <li  @click="getOptionBack(2)">
+          <li  @click="getOptionBack(2)" v-if="false">
             <p class="option-sousuo iconfont icon-sousuo"></p>
           </li>
         </ul>
@@ -343,6 +343,7 @@ export default {
   float: right;
   width: 45px;
   height: 45px;
+  margin-top: 12px;
 }
 .close_all{
   font-size: 20px;

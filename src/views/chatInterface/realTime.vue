@@ -146,9 +146,6 @@ export default {
       this.submitMsg(e)
       // this.getName()
     },
-    // getBob(e) {
-    //   // console.log('截屏图片', e)
-    // },
     getImg (e) {
       const blob = this.$store.state.blob
       if (!blob) {
@@ -559,7 +556,8 @@ export default {
            newList.push(elements)
         }
       })
-      this.$set(this, 'datalist', newList)
+      this.datalist = newList
+      // this.$set(this, 'datalist', newList)
       this.getName()
       const that = this
       this.$nextTick(() => {
