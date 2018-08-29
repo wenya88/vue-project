@@ -2,7 +2,7 @@
     <!--资源-->
     <div class="resourceContainer">
         <div class="box">
-            <div class="content" :current="0"  v-for="(item,index) in formItem" :title="item.name" :key="index" @click.native="showimg(item)">
+            <div class="content" v-for="(item,index) in formItem" :title="item.name" :key="index" @click="showimg(item)">
                 <div class="resourceTitle">
                     <p><i class="steps">{{index+1}}</i> <span class="stepsTitle">{{item.name}}</span></p>
                     <div>
@@ -53,7 +53,6 @@
                 let {data} = await api.taskStageInfo({id:params});
                 data.name = name;
                 this.formItem.push(data);
-
             },
             showimg(data){
                let url = null,task_id = null,type = null;
@@ -84,7 +83,6 @@
         },
         watch:{
             infoDetails(data){
-                console.log(113,data)
                 this.init(data)
             }
         },
