@@ -1,0 +1,188 @@
+@import '../../../../styles/newBase.less';
+.statisics{
+    margin-top:@p30;
+    &-menu{
+        float:left;width:360px;border-radius:@r5;background:@white;padding:@p25;
+        .ivu-div{
+            border:1px solid #eef1f2;border-top-width:0px;border-right-width:0px;
+        }
+        .ivu-menu{
+            background:@white;
+        }
+        .ivu-menu-submenu{
+            background:@white;
+        }
+        .ivu-menu-vertical{
+            font-weight:lighter;
+            .ivu-menu-submenu-title{
+                padding:10px 24px;
+                background:#fdfdfd;
+                border-top:1px solid #eef1f2;
+                color:@seven;
+                font-size:@f14;
+                .iconfont{
+                    color:#9e9e9e;
+                    font-size:@f20;
+                    width:25px;
+                    display:inline-block;
+                }
+            }
+            .ivu-menu-item{
+                padding:13px 50px;
+                color:@seven;
+                &:hover{
+                    background:@green;color:@white;
+                }
+            }
+        }
+        .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu){
+            background:@green;color:@white;border-width:0px;
+        }
+        .ivu-menu-item-group{
+            border-right:1px solid #eef1f2;
+            .ivu-menu-item:nth-of-type(1){
+                border-top:1px solid #eef1f2;
+            }
+        }
+    }
+    &-content{
+       margin-left:390px;
+       .statisInfo{
+           background:@white;border-radius:@r4;padding:@p20;font-weight:lighter;font-family:@ff;height:138px;
+           .sIncome{
+                float:left;width:30%;height:100%;border-right:1px dashed @line;
+           }
+           .sGrade{
+               width:17%;float:left;height:100%;text-align:center;margin-top:-5px;
+               .title{
+                   font-size:@f14;margin-top:3px;
+               }
+               .ivu-rate-star{
+                   margin-right:1px;
+               }
+               .ivu-rate{
+                   font-size:12px;
+               }
+               .gradeText{
+                   margin-bottom:@p5;
+                   font-size:@f14;
+                   span{
+                       font-size:@f20;
+                       color:#fea329;
+                       margin-right:2px;
+                   }
+               }
+           }
+           .sDisbu{
+               margin-left:3%;
+           }
+           .sProje{
+                 width:20%;
+                .infoMent{
+                    text-align:center;
+                    span{
+                        font-size:@f26;margin-right:@p5;
+                    }
+                    .project{
+                        color:@green;
+                    }
+                    .number{
+                        color:#7cbefc;
+                    }
+                    p{
+                        font-size:@f14;margin-top:@p5;
+                    }
+                }
+           }
+           .title{
+                font-size:@f16;color:@seven;margin-bottom:@p15;
+           }
+           .infoMent{
+                float:left;width:50%;height:60px;display:inline-block;font-size:@f14;color:@seven;
+                .iconfont{
+                    font-size:@f24;
+                }
+                p{
+                    font-family:@ff;font-size:@f20;
+                }
+           }
+           .sPayMent{
+               border-right:1px dashed @line;padding-left:@p10;
+               .iconfont{
+                   color:@green;margin-right:@p5;
+               }
+               p{
+                   color:@green;
+               }
+           }
+           .sPayAble{
+                padding-left:@p25;
+                .iconfont{
+                    color:#7cbefc;
+                }
+                p{
+                    color:#7cbefc;
+                }
+           }
+           .outPaid{
+                .iconfont{
+                    color:#ffb617;
+                }
+                p{
+                    color:#ffb617;
+                }
+           }
+           .forPaid{
+                .iconfont{
+                    color:#ff7b7e;
+                }
+                p{
+                    color:#ff7b7e;
+                }
+            }
+       }
+    }
+
+    // statisEchart
+    .statisEchart{
+        .echartTitle{
+            font-weight:lighter;
+            height:40px;
+            font-size:@f16;
+            color:@seven;
+        }
+        margin-top:@p30;
+        .echartColumn{
+            float:left;
+            background:@white;
+            border-radius:@r5;
+            padding:@p20;
+        }
+        // 中标率
+        .bidding{
+            width:68%;
+        }
+        // 收入走势
+        .earning{
+            width:30%;
+            margin-left:2%;
+        }
+        // 承接项目走势
+        .project{
+            margin-top:@p30;
+            width:33%;
+            margin-right:2%;
+        }
+        // 质量走势
+        .quality{
+           &:extend(.statisics .statisEchart .project);
+           margin-right:0px;
+        }
+        // 成员空闲走势
+        .member{
+            &:extend(.statisics .statisEchart .quality);
+            width:30%;
+            margin-left:2%;
+        }
+    }
+}

@@ -1,0 +1,430 @@
+@white: white;
+@orange: #ff9900;
+@gray: #e8e8e8;
+@blue: #39f;
+@green: #3bceb6;
+.pigeonhole {
+  .ivu-col-span-6{
+    .card{
+      &-table{
+        width: 100% !important;
+        margin: 0 auto;
+        line-height: 25px;
+        .w15{
+          width: 15%;
+          text-align: center !important;
+          span{
+            background: #f5a000;
+            color: #fff;
+            padding: 3px 5px;
+          }
+        }
+      }
+    }
+  }
+}
+.qualityContainer, .pigeonhole{
+  &:after{content: '';display: block;clear: both}
+  // position: relative;
+  // top: 0;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+  // .ivu-tabs{
+  //   position: absolute;
+  // }
+  .ivu-col-span-6{
+    //padding: 10px 0;
+    //width: calc(100% / 6);
+    min-width: 318px;
+    .card{
+      border: 1px solid transparent;
+      // border-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background: @white;
+      // box-shadow: 0 1px 10px #b5b5b5;
+      &-box{
+        position: relative;
+        width: 100%;
+        min-width: 318px;
+        height: 280px;
+        &-pic{
+          width: 100%;
+          min-width: 318px;
+          height: 280px;
+          border: none;
+        }
+        .ivu-icon{
+          position: absolute;
+          top: 5px;
+          right: 5px;
+        }
+        .tips{
+          position: absolute;
+          width: 100%;
+          // height: 36px;
+          line-height: 36px;
+          bottom: 0;
+          background: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .8));
+          color: @white;
+          padding: 0 10px 10px 10px;
+          box-shadow: 0px -2px 3px 0px rgba(0, 0, 0, .3);
+          display: none;
+          .tag{
+            background: @orange;
+            padding: 2px 5px;
+            margin-right: 10px;
+          }
+          .date{
+            float: right;
+          }
+          .userImg{
+            flex: 1;
+            //min-width: 100px;
+            text-align: center;
+            img{
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              vertical-align: middle;
+            }
+
+          }
+          .line{
+            display: block;
+            margin: 8px 0 12px 0;
+            border: 1px dashed #fff;
+          }
+        }
+      }
+      &-box:hover .tips{
+        display: block;
+      }
+      &-table{
+        flex:2.5;
+        //width: 95%;
+        margin: 0 auto;
+        line-height: 18px;
+        .fb{
+          font-weight: bold;
+        }
+        .w25{
+          width: 25%;
+          text-align: center;
+          .orange-span{
+            color: @orange;
+            display: inline-table;
+          }
+          >img{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            vertical-align: middle;
+          }
+        }
+        .w15{
+          width: 15%;
+          text-align: left;
+        }
+        .w55{
+          width: 55%;
+          text-align: left;
+        }
+        .w40{
+          width: 40%;
+          text-align: left;
+        }
+        .w20{
+          width: 20%;
+          text-align: left;
+          >img{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            vertical-align: middle;
+          }
+        }
+        .w10{
+          width: 10%;
+          text-align: center;
+          border-left: 1px solid #c9c9c9;
+          >img{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            vertical-align: middle;
+          }
+        }
+        .pointer{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .ivu-col-span-16{
+    .ivu-btn-primary{
+      margin-left: 20px;
+    }
+  }
+  .show{
+    display: block;
+  }
+  .hide{
+    display: none;
+  }
+  .b-border{
+    border-bottom: 1px solid #c9c9c9;
+  }
+  .l-padding{
+    padding-left: 5px;
+  }
+  .gray-sapn{
+    background: #c9c9c9;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: #888;
+  }
+  .sort{
+    width: 15%;
+    float: right;
+    // position: absolute;
+    // top: 0;
+    // left: 36%;
+    // margin-left: -100px;
+    height: 37px;
+    line-height: 37px;
+    text-align: right;
+    padding-right: 14px;
+    li{
+      width: calc( 100% / 3);
+      float: left;
+      cursor: pointer;
+      padding-right: 5px;
+      line-height: 10px;
+    }
+    .actived{
+      color: @green;
+    }
+  }
+  .search{
+    height: 40px;
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 1450px;
+    background: #fff;
+  }
+  .sortBg{
+    //height: 55px;
+    //padding: 10px 0;
+    background: rgb(252, 252, 252);
+  }
+  .screen{
+    // width: 46%;
+    width: 682px;
+    float: right;
+    // position: absolute;
+    // top: 0;
+    // right: 0;
+    height: 37px;
+    line-height: 37px;
+  }
+  .tab-main{
+    float: left;
+    width: 100%;
+    background: #fff;
+    padding-bottom: 50px;
+  }
+  .message{
+    width: 554px;
+    float: left;
+    height: 48px;
+    margin: 25px;
+    border: 0;
+    border-bottom: 1px solid #d7d7d7;
+  }
+  .change, .success{
+    background: #ff9900;
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    border-radius: 50%;
+    float: left;
+    margin: 25px;
+  }
+  .success{
+    background: #6c0;
+  }
+  .list li{
+    float: left;
+    width: 130px;
+    line-height: 30px;
+    text-align: center;
+    border-left: 1px solid #d7d7d7;
+  }
+  .list li:first-child{
+    width: 390px;
+    text-align: left;
+    border-left: 0;
+  }
+  .modal-backdrop{
+    position: absolute;
+    // top: 170px;
+  }
+  .more{
+    display: block;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  //资源管理 UI 改版  千万千万千千万不要冲突  南无阿弥陀佛  佛主保佑！！！
+  //Strat............
+  .menauBar{
+    background: #f7f7f7;
+    display: flex;align-items: center;justify-content:space-between;flex-wrap: wrap;
+    .projectClassfly{
+      overflow: hidden;height: 58px;display: flex;align-items: center;
+      li{float: left;display: flex;align-items: center;height:100%;font-size: 14px;color: #ccc;padding: 0 25px;cursor: pointer;
+        &.currenSty{background: rgba(206,242,236,.8);color: @green};
+        span{margin-left: 15px}
+      }
+    }
+    .screenBar{
+      overflow: hidden;height: 58px;display: flex;align-items: center;justify-content: space-between;padding: 12px 10px 12px 0;
+      li{
+        float: left;display: flex;align-items: center;height:100%;
+        dl{
+          height: 100%;
+          dd{
+            float: left;font-size: 13px;color: #ccc;height: 100%;display: flex;align-items: center;border-left: 1px dashed #e7e7e7;padding: 0 15px;cursor: pointer;
+            &:after{
+              content: '';display: inline-block;height: 12px;width: 9px;
+              background: url("../proStat/image/searchIcons.png") no-repeat;
+              background-position-y: -46px;margin-left: 5px;
+            };
+            &.byAsc{
+              &:after{background-position-y: 0 !important;}
+            };
+            &.byDesc{
+              &:after{background-position-y: -23px !important;}
+            }
+          }
+        }
+      }
+      .searchBar{
+        div{
+          position: relative;width: 200px;height: 100%;overflow: hidden;
+          input{height: 100%;width: 100%;border: none;border-radius: 3px;padding-left: 10px;outline: none;};
+          button{
+            position: absolute;top: 0;bottom:0;right: 0;width: 44px;height:100%;border: 0;outline: none;border-radius: 3px;
+            background: url("../proStat/image/searchIcons.png") no-repeat @green;
+            background-position: 13px -88px;cursor: pointer;
+          }
+        }
+      }
+      .allDownBtn{
+        background: @green;padding: 0 10px;margin-left: 10px;border-radius: 3px;overflow: hidden;width: 100px;
+        button{
+          border: 0;color: #fff;outline: none;cursor: pointer;background: @green;width: 100%;
+          .downbtn{
+            background: url("../proStat/image/searchIcons.png") no-repeat @green;
+            background-position-y: -70px;padding-left: 20px;
+          }
+          i{font-style: normal;
+            &:after{content: "\F29C";color: #fff;font-size: 15px;padding: 0 5px}
+          }
+        }
+      }
+    }
+  }
+
+  //End.............
+  // 结束 这部分千万不要冲  要冲冲其他部分都可以 哈哈
+}
+.qualityContainer{
+  background: #eef1f2;
+  padding: 30px 0;
+  //padding:  0 100px 0 50px;
+  height: 100%;
+  .qualityTitle {
+    display: flex;
+    .icon{
+      width: 40px;
+      height: 100px;
+      background: url(../../../images/icon/resources.png) no-repeat center center / 37px 34px;
+
+    }
+  }
+  .nav{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 80px;
+    overflow: hidden;
+    //height: 206px;
+    background: #fff;
+    //.frist,.second, .third, .fourth, .fifth{
+    //  float: left;
+    //  width: 168px;
+    //  height: 168px;
+    //  margin: 8px 36px;
+    //  .text{
+    //    background: #deeeee;
+    //    width: 120px;
+    //    height: 120px;
+    //    border-radius: 50%;
+    //    margin: 24px;
+    //    color: #1a99aa;
+    //    padding: 32px 20px;
+    //    .big{
+    //      font-size: 34px;
+    //      line-height: 50px;
+    //    }
+    //  }
+    //}
+
+    .frist,.second, .third, .fourth, .fifth{
+      float: left;
+      width: 120px;
+      height: 120px;
+      margin: 36px;
+      cursor: pointer;
+      .text{
+        //background: #deeeee;
+        width: 87px;
+        height: 87px;
+        border-radius: 50%;
+        margin: 17px;
+
+        padding: 22px 0;
+        .big{
+          font-size: 24px;
+          line-height: 40px;
+        }
+      }
+      .description{
+        color: #798684;text-align: center;
+      }
+    }
+  }
+  .topNav{
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    position: fixed;
+    top: 64px;
+    background: #fff;
+    z-index: 1;
+    li{
+      float: left;
+      text-align: center;
+      padding: 0 15px;
+      cursor: pointer;
+    }
+  }
+}

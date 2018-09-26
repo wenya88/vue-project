@@ -1,0 +1,143 @@
+@import url('http://at.alicdn.com/t/font_713813_reqgguec388.css');
+.realTime_message,.realTime_message_own{
+    box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+  }
+  .realTime_message{
+    padding-left: 10px;
+  }
+  .realTime_message_own{
+    padding-right: 10px;
+  }
+  .chats-image-left,
+  .chats-image-right{
+    width: 40px;
+    height: 40px;
+    margin-top: 5px;
+    border-radius: 50%;
+    /* float: left; */
+  }
+  .chats-image-left{
+    float: left;
+  }
+  .chats-image-right{
+    float: right;
+  }
+  .ko{
+   margin-bottom: 10px;
+  }
+  .chat-msg-left{
+    float: left;
+    margin-top: 5px;
+  }
+  .chat-msg-right{
+    float: right;
+    margin-top: 5px;
+  }
+  .realTime_message>p{
+    float: left;
+    line-height: 30px;
+  }
+  .realTime_message_own>p{
+    float: right;
+    line-height: 30px;
+  }
+  .realTime_time{
+    font-size: 12px;
+    color: #bdbdbd;
+  }
+  .realTime_time_text{
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 0 5px;
+  }
+  /* .triangle_type,
+  .triangle_type_own{
+    width: 0;
+    height: 0;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+  } */
+  .triangle_type{
+   color: rgb(248,249,250);
+   margin: 8px 0 0 5px;
+   font-size: 8px;
+   float: left;
+  }
+  .triangle_type_own{
+    float: right;
+    color: #3bceb6;
+    font-size: 8px;
+    margin: 8px 5px 0 0;
+  }
+  .Send_content{
+   display: inline-block;
+   padding:10px;
+   border-radius: 4px;
+   font-size: 12px;
+   /* min-height: 50px; */
+  }
+  .is_own_float{
+    float: right;
+  }
+  .chat-own-no {
+    float: left;
+  }
+  .is_own_no{
+    background: rgb(248,249,250);
+  }
+  .chat-own{
+    float: right;
+  }
+  .is_own{
+    background: #3bceb6;
+    color: #ffffff;
+  }
+  .clearfix:after{
+    content:"";
+    height:0;
+    line-height:0;
+    display:block;
+    visibility:hidden;
+    clear:both;
+  }
+  .img_screenshot{
+    width: 200px;
+  }
+  .clearfix{
+    zoom:1;
+  }
+  .file_upload{
+    width: 350px;
+    height: 90px;
+    background: #fdfdfd;
+    color: #777777;
+    position: relative;
+    border-radius: 4px;
+  }
+  .file-up-name{
+    width: 100%;
+    height: 53px;
+    line-height: 53px;
+    border-bottom: 1px solid #eef1f2;
+  }
+  .file-up-name span{
+    float:left;
+  }
+  .file-up-icon{
+    color:#fcc44a;
+    font-size: 30px;
+    margin-left: 10px;
+  }
+  .file_upload_ltext{
+    height: 37px;
+    line-height: 37px;
+    color: rgba(24,191,164,.8);
+    cursor: pointer;
+    float:right;
+    margin-right: 10px;
+  }
+  .file_upload_ltext:hover{
+    color: rgba(24,191,164,.5);
+  }

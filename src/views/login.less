@@ -1,0 +1,176 @@
+.login{
+    width: 100%;
+    height: 100%;
+    position:absolute;
+    &-purple{
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-top: 100px solid #3bceb6;
+        border-right: 200px solid transparent;
+        height: 100%;
+        width: 56%;
+    }
+    .bg{
+       background:url('../images/bg.png');
+        width: 100%;
+        height:100px;
+        position: absolute;
+        z-index: 2;
+    }
+    &-yellow{
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-bottom: 100px solid #fff;
+        border-left: 200px solid transparent;
+        height: 100%;
+        width: 40%;
+    }
+    &-con{
+        position: absolute;
+        left:50%;
+        top: 50%;
+        width: 1071px;
+        height: 611px;
+        z-index: 999;
+        margin-left:-535px;
+        margin-top:-305px;
+        background:url('../images/login-bg.png');
+        .title{
+            height: 80px;
+            line-height: 80px;
+            box-shadow: 0px 5px 5px #e8e8e8;
+            font-size: 28px;
+            color: #ffa35d;
+            padding: 0 20px;
+            span{
+                color: #ababab;
+                font-size: 14px;
+                float: right;
+            }
+        }
+        .form-bannger{
+            float:left;
+            width:500px;
+            background:red;
+            display:inline-block;
+            margin-left:130px;
+            margin-top:150px;
+            background:url('../images/banner.png') no-repeat center;
+            height:300px;
+        }
+        .form-con{
+            width: 282px;
+            float:left;
+            display:inline-block;
+            margin-top:150px;
+            &-logoImg{
+                height:50px;
+                background:url('../images/newLog.png') no-repeat;
+                display:block;
+                background-position-x: 70px;
+                padding-left:110px;
+                color:#777;
+                overflow:hidden;
+                line-height:70px;
+                font-size:18px;
+                font-weight:lighter;
+                margin-bottom:40px;
+            }
+            .itemname{
+                font-size: 14px;
+                color: #b2b2b2;
+                padding-left: 10px;
+            }
+            .ivu-input{
+                border: none;
+                border-bottom: 1px solid #eef1f2;
+                border-radius: 0;
+                outline: none;
+                font-size: 16px;
+                color: #777;
+                height: 40px;
+                line-height: 40px;
+                font-weight:lighter;
+                font-family:'Microsoft YaHei';
+                padding-left:35px;
+            }
+            .ivu-input:-webkit-autofill { 
+                -webkit-box-shadow: 0 0 0px 1000px white inset; 
+                background-image: none; 
+                color: #777; 
+            }
+            i{
+               position:absolute;
+               margin-top:-35px;
+               left:0px;
+               font-size:22px;
+               color:#cecece;
+            }
+            .icon-mima1{
+                font-size:24px;
+                margin-top:-37px;
+               
+            }
+            .inputPosition{
+                position:absolute;width:282px;
+            }
+            .ivu-btn-primary{
+                width: 240px;
+                height: 42px;
+                // background: #544c93;
+                // border: 1px solid #544c93;
+                font-size: 20px;
+                margin-left:20px;
+                font-weight:lighter;
+                background:#3bceb6;
+                border-width:0px;
+                margin-top:14px;
+            }
+            .lookPas{
+                position: absolute;
+                right: 0;
+                margin-top: -40px;
+                cursor:pointer;
+            }
+            .loginText{
+                display:block;
+                text-align:center;
+                margin-top:10px;
+                font-size:14px;
+                font-weight:lighter;
+                span{
+                    cursor:pointer;
+                    color:#3bceb6;
+                    text-decoration-line:underline;
+                    &:hover{
+                        text-decoration-line:none;
+                    }
+                }
+            }
+            img{
+                width: 30px;
+                position: absolute;
+                right: 0;
+                margin-top: -40px;
+            }
+        }
+    }
+}
+.loginFooder{
+    position:absolute;
+    z-index:1111;
+    width:100%;
+    color:#3bceb6;
+    text-align:center;
+    padding-left:100px;
+    bottom:-20px;
+    margin-left:22px;
+}
+.errorHint{
+    position:absolute;color:#ff898e;margin-top:-14px;font-size:14px;
+    span{
+        margin-right:3px;
+    }
+}
